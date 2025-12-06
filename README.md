@@ -1,211 +1,160 @@
-# Student Analytics Dashboard
+# Job Seeker Helper
 
-## Abstract
+## Panoramica
 
-This repository presents a functional Minimum Viable Product (MVP) of a cloud-native machine learning platform designed to predict university dropout risk and demonstrate data-driven retention strategies. The platform leverages Google BigQuery for scalable data warehousing and Streamlit for interactive data visualization.
+**Job Seeker Helper** è un sistema di analisi automatizzata per la valutazione della compatibilità tra profilo professionale e requisiti lavorativi. Il software implementa algoritmi di text mining per estrarre e confrontare competenze tecniche da documenti testuali, fornendo metriche quantitative di corrispondenza.
 
-## Overview
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.0+-red.svg)](https://streamlit.io/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-The Student Analytics Dashboard is an enterprise-grade analytics solution that integrates multiple machine learning models to provide actionable insights into student performance, behavior, and retention risk. The platform processes institutional data through a robust ETL pipeline and presents results via an intuitive web interface.
+## Descrizione del Progetto
 
-### Core Capabilities
+Il presente applicativo costituisce uno strumento di supporto decisionale per candidati professionali nella fase di job matching. Tramite l'utilizzo di tecniche di Natural Language Processing basate su espressioni regolari, il sistema esegue:
 
-The system implements three primary analytical frameworks:
+- Estrazione automatica di competenze tecniche da annunci di lavoro
+- Parsing delle competenze presenti nel curriculum vitae del candidato
+- Calcolo dell'indice di compatibilità percentuale
+- Generazione di report analitici sulle competenze possedute e carenti
 
-1. **Dropout Risk Prediction**: Utilizes Random Forest classification to identify students at risk of withdrawal, enabling proactive intervention strategies.
+## Architettura Funzionale
 
-2. **Behavioral Segmentation**: Employs K-means clustering (K=4) to categorize students into distinct behavioral profiles for targeted support programs.
+### Componenti Principali
 
-3. **Satisfaction Forecasting**: Implements Boosted Tree regression (XGBoost) to model and predict student satisfaction metrics from survey data.
+Il sistema è strutturato secondo i seguenti moduli:
 
-## Technical Architecture
+1. **Modulo di Estrazione**: Implementazione di pattern matching tramite regex per l'identificazione di oltre 150 keyword tecniche organizzate per categoria (linguaggi di programmazione, framework, strumenti, metodologie)
 
-### Technology Stack
+2. **Modulo di Analisi**: Algoritmo di confronto insiemistico per la determinazione delle competenze in comune e delle lacune formative
 
-- **Frontend**: Streamlit 1.x
-- **Data Warehouse**: Google BigQuery
-- **Visualization**: Plotly 5.x
-- **Data Processing**: Pandas, NumPy
-- **Authentication**: Google Cloud Service Account
-- **ML Framework**: Scikit-learn, XGBoost (upstream models)
+3. **Modulo di Presentazione**: Interfaccia utente sviluppata con framework Streamlit per la visualizzazione dei risultati analitici
 
-### System Requirements
+### Categorie di Competenze Rilevate
 
-- Python 3.8 or higher
-- Google Cloud Platform account with BigQuery API enabled
-- Service account credentials with appropriate IAM permissions
-- Minimum 4GB RAM recommended for local execution
+Il database interno comprende le seguenti macro-categorie:
 
-## Installation
+- Linguaggi di programmazione (Python, Java, JavaScript, C++, ecc.)
+- Framework frontend e backend (React, Angular, Django, Spring, ecc.)
+- Sistemi di gestione database (SQL, MongoDB, PostgreSQL, Oracle, ecc.)
+- Piattaforme cloud e DevOps (AWS, Azure, Docker, Kubernetes, ecc.)
+- Data Science e Machine Learning (TensorFlow, PyTorch, Pandas, ecc.)
+- Metodologie di sviluppo (Agile, Scrum, DevOps, TDD, ecc.)
+- Soft skills e competenze manageriali
 
-### 1. Repository Setup
+## Requisiti di Sistema
 
-```bash
-git clone https://github.com/YOUR_USERNAME/studenti-analytics.git
-cd studenti-analytics
+### Prerequisiti
+
+- Python versione 3.8 o superiore
+- Package manager pip
+
+### Dipendenze
+
+Le dipendenze del progetto sono specificate nel file `requirements.txt`:
+
+```
+streamlit>=1.28.0
 ```
 
-### 2. Dependency Installation
+## Procedura di Installazione
+
+1. Clonare il repository dal sistema di versionamento:
+
+```bash
+git clone https://github.com/your-username/job-seeker-helper.git
+cd job-seeker-helper
+```
+
+2. Installare le dipendenze necessarie:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Authentication Configuration
-
-Create a `.streamlit/secrets.toml` file in the project root with the following structure:
-
-```toml
-type = "service_account"
-project_id = "your-project-id"
-private_key_id = "your-private-key-id"
-private_key = "-----BEGIN PRIVATE KEY-----\nYOUR_PRIVATE_KEY\n-----END PRIVATE KEY-----\n"
-client_email = "your-service-account@your-project.iam.gserviceaccount.com"
-client_id = "your-client-id"
-auth_uri = "https://accounts.google.com/o/oauth2/auth"
-token_uri = "https://oauth2.googleapis.com/token"
-auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
-client_x509_cert_url = "https://www.googleapis.com/robot/v1/metadata/x509/your-service-account%40your-project.iam.gserviceaccount.com"
-universe_domain = "googleapis.com"
-```
-
-**Security Notice**: Ensure `secrets.toml` is added to `.gitignore` to prevent credential exposure.
-
-## Data Schema
-
-The platform expects the following BigQuery tables within the configured dataset:
-
-| Table Identifier | Description | Primary Use |
-|------------------|-------------|-------------|
-| `studenti` | Student demographic and academic performance records | Base analytics |
-| `studenti_churn_pred` | Dropout probability predictions (0-1 scale) | Risk assessment |
-| `studenti_cluster` | K-means cluster assignments | Segmentation analysis |
-| `feature_importance_studenti` | Model feature importance rankings | Model interpretability |
-| `studenti_soddisfazione_btr` | Satisfaction score predictions | Student experience metrics |
-| `student_churn_rf` | Random Forest model metadata and performance metrics | Model monitoring |
-| `student_kmeans` | K-means centroids and inertia values | Clustering validation |
-| `report_finale_soddisfazione_studenti` | Aggregated satisfaction analysis | Executive reporting |
-
-## Machine Learning Models
-
-### Dropout Prediction Model
-
-**Algorithm**: Random Forest Classifier  
-**Objective**: Binary classification of student dropout risk  
-**Input Features**: Academic performance, attendance patterns, engagement metrics  
-**Output**: Probability score [0,1] indicating dropout likelihood  
-**Performance Metrics**: Accuracy, Precision, Recall, F1-Score (stored in `student_churn_rf`)
-
-### Student Clustering Model
-
-**Algorithm**: K-means Clustering  
-**Number of Clusters**: 4  
-**Objective**: Behavioral segmentation for targeted interventions  
-**Features**: Study hours, academic performance, absence frequency  
-**Preprocessing**: Z-score normalization  
-**Validation**: Elbow method, silhouette analysis
-
-### Satisfaction Prediction Model
-
-**Algorithm**: Gradient Boosted Trees (XGBoost)  
-**Objective**: Regression for satisfaction score prediction  
-**Input**: Survey responses (Likert scale 1-5), demographic data  
-**Output**: Continuous satisfaction score  
-**Performance Metrics**: R², RMSE, MAE
-
-## Usage
-
-### Application Launch
-
-Execute the following command from the project root:
+3. Avviare l'applicazione:
 
 ```bash
 streamlit run app.py
 ```
 
-The dashboard will be accessible at `http://localhost:8501`
+4. Accedere all'interfaccia web attraverso il browser al seguente indirizzo: `http://localhost:8501`
 
-### Navigation
+## Modalità d'Uso
 
-- **Home Dashboard**: Executive summary with KPI metrics and data catalogue
-- **Dataset Views**: Detailed exploration of individual tables with filtering and export capabilities
-- **Specialized Visualizations**: Auto-generated charts tailored to each dataset type
+### Workflow Operativo
 
-## Features
+1. **Input Annuncio**: Inserire il testo completo dell'annuncio di lavoro nell'area di testo dedicata
+2. **Input Curriculum**: Inserire il curriculum vitae o l'elenco delle competenze possedute nell'apposita sezione
+3. **Esecuzione Analisi**: Avviare il processo di matching tramite il pulsante "Analizza Match"
+4. **Interpretazione Output**: Consultare i risultati analitici visualizzati
 
-### Data Management
-- Three-tier data loading strategy with automatic fallback mechanisms
-- Intelligent caching system (TTL: 10 minutes)
-- Type optimization for memory efficiency
-- Support for datasets exceeding 1M rows
+### Componenti dell'Output
 
-### Visualization
-- Specialized charts for ML model outputs (dropout distribution, feature importance, cluster analysis)
-- Interactive Plotly-based visualizations with custom theming
-- Correlation matrices and distribution analysis
-- CSV export functionality for all datasets
+Il sistema restituisce le seguenti informazioni:
 
-### User Interface
-- Responsive layout optimized for desktop environments
-- Collapsible sidebar navigation
-- Advanced filtering with multi-column search
-- Premium design system with Inter font family
+- **Indice di Compatibilità**: Percentuale di corrispondenza tra requisiti e competenze possedute
+- **Progress Indicator**: Rappresentazione grafica del livello di match
+- **Valutazione Qualitativa**: Classificazione del profilo (Basso/Medio/Alto)
+- **Analisi Dettagliata**: Elenco suddiviso delle competenze possedute e mancanti
 
-## Performance Optimization
+## Interpretazione dei Risultati
 
-The application implements several performance enhancements:
+| Range Percentuale | Classificazione | Interpretazione |
+|-------------------|-----------------|------------------|
+| 0% - 39% | Match Basso | Discrepanza significativa tra profilo e requisiti. Potenziale profilo junior o requisiti non allineati |
+| 40% - 75% | Match Medio | Corrispondenza parziale. Presenza di competenze base con necessità di integrazione |
+| 76% - 100% | Match Alto | Elevata compatibilità. Profilo in linea con i requisiti della posizione |
 
-1. **Multi-tier Data Loading**: BQ Storage API → REST API → Manual iteration fallback
-2. **Streamlit Caching**: `@st.cache_data` for query results, `@st.cache_resource` for client connections
-3. **Type Optimization**: Automatic categorical encoding for low-cardinality columns
-4. **Query Optimization**: Selective column loading and row limiting where applicable
+## Stack Tecnologico
 
-## Security Considerations
+- **Backend**: Python 3.8+
+- **Framework UI**: Streamlit
+- **Text Processing**: Modulo `re` (Regular Expressions) standard library Python
+- **Type Hinting**: Typing module per type safety
 
-- Service account credentials should be stored securely using environment-specific secret management
-- Implement authentication middleware for production deployments
-- Enable BigQuery audit logging for compliance requirements
-- Use least-privilege IAM roles for service accounts
-- Rotate service account keys regularly according to organizational policy
+## Struttura del Repository
 
-## Deployment
+```
+job-seeker-helper/
+├── app.py              # Applicazione principale Streamlit
+├── requirements.txt    # Dipendenze Python
+├── README.md          # Documentazione tecnica
+├── LICENSE            # Termini di licenza MIT
+└── .gitignore         # Configurazione Git
+```
 
-For production deployment, consider:
+## Sviluppi Futuri
 
-1. **Containerization**: Use Docker for consistent environment management
-2. **Cloud Hosting**: Deploy to Google Cloud Run, AWS App Runner, or Azure Container Instances
-3. **Authentication**: Implement OAuth 2.0 or SAML-based SSO
-4. **Monitoring**: Integrate with application performance monitoring (APM) tools
-5. **Scalability**: Configure horizontal scaling based on concurrent user load
+La roadmap di evoluzione del progetto prevede:
 
-## License
+- Estensione del database keyword con categorie settoriali specifiche
+- Implementazione funzionalità di export in formato PDF
+- Supporto per localizzazione multilingua
+- Integrazione con API di piattaforme di recruiting (LinkedIn API, Indeed API)
+- Implementazione di algoritmi di Machine Learning per matching avanzato
 
-This project is distributed under the MIT License. See `LICENSE` file for complete terms.
+## Contributi
 
-## Contributing
+Il progetto accetta contribuzioni secondo le seguenti modalità:
 
-Contributions are evaluated based on:
-- Code quality and adherence to PEP 8 standards
-- Comprehensive unit test coverage
-- Documentation completeness
-- Backward compatibility maintenance
+- Segnalazione di bug tramite issue tracker
+- Proposte di enhancement e nuove funzionalità
+- Pull request con miglioramenti del codice
 
-Please submit contributions via pull request with detailed descriptions of changes.
+Si raccomanda di seguire le best practices di sviluppo Python (PEP 8) e di includere documentazione appropriata.
 
-## Acknowledgments
+## Autori e Crediti
 
-Built using open-source technologies: Streamlit, Plotly, Pandas, Google Cloud BigQuery API.
+Il progetto è stato sviluppato da:
 
-## Support
+- **Luca Tallarico**
+- **Ruben Scoletta**
+- **Giacomo Dellacqua**
 
-For technical issues or feature requests, please submit a GitHub issue with:
-- Detailed problem description
-- Steps to reproduce (if applicable)
-- Environment details (Python version, OS)
-- Relevant log outputs
+## Licenza
+
+Il software è distribuito sotto licenza MIT. Per i termini completi della licenza, consultare il file [LICENSE](LICENSE).
 
 ---
 
-**Version**: 2.0.0  
-**Last Updated**: 2025-11-29  
-**Maintainer**: Giacomo Dellacqua
+© 2025 - Job Seeker Helper Project
