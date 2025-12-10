@@ -886,11 +886,19 @@ with col2:
                 with st.spinner("📖 Lettura del PDF in corso..."):
                     cv_text = extract_text_from_pdf(uploaded_file)
                 
-                # Mostra preview del testo estratto
-                with st.expander("👁️ Anteprima testo estratto"):
-                    st.text(cv_text[:500] + "..." if len(cv_text) > 500 else cv_text)
+                st.success(f"✅ PDF caricato! Estratti {len(cv_text)} caratteri.")
                 
-                st.success(f"✅ PDF caricato! Estratte {len(cv_text)} caratteri.")
+                # Mostra preview del testo estratto (solo se utente vuole)
+                with st.expander("👁️ Anteprima testo estratto"):
+                    # Text area scrollabile, più leggibile di st.text
+                    preview_text = cv_text[:1000] + "\n\n..." if len(cv_text) > 1000 else cv_text
+                    st.text_area(
+                        "Testo rilevato dal PDF:",
+                        value=preview_text,
+                        height=200,
+                        disabled=True,  # Read-only
+                        label_visibility="collapsed"
+                    )
             
             except ImportError as e:
                 st.error(
