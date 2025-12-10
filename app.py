@@ -890,15 +890,9 @@ with col2:
                 
                 # Mostra preview del testo estratto (solo se utente vuole)
                 with st.expander("👁️ Anteprima testo estratto"):
-                    # Text area scrollabile, più leggibile di st.text
-                    preview_text = cv_text[:1000] + "\n\n..." if len(cv_text) > 1000 else cv_text
-                    st.text_area(
-                        "Testo rilevato dal PDF:",
-                        value=preview_text,
-                        height=200,
-                        disabled=True,  # Read-only
-                        label_visibility="collapsed"
-                    )
+                    # st.code ha contrasto migliore e font leggibile
+                    preview_text = cv_text[:800] + "\n\n[...]" if len(cv_text) > 800 else cv_text
+                    st.code(preview_text, language=None)
             
             except ImportError as e:
                 st.error(
