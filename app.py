@@ -264,6 +264,23 @@ SKILL_GROUPS = {
 
 
 # ============================================================================
+# SOFT SKILLS - ESCLUSE DAL CALCOLO DEL MATCH
+# ============================================================================
+# Le soft skills non vengono conteggiate nella percentuale di compatibilità
+# perché sono soggettive e difficili da quantificare
+# ============================================================================
+
+SOFT_SKILLS = {
+    "Teamwork",
+    "Communication", 
+    "Problem Solving",
+    "Leadership",
+    "Agile",
+    "Project Management"
+}
+
+
+# ============================================================================
 # SISTEMA DI INFERENZA SKILL IMPLICITE
 # ============================================================================
 # PILASTRO NLP AVANZATO: Deduzione intelligente di competenze correlate
@@ -297,6 +314,7 @@ SKILL_IMPLICATIONS = {
     # ------------------------------------------------------------------------
     # FRAMEWORK → LINGUAGGI BASE
     # ------------------------------------------------------------------------
+    "Python": ["Pandas"],  # Se usi Python, sai usare Pandas
     "React": ["JavaScript", "HTML/CSS", "Frontend"],
     "Angular": ["JavaScript", "HTML/CSS", "Frontend"],
     "Vue": ["JavaScript", "HTML/CSS", "Frontend"],
@@ -309,11 +327,11 @@ SKILL_IMPLICATIONS = {
     # ------------------------------------------------------------------------
     # DATA SCIENCE → TOOL ECOSISTEMA
     # ------------------------------------------------------------------------
-    "Machine Learning": ["Python", "Data Science"],
-    "Deep Learning": ["Python", "Machine Learning", "Data Science"],
-    "TensorFlow": ["Python", "Machine Learning"],
-    "PyTorch": ["Python", "Machine Learning"],
-    "Data Science": ["Python", "SQL"],
+    "Machine Learning": ["Python", "Data Science", "Pandas"],
+    "Deep Learning": ["Python", "Machine Learning", "Data Science", "Pandas"],
+    "TensorFlow": ["Python", "Machine Learning", "Pandas"],
+    "PyTorch": ["Python", "Machine Learning", "Pandas"],
+    "Data Science": ["Python", "SQL", "Pandas"],
     "Big Data": ["Data Science", "SQL"],
     
     # ------------------------------------------------------------------------
@@ -334,11 +352,13 @@ SKILL_IMPLICATIONS = {
     "Oracle": ["SQL", "Database Management"],
     
     # ------------------------------------------------------------------------
-    # BUSINESS INTELLIGENCE
+    # BUSINESS INTELLIGENCE - TOOL EQUIVALENTI
     # ------------------------------------------------------------------------
-    "Power BI": ["Excel", "Data Science"],
-    "Tableau": ["Data Science", "SQL"],
-    "Looker": ["SQL", "Data Science"],
+    # Power BI, Tableau, Looker sono concettualmente simili:
+    # Se sai usarne uno, sai usare anche gli altri (stessi principi di BI)
+    "Power BI": ["Excel", "Data Science", "Tableau", "Looker"],
+    "Tableau": ["Data Science", "SQL", "Power BI", "Looker"],
+    "Looker": ["SQL", "Data Science", "Power BI", "Tableau"],
     
     # ------------------------------------------------------------------------
     # METODOLOGIE → SOFT SKILLS
@@ -742,11 +762,13 @@ def normalize_and_extract(text: str) -> Set[str]:
 def calculate_match(job_skills: Set[str], cv_skills: Set[str]) -> Tuple[float, Set[str], Set[str]]:
     """
     Calcola la percentuale di match e identifica skill possedute vs mancanti.
+    IMPORTANTE: Le soft skills sono ESCLUSE dal calcolo della percentuale.
     
     ALGORITMO:
-    1. Intersezione: Trova skill comuni (job_skills ∩ cv_skills)
-    2. Differenza: Trova skill mancanti (job_skills - cv_skills)
-    3. Scoring: Percentuale = (skill_comuni / skill_richieste) * 100
+    1. Filtra soft skills da entrambi i set
+    2. Intersezione: Trova skill comuni (job_skills ∩ cv_skills)
+    3. Differenza: Trova skill mancanti (job_skills - cv_skills)
+    4. Scoring: Percentuale = (skill_comuni / skill_richieste) * 100
     
     Args:
         job_skills (Set[str]): Competenze richieste dall'annuncio
@@ -754,21 +776,25 @@ def calculate_match(job_skills: Set[str], cv_skills: Set[str]) -> Tuple[float, S
     
     Returns:
         Tuple[float, Set[str], Set[str]]: 
-            - Percentuale di match (0-100)
+            - Percentuale di match (0-100) basata su HARD SKILLS
             - Set di skill possedute
             - Set di skill mancanti
     """
-    # Caso edge: nessuna skill richiesta nell'annuncio
-    if not job_skills:
+    # STEP 1: Filtra soft skills (non contano per la percentuale)
+    hard_job_skills = job_skills - SOFT_SKILLS
+    hard_cv_skills = cv_skills - SOFT_SKILLS
+    
+    # Caso edge: nessuna hard skill richiesta
+    if not hard_job_skills:
         return 0.0, set(), set()
     
-    # OPERAZIONI INSIEMISTICHE (Set Theory)
-    matched_skills = job_skills.intersection(cv_skills)  # A ∩ B
-    missing_skills = job_skills.difference(cv_skills)    # A - B
+    # STEP 2: OPERAZIONI INSIEMISTICHE (Set Theory) - solo hard skills
+    matched_skills = hard_job_skills.intersection(hard_cv_skills)  # A ∩ B
+    missing_skills = hard_job_skills.difference(hard_cv_skills)    # A - B
     
-    # CALCOLO PERCENTUALE DI MATCH
-    # Formula: (skill_match / skill_totali_richieste) * 100
-    match_percentage = (len(matched_skills) / len(job_skills)) * 100
+    # STEP 3: CALCOLO PERCENTUALE DI MATCH (solo hard skills)
+    # Formula: (hard_skill_match / hard_skill_totali_richieste) * 100
+    match_percentage = (len(matched_skills) / len(hard_job_skills)) * 100
     
     return match_percentage, matched_skills, missing_skills
 
@@ -936,66 +962,42 @@ if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
             else:
                 st.write("Nessuna skill in comune trovata.")
         
-        # COLONNA DESTRA: Skill mancanti con GUIDA ALL'APPRENDIMENTO
+        # COLONNA DESTRA: Skill mancanti con GUIDA COMPATTA
         with col_missing:
             st.subheader("❌ Skill Mancanti")
             
             if missing_skills:
-                st.markdown(
-                    f"**{len(missing_skills)} competenze** da sviluppare per questo ruolo. "
-                    "Ecco come acquisirle:"
-                )
+                missing_list = sorted(missing_skills)
+                st.markdown(f"**{len(missing_list)} competenze** da sviluppare")
+                
+                # Mostra solo TOP 3 skill con raccomandazioni
                 st.markdown("---")
+                st.markdown("**🎯 Priorità (Top 3):**")
                 
-                # Per ogni skill mancante, mostra guida dettagliata
-                for skill in sorted(missing_skills):
-                    # Container per ogni skill
-                    with st.container():
-                        # Header skill mancante
-                        st.error(f"✗ **{skill}**")
-                        
-                        # Ottieni risorse di apprendimento (o usa default)
-                        resource = LEARNING_RESOURCES.get(skill, DEFAULT_LEARNING_RESOURCE)
-                        
-                        # Expander con dettagli come acquisirla
-                        with st.expander("📚 Come acquisire questa competenza"):
-                            # Info rapide
-                            col_diff, col_time = st.columns(2)
-                            with col_diff:
-                                st.metric("Difficoltà", resource["difficoltà"])
-                            with col_time:
-                                st.metric("Tempo stimato", resource["tempo"])
-                            
-                            st.markdown("---")
-                            
-                            # Corsi consigliati
-                            st.markdown("**📖 Corsi Consigliati:**")
-                            for corso in resource["corsi"]:
-                                st.markdown(f"• {corso}")
-                            
-                            st.markdown("")
-                            
-                            # Pratica
-                            st.markdown("**🛠️ Come Praticare:**")
-                            st.markdown(f"• {resource['pratica']}")
-                            
-                            st.markdown("")
-                            
-                            # Certificazioni
-                            st.markdown("**🏆 Certificazioni:**")
-                            st.markdown(f"• {resource['certificazioni']}")
-                        
-                        st.markdown("")  # Spaziatura
+                for skill in missing_list[:3]:  # Solo prime 3
+                    st.error(f"✗ {skill}")
+                    resource = LEARNING_RESOURCES.get(skill, DEFAULT_LEARNING_RESOURCE)
+                    
+                    # Info compatta in una riga
+                    st.caption(
+                        f"⏱️ {resource['tempo']} | "
+                        f"📊 {resource['difficoltà']} | "
+                        f"📖 {resource['corsi'][0]}"
+                    )
                 
-                # Messaggio motivazionale finale
-                st.info(
-                    "💡 **Consiglio:** Inizia dalla skill con difficoltà più bassa "
-                    "e maggiore rilevanza per il ruolo. Focus su progetti pratici!"
-                )
+                # Altre skill (se ci sono) in expander compatto
+                if len(missing_list) > 3:
+                    with st.expander(f"➕ Altre {len(missing_list) - 3} skill da sviluppare"):
+                        for skill in missing_list[3:]:
+                            resource = LEARNING_RESOURCES.get(skill, DEFAULT_LEARNING_RESOURCE)
+                            st.write(f"• **{skill}** - {resource['tempo']}, {resource['difficoltà']}")
+                
+                # Consiglio finale compatto
+                st.info("💡 Inizia dalla prima skill in lista (più rilevante)")
             
             else:
                 st.success("🎉 Hai tutte le skill richieste!")
-                st.balloons()  # Animazione celebrativa
+                st.balloons()
         
         # ====================================================================
         # STATISTICHE AGGIUNTIVE
