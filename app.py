@@ -21,6 +21,11 @@ Licenza: MIT
 import streamlit as st  # Framework per interfaccia web interattiva
 import re              # Regex per pattern matching e text mining
 from typing import Set, Tuple, List  # Type hints per code clarity
+import io              # Input/Output per gestione file in memoria
+try:
+    from PyPDF2 import PdfReader  # Lettura e estrazione testo da PDF
+except ImportError:
+    PdfReader = None  # Fallback se PyPDF2 non è installato
 
 # ============================================================================
 # CONFIGURAZIONE APPLICAZIONE WEB
@@ -394,6 +399,62 @@ def infer_implied_skills(detected_skills: Set[str]) -> Set[str]:
 
 
 
+
+# ============================================================================
+# FUNZIONE: ESTRAZIONE TESTO DA PDF
+# ============================================================================
+# PILASTRO TEXT MINING: Estensione per gestire documenti PDF
+# ============================================================================
+
+def extract_text_from_pdf(pdf_file) -> str:
+    """
+    Estrae il testo da un file PDF caricato dall'utente.
+    
+    ALGORITMO:
+    1. Legge il file PDF usando PyPDF2
+    2. Itera su tutte le pagine
+    3. Estrae il testo da ogni pagina
+    4. Concatena tutto in un'unica stringa
+    
+    Args:
+        pdf_file: File PDF caricato tramite st.file_uploader
+    
+    Returns:
+        str: Testo estratto dal PDF
+    
+    Raises:
+        Exception: Se PyPDF2 non è installato o il PDF è corrotto
+    """
+    if PdfReader is None:
+        raise ImportError(
+            "PyPDF2 non è installato. "
+            "Installa con: pip install PyPDF2"
+        )
+    
+    try:
+        # Crea un oggetto PdfReader dal file caricato
+        pdf_reader = PdfReader(pdf_file)
+        
+        # Lista per accumulare il testo di tutte le pagine
+        text_parts = []
+        
+        # Itera su tutte le pagine del PDF
+        for page_num, page in enumerate(pdf_reader.pages):
+            # Estrai il testo dalla pagina
+            page_text = page.extract_text()
+            
+            if page_text:
+                text_parts.append(page_text)
+        
+        # Unisci tutto il testo con spazi
+        full_text = " ".join(text_parts)
+        
+        return full_text
+    
+    except Exception as e:
+        raise Exception(f"Errore nella lettura del PDF: {str(e)}")
+
+
 # ============================================================================
 # FUNZIONE CORE: TEXT MINING E KEYWORD EXTRACTION
 # ============================================================================
@@ -547,12 +608,54 @@ with col1:
 
 with col2:
     st.subheader("📄 Il tuo CV / Lista Skill")
-    # Text area per input CV
-    cv_text = st.text_area(
-        "Incolla qui il tuo CV o lista di competenze",
-        height=300,
-        placeholder="Esperienza con Python, JavaScript, React, PostgreSQL..."
+    
+    # Tab per scegliere tra testo o PDF
+    input_method = st.radio(
+        "Modalità di input:",
+        ["📝 Testo", "📎 Upload PDF"],
+        horizontal=True,
+        label_visibility="collapsed"
     )
+    
+    cv_text = ""
+    
+    if input_method == "📝 Testo":
+        # Text area per input CV manuale
+        cv_text = st.text_area(
+            "Incolla qui il tuo CV o lista di competenze",
+            height=300,
+            placeholder="Esperienza con Python, JavaScript, React, PostgreSQL...",
+            key="cv_text_input"
+        )
+    else:
+        # File uploader per PDF
+        uploaded_file = st.file_uploader(
+            "Carica il tuo CV in formato PDF",
+            type=["pdf"],
+            help="Carica un file PDF del tuo curriculum vitae"
+        )
+        
+        if uploaded_file is not None:
+            try:
+                # Estrai testo dal PDF
+                with st.spinner("📖 Lettura del PDF in corso..."):
+                    cv_text = extract_text_from_pdf(uploaded_file)
+                
+                # Mostra preview del testo estratto
+                with st.expander("👁️ Anteprima testo estratto"):
+                    st.text(cv_text[:500] + "..." if len(cv_text) > 500 else cv_text)
+                
+                st.success(f"✅ PDF caricato! Estratte {len(cv_text)} caratteri.")
+            
+            except ImportError as e:
+                st.error(
+                    "❌ PyPDF2 non installato. "
+                    "Esegui: `pip install PyPDF2`"
+                )
+            except Exception as e:
+                st.error(f"❌ Errore nella lettura del PDF: {str(e)}")
+        else:
+            st.info("👆 Carica un file PDF per iniziare l'analisi")
 
 st.markdown("---")  # Separatore
 
