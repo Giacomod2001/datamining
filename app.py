@@ -351,6 +351,225 @@ SKILL_IMPLICATIONS = {
 
 
 # ============================================================================
+# DATABASE RISORSE DI APPRENDIMENTO
+# ============================================================================
+# Per ogni skill, fornisce risorse concrete per acquisirla
+# ============================================================================
+
+LEARNING_RESOURCES = {
+    # ------------------------------------------------------------------------
+    # LINGUAGGI DI PROGRAMMAZIONE
+    # ------------------------------------------------------------------------
+    "Python": {
+        "difficoltà": "Media",
+        "tempo": "2-3 mesi",
+        "corsi": [
+            "Python for Everybody (Coursera - Gratis)",
+            "Complete Python Bootcamp (Udemy)",
+            "Python Documentation ufficiale"
+        ],
+        "pratica": "Progetti su Kaggle, LeetCode, progetto personale",
+        "certificazioni": "PCAP (Python Institute)"
+    },
+    "Java": {
+        "difficoltà": "Media-Alta",
+        "tempo": "3-4 mesi",
+        "corsi": ["Java Programming MOOC (University of Helsinki)", "Oracle Java Tutorials"],
+        "pratica": "Build una Spring Boot REST API",
+        "certificazioni": "Oracle Certified Associate"
+    },
+    "JavaScript": {
+        "difficoltà": "Media",
+        "tempo": "2-3 mesi",
+        "corsi": ["freeCodeCamp JavaScript", "JavaScript.info (gratis)"],
+        "pratica": "Build portfolio website interattivo",
+        "certificazioni": "Focus su portfolio, non certificazioni"
+    },
+    
+    # ------------------------------------------------------------------------
+    # DATA SCIENCE & AI
+    # ------------------------------------------------------------------------
+    "Machine Learning": {
+        "difficoltà": "Alta",
+        "tempo": "4-6 mesi",
+        "corsi": [
+            "Machine Learning by Andrew Ng (Coursera)",
+            "Fast.ai Practical Deep Learning"
+        ],
+        "pratica": "Kaggle competitions, progetti ML su dataset reali",
+        "certificazioni": "Google ML Engineer"
+    },
+    "Data Science": {
+        "difficoltà": "Media-Alta",
+        "tempo": "3-5 mesi",
+        "corsi": ["Data Science Specialization (Coursera)", "DataCamp Career Track"],
+        "pratica": "Analisi dati pubblici, portfolio GitHub",
+        "certificazioni": "IBM Data Science Professional"
+    },
+    "Pandas": {
+        "difficoltà": "Bassa-Media",
+        "tempo": "2-4 settimane",
+        "corsi": ["Pandas Documentation", "DataCamp Pandas Course"],
+        "pratica": "Kaggle datasets exploration",
+        "certificazioni": "Non necessarie"
+    },
+    "NLP": {
+        "difficoltà": "Alta",
+        "tempo": "3-4 mesi",
+        "corsi": ["NLP Specialization (deeplearning.ai)", "Hugging Face Course"],
+        "pratica": "Build chatbot, sentiment analysis projects",
+        "certificazioni": "Dimostra con progetti pratici"
+    },
+    
+    # ------------------------------------------------------------------------
+    # DATABASE & SQL
+    # ------------------------------------------------------------------------
+    "SQL": {
+        "difficoltà": "Bassa-Media",
+        "tempo": "3-6 settimane",
+        "corsi": ["Mode SQL Tutorial", "SQLBolt (interattivo)", "Codecademy SQL"],
+        "pratica": "LeetCode SQL problems, progetti con DB reali",
+        "certificazioni": "Pratica è più importante"
+    },
+    
+    # ------------------------------------------------------------------------
+    # CLOUD & DEVOPS
+    # ------------------------------------------------------------------------
+    "AWS": {
+        "difficoltà": "Media-Alta",
+        "tempo": "2-3 mesi",
+        "corsi": ["AWS Cloud Practitioner", "A Cloud Guru"],
+        "pratica": "Deploy app su EC2, S3, Lambda (free tier)",
+        "certificazioni": "AWS Certified Cloud Practitioner"
+    },
+    "Docker": {
+        "difficoltà": "Media",
+        "tempo": "2-3 settimane",
+        "corsi": ["Docker Documentation", "Docker Mastery (Udemy)"],
+        "pratica": "Containerizza i tuoi progetti",
+        "certificazioni": "Skill pratica, non certificazioni"
+    },
+    "Kubernetes": {
+        "difficoltà": "Alta",
+        "tempo": "2-3 mesi",
+        "corsi": ["Kubernetes Basics", "K8s Documentation"],
+        "pratica": "Minikube local, deploy apps su cluster",
+        "certificazioni": "CKA (Certified Kubernetes Admin)"
+    },
+    
+    # ------------------------------------------------------------------------
+    # FRONTEND
+    # ------------------------------------------------------------------------
+    "React": {
+        "difficoltà": "Media",
+        "tempo": "1-2 mesi",
+        "corsi": ["React Documentation", "Scrimba React Course"],
+        "pratica": "Build 5+ progetti personali",
+        "certificazioni": "Portfolio > Certificazioni"
+    },
+    "HTML/CSS": {
+        "difficoltà": "Bassa",
+        "tempo": "2-4 settimane",
+        "corsi": ["freeCodeCamp Responsive Design", "MDN Web Docs"],
+        "pratica": "Build 10 landing pages",
+        "certificazioni": "Non necessarie"
+    },
+    
+    # ------------------------------------------------------------------------
+    # BUSINESS INTELLIGENCE
+    # ------------------------------------------------------------------------
+    "Excel": {
+        "difficoltà": "Bassa-Media",
+        "tempo": "2-3 settimane",
+        "corsi": ["Excel Essential Training (LinkedIn)", "Chandoo.org"],
+        "pratica": "Pivot tables, dashboard, macros con dati reali",
+        "certificazioni": "Microsoft Office Specialist Excel"
+    },
+    "Power BI": {
+        "difficoltà": "Media",
+        "tempo": "1-2 mesi",
+        "corsi": ["Microsoft Power BI Training", "Enterprise DNA"],
+        "pratica": "Build dashboard con dati pubblici",
+        "certificazioni": "Microsoft Data Analyst Associate"
+    },
+    "Tableau": {
+        "difficoltà": "Media",
+        "tempo": "1-2 mesi",
+        "corsi": ["Tableau Desktop Specialist", "Tableau Public"],
+        "pratica": "Visualizzazioni su Tableau Public",
+        "certificazioni": "Tableau Desktop Specialist"
+    },
+    "Looker": {
+        "difficoltà": "Media",
+        "tempo": "1-2 mesi",
+        "corsi": ["Google Cloud Skills Boost", "Looker docs"],
+        "pratica": "Build dashboards con Google Cloud",
+        "certificazioni": "Google Cloud Certified Pro"
+    },
+    
+    # ------------------------------------------------------------------------
+    # SOFT SKILLS
+    # ------------------------------------------------------------------------
+    "Teamwork": {
+        "difficoltà": "Bassa-Media",
+        "tempo": "Ongoing",
+        "corsi": ["Skill pratica, non corsi teorici"],
+        "pratica": "Open Source collaboration, hackathon, team projects",
+        "certificazioni": "Non applicabile"
+    },
+    "Communication": {
+        "difficoltà": "Media",
+        "tempo": "Ongoing",
+        "corsi": ["Public Speaking, Writing courses"],
+        "pratica": "Blog tecnico, presentazioni, networking",
+        "certificazioni": "Non applicabile"
+    },
+    "Leadership": {
+        "difficoltà": "Media-Alta",
+        "tempo": "Ongoing",
+        "corsi": ["Leadership courses (Coursera, LinkedIn)"],
+        "pratica": "Lead projects, mentoring",
+        "certificazioni": "PMP (Project Management Pro)"
+    },
+    "Agile": {
+        "difficoltà": "Bassa-Media",
+        "tempo": "2-4 settimane",
+        "corsi": ["Scrum.org Learning Path", "Agile Foundations"],
+        "pratica": "Apply Agile in progetti reali",
+        "certificazioni": "PSM I (Professional Scrum Master)"
+    },
+    
+    # ------------------------------------------------------------------------
+    # TESTING & VERSION CONTROL
+    # ------------------------------------------------------------------------
+    "Testing": {
+        "difficoltà": "Bassa-Media",
+        "tempo": "1-2 mesi",
+        "corsi": ["Test Automation University", "Software Testing courses"],
+        "pratica": "Write tests per tutti i progetti, TDD",
+        "certificazioni": "ISTQB Foundation Level"
+    },
+    "Git": {
+        "difficoltà": "Bassa",
+        "tempo": "1-2 settimane",
+        "corsi": ["Git Documentation", "Learn Git Branching (interattivo)"],
+        "pratica": "Usa Git daily, contribute to Open Source",
+        "certificazioni": "Non necessarie"
+    },
+}
+
+# Risorsa di default per skill non mappate
+DEFAULT_LEARNING_RESOURCE = {
+    "difficoltà": "Varia",
+    "tempo": "1-3 mesi",
+    "corsi": ["Cerca corsi su Coursera, Udemy, YouTube"],
+    "pratica": "Progetti pratici, tutorial, documentazione ufficiale",
+    "certificazioni": "Verifica certificazioni disponibili online"
+}
+
+
+
+# ============================================================================
 # FUNZIONE: INFERENZA SKILL IMPLICITE
 # ============================================================================
 
@@ -717,15 +936,66 @@ if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
             else:
                 st.write("Nessuna skill in comune trovata.")
         
-        # COLONNA DESTRA: Skill mancanti (rosso ✗)
+        # COLONNA DESTRA: Skill mancanti con GUIDA ALL'APPRENDIMENTO
         with col_missing:
             st.subheader("❌ Skill Mancanti")
+            
             if missing_skills:
-                # Ordina alfabeticamente e mostra con error badge
+                st.markdown(
+                    f"**{len(missing_skills)} competenze** da sviluppare per questo ruolo. "
+                    "Ecco come acquisirle:"
+                )
+                st.markdown("---")
+                
+                # Per ogni skill mancante, mostra guida dettagliata
                 for skill in sorted(missing_skills):
-                    st.error(f"✗ {skill}")
+                    # Container per ogni skill
+                    with st.container():
+                        # Header skill mancante
+                        st.error(f"✗ **{skill}**")
+                        
+                        # Ottieni risorse di apprendimento (o usa default)
+                        resource = LEARNING_RESOURCES.get(skill, DEFAULT_LEARNING_RESOURCE)
+                        
+                        # Expander con dettagli come acquisirla
+                        with st.expander("📚 Come acquisire questa competenza"):
+                            # Info rapide
+                            col_diff, col_time = st.columns(2)
+                            with col_diff:
+                                st.metric("Difficoltà", resource["difficoltà"])
+                            with col_time:
+                                st.metric("Tempo stimato", resource["tempo"])
+                            
+                            st.markdown("---")
+                            
+                            # Corsi consigliati
+                            st.markdown("**📖 Corsi Consigliati:**")
+                            for corso in resource["corsi"]:
+                                st.markdown(f"• {corso}")
+                            
+                            st.markdown("")
+                            
+                            # Pratica
+                            st.markdown("**🛠️ Come Praticare:**")
+                            st.markdown(f"• {resource['pratica']}")
+                            
+                            st.markdown("")
+                            
+                            # Certificazioni
+                            st.markdown("**🏆 Certificazioni:**")
+                            st.markdown(f"• {resource['certificazioni']}")
+                        
+                        st.markdown("")  # Spaziatura
+                
+                # Messaggio motivazionale finale
+                st.info(
+                    "💡 **Consiglio:** Inizia dalla skill con difficoltà più bassa "
+                    "e maggiore rilevanza per il ruolo. Focus su progetti pratici!"
+                )
+            
             else:
-                st.write("Hai tutte le skill richieste! 🎉")
+                st.success("🎉 Hai tutte le skill richieste!")
+                st.balloons()  # Animazione celebrativa
         
         # ====================================================================
         # STATISTICHE AGGIUNTIVE
