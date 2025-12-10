@@ -887,12 +887,6 @@ with col2:
                     cv_text = extract_text_from_pdf(uploaded_file)
                 
                 st.success(f"✅ PDF caricato! Estratti {len(cv_text)} caratteri.")
-                
-                # Mostra preview del testo estratto (solo se utente vuole)
-                with st.expander("👁️ Anteprima testo estratto"):
-                    # st.code ha contrasto migliore e font leggibile
-                    preview_text = cv_text[:800] + "\n\n[...]" if len(cv_text) > 800 else cv_text
-                    st.code(preview_text, language=None)
             
             except ImportError as e:
                 st.error(
