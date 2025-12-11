@@ -1,35 +1,37 @@
-# 🎯 Job Seeker Helper
+# Job Seeker Helper
 
-> **A Universal AI-Powered Career Analysis Tool**
+## Overview
 
-**Job Seeker Helper** is an advanced open-source dashboard designed to bridge the semantic gap between Candidate Profiles (CVs) and Job Descriptions (JDs). Leveraging **Hierarchical Inference** and **Machine Learning**, it goes beyond simple keyword matching to understand the *context* of a candidate's skillset—recognizing transferable skills, project-based competencies, and implicit knowledge.
+**Job Seeker Helper** is an advanced open-source analytics dashboard designed to bridge the semantic gap between Candidate Profiles (CVs) and Job Descriptions (JDs). Leveraging **Hierarchical Inference** and **Machine Learning** techniques, it goes beyond simple keyword matching to understand the *context* of a candidate's skillset—recognizing transferable skills, project-based competencies, and implicit knowledge without manual intervention.
 
----
-
-## 🚀 Key Features
-
-### 🧠 Semantic & Hierarchical Inference
-Unlike traditional ATS systems, this tool understands skill relationships.
-- **Inference Engine**: Automatically deduces implicit skills (e.g., *BigQuery* $\rightarrow$ *Cloud Computing* & *SQL*).
-- **Transferable Logic**: Recognizes equivalent tools (e.g., *Looker* $\approx$ *Power BI*), marking them as **"Transferable"** rather than "Missing".
-
-### 📊 Comprehensive Gap Analysis
-- **Technical vs. Soft Skills**: Distinct evaluation pipelines for Hard Skills (Quantifiable) and Soft Skills (Behavioral).
-- **Portfolio-Based Triggers**: Complex domains (e.g., *Computer Vision*, *System Design*) are flagged for **Portfolio Review** rather than binary rejection.
-- **Universal Domain Support**: Capable of analyzing roles across Tech, Business, Marketing, and Languages using TF-IDF fallback mechanisms.
-
-### 🎓 Actionable Learning Pathways
-- **Dynamic Resource Generation**: Instantly generates targeted search queries for missing skills across:
-  - 🔍 **Google Search**
-  - 📺 **YouTube Educational Content**
-  - 🎓 **MOOC Platforms (Coursera/Udemy)**
-
-### �️ Secure Developer Environment
-- **Encrypted Debugger**: Inspect the internal decision-making logic, inference rules, and dataset through a password-protected interface.
+This project demonstrates the application of Natural Language Processing (NLP) in the HR Tech domain, utilizing a modern Python stack to provide actionable career insights.
 
 ---
 
-## 💻 Tech Stack
+## Key Features
+
+### Semantic & Hierarchical Inference
+Unlike traditional Applicant Tracking Systems (ATS), this tool understands skill relationships through a custom inference engine.
+- **Inference Engine**: Automatically deduces implicit skills (e.g., *BigQuery* implies *Cloud Computing* and *SQL*).
+- **Transferable Logic**: Recognizes equivalent tools (e.g., *Looker* is treated as functionally equivalent to *Power BI*), marking them as "Transferable" rather than "Missing".
+
+### Comprehensive Gap Analysis
+- **Technical vs. Soft Skills**: Implements distinct evaluation pipelines for Hard Skills (Quantifiable) and Soft Skills (Behavioral).
+- **Portfolio-Based Triggers**: Complex domains (e.g., *Computer Vision*, *System Design*) are flagged for **Portfolio Review** rather than binary rejection, acknowledging that deep expertise requires qualitative assessment.
+- **Universal Domain Support**: Capable of analyzing roles across Tech, Business, Marketing, and Languages using TF-IDF fallback mechanisms for unsupported domains.
+
+### Actionable Learning Pathways
+- **Dynamic Resource Generation**: utilizing the input gap analysis to generate targeted search queries for missing skills across educational platforms:
+  - Google Search
+  - YouTube Educational Content
+  - MOOC Platforms (Coursera/Udemy)
+
+### Secure Developer Environment
+- **Encrypted Debugger**: Allows inspection of the internal decision-making logic, inference rules, and dataset through a password-protected interface, ensuring transparency in the AI decision process.
+
+---
+
+## Tech Stack
 
 The application is built using a robust, modern Python stack:
 
@@ -42,7 +44,7 @@ The application is built using a robust, modern Python stack:
 
 ---
 
-## �️ Installation & Setup
+## Installation & Setup
 
 ### Prerequisites
 - Python 3.8 or higher
@@ -68,36 +70,36 @@ The application is built using a robust, modern Python stack:
 
 ---
 
-## 📖 Usage Manual
+## Usage Manual
 
 1. **Input Data**:
    - **CV Section**: Upload your formatted CV (PDF) or paste raw text.
    - **Job Description**: Upload the target JD (PDF) or paste raw text.
 
 2. **Analyze**:
-   - Click the **"🔍 Measure Matching"** button to initiate the NLP pipeline.
+   - Click the **"Measure Matching"** button to initiate the NLP pipeline.
 
 3. **Review Results**:
    - **Match Score**: A weighted percentage indicating technical fit.
    - **Skill Breakdown**:
-     - ✅ **Matched**: Skills present in both documents.
-     - ⚠️ **Transferable**: Skills you possess that strictly substitute requirements.
-     - 📂 **Portfolio**: Advanced topics to discuss in an interview.
-     - ❌ **Missing**: Critical gaps with associated learning resources.
+     - **Matched**: Skills present in both documents.
+     - **Transferable**: Skills possessed that substitute requirements.
+     - **Portfolio**: Advanced topics best demonstrated via projects.
+     - **Missing**: Critical gaps with associated learning resources.
 
 4. **Developer Options**:
-   - Access the Sidebar $\rightarrow$ Toggle **"Developer Mode"**.
+   - Access the Sidebar and toggle **"Developer Mode"**.
    - Input Credential: **`1234`**.
 
 ---
 
-## � License
+## License
 
 This project is licensed under the MIT License - see the `LICENSE` file for details.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Streamlit Team**: For the rapid application development framework.
 - **Open Source Community**: For the continuous maintenance of `scikit-learn` and NLP libraries.
