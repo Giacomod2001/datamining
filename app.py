@@ -49,16 +49,40 @@ def render_home():
     st.divider()
 
     c1, c2 = st.columns(2)
+    
     with c1:
         st.subheader("Your CV")
-        cv = st.text_area("Paste CV text", height=200, key="cv")
+        input_type = st.radio("Input Type", ["Text", "PDF"], key="cv_input", horizontal=True)
+        cv = ""
+        if input_type == "Text":
+            cv = st.text_area("Paste CV text", height=200, key="cv_text")
+        else:
+            uploaded_cv = st.file_uploader("Upload CV (PDF)", type=["pdf"], key="cv_pdf")
+            if uploaded_cv:
+                try: 
+                    cv = ml_utils.extract_text_from_pdf(uploaded_cv)
+                    st.success(f"Loaded {len(cv)} characters")
+                except Exception as e:
+                    st.error(f"Error: {e}")
+                    
     with c2:
         st.subheader("Job Description")
-        jd = st.text_area("Paste Job Description", height=200, key="jd")
+        input_type_jd = st.radio("Input Type", ["Text", "PDF"], key="jd_input", horizontal=True)
+        jd = ""
+        if input_type_jd == "Text":
+            jd = st.text_area("Paste Job text", height=200, key="jd_text")
+        else:
+            uploaded_jd = st.file_uploader("Upload JD (PDF)", type=["pdf"], key="jd_pdf")
+            if uploaded_jd:
+                try: 
+                    jd = ml_utils.extract_text_from_pdf(uploaded_jd)
+                    st.success(f"Loaded {len(jd)} characters")
+                except Exception as e:
+                    st.error(f"Error: {e}")
         
     if st.button("🔍 Analyze", type="primary", use_container_width=True):
         if not cv or not jd:
-            st.warning("Please enter text.")
+            st.warning("Please provide both CV and Job Description.")
             return
             
         res = ml_utils.analyze_gap(cv, jd)
