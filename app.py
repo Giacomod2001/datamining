@@ -63,7 +63,7 @@ st.set_page_config(
     page_title="Job Seeker Helper - AI Powered",
     page_icon="🎯",
     layout="wide",  # Layout espanso
-    initial_sidebar_state="collapsed"  # Sidebar nascosta di default
+    initial_sidebar_state="expanded"  # Sidebar visible for ML debug panel
 )
 
 # ML-based Skill Matching
