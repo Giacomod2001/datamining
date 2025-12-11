@@ -62,9 +62,13 @@ def render_home():
         st.info("Features:\n- **Smart Inference** (BigQuery → Cloud)\n- **Transferable Skills** (Looker → Power BI)\n- **Dynamic Resources** (Auto-search for any skill)")
         st.divider()
         if st.toggle("Developer Mode"):
-             if st.button("Open Debugger"):
-                st.session_state["page"] = "Debugger"
-                st.rerun()
+             pwd = st.text_input("Enter Password", type="password", key="dev_pwd")
+             if pwd == "1234":
+                 if st.button("Open Debugger"):
+                    st.session_state["page"] = "Debugger"
+                    st.rerun()
+             elif pwd:
+                 st.error("Wrong password")
 
     st.title("🎯 Job Seeker Helper")
     st.markdown("Analyze your CV against job descriptions.")
