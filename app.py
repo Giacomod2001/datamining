@@ -26,11 +26,13 @@ def render_debug_page():
     st.title("🛠️ Debugger")
     
     _, df = ml_utils.train_rf_model()
-    st.subheader("Inference Rules (Logic)")
+    st.subheader("Inference Rules")
     st.write(constants.INFERENCE_RULES)
-    st.subheader("Skill Clusters (Equivalent Skills)")
+    st.subheader("Clusters")
     st.write(constants.SKILL_CLUSTERS)
-    st.subheader("Skill Database")
+    st.subheader("Project Based Skills")
+    st.write(constants.PROJECT_BASED_SKILLS)
+    st.subheader("Database")
     st.dataframe(df, use_container_width=True)
 
 # =============================================================================
@@ -39,7 +41,7 @@ def render_debug_page():
 def render_home():
     with st.sidebar:
         st.title("🎯 Job Seeker Helper")
-        st.info("Now with **Smart Inference**:\n\nIf you list 'BigQuery', we know you know 'Cloud Computing'.")
+        st.info("Features:\n- **Smart Inference** (BigQuery → Cloud)\n- **Transferable Skills** (Looker → Power BI)\n- **Project Review** (Computer Vision)")
         st.divider()
         if st.toggle("Developer Mode"):
              if st.button("Open Debugger"):
@@ -47,7 +49,7 @@ def render_home():
                 st.rerun()
 
     st.title("🎯 Job Seeker Helper")
-    st.markdown("Analyze your CV against job descriptions. **Soft skills are evaluated separately.**")
+    st.markdown("Analyze your CV against job descriptions.")
     st.divider()
 
     c1, c2 = st.columns(2)
@@ -94,72 +96,87 @@ def render_results(res):
     st.divider()
     pct = res["match_percentage"]
     
-    # Score
     col1, col2 = st.columns([1, 4])
     with col1:
         color = "green" if pct >= 80 else "orange" if pct >= 60 else "red"
         st.markdown(f"<h1 style='color:{color}'>{pct:.0f}%</h1>", unsafe_allow_html=True)
         st.caption("Technical Match Score")
     with col2:
-        if pct >= 80: st.success("Great technical match!")
-        elif pct >= 60: st.warning("Good match, check missing skills.")
-        else: st.error("Significant technical gap.")
+        if pct >= 80: st.success("Great match!")
+        elif pct >= 60: st.warning("Good match.")
+        else: st.error("Gaps detected.")
 
-    # HARD SKILLS GRID
-    st.subheader("🛠️ Technical Skills (Hard Skills)")
+    st.subheader("🛠️ Technical Skills Analysis")
     
-    # Use 4 columns now to include Transferable
-    c1, c2, c3, c4 = st.columns(4)
+    # 5 Columns for: Matched, Transferable, Proj Review, Missing, Bonus
+    c1, c2, c3, c4, c5 = st.columns(5)
     
     with c1:
         st.markdown("#### ✅ Matched")
         for s in res["matching_hard"]: st.write(f"- {s}")
-        if not res["matching_hard"]: st.caption("None")
+        if not res["matching_hard"]: st.caption("-")
         
     with c2:
         st.markdown("#### ⚠️ Transferable")
+        # .get() to avoid KeyError
         transferable = res.get("transferable", {})
         if transferable:
             for missing, present in transferable.items():
                 st.write(f"- **{missing}**") 
-                st.caption(f"(Known via {present})")
+                st.caption(f"(via {present})")
         else:
-            st.caption("None")
+            st.caption("-")
 
     with c3:
-        st.markdown("#### ❌ Missing")
-        for s in res["missing_hard"]: st.write(f"- **{s}**")
-        if not res["missing_hard"]: st.success("All clear!")
+        st.markdown("#### 📂 Portfolio")
+        # Project based skills
+        projects = res.get("project_review", set())
+        if projects:
+            for s in projects:
+                st.info(f"**{s}**")
+            st.caption("Mention these in interview!")
+        else:
+            st.caption("-")
 
     with c4:
+        st.markdown("#### ❌ Missing")
+        for s in res["missing_hard"]: st.write(f"- **{s}**")
+        if not res["missing_hard"]: st.success("Clear!")
+
+    with c5:
         st.markdown("#### ➕ Bonus")
         for s in res["extra_hard"]: st.write(f"- {s}")
 
     # SOFT SKILLS
     st.divider()
-    st.subheader("🗣️ Soft Skills (Interview Check)")
-    st.info("Soft skills like Leadership or Communication are hard to judge from text alone. These are often evaluated during the interview.")
     
     sc1, sc2 = st.columns(2)
     with sc1:
-        st.markdown("**Mentioned in JD:**")
+        st.subheader("🗣️ Soft Skills (Interview)")
         required_soft = res["matching_soft"] | res["missing_soft"]
         if required_soft:
             for s in required_soft:
-                # Check if user has it
                 check = "✅" if s in res["matching_soft"] else "⬜"
                 st.write(f"{check} {s}")
         else:
-            st.caption("No soft skills explicitly mentioned.")
+            st.caption("No soft skills explicitly found.")
             
+    with sc2:
+         pass # Spacer
+
     # LEARNING PLAN
     if res["missing_hard"]:
         st.divider()
-        st.subheader("📚 Learning Recommendations (For Critical Skills)")
+        st.subheader("📚 Learning Recommendations")
         for s in res["missing_hard"]:
             r = constants.LEARNING_RESOURCES.get(s, constants.DEFAULT_RESOURCE)
             with st.expander(f"Learn {s}"):
-                st.write(r["courses"])
+                # Fix: Iterate list properly
+                courses = r.get("courses", [])
+                st.write("**Courses:**")
+                for c in courses:
+                    st.markdown(f"- {c}")
+                st.write(f"**Project:** {r.get('project', 'N/A')}")
 
 if __name__ == "__main__":
     if st.session_state["page"] == "Debugger":
