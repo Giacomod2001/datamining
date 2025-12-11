@@ -422,8 +422,8 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
 # SIDEBAR (ML Debug Panel)
 # =============================================================================
 with st.sidebar:
-    st.markdown("## ⚙️ ML Debug Panel")
-    st.caption("Password protected debugging tools")
+    st.markdown("## 🔍 How It Works")
+    st.caption("See how the AI detects skills")
     
     password = st.text_input("Password:", type="password", key="debug_pwd")
     
@@ -431,40 +431,49 @@ with st.sidebar:
         st.success("✅ Access Granted")
         st.divider()
         
-        debug_on = st.checkbox("🔬 Enable ML Debug Mode", help="Show detailed ML metrics")
+        debug_on = st.checkbox("� Show Detection Details", help="See which skills were detected and why")
         st.session_state["ml_debug"] = debug_on
         
         if debug_on:
-            st.markdown("### Model Config")
-            st.code("""
-TF-IDF Vectorizer:
-├─ max_features: 150
-├─ ngram_range: (1,2)
-└─ metric: cosine_similarity
+            st.markdown("### 🧠 How Skills Are Found")
+            st.info("""
+**The AI looks for skills in 2 ways:**
 
-Thresholds:
-├─ CV/DS/ML/NLP: 0.05
-├─ Python/SQL/Cloud: 0.07
-└─ Others: 0.12
-            """, language="yaml")
+1️⃣ **Direct Match** - Finds exact words like "Python" or "SQL"
+
+2️⃣ **Smart Detection** - Understands context. If you write "built a churn prediction dashboard", it knows you used Data Science + Machine Learning
+
+**Sensitivity Levels:**
+- 🔴 High priority skills (ML, Data Science): Very sensitive
+- 🟡 Common skills (Python, SQL): Moderately sensitive  
+- 🟢 Other skills: Standard sensitivity
+            """)
             
             if "debug_data" in st.session_state:
                 data = st.session_state["debug_data"]
                 
                 if "features" in data and data["features"]:
-                    st.markdown("### Top TF-IDF Features")
-                    for feat, weight in data["features"][:10]:
-                        st.text(f"{feat}: {weight:.4f}")
+                    st.markdown("### 📝 Key Words Found in Your CV")
+                    st.caption("These words helped detect your skills:")
+                    words = [f"• {feat}" for feat, _ in data["features"][:8]]
+                    st.markdown("\n".join(words))
                 
                 if "scores" in data:
-                    st.markdown("### Skill Scores")
+                    st.markdown("### 📈 Skill Detection Results")
+                    st.caption("✅ = Detected, ❌ = Not detected")
+                    
                     import pandas as pd
                     rows = []
                     for skill, score in sorted(data["scores"].items(), key=lambda x: -x[1]):
                         thresh = data["thresholds"].get(skill, 0.12)
+                        confidence = min(100, int(score / thresh * 100)) if thresh > 0 else 0
                         status = "✅" if score > thresh else "❌"
-                        rows.append({"Skill": skill, "Score": f"{score:.3f}", "Thresh": f"{thresh:.2f}", "Match": status})
-                    st.dataframe(pd.DataFrame(rows), height=300)
+                        rows.append({
+                            "Skill": skill, 
+                            "Confidence": f"{confidence}%",
+                            "Detected": status
+                        })
+                    st.dataframe(pd.DataFrame(rows), height=300, use_container_width=True)
     elif password:
         st.error("❌ Wrong password")
 
@@ -523,76 +532,93 @@ if st.button("🔍 Analyze Skill Gap", type="primary", use_container_width=True)
             
             results = analyze_gap(cv_text, job_text)
         
-        # Results
+        # =====================================================================
+        # RESULTS SECTION - Clean Design
+        # =====================================================================
         st.divider()
         
-        # Score
+        # Score with progress bar
         pct = results["match_percentage"]
-        if pct >= 80:
-            color = "green"
-            msg = "🎉 Excellent match!"
-        elif pct >= 60:
-            color = "orange"
-            msg = "👍 Good match, some gaps to fill"
+        
+        st.markdown("## 📊 Analysis Results")
+        
+        # Big score display
+        col_score, col_msg = st.columns([1, 2])
+        with col_score:
+            if pct >= 80:
+                st.markdown(f"# :green[{pct:.0f}%]")
+            elif pct >= 60:
+                st.markdown(f"# :orange[{pct:.0f}%]")
+            else:
+                st.markdown(f"# :red[{pct:.0f}%]")
+            st.caption("Match Score")
+        
+        with col_msg:
+            if pct >= 80:
+                st.success("🎉 **Excellent match!** You have most skills required for this job.")
+            elif pct >= 60:
+                st.warning("👍 **Good match!** A few skills to learn and you're ready.")
+            else:
+                st.error("📚 **Skills gap detected.** See the learning plan below.")
+        
+        st.divider()
+        
+        # Skills Summary - Horizontal badges
+        st.markdown("### 🎯 Skills Overview")
+        
+        # Matching skills (green badges)
+        if results["matching"]:
+            st.markdown("**✅ You Have:**")
+            matching_badges = " ".join([f"```{s}```" for s in sorted(results["matching"])])
+            st.markdown(matching_badges)
+        
+        # Missing skills (red highlight)
+        if results["missing"]:
+            st.markdown("")
+            st.markdown("**❌ You Need:**")
+            missing_badges = " ".join([f"🔴 **{s}**" for s in sorted(results["missing"])])
+            st.markdown(missing_badges)
         else:
-            color = "red"
-            msg = "📚 Significant skill gaps - learning plan needed"
+            st.success("✨ You have all required skills!")
         
-        st.markdown(f"## Match Score: :{color}[{pct:.0f}%] {msg}")
+        # Extra skills (info)
+        if results["extra"]:
+            st.markdown("")
+            st.markdown("**➕ Bonus Skills** (not required but valuable):")
+            extra_text = ", ".join(sorted(results["extra"]))
+            st.caption(extra_text)
         
-        # Skills overview
-        c1, c2, c3 = st.columns(3)
-        
-        with c1:
-            st.markdown("### ✅ Matching Skills")
-            if results["matching"]:
-                for s in sorted(results["matching"]):
-                    st.markdown(f"• {s}")
-            else:
-                st.info("No matching skills found")
-        
-        with c2:
-            st.markdown("### ❌ Missing Skills")
-            if results["missing"]:
-                for s in sorted(results["missing"]):
-                    st.markdown(f"• {s}")
-            else:
-                st.success("No missing skills!")
-        
-        with c3:
-            st.markdown("### ➕ Extra Skills")
-            if results["extra"]:
-                for s in sorted(results["extra"]):
-                    st.markdown(f"• {s}")
-            else:
-                st.info("No extra skills")
-        
-        # Learning recommendations for missing skills
+        # =====================================================================
+        # LEARNING PLAN - Clean Cards
+        # =====================================================================
         if results["missing"]:
             st.divider()
-            st.markdown("## 📚 Personalized Learning Plan")
-            st.markdown("*Specific recommendations for each missing skill:*")
+            st.markdown("## 📚 Your Learning Plan")
+            st.caption("Click each skill to see personalized resources")
             
             for skill in sorted(results["missing"]):
-                # Get skill-specific resource or default
                 resource = LEARNING_RESOURCES.get(skill, DEFAULT_RESOURCE)
                 
-                with st.expander(f"**{skill}** - {resource['level']} difficulty, ~{resource['time']}", expanded=False):
-                    col_a, col_b = st.columns(2)
+                with st.expander(f"🎓 **{skill}** — ⏱️ {resource['time']} — 📊 {resource['level']}"):
+                    # Simple 2-column layout
+                    left, right = st.columns(2)
                     
-                    with col_a:
-                        st.markdown(f"**⏱️ Time:** {resource['time']}")
-                        st.markdown(f"**📊 Level:** {resource['level']}")
-                        st.markdown("**📚 Courses:**")
+                    with left:
+                        st.markdown("##### 📚 Best Courses")
                         for course in resource['courses']:
-                            st.markdown(f"   • {course}")
+                            st.markdown(f"• {course}")
+                        
+                        st.markdown("##### 🏆 Certification")
+                        st.markdown(resource['cert'])
                     
-                    with col_b:
-                        st.markdown(f"**🏆 Certification:** {resource['cert']}")
-                        st.markdown(f"**🛠️ Practice:** {resource['practice']}")
-                    
-                    st.markdown(f"**💡 Project:** {resource['project']}")
+                    with right:
+                        st.markdown("##### 🛠️ How to Practice")
+                        st.markdown(resource['practice'])
+                        
+                        st.markdown("##### 💡 Project Idea")
+                        st.info(resource['project'])
 
 # Footer
 st.divider()
-st.caption("Made with ❤️ using Streamlit | ML-powered skill detection with TF-IDF + Cosine Similarity")
+st.caption("Made with ❤️ using Streamlit")
+
