@@ -63,7 +63,7 @@ st.set_page_config(
     page_title="Job Seeker Helper - AI Powered",
     page_icon="🎯",
     layout="wide",  # Layout espanso
-    initial_sidebar_state="expanded"  # Sidebar visible for ML debug panel
+    initial_sidebar_state="collapsed"  # Open with ☰ icon (top-left) for ML debug
 )
 
 # ML-based Skill Matching
@@ -1572,58 +1572,101 @@ def get_match_message(percentage: float) -> str:
 # HIDDEN ML DEBUG SIDEBAR (Password Protected)
 # ==============================================================================
 with st.sidebar:
-    st.markdown("### 🔒 ML Debug Panel")
+    st.markdown("### ⚙️ ML Debug Panel")
+    st.caption("Click ☰ icon (top-left) to open/close")
     password = st.text_input("Password:", type="password", key="ml_debug_pwd")
     
     if password == "1234":
         st.success("✅ Access Granted")
         st.markdown("---")
-        st.markdown("### 📊 ML Model Inspector")
         
-        # Create a test for debugging
-        debug_enabled = st.checkbox("Enable ML Debugging")
+        # Enable debugging checkbox
+        debug_enabled = st.checkbox("🔬 Enable ML Debugging", help="Captures detailed ML metrics on next analysis")
         st.session_state['ml_debug_enabled'] = debug_enabled
         
         if debug_enabled:
-            st.info("💡 **How the ML Model Works:**")
-            st.markdown("""
-            1. **TF-IDF Vectorization**: Converts text to numerical features
-            2. **Cosine Similarity**: Measures similarity between CV and skill descriptions
-            3. **Threshold Matching**: Skill detected if similarity > threshold
-            
-            **Thresholds:**
-            - Computer Vision, Data Science, ML: 0.08 (very low - catches context)
-            - Python, SQL: 0.12
-            - Others: 0.18
-            """)
+            st.markdown("### � Model Architecture")
+            st.code("""
+TF-IDF Vectorizer:
+├─ max_features: 200
+├─ ngram_range: (1,2)
+├─ stop_words: english
+└─ metric: cosine_similarity
+
+Thresholds:
+├─ CV/DS/ML: 0.08
+├─ Python/SQL: 0.12  
+└─ Others: 0.18
+            """, language="yaml")
             
             st.markdown("---")
-            st.markdown("**Current Session Debug Info:**")
             
-            # Show if there's text in session state
+            # Show debug data if available
             if 'debug_ml_scores' in st.session_state:
                 debug_data = st.session_state['debug_ml_scores']
                 
-                st.markdown("#### Top TF-IDF Features in CV:")
+                # Vectorizer statistics
                 if 'features' in debug_data and debug_data['features']:
-                    for feature, score in debug_data['features'][:10]:
-                        st.text(f"• {feature}: {score:.4f}")
+                    st.markdown("### 🧮 TF-IDF Analysis")
+                    total_features = len(debug_data['features'])
+                    non_zero = sum(1 for _, score in debug_data['features'] if score > 0)
+                    
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.metric("Features Extracted", non_zero)
+                    with col2:
+                        st.metric("Total Vocabulary", 200)
+                    
+                    st.markdown("**Top 15 Features (by TF-IDF weight):**")
+                    features_df = []
+                    for feature, weight in debug_data['features'][:15]:
+                        features_df.append({
+                            "Term": feature,
+                            "TF-IDF": f"{weight:.4f}"
+                        })
+                    
+                    import pandas as pd
+                    st.dataframe(pd.DataFrame(features_df), use_container_width=True, hide_index=True)
                 
-                st.markdown("#### Similarity Scores:")
+                # Similarity scores with statistics
                 if 'scores' in debug_data:
+                    st.markdown("---")
+                    st.markdown("### 🎯 Similarity Scores")
+                    
+                    scores = list(debug_data['scores'].values())
+                    import numpy as np
+                    
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Mean", f"{np.mean(scores):.3f}")
+                    with col2:
+                        st.metric("Max", f"{np.max(scores):.3f}")
+                    with col3:
+                        st.metric("Std Dev", f"{np.std(scores):.3f}")
+                    
+                    # Skills sorted by similarity
+                    st.markdown("**All Skills (sorted by score):**")
                     scores_df = []
-                    for skill, score in sorted(debug_data['scores'].items(), key=lambda x: x[1], reverse=True)[:15]:
+                    for skill, score in sorted(debug_data['scores'].items(), key=lambda x: x[1], reverse=True):
                         threshold = debug_data['threshold_used'].get(skill, 0.18)
                         matched = "✅" if score > threshold else "❌"
+                        delta = score - threshold
                         scores_df.append({
                             "Skill": skill,
                             "Score": f"{score:.4f}",
                             "Threshold": f"{threshold:.2f}",
+                            "Δ": f"{delta:+.4f}",
                             "Match": matched
                         })
                     
-                    import pandas as pd
-                    st.dataframe(pd.DataFrame(scores_df), use_container_width=True)
+                    st.dataframe(pd.DataFrame(scores_df), use_container_width=True, hide_index=True, height=400)
+                    
+                    # Distribution insights
+                    matched_count = sum(1 for item in scores_df if item["Match"] == "✅")
+                    st.info(f"**Detection Rate:** {matched_count}/{len(scores_df)} skills matched ({matched_count/len(scores_df)*100:.1f}%)")
+                    
+            else:
+                st.warning("⚠️ No data yet. Upload CV/Job to see metrics.")
     
     elif password and password != "1234":
         st.error("❌ Invalid Password")
