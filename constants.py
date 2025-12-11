@@ -32,6 +32,13 @@ SKILL_CLUSTERS = {
     "SQL Dialects": {"MySQL", "PostgreSQL", "SQL Server", "Oracle", "BigQuery"},
 }
 
+# PROJECT BASED SKILLS
+# Complex domains often demonstrated via projects, better evaluated in interview/portfolio review.
+PROJECT_BASED_SKILLS = {
+    "Computer Vision", "Deep Learning", "NLP", "Machine Learning", 
+    "Data Science", "System Design", "Cloud Architecture"
+}
+
 # HARD SKILLS (Technical, quantifiable)
 HARD_SKILLS = {
     # Programming
@@ -87,6 +94,7 @@ ALL_SKILLS = {**HARD_SKILLS, **SOFT_SKILLS}
 
 # LEARNING RESOURCES
 LEARNING_RESOURCES = {
+    "Computer Vision": {"level": "High", "time": "3-4 months", "courses": ["CS231n (Stanford)", "OpenCV Bootcamp"], "project": "Object Detection App"},
     "Python": {"level": "Medium", "time": "2-3 months", "courses": ["Python for Everybody (Coursera)", "Complete Python Bootcamp (Udemy)"], "project": "Personal Finance Tracker"},
     "Java": {"level": "Medium-High", "time": "3-4 months", "courses": ["Java MOOC (Helsinki)", "Oracle Tutorials"], "project": "Employee Management API"},
     "Machine Learning": {"level": "High", "time": "4-6 months", "courses": ["Andrew Ng ML (Coursera)", "Fast.ai"], "project": "Housing Price Predictor"},
