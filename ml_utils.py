@@ -3,6 +3,7 @@ import pandas as pd
 import streamlit as st
 from typing import Set, Dict, Tuple, List
 
+# Optional Imports with robust handling
 try:
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.ensemble import RandomForestClassifier
@@ -10,6 +11,7 @@ try:
 except ImportError:
     RandomForestClassifier = None
     TfidfVectorizer = None
+    Pipeline = None
 
 try:
     from PyPDF2 import PdfReader
@@ -19,46 +21,89 @@ except ImportError:
 import constants
 
 # =============================================================================
-# LOGIC & INFERENCE
+# TRAINING (Used for Debugger & Future ML features)
+# =============================================================================
+@st.cache_resource
+def train_rf_model():
+    """
+    Trains a Random Forest model on Hard Skills from constants.py.
+    Returns (pipeline, dataframe).
+    """
+    # Prepare Data
+    data = []
+    
+    # Check if HARD_SKILLS exists in constants (Backward compatibility)
+    hard_skills = getattr(constants, "HARD_SKILLS", {})
+    soft_skills = getattr(constants, "SOFT_SKILLS", {})
+    
+    for skill_name, keywords in hard_skills.items():
+        for kw in keywords:
+            data.append({"text": kw, "label": skill_name})
+            data.append({"text": f"used {kw}", "label": skill_name})
+            
+    for skill_name, keywords in soft_skills.items():
+        for kw in keywords:
+            data.append({"text": kw, "label": skill_name})
+
+    df = pd.DataFrame(data)
+    
+    if df.empty:
+        return None, df
+
+    # If sklearn is missing or failed to import
+    if not RandomForestClassifier or not TfidfVectorizer or not Pipeline:
+        return None, df
+        
+    try:
+        pipe = Pipeline([
+            ('tfidf', TfidfVectorizer(ngram_range=(1,2), max_features=1000)),
+            ('rf', RandomForestClassifier(n_estimators=50, random_state=42))
+        ])
+        pipe.fit(df['text'], df['label'])
+        return pipe, df
+    except Exception as e:
+        print(f"Training Error: {e}")
+        return None, df
+
+# =============================================================================
+# GENERIC FALLBACK (TF-IDF)
 # =============================================================================
 def extract_generic_keywords(text: str, top_n=5) -> Set[str]:
     """
-    Fallback: Extracts top unique keywords using TF-IDF if dictionary match is low.
-    Used for unsupported domains (e.g. Zoology, History).
+    Extracts top keywords from text using TF-IDF when no known skills are found.
     """
     if not TfidfVectorizer or not text or len(text.split()) < 10:
         return set()
         
     try:
-        # We treat the input text as one doc, and compare against a "standard English" background effectively
-        # by using stop_words='english'. 
         vectorizer = TfidfVectorizer(stop_words='english', max_features=top_n)
         vectorizer.fit_transform([text])
         return set(vectorizer.get_feature_names_out())
     except:
         return set()
 
+# =============================================================================
+# SKILL EXTRACTION CORE
+# =============================================================================
 def extract_skills_from_text(text: str) -> Tuple[Set[str], Set[str]]:
-    """
-    Extracts Hard and Soft skills. 
-    If HARD skill count is very low (<2), attempts Generic Extraction.
-    Returns: (hard_skills_found, soft_skills_found)
-    """
     hard_found = set()
     soft_found = set()
     text_lower = text.lower()
     
-    # 1. Direct Regex Match (Hard Skills)
-    for skill, variations in constants.HARD_SKILLS.items():
+    hard_skills = getattr(constants, "HARD_SKILLS", {})
+    soft_skills = getattr(constants, "SOFT_SKILLS", {})
+    inference_rules = getattr(constants, "INFERENCE_RULES", {})
+    
+    # 1. Regex Match Hard Skills
+    for skill, variations in hard_skills.items():
         for var in variations:
             pattern = r'\b' + re.escape(var.lower()) + r'(?:s|es|ing|ed)?\b'
             if re.search(pattern, text_lower):
                 hard_found.add(skill)
-                # break matching variations for this skill, continue to next skill
                 break 
                 
-    # 2. Direct Regex Match (Soft Skills)
-    for skill, variations in constants.SOFT_SKILLS.items():
+    # 2. Regex Match Soft Skills
+    for skill, variations in soft_skills.items():
         for var in variations:
             pattern = r'\b' + re.escape(var.lower()) + r'(?:s|es|ing|ed)?\b'
             if re.search(pattern, text_lower):
@@ -68,15 +113,14 @@ def extract_skills_from_text(text: str) -> Tuple[Set[str], Set[str]]:
     # 3. Hierarchical Inference
     inferred_skills = set()
     for child_skill in hard_found:
-        if child_skill in constants.INFERENCE_RULES:
-            parents = constants.INFERENCE_RULES[child_skill]
+        if child_skill in inference_rules:
+            parents = inference_rules[child_skill]
             inferred_skills.update(parents)
     hard_found.update(inferred_skills)
     
-    # 4. GENERIC FALLBACK (If domain seems unsupported)
+    # 4. Generic Fallback
     if len(hard_found) < 2:
         generic_keywords = extract_generic_keywords(text, top_n=5)
-        # We add them to hard_found, capitalizing them to look like skills
         for kw in generic_keywords:
             hard_found.add(kw.capitalize())
     
@@ -98,21 +142,23 @@ def extract_text_from_pdf(pdf_file) -> str:
 # GAP ANALYSIS
 # =============================================================================
 def analyze_gap(cv_text: str, job_text: str) -> Dict:
-    # Extract
     cv_hard, cv_soft = extract_skills_from_text(cv_text)
     job_hard, job_soft = extract_skills_from_text(job_text)
     
-    # Calculate Gaps
     matching_hard = cv_hard & job_hard
     initial_missing_hard = job_hard - cv_hard
     extra_hard = cv_hard - job_hard
+    
+    # Stats
+    skill_clusters = getattr(constants, "SKILL_CLUSTERS", {})
+    project_skills = getattr(constants, "PROJECT_BASED_SKILLS", set())
     
     # Logic 1: Transferable
     transferable = {} 
     remaining_missing = set()
     for missing in initial_missing_hard:
         found_transferable = False
-        for cluster_name, members in constants.SKILL_CLUSTERS.items():
+        for cluster_name, members in skill_clusters.items():
             if missing in members:
                 user_has = members.intersection(cv_hard)
                 if user_has:
@@ -126,22 +172,17 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     project_review = set()
     final_strict_missing = set()
     for skill in remaining_missing:
-        if skill in constants.PROJECT_BASED_SKILLS:
+        if skill in project_skills:
             project_review.add(skill)
         else:
             final_strict_missing.add(skill)
             
-    # Soft Skills
     matching_soft = cv_soft & job_soft
     missing_soft = job_soft - cv_soft
     
-    # Score
     score_points = len(matching_hard) + (len(transferable) * 0.5) + (len(project_review) * 0.3)
     match_pct = score_points / len(job_hard) * 100 if job_hard else 0
     
-    # Optional: Return a flag if generic fallback was likely used
-    is_generic_mode = (len(job_hard) > 0 and len(job_hard.intersection(constants.HARD_SKILLS.keys())) < 2)
-
     return {
         "match_percentage": match_pct,
         "matching_hard": matching_hard,
@@ -150,6 +191,5 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
         "transferable": transferable,
         "extra_hard": extra_hard,
         "matching_soft": matching_soft,
-        "missing_soft": missing_soft,
-        "is_generic_mode": is_generic_mode
+        "missing_soft": missing_soft
     }
