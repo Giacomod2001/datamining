@@ -1,72 +1,13 @@
 """
-===================================================================================
-JOB SEEKER HELPER - Analizzatore di CompatibilitÃ  CV/Annunci di Lavoro
-===================================================================================
-Progetto: Text Mining e NLP per Job Matching
-
-PILASTRI DEL PROGETTO:
-1. TEXT MINING & NLP: Estrazione automatica di keyword da testi non strutturati
-2. PATTERN MATCHING: Utilizzo di regex per riconoscimento intelligente
-3. ENVIRONMENT MANAGEMENT: Gestione dipendenze Python (requirements.txt)
-4. DATA ANALYSIS: Calcolo metriche e scoring di compatibilitÃ 
-
-Autori: Luca Tallarico, Ruben Scoletta, Giacomo Dellacqua
-Licenza: MIT
-===================================================================================
+Job Seeker Helper - CV vs Job Description Skill Gap Analyzer
+Uses ML (TF-IDF + Cosine Similarity) for intelligent skill detection.
 """
 
-# ============================================================================
-# IMPORT DELLE LIBRERIE
-# ============================================================================
-import streamlit as st  # Framework per interfaccia web interattiva
-import re              # Regex per pattern matching e text mining
-from typing import Set, Tuple, List, Optional  # Type hints per code clarity
-import io              # Input/Output per gestione file in memoria
-import plotly.graph_objects as go  # Grafici interattivi
-import plotly.express as px  # Charts veloci
+import streamlit as st
+import re
+from typing import Set, Dict, List
 
-# PDF Processing
-try:
-    from PyPDF2 import PdfReader  # Lettura e estrazione testo da PDF
-except ImportError:
-    PdfReader = None  # Fallback se PyPDF2 non Ã¨ installato
-
-# NLP Avanzato con spaCy
-try:
-    import spacy
-    from spacy.matcher import PhraseMatcher
-    # Lazy loading del modello (caricato solo quando necessario)
-    @st.cache_resource
-    def load_nlp_model():
-        """Carica modello spaCy con caching per performance"""
-        try:
-            return spacy.load("en_core_web_md")  # Medium model con word vectors
-        except OSError:
-            st.warning("âš ï¸ Modello spaCy non trovato. Esegui: python -m spacy download en_core_web_md")
-            return None
-except ImportError:
-    spacy = None
-    PhraseMatcher = None
-    def load_nlp_model():
-        return None
-
-# Fuzzy matching per typos
-try:
-    import Levenshtein
-except ImportError:
-    Levenshtein = None
-
-# ============================================================================
-# CONFIGURAZIONE APPLICAZIONE WEB
-# ============================================================================
-st.set_page_config(
-    page_title="Job Seeker Helper - AI Powered",
-    page_icon="ðŸŽ¯",
-    layout="wide",  # Layout espanso
-    initial_sidebar_state="collapsed"  # Open with â˜° icon (top-left) for ML debug
-)
-
-# ML-based Skill Matching
+# ML imports
 try:
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.metrics.pairwise import cosine_similarity
@@ -76,1508 +17,582 @@ except ImportError:
     cosine_similarity = None
     np = None
 
-# ============================================================================
-# CUSTOM CSS - LINKEDIN-INSPIRED DESIGN
-# ============================================================================
-st.markdown("""
-<style>
-    /* LinkedIn Color Palette */
-    :root {
-        --linkedin-blue: #0077B5;
-        --linkedin-dark: #004182;
-        --white: #FFFFFF;
-        --gray-50: #F8F9FA;
-        --gray-100: #E9ECEF;
-        --gray-200: #DEE2E6;
-        --gray-700: #495057;
-        --gray-900: #212529;
-        --success: #057642;
-        --danger: #CC1016;
-    }
-    
-    /* Global Styles */
-    .main {
-        background-color: var(--gray-50);
-    }
-    
-    /* Professional Header */
-    .linkedin-header {
-        background: linear-gradient(135deg, var(--linkedin-blue) 0%, var(--linkedin-dark) 100%);
-        padding: 2.5rem 2rem;
-        border-radius: 8px;
-        margin-bottom: 2rem;
-        box-shadow: 0 2px 8px rgba(0, 119, 181, 0.15);
-    }
-    
-    .linkedin-header h1 {
-        color: var(--white);
-        font-size: 2.5rem;
-        font-weight: 600;
-        margin: 0;
-        letter-spacing: -0.5px;
-    }
-    
-    .linkedin-header p {
-        color: rgba(255,255,255,0.95);
-        font-size: 1.1rem;
-        margin-top: 0.5rem;
-        font-weight: 300;
-    }
-    
-    /* Card Containers */
-    .results-card {
-        background: var(--white);
-        border-radius: 8px;
-        padding: 1.5rem;
-        margin: 1rem 0;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        border: 1px solid var(--gray-200);
-    }
-    
-    /* Skill Badges - LinkedIn Style */
-    .skill-badge {
-        display: inline-block;
-        background: var(--linkedin-blue);
-        color: var(--white);
-        padding: 0.4rem 0.9rem;
-        border-radius: 16px;
-        margin: 0.25rem;
-        font-size: 0.85rem;
-        font-weight: 500;
-    }
-    
-    .skill-badge-missing {
-        background: var(--gray-200);
-        color: var(--gray-700);
-    }
-    
-    /* Clean Streamlit Elements */
-    .stButton > button {
-        background-color: var(--linkedin-blue);
-        color: var(--white);
-        border: none;
-        border-radius: 24px;
-        padding: 0.6rem 2rem;
-        font-weight: 600;
-        font-size: 1rem;
-        transition: all 0.2s;
-    }
-    
-    .stButton > button:hover {
-        background-color: var(--linkedin-dark);
-        box-shadow: 0 4px 12px rgba(0, 119, 181, 0.2);
-    }
-    
-    /* Progress Bar */
-    .stProgress > div > div {
-        background-color: var(--linkedin-blue);
-    }
-    
-    /* Metrics */
-    [data-testid="stMetricValue"] {
-        color: var(--linkedin-blue);
-        font-size: 2rem;
-    }
-    
-    /* Remove Streamlit Branding */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-        background: var(--gray-100);
-    }
-    ::-webkit-scrollbar-thumb {
-        background: var(--linkedin-blue);
-        border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--linkedin-dark);
-    }
-    
-    /* Input Fields */
-    .stTextArea textarea {
-        border-radius: 8px;
-        border: 1px solid var(--gray-200);
-    }
-    
-    .stTextArea textarea:focus {
-        border-color: var(--linkedin-blue);
-        box-shadow: 0 0 0 1px var(--linkedin-blue);
-    }
-</style>
-""", unsafe_allow_html=True)
+# PDF extraction
+try:
+    from PyPDF2 import PdfReader
+except ImportError:
+    PdfReader = None
 
+# =============================================================================
+# PAGE CONFIG
+# =============================================================================
+st.set_page_config(
+    page_title="Job Seeker Helper",
+    page_icon="🎯",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
 
-# ============================================================================
-# DATABASE KNOWLEDGE BASE - GRUPPI DI COMPETENZE CORRELATE
-# ============================================================================
-# PILASTRO NLP: Normalizzazione semantica delle competenze
-# Ogni gruppo rappresenta un CONCETTO (chiave) con le sue VARIAZIONI (valori)
-# Questo permette di riconoscere sinonimi e varianti ortografiche
-# Esempio: "Machine Learning", "ML", "Deep Learning" â†’ tutti riconosciuti come "Machine Learning"
-# ============================================================================
-
+# =============================================================================
+# SKILL GROUPS DATABASE
+# =============================================================================
 SKILL_GROUPS = {
-    # ------------------------------------------------------------------------
-    # LINGUAGGI DI PROGRAMMAZIONE
-    # ------------------------------------------------------------------------
-    "Python": [
-        "Python", "Python3", "PyPy", 
-        "Sviluppo Python", "Python Developer", "Python dev"
-    ],
-    "Java": [
-        "Java", "JDK", "JRE", 
-        "Java Developer", "Java dev", "JavaEE", "J2EE"
-    ],
-    "JavaScript": [
-        "JavaScript", "JS", "ECMAScript", "ES6", "ES2015", 
-        "Node", "Node.js", "NodeJS"
-    ],
-    "TypeScript": ["TypeScript", "TS"],
-    "C++": ["C++", "CPP", "C Plus Plus"],
-    "C#": ["C#", "CSharp", "C Sharp", ".NET", "dotnet"],
-    "PHP": ["PHP", "PHP7", "PHP8"],
-    "Ruby": ["Ruby", "RoR", "Ruby on Rails", "Rails"],
-    "Go": ["Go", "Golang"],
-    "Rust": ["Rust", "Cargo"],
-    "Kotlin": ["Kotlin", "Kotlin dev"],
-    "Swift": ["Swift", "SwiftUI"],
-    "R": ["R", "R Programming", "R Studio"],
+    # Programming Languages
+    "Python": ["python", "py", "python3", "django", "flask", "fastapi", "pandas", "numpy"],
+    "Java": ["java", "spring", "spring boot", "maven", "gradle", "jvm"],
+    "JavaScript": ["javascript", "js", "node", "nodejs", "typescript", "ts", "es6"],
+    "C++": ["c++", "cpp", "c plus plus"],
+    "C#": ["c#", "csharp", "c sharp", ".net", "dotnet", "asp.net"],
+    "Go": ["go", "golang"],
+    "Rust": ["rust", "rustlang"],
+    "R": ["r language", "r programming", "rstudio", "tidyverse"],
     
-    # ------------------------------------------------------------------------
-    # FRONTEND FRAMEWORKS & TOOLS
-    # ------------------------------------------------------------------------
-    "React": [
-        "React", "ReactJS", "React.js", 
-        "React Native", "Next.js", "NextJS"
-    ],
-    "Angular": [
-        "Angular", "AngularJS", "Angular2+", "Angular dev"
-    ],
-    "Vue": [
-        "Vue", "Vue.js", "VueJS", "Nuxt", "Nuxt.js"
-    ],
-    "HTML/CSS": [
-        "HTML", "CSS", "HTML5", "CSS3", 
-        "SASS", "SCSS", "LESS", "Tailwind", "Bootstrap"
-    ],
-    "Frontend": [
-        "Frontend", "Front-end", "Front end", 
-        "UI Development", "Web Development"
-    ],
+    # Data Science & ML
+    "Machine Learning": ["machine learning", "ml", "deep learning", "neural network", "tensorflow", "pytorch", "keras", "scikit-learn", "sklearn"],
+    "Data Science": ["data science", "data scientist", "data analysis", "analytics", "statistical analysis"],
+    "Computer Vision": ["computer vision", "cv", "image processing", "opencv", "yolo", "object detection", "image recognition"],
+    "NLP": ["nlp", "natural language processing", "text mining", "sentiment analysis", "transformers", "bert", "gpt"],
+    "Deep Learning": ["deep learning", "neural network", "cnn", "rnn", "lstm", "transformer"],
     
-    # ------------------------------------------------------------------------
-    # BACKEND FRAMEWORKS
-    # ------------------------------------------------------------------------
-    "Django": ["Django", "Django REST", "DRF"],
-    "Flask": ["Flask", "Flask-RESTful"],
-    "FastAPI": ["FastAPI", "Fast API"],
-    "Spring": [
-        "Spring", "Spring Boot", "SpringBoot", "Spring Framework"
-    ],
-    "Express": ["Express", "ExpressJS", "Express.js"],
-    "Backend": [
-        "Backend", "Back-end", "Back end", "Server-side"
-    ],
+    # Databases
+    "SQL": ["sql", "mysql", "postgresql", "postgres", "sqlite", "oracle", "sql server", "tsql", "plsql"],
+    "MongoDB": ["mongodb", "mongo", "nosql"],
+    "Redis": ["redis", "caching"],
+    "BigQuery": ["bigquery", "big query", "bq"],
     
-    # ------------------------------------------------------------------------
-    # DATABASE & DATA STORAGE
-    # ------------------------------------------------------------------------
-    "SQL": [
-        "SQL", "MySQL", "PostgreSQL", "MS SQL", "SQL Server", 
-        "MariaDB", "Database", "DB", "Relational Database"
-    ],
-    "NoSQL": [
-        "NoSQL", "MongoDB", "Cassandra", "CouchDB", "Document DB"
-    ],
-    "Database Management": [
-        "Database", "DB", "Database Management", "DBMS", "Data Storage"
-    ],
+    # Cloud
+    "AWS": ["aws", "amazon web services", "ec2", "s3", "lambda", "dynamodb", "sagemaker", "cloudformation"],
+    "GCP": ["gcp", "google cloud", "google cloud platform", "vertex ai", "cloud functions", "cloud run"],
+    "Azure": ["azure", "microsoft azure", "azure devops", "azure ml"],
+    "Cloud Computing": ["cloud", "cloud computing", "serverless", "iaas", "paas", "saas"],
     
-    # ------------------------------------------------------------------------
-    # CLOUD PLATFORMS
-    # ------------------------------------------------------------------------
-    "AWS": [
-        "AWS", "Amazon Web Services", "EC2", "S3", "Lambda", "Cloud AWS"
-    ],
-    "Azure": ["Azure", "Microsoft Azure", "Azure Cloud"],
-    "GCP": ["GCP", "Google Cloud", "Google Cloud Platform"],
-    "Cloud": [
-        "Cloud", "Cloud Computing", "Cloud Infrastructure", "Cloud Services"
-    ],
+    # DevOps
+    "Docker": ["docker", "container", "containerization", "dockerfile"],
+    "Kubernetes": ["kubernetes", "k8s", "helm", "kubectl", "container orchestration"],
+    "CI/CD": ["ci/cd", "cicd", "continuous integration", "continuous deployment", "jenkins", "github actions", "gitlab ci"],
+    "Terraform": ["terraform", "infrastructure as code", "iac"],
     
-    # ------------------------------------------------------------------------
-    # DEVOPS & CONTAINERIZATION
-    # ------------------------------------------------------------------------
-    "Docker": ["Docker", "Containerization", "Container", "Dockerfile"],
-    "Kubernetes": ["Kubernetes", "K8s", "Container Orchestration"],
-    "CI/CD": [
-        "CI/CD", "Continuous Integration", "Continuous Deployment", 
-        "Jenkins", "GitLab CI", "GitHub Actions", "CI CD"
-    ],
-    "DevOps": ["DevOps", "Dev Ops", "Site Reliability", "SRE"],
+    # Frontend
+    "React": ["react", "reactjs", "react.js", "redux", "next.js", "nextjs"],
+    "Vue": ["vue", "vuejs", "vue.js", "nuxt"],
+    "Angular": ["angular", "angularjs"],
+    "HTML/CSS": ["html", "css", "html5", "css3", "sass", "scss", "tailwind", "bootstrap"],
     
-    # ------------------------------------------------------------------------
-    # DATA SCIENCE & ARTIFICIAL INTELLIGENCE
-    # ------------------------------------------------------------------------
-    "Machine Learning": [
-        "Machine Learning", "ML", "Deep Learning", "AI", 
-        "Artificial Intelligence", "Neural Networks", "Deep Neural Networks"
-    ],
-    "Data Science": [
-        "Data Science", "Data Scientist", "Data Analysis", 
-        "Data Analytics", "Big Data", "Data Mining"
-    ],
-    "TensorFlow": ["TensorFlow", "Tensorflow", "TF", "Keras"],
-    "PyTorch": ["PyTorch", "Torch"],
-    "Pandas": ["Pandas", "Data Manipulation", "Data Processing"],
-    "NLP": [
-        "NLP", "Natural Language Processing", 
-        "Text Mining", "Text Analysis", "Linguistics"
-    ],
-    "Computer Vision": [
-        "Computer Vision", "CV", "Image Processing", 
-        "Image Recognition", "Object Detection"
-    ],
+    # BI & Visualization
+    "Tableau": ["tableau", "tableau desktop", "tableau server"],
+    "Power BI": ["power bi", "powerbi", "dax"],
+    "Looker": ["looker", "looker studio", "data studio"],
+    "Excel": ["excel", "spreadsheet", "vlookup", "pivot table", "macros", "vba"],
     
-    # ------------------------------------------------------------------------
-    # VERSION CONTROL
-    # ------------------------------------------------------------------------
-    "Git": [
-        "Git", "GitHub", "GitLab", "Bitbucket", 
-        "Version Control", "Source Control", "VCS"
-    ],
+    # Soft Skills
+    "Agile": ["agile", "scrum", "kanban", "sprint", "jira"],
+    "Leadership": ["leadership", "team lead", "management", "mentoring"],
+    "Communication": ["communication", "presentation", "stakeholder", "collaboration"],
+    "Problem Solving": ["problem solving", "analytical", "critical thinking"],
     
-    # ------------------------------------------------------------------------
-    # TESTING & QA
-    # ------------------------------------------------------------------------
-    "Testing": [
-        "Testing", "Test", "QA", "Quality Assurance", 
-        "Unit Test", "Integration Test", "Test Automation"
-    ],
-    "Selenium": ["Selenium", "Test Automation", "Web Testing"],
-    
-    # ------------------------------------------------------------------------
-    # AGILE & PROJECT MANAGEMENT
-    # ------------------------------------------------------------------------
-    "Agile": [
-        "Agile", "Scrum", "Kanban", "Sprint", 
-        "Agile Methodology", "Agile Development"
-    ],
-    "Project Management": [
-        "Project Management", "PM", "Product Management", 
-        "Gestione Progetti", "PMP"
-    ],
-    
-    # ------------------------------------------------------------------------
-    # SOFT SKILLS
-    # ------------------------------------------------------------------------
-    "Teamwork": [
-        "Team Working", "Teamwork", "Team work", 
-        "Lavoro di squadra", "Collaborazione", "Collaboration"
-    ],
-    "Communication": [
-        "Communication", "Comunicazione", "Presentation", "Public Speaking"
-    ],
-    "Problem Solving": [
-        "Problem Solving", "Critical Thinking", "Analytical", "Analytical Skills"
-    ],
-    "Leadership": [
-        "Leadership", "Team Leading", "Mentoring", "Management", "Lead"
-    ],
-    
-    # ------------------------------------------------------------------------
-    # LINGUE
-    # ------------------------------------------------------------------------
-    "English": [
-        "English", "Inglese", "Lingua Inglese", "English Language"
-    ],
-    "Italian": ["Italian", "Italiano", "Lingua Italiana"],
-    
-    # ------------------------------------------------------------------------
-    # MOBILE DEVELOPMENT
-    # ------------------------------------------------------------------------
-    "Mobile Development": [
-        "Mobile", "Mobile Development", "iOS", "Android", 
-        "React Native", "Flutter", "Mobile dev"
-    ],
-    
-    # ------------------------------------------------------------------------
-    # SECURITY
-    # ------------------------------------------------------------------------
-    "Security": [
-        "Security", "Cybersecurity", "Cyber Security", 
-        "Information Security", "Sicurezza", "Penetration Testing"
-    ],
-    
-    # ------------------------------------------------------------------------
-    # DESIGN
-    # ------------------------------------------------------------------------
-    "UI/UX": [
-        "UI", "UX", "User Experience", "User Interface", 
-        "Design", "UI Design", "UX Design", "Product Design"
-    ],
-    
-    # ------------------------------------------------------------------------
-    # BUSINESS INTELLIGENCE TOOLS
-    # ------------------------------------------------------------------------
-    "Excel": ["Excel", "Microsoft Excel", "Spreadsheet", "Fogli di calcolo"],
-    "Word": ["Word", "Microsoft Word", "Word Processing"],
-    "PowerPoint": ["PowerPoint", "Microsoft PowerPoint", "PPT", "Presentation"],
-    "Power BI": ["Power BI", "PowerBI", "Business Intelligence", "BI"],
-    "Looker": ["Looker", "Looker Studio", "Google Looker", "Data Studio"],
-    "Tableau": ["Tableau", "Tableau Desktop", "Data Visualization"],
-    
-    # ------------------------------------------------------------------------
-    # API & WEB SERVICES
-    # ------------------------------------------------------------------------
-    "API": ["API", "REST", "RESTful", "REST API", "Web API", "Web Services"],
+    # Testing
+    "Testing": ["testing", "unit test", "pytest", "jest", "selenium", "qa", "quality assurance"],
+    "Git": ["git", "github", "gitlab", "version control", "bitbucket"],
 }
 
-
-# ============================================================================
-# SOFT SKILLS - ESCLUSE DAL CALCOLO DEL MATCH
-# ============================================================================
-# Le soft skills non vengono conteggiate nella percentuale di compatibilitÃ 
-# perchÃ© sono soggettive e difficili da quantificare
-# ============================================================================
-
-SOFT_SKILLS = {
-    "Teamwork",
-    "Communication", 
-    "Problem Solving",
-    "Leadership",
-    "Agile",
-    "Project Management"
-}
-
-
-# ============================================================================
-# SISTEMA DI INFERENZA SKILL IMPLICITE
-# ============================================================================
-# PILASTRO NLP AVANZATO: Deduzione intelligente di competenze correlate
-# Se un CV menziona una skill "macro", il sistema inferisce automaticamente
-# le competenze "micro" che essa implica
-# Esempio: "Microsoft Office" â†’ Excel, Word, PowerPoint
-# ============================================================================
-
-SKILL_IMPLICATIONS = {
-    # ------------------------------------------------------------------------
-    # SUITE SOFTWARE E PACCHETTI
-    # ------------------------------------------------------------------------
-    "Microsoft Office": ["Excel", "Word", "PowerPoint"],
-    "Office": ["Excel", "Word", "PowerPoint"],
-    "Google Workspace": ["Excel", "Looker"],
-    "G Suite": ["Excel", "Looker"],
-    
-    # ------------------------------------------------------------------------
-    # RUOLI PROFESSIONALI â†’ SKILL TECNICHE
-    # ------------------------------------------------------------------------
-    "Data Scientist": ["Python", "SQL", "Machine Learning", "Pandas", "Data Science"],
-    "Data Analyst": ["SQL", "Excel", "Python", "Data Science"],
-    "Full Stack Developer": ["JavaScript", "HTML/CSS", "Backend", "Frontend", "SQL"],
-    "Frontend Developer": ["JavaScript", "HTML/CSS", "React", "Frontend"],
-    "Backend Developer": ["Backend", "SQL", "API"],
-    "DevOps Engineer": ["Docker", "CI/CD", "Cloud", "Git", "DevOps"],
-    "Software Engineer": ["Git", "Testing", "Agile"],
-    "Web Developer": ["HTML/CSS", "JavaScript", "Frontend"],
-    "Mobile Developer": ["Mobile Development", "Git"],
-    
-    # ------------------------------------------------------------------------
-    # FRAMEWORK â†’ LINGUAGGI BASE
-    # ------------------------------------------------------------------------
-    "Python": ["Pandas"],  # Se usi Python, sai usare Pandas
-    "React": ["JavaScript", "HTML/CSS", "Frontend"],
-    "Angular": ["JavaScript", "HTML/CSS", "Frontend"],
-    "Vue": ["JavaScript", "HTML/CSS", "Frontend"],
-    "Django": ["Python", "Backend", "SQL"],
-    "Flask": ["Python", "Backend"],
-    "FastAPI": ["Python", "Backend"],
-    "Spring": ["Java", "Backend", "SQL"],
-    "Express": ["JavaScript", "Backend"],
-    
-    # ------------------------------------------------------------------------
-    # DATA SCIENCE â†’ TOOL ECOSISTEMA
-    # ------------------------------------------------------------------------
-    "Machine Learning": ["Python", "Data Science", "Pandas"],
-    "Deep Learning": ["Python", "Machine Learning", "Data Science", "Pandas"],
-    "TensorFlow": ["Python", "Machine Learning", "Pandas"],
-    "PyTorch": ["Python", "Machine Learning", "Pandas"],
-    "Data Science": ["Python", "SQL", "Pandas"],
-    "Big Data": ["Data Science", "SQL"],
-    
-    # ------------------------------------------------------------------------
-    # CLOUD â†’ COMPETENZE CORRELATE
-    # ------------------------------------------------------------------------
-    "AWS": ["Cloud", "DevOps"],
-    "Azure": ["Cloud", "DevOps"],
-    "GCP": ["Cloud", "DevOps"],
-    "Docker": ["DevOps", "Cloud"],
-    "Kubernetes": ["Docker", "DevOps", "Cloud"],
-    
-    # ------------------------------------------------------------------------
-    # DATABASE â†’ SQL GENERAL
-    # ------------------------------------------------------------------------
-    "PostgreSQL": ["SQL", "Database Management"],
-    "MySQL": ["SQL", "Database Management"],
-    "MongoDB": ["NoSQL", "Database Management"],
-    "Oracle": ["SQL", "Database Management"],
-    
-    # ------------------------------------------------------------------------
-    # BUSINESS INTELLIGENCE - TOOL EQUIVALENTI
-    # ------------------------------------------------------------------------
-    # Power BI, Tableau, Looker sono concettualmente simili:
-    # Se sai usarne uno, sai usare anche gli altri (stessi principi di BI)
-    "Power BI": ["Excel", "Data Science", "Tableau", "Looker"],
-    "Tableau": ["Data Science", "SQL", "Power BI", "Looker"],
-    "Looker": ["SQL", "Data Science", "Power BI", "Tableau"],
-    
-    # ------------------------------------------------------------------------
-    # METODOLOGIE â†’ SOFT SKILLS
-    # ------------------------------------------------------------------------
-    "Agile": ["Teamwork", "Communication", "Project Management"],
-    "Scrum": ["Agile", "Teamwork", "Project Management"],
-    "Project Management": ["Leadership", "Communication"],
-    "Team Leading": ["Leadership", "Communication", "Teamwork"],
-}
-
-
-# ============================================================================
-# DATABASE RISORSE DI APPRENDIMENTO
-# ============================================================================
-# Per ogni skill, fornisce risorse concrete per acquisirla
-# ============================================================================
-
+# =============================================================================
+# LEARNING RESOURCES DATABASE (Skill-Specific!)
+# =============================================================================
 LEARNING_RESOURCES = {
-    # ------------------------------------------------------------------------
-    # PROGRAMMING LANGUAGES
-    # ------------------------------------------------------------------------
     "Python": {
-        "difficoltÃ ": "Medium",
-        "tempo": "2-3 months",
-        "corsi": [
-            "Python for Everybody (Coursera - Free)",
-            "Complete Python Bootcamp (Udemy)",
-            "Official Python Documentation"
-        ],
-        "pratica": "Build a data analysis dashboard with Pandas + Streamlit. Create a web scraper for job postings. Automate your daily tasks with scripts.",
-        "certificazioni": "PCAP (Python Institute Certified Associate Programmer)",
-        "project": "**Project Idea:** Build a Personal Finance Tracker - Use Pandas for data manipulation, Matplotlib for visualization, and save data to CSV/SQLite. Add expense categorization and monthly reports."
+        "level": "Medium",
+        "time": "2-3 months",
+        "courses": ["Python for Everybody (Coursera)", "Complete Python Bootcamp (Udemy)", "Official Python Docs"],
+        "practice": "Build a data dashboard with Pandas + Streamlit. Create a web scraper. Automate daily tasks.",
+        "cert": "PCAP (Python Institute)",
+        "project": "Personal Finance Tracker - Pandas for data, Matplotlib for viz, SQLite for storage"
     },
     "Java": {
-        "difficoltÃ ": "Medium-High",
-        "tempo": "3-4 months",
-        "corsi": ["Java Programming MOOC (University of Helsinki)", "Oracle Java Tutorials"],
-        "pratica": "Build a REST API with Spring Boot for a todo app. Implement CRUD operations with a database connection.",
-        "certificazioni": "Oracle Certified Associate Java Programmer",
-        "project": "**Project Idea:** Employee Management System - Spring Boot backend with MySQL, REST endpoints for employee CRUD, authentication with Spring Security, deploy to Heroku."
+        "level": "Medium-High",
+        "time": "3-4 months",
+        "courses": ["Java MOOC (University of Helsinki)", "Oracle Java Tutorials"],
+        "practice": "Build REST API with Spring Boot. Implement CRUD with database.",
+        "cert": "Oracle Certified Associate",
+        "project": "Employee Management System - Spring Boot + MySQL + REST API"
     },
     "JavaScript": {
-        "difficoltÃ ": "Medium",
-        "tempo": "2-3 months",
-        "corsi": ["freeCodeCamp JavaScript Curriculum", "JavaScript.info (Free & Interactive)"],
-        "pratica": "Build an interactive portfolio website with form validation. Create a weather app using a public API. Add animations with vanilla JS.",
-        "certificazioni": "Focus on portfolio projects over certifications",
-        "project": "**Project Idea:** Real-Time Chat Application - Use WebSockets for live messaging, LocalStorage for chat history, fetch API for user profiles. Deploy on Netlify."
+        "level": "Medium",
+        "time": "2-3 months",
+        "courses": ["freeCodeCamp JavaScript", "JavaScript.info"],
+        "practice": "Build interactive portfolio. Create weather app using API. Add animations.",
+        "cert": "Portfolio projects over certs",
+        "project": "Real-Time Chat App - WebSockets for messaging, deploy on Netlify"
     },
-    
-    # ------------------------------------------------------------------------
-    # DATA SCIENCE & AI
-    # ------------------------------------------------------------------------
     "Machine Learning": {
-        "difficoltÃ ": "High",
-        "tempo": "4-6 months",
-        "corsi": [
-            "Machine Learning by Andrew Ng (Coursera - Gold Standard)",
-            "Fast.ai Practical Deep Learning for Coders"
-        ],
-        "pratica": "Compete in Kaggle competitions (start with Titanic dataset). Build a movie recommendation system. Create an image classifier for your own dataset.",
-        "certificazioni": "Google ML Engineer Professional Certificate",
-        "project": "**Project Idea:** Housing Price Predictor - Use scikit-learn with real Zillow data, feature engineering (location, size, age), compare Linear Regression vs Random Forest, deploy with Flask API + React frontend."
+        "level": "High",
+        "time": "4-6 months",
+        "courses": ["Andrew Ng's ML Course (Coursera)", "Fast.ai Practical Deep Learning"],
+        "practice": "Kaggle competitions (Titanic). Movie recommender. Image classifier.",
+        "cert": "Google ML Engineer Certificate",
+        "project": "Housing Price Predictor - scikit-learn, feature engineering, Flask API"
     },
     "Data Science": {
-        "difficoltÃ ": "Medium-High",
-        "tempo": "3-5 months",
-        "corsi": ["IBM Data Science Professional Certificate", "DataCamp Data Scientist Career Track"],
-        "pratica": "Analyze a public dataset (COVID-19, elections, sports stats). Create data visualizations with Plotly. Write a technical blog post explaining your findings.",
-        "certificazioni": "IBM Data Science Professional Certificate",
-        "project": "**Project Idea:** Customer Churn Analysis - Download telecom dataset, perform EDA with Pandas, visualize patterns with Seaborn, build predictive model, create Streamlit dashboard showing insights."
+        "level": "Medium-High",
+        "time": "3-5 months",
+        "courses": ["IBM Data Science Professional", "DataCamp Data Scientist Track"],
+        "practice": "Analyze public datasets. Create Plotly visualizations. Write technical blog.",
+        "cert": "IBM Data Science Certificate",
+        "project": "Customer Churn Analysis - EDA with Pandas, predictive model, Streamlit dashboard"
     },
-    "Pandas": {
-        "difficoltÃ ": "Low-Medium",
-        "tempo": "2-4 weeks",
-        "corsi": ["Pandas Official Tutorials", "DataCamp Pandas Fundamentals"],
-        "pratica": "Clean and analyze your own spreadsheet data. Merge multiple CSV files. Create pivot tables and aggregations for business metrics.",
-        "certificazioni": "Not required - demonstrate through projects",
-        "project": "**Project Idea:** Sales Data Reporter - Load sales CSV, clean missing values, group by product/date, calculate KPIs (revenue, growth rate), export monthly summary Excel reports with styled formatting."
-    },
-    "NLP": {
-        "difficoltÃ ": "High",
-        "tempo": "3-4 months",
-        "corsi": ["NLP Specialization (deeplearning.ai)", "Hugging Face Course (Free)"],
-        "pratica": "Build a sentiment analyzer for product reviews. Create a chatbot with intent classification. Fine-tune a BERT model on your own dataset.",
-        "certificazioni": "Demonstrate through portfolio projects",
-        "project": "**Project Idea:** Job Description Analyzer - Use spaCy for entity extraction (skills, locations, salary), implement TF-IDF for keyword matching, build API to categorize jobs by seniority level, visualize skill trends."
-    },
-    
-    # ------------------------------------------------------------------------
-    # DATABASE & SQL
-    # ------------------------------------------------------------------------
     "SQL": {
-        "difficoltÃ ": "Low-Medium",
-        "tempo": "3-6 weeks",
-        "corsi": ["Mode SQL Tutorial", "SQLBolt (Interactive)", "Codecademy Learn SQL"],
-        "pratica": "Download a sample database (Northwind, Sakila). Write complex JOINs across 3+ tables. Optimize slow queries with indexes. Create views for reporting.",
-        "certificazioni": "Practice is more valuable than certs",
-        "project": "**Project Idea:** E-commerce Analytics Database - Design schema (users, orders, products), write queries for: top customers, monthly revenue, product recommendations using self-joins, create stored procedures for reports."
+        "level": "Low-Medium",
+        "time": "3-6 weeks",
+        "courses": ["Mode SQL Tutorial", "SQLBolt (Interactive)", "Codecademy Learn SQL"],
+        "practice": "Complex JOINs on sample databases. Optimize queries with indexes. Create views.",
+        "cert": "Practice > Certifications",
+        "project": "E-commerce Analytics DB - Star schema design, KPI queries, stored procedures"
     },
-    
-    # ------------------------------------------------------------------------
-    # CLOUD & DEVOPS
-    # ------------------------------------------------------------------------
     "AWS": {
-        "difficoltÃ ": "Medium-High",
-        "tempo": "2-3 months",
-        "corsi": ["AWS Cloud Practitioner Essentials (Free)", "A Cloud Guru AWS Path"],
-        "pratica": "Deploy a static website to S3 with CloudFront. Set up EC2 instance and connect via SSH. Create Lambda function triggered by S3 upload (all free tier).",
-        "certificazioni": "AWS Certified Cloud Practitioner (entry-level)",
-        "project": "**Project Idea:** Serverless Image Resizer - Use S3 for storage, Lambda to auto-resize uploaded images, API Gateway for REST endpoints, DynamoDB for metadata, CloudWatch for monitoring. Stay in free tier."
+        "level": "Medium-High",
+        "time": "2-3 months",
+        "courses": ["AWS Cloud Practitioner (Free)", "A Cloud Guru"],
+        "practice": "Deploy to S3 + CloudFront. Set up EC2. Create Lambda function (free tier).",
+        "cert": "AWS Certified Cloud Practitioner",
+        "project": "Serverless Image Resizer - S3, Lambda, API Gateway, DynamoDB"
+    },
+    "GCP": {
+        "level": "Medium-High",
+        "time": "2-3 months",
+        "courses": ["Google Cloud Skills Boost", "Coursera GCP Specialization"],
+        "practice": "Deploy to Cloud Run. Use BigQuery for analytics. Set up Cloud Functions.",
+        "cert": "Google Cloud Associate Engineer",
+        "project": "Data Pipeline - Cloud Functions, BigQuery, Looker Studio dashboard"
     },
     "Docker": {
-        "difficoltÃ ": "Medium",
-        "tempo": "2-3 weeks",
-        "corsi": ["Docker Official Get Started Guide", "Docker Mastery (Udemy)"],
-        "pratica": "Dockerize your existing Python/Node app. Use docker-compose for multi-container setup (app + database). Push images to Docker Hub.",
-        "certificazioni": "Hands-on experience over certification",
-        "project": "**Project Idea:** Microservices Blog Platform - Frontend (React) container, Backend (Flask) container, PostgreSQL container, Nginx reverse proxy. Use docker-compose for orchestration, environment variables for config."
+        "level": "Medium",
+        "time": "2-3 weeks",
+        "courses": ["Docker Official Guide", "Docker Mastery (Udemy)"],
+        "practice": "Dockerize your apps. Use docker-compose for multi-container. Push to Docker Hub.",
+        "cert": "Hands-on experience",
+        "project": "Microservices Blog - Frontend + Backend + DB containers with docker-compose"
     },
-    "Kubernetes": {
-        "difficoltÃ ": "High",
-        "tempo": "2-3 mesi",
-        "corsi": ["Kubernetes for Beginners (Udemy)", "Official K8s Documentation"],
-        "pratica": "Deploy app to local Minikube cluster. Create deployments, services, and ingress. Practice rolling updates and rollbacks.",
-        "certificazioni": "CKA (Certified Kubernetes Administrator)",
-        "project": "**Project Idea:** Scalable API Backend - Deploy Flask API with 3 replicas, use LoadBalancer service, implement health checks, configure auto-scaling, add persistent volume for database, monitor with Prometheus."
-    },
-    
-    # ------------------------------------------------------------------------
-    # FRONTEND
-    # ------------------------------------------------------------------------
     "React": {
-        "difficoltÃ ": "Medium",
-        "tempo": "1-2 months",
-        "corsi": ["React Official Docs (Best resource!)", "Scrimba Learn React for Free"],
-        "pratica": "Build 5 different apps: todo list, weather app, quiz game, e-commerce cart, blog with routing. Focus on hooks (useState, useEffect, useContext).",
-        "certificazioni": "Portfolio projects are essential",
-        "project": "**Project Idea:** Job Board Dashboard - Fetch jobs from API, implement search/filter by location/skill, save favorites to localStorage, use React Router for pages, styled-components for design, deploy to Vercel."
+        "level": "Medium",
+        "time": "1-2 months",
+        "courses": ["React Official Docs", "Scrimba Learn React"],
+        "practice": "Build 5 apps: todo, weather, quiz, cart, blog. Master hooks (useState, useEffect).",
+        "cert": "Portfolio projects",
+        "project": "Job Board Dashboard - API fetch, search/filter, React Router, deploy to Vercel"
     },
-    "HTML/CSS": {
-        "difficoltÃ ": "Low",
-        "tempo": "2-4 weeks",
-        "corsi": ["freeCodeCamp Responsive Web Design", "MDN Web Docs (Reference)"],
-        "pratica": "Clone 10 landing pages from real companies. Build responsive layouts with Flexbox and Grid. Add CSS animations and transitions.",
-        "certificazioni": "Not required",
-        "project": "**Project Idea:** Personal Portfolio Site - Fully responsive design, hero section with gradient, projects grid with hover effects, contact form, smooth scroll navigation, optimize for mobile-first, deploy to GitHub Pages."
+    "Computer Vision": {
+        "level": "High",
+        "time": "3-5 months",
+        "courses": ["CS231n Stanford (YouTube)", "PyImageSearch tutorials"],
+        "practice": "Object detection with YOLO. Image classification with CNN. OCR projects.",
+        "cert": "Portfolio > Certifications",
+        "project": "Document Scanner - OpenCV preprocessing, text extraction, deploy as web app"
     },
-    
-    # ------------------------------------------------------------------------
-    # BUSINESS INTELLIGENCE
-    # ------------------------------------------------------------------------
-    "Excel": {
-        "difficoltÃ ": "Low-Medium",
-        "tempo": "2-3 weeks",
-        "corsi": ["Excel Essential Training (LinkedIn Learning)", "Chandoo.org Tutorials"],
-        "pratica": "Build a sales dashboard with pivot tables and charts. Automate reports with VLOOKUP, INDEX-MATCH. Create macros for repetitive tasks.",
-        "certificazioni": "Microsoft Office Specialist Excel",
-        "project": "**Project Idea:** Personal Budget Manager - Monthly expense tracker with categories, formulas for totals/averages, conditional formatting for overspending, pivot charts for trends, macro button to generate PDF report."
-    },
-    "Power BI": {
-        "difficoltÃ ": "Medium",
-        "tempo": "1-2 months",
-        "corsi": ["Microsoft Power BI Training (Free)", "Enterprise DNA YouTube Channel"],
-        "pratica": "Connect to real data source (Excel, SQL, API). Build interactive dashboard with slicers and drill-down. Publish to Power BI Service.",
-        "certificazioni": "Microsoft Certified: Data Analyst Associate",
-        "project": "**Project Idea:** Sales Performance Dashboard - Import sales data, create star schema with dimensions, build KPI cards (revenue, growth, targets), add time intelligence for YoY comparison, interactive map visual, publish and share link."
+    "NLP": {
+        "level": "High",
+        "time": "3-4 months",
+        "courses": ["NLP Specialization (deeplearning.ai)", "Hugging Face Course"],
+        "practice": "Sentiment analyzer. Intent chatbot. Fine-tune BERT on custom data.",
+        "cert": "Portfolio projects",
+        "project": "Job Description Analyzer - spaCy NER, TF-IDF matching, skill trend visualization"
     },
     "Tableau": {
-        "difficoltÃ ": "Medium",
-        "tempo": "1-2 months",
-        "corsi": ["Tableau Desktop Specialist Path", "Tableau Public Gallery for Inspiration"],
-        "pratica": "Create 5 viz types: bar, line, map, scatter, heatmap. Build a story dashboard. Publish to Tableau Public and share on LinkedIn.",
-        "certificazioni": "Tableau Desktop Specialist",
-        "project": "**Project Idea:** COVID-19 Global Tracker - Live data from Johns Hopkins, choropleth map by country, time series for cases/deaths, calculated fields for mortality rate, parameters for country selection, publish viz on Tableau Public."
+        "level": "Medium",
+        "time": "1-2 months",
+        "courses": ["Tableau Desktop Specialist Path", "Tableau Public Gallery"],
+        "practice": "5 viz types: bar, line, map, scatter, heatmap. Build dashboard stories.",
+        "cert": "Tableau Desktop Specialist",
+        "project": "COVID Tracker - Live data, choropleth map, time series, publish to Tableau Public"
     },
-    "Looker": {
-        "difficoltÃ ": "Medium",
-        "tempo": "1-2 months",
-        "corsi": ["Google Cloud Skills Boost - Looker", "Looker Official Docs"],
-        "pratica": "Build dashboards in Looker Studio (free). Connect Google Sheets or BigQuery as data source. Create calculated fields and filters.",
-        "certificazioni": "Google Cloud Professional Data Engineer (includes Looker)",
-        "project": "**Project Idea:** Website Analytics Dashboard - Connect to Google Analytics data, create metrics for traffic/bounce rate/conversions, add date range filter, compare periods, visualize user journey funnel, schedule email reports."
+    "Power BI": {
+        "level": "Medium",
+        "time": "1-2 months",
+        "courses": ["Microsoft Power BI Training (Free)", "Enterprise DNA YouTube"],
+        "practice": "Connect real data sources. Build interactive dashboards. Publish to Service.",
+        "cert": "Microsoft Data Analyst Associate",
+        "project": "Sales Dashboard - Star schema, KPI cards, time intelligence, map visual"
     },
-    
-    # ------------------------------------------------------------------------
-    # SOFT SKILLS
-    # ------------------------------------------------------------------------
-    "Teamwork": {
-        "difficoltÃ ": "Low-Medium",
-        "tempo": "Ongoing practice",
-        "corsi": ["Not applicable - learn by doing"],
-        "pratica": "Contribute to open source projects on GitHub. Join hackathons (online or local). Participate in team coding challenges. Use pull requests and code reviews.",
-        "certificazioni": "Not applicable",
-        "project": "**Practice:** Find beginner-friendly GitHub repos with 'good first issue' label. Fork, fix bug, submit PR with clear description. Respond professionally to code review feedback."
-    },
-    "Communication": {
-        "difficoltÃ ": "Medium",
-        "tempo": "Ongoing practice",
-        "corsi": ["Public Speaking courses (Coursera)", "Technical Writing guides"],
-        "pratica": "Start a technical blog (Medium, dev.to). Give presentations at meetups. Create tutorial videos. Write clear documentation for your projects.",
-        "certificazioni": "Not applicable",
-        "project": "**Practice:** Write 5 blog posts explaining technical concepts you learned. Record a 5-min YouTube video coding tutorial. Present a personal project at a local meetup or online community."
-    },
-    "Leadership": {
-        "difficoltÃ ": "Medium-High",
-        "tempo": "Ongoing development",
-        "corsi": ["Leadership courses (Coursera, LinkedIn Learning)"],
-        "pratica": "Lead a small team project (even 2-3 people). Mentor junior developers. Organize study groups or coding sessions.",
-        "certificazioni": "PMP (Project Management Professional)",
-        "project": "**Practice:** Initiate an open-source project, recruit 2-3 contributors, assign tasks, review PRs, manage the roadmap, facilitate discussions, and deliver v1.0."
-    },
-    "Agile": {
-        "difficoltÃ ": "Low-Medium",
-        "tempo": "2-4 weeks",
-        "corsi": ["Scrum.org Learning Path (Free)", "Agile Foundations (LinkedIn)"],
-        "pratica": "Apply Agile to personal projects: use Trello/Jira for sprints, daily standup notes, retrospectives. Join Agile team if possible.",
-        "certificazioni": "PSM I (Professional Scrum Master)",
-        "project": "**Practice:** Manage your next project with 2-week sprints, create user stories with acceptance criteria, track velocity, hold mini-retrospectives to improve process."
-    },
-    
-    # ------------------------------------------------------------------------
-    # TESTING & VERSION CONTROL
-    # ------------------------------------------------------------------------
-    "Testing": {
-        "difficoltÃ ": "Low-Medium",
-        "tempo": "1-2 months",
-        "corsi": ["Test Automation University (Free)", "Software Testing Fundamentals"],
-        "pratica": "Write unit tests for your Python/JS projects. Use pytest or Jest. Aim for 80%+ code coverage. Set up CI/CD with GitHub Actions to run tests automatically.",
-        "certificazioni": "ISTQB Foundation Level",
-        "project": "**Project Idea:** Test a To-Do API - Write unit tests for CRUD functions, integration tests for database operations, mock external APIs, achieve 90% coverage, configure GitHub Actions to run tests on every PR."
+    "Excel": {
+        "level": "Low-Medium",
+        "time": "2-3 weeks",
+        "courses": ["Excel Essential Training (LinkedIn)", "Chandoo.org"],
+        "practice": "Pivot tables and charts. VLOOKUP, INDEX-MATCH. Macros for automation.",
+        "cert": "Microsoft Office Specialist Excel",
+        "project": "Budget Manager - Category tracking, formulas, conditional formatting, macro buttons"
     },
     "Git": {
-        "difficoltÃ ": "Low",
-        "tempo": "1-2 weeks",
-        "corsi": ["Git Official Tutorial", "Learn Git Branching (Interactive Game)"],
-        "pratica": "Use Git daily for all projects. Practice branching strategies (feature branches). Resolve merge conflicts. Contribute to open source repos.",
-        "certificazioni": "Not necessary - practical skill",
-        "project": "**Practice:** Create a repo, make 3 feature branches, use meaningful commit messages (conventional commits), practice rebasing, squash commits before merging, use .gitignore and .gitattributes files."
+        "level": "Low",
+        "time": "1-2 weeks",
+        "courses": ["Git Official Tutorial", "Learn Git Branching (Game)"],
+        "practice": "Daily Git usage. Feature branches. Resolve merge conflicts. Open source PRs.",
+        "cert": "Not needed - practical skill",
+        "project": "Practice: 3 feature branches, meaningful commits, rebasing, squashing"
+    },
+    "Kubernetes": {
+        "level": "High",
+        "time": "2-3 months",
+        "courses": ["Kubernetes for Beginners (Udemy)", "Official K8s Docs"],
+        "practice": "Local Minikube cluster. Deployments, services, ingress. Rolling updates.",
+        "cert": "CKA (Certified K8s Admin)",
+        "project": "Scalable API - 3 replicas, LoadBalancer, health checks, auto-scaling, Prometheus"
+    },
+    "Agile": {
+        "level": "Low-Medium",
+        "time": "2-4 weeks",
+        "courses": ["Scrum.org Learning Path", "Agile Foundations (LinkedIn)"],
+        "practice": "Apply Agile to personal projects. Trello sprints. Daily notes. Retros.",
+        "cert": "PSM I (Professional Scrum Master)",
+        "project": "Run 2-week sprints on your next project with user stories and velocity tracking"
+    },
+    "Testing": {
+        "level": "Low-Medium",
+        "time": "1-2 months",
+        "courses": ["Test Automation University (Free)", "Software Testing Fundamentals"],
+        "practice": "Unit tests for Python/JS. pytest or Jest. 80%+ coverage. GitHub Actions CI.",
+        "cert": "ISTQB Foundation Level",
+        "project": "Test To-Do API - Unit, integration, mocked tests, 90% coverage, CI on every PR"
     },
 }
 
-# Default resource for unmapped skills
-DEFAULT_LEARNING_RESOURCE = {
-    "difficoltÃ ": "Varies",
-    "tempo": "1-3 months",
-    "corsi": ["Search on Coursera, Udemy, freeCodeCamp, YouTube"],
-    "pratica": "Start with official documentation. Build 2-3 small projects. Join relevant online communities (Reddit, Discord).",
-    "certificazioni": "Check online for available industry certifications",
-    "project": "**General Approach:** Find a real-world problem you care about. Break it into weekly milestones. Build incrementally. Document your process. Share on GitHub with README."
+# Default for unmapped skills
+DEFAULT_RESOURCE = {
+    "level": "Varies",
+    "time": "1-3 months",
+    "courses": ["Search Coursera, Udemy, YouTube"],
+    "practice": "Start with official docs. Build 2-3 small projects. Join communities.",
+    "cert": "Check for industry certifications",
+    "project": "Find a real problem, break into milestones, build incrementally, share on GitHub"
 }
 
-
-# ============================================================================
-# FUNZIONE: INFERENZA SKILL IMPLICITE
-# ============================================================================
-
-def infer_implied_skills(detected_skills: Set[str]) -> Set[str]:
-    """
-    Automatically deduce implied skills based on detected ones.
-    
-    ALGORITHM:
-    1. Per ogni skill rilevata, controlla se ha implicazioni
-    2. Se sÃ¬, aggiunge le skill implicate al set
-    3. Ripete finchÃ© non ci sono piÃ¹ nuove skill da inferire
-    
-    Args:
-        detected_skills (Set[str]): Skill rilevate direttamente dal testo
-    
-    Returns:
-        Set[str]: Skill originali + skill inferite
-    
-    Esempio:
-        Input: {"Microsoft Office", "Data Scientist"}
-        Output: {"Microsoft Office", "Excel", "Word", "PowerPoint", 
-                 "Data Scientist", "Python", "SQL", "Machine Learning", "Pandas"}
-    """
-    # Inizia con le skill giÃ  rilevate
-    all_skills = detected_skills.copy()
-    
-    # CICLO DI INFERENZA: continua finchÃ© trova nuove skill
-    newly_added = True
-    while newly_added:
-        newly_added = False
-        current_skills = all_skills.copy()
-        
-        # Per ogni skill attualmente nel set
-        for skill in current_skills:
-            # Controlla se questa skill implica altre competenze
-            if skill in SKILL_IMPLICATIONS:
-                implied = SKILL_IMPLICATIONS[skill]
-                
-                # Aggiungi le skill implicate
-                for implied_skill in implied:
-                    if implied_skill not in all_skills:
-                        all_skills.add(implied_skill)
-                        newly_added = True  # Nuova skill trovata, ripeti il ciclo
-    
-    return all_skills
-
-
-
-# ============================================================================
-# FUNZIONE: SIMILARITÃ€ SEMANTICA CON spaCy (NLP AVANZATO)
-# ============================================================================
-# PILASTRO NLP AVANZATO: Matching intelligente oltre le keyword esatte
-# ============================================================================
-
+# =============================================================================
+# ML SKILL MATCHER
+# =============================================================================
 @st.cache_data
-def semantic_skill_match(text: str, skill_variations: List[str], _nlp_model=None, threshold: float = 0.75) -> bool:
-    """
-    Usa spaCy word vectors per matching semantico.
-    
-    Riconosce skill anche se non sono keyword esatte ma semanticamente simili.
-    Esempio: "Python programmer" matcha con "Python developer"
-    
-    Args:
-        text: Testo dove cercare
-        skill_variations: Lista di variazioni della skill
-        _nlp_model: Modello spaCy (prefix _ per evitare hashing in cache)
-        threshold: Soglia di similarity (0-1), default 0.75
-    
-    Returns:
-        bool: True se trova match semantico
-    """
-    if not _nlp_model or not hasattr(_nlp_model, 'vocab'):
-        # Fallback a regex se spaCy non disponibile
-        text_lower = text.lower()
-        for variation in skill_variations:
-            pattern = r'\b' + re.escape(variation.lower()) + r'\b'
-            if re.search(pattern, text_lower):
-                return True
-        return False
-    
-    # Processa il testo con spaCy
-    doc = _nlp_model(text.lower())
-    
-    # Per ogni variazione della skill
-    for variation in skill_variations:
-        variation_doc = _nlp_model(variation.lower())
-        
-        # Calcola similaritÃ  usando word vectors
-        if variation_doc.has_vector and doc.has_vector:
-            similarity = variation_doc.similarity(doc)
-            if similarity >= threshold:
-                return True
-        
-        # Fallback: regex se no word vectors
-        pattern = r'\b' + re.escape(variation.lower()) + r'\b'
-        if re.search(pattern, text.lower()):
-            return True
-    
-    return False
-
-
-# ============================================================================
-# ML-POWERED SKILL MATCHING (Unsupervised Learning)
-# ============================================================================
-# Uses TF-IDF + Cosine Similarity for intelligent skill detection
-# Works invisibly - no training UI shown to end user
-# ============================================================================
-
-@st.cache_data
-def ml_skill_matcher(cv_text: str, skill_keywords: dict, return_debug_info: bool = False):
-    """
-    ML-based skill detection using TF-IDF + Cosine Similarity.
-    Includes co-occurrence boosting: 'google cloud' boosts GCP, Cloud Computing, etc.
-    """
+def ml_skill_matcher(cv_text: str, return_debug: bool = False):
+    """ML-based skill detection using TF-IDF + Cosine Similarity."""
     if not TfidfVectorizer or not cosine_similarity:
-        return (set(), {}) if return_debug_info else set()
+        return (set(), {}) if return_debug else set()
     
-    detected_skills = set()
-    debug_info = {"scores": {}, "features": [], "threshold_used": {}, "boosted": {}}
+    detected = set()
+    debug = {"scores": {}, "features": [], "thresholds": {}, "boosted": {}}
     cv_lower = cv_text.lower()
     
-    # SKILL CO-OCCURRENCE: detecting one term boosts related skills
-    skill_cooccurrence = {
-        "google cloud": ["GCP", "Cloud Computing", "Computer Vision", "Machine Learning", "Data Science", "BigQuery"],
-        "gcp": ["GCP", "Cloud Computing", "Computer Vision", "Machine Learning", "BigQuery"],
-        "vision api": ["Computer Vision", "Machine Learning", "GCP", "Google Cloud"],
-        "bigquery": ["SQL", "Data Science", "GCP", "Google Cloud"],
-        "churn": ["Data Science", "Machine Learning", "Python", "SQL"],
-        "dropout": ["Data Science", "Machine Learning", "Python", "Computer Vision"],
-        "student analytics": ["Data Science", "Machine Learning", "Python"],
+    # Co-occurrence boosting
+    cooccurrence = {
+        "google cloud": ["GCP", "Cloud Computing", "BigQuery"],
+        "gcp": ["GCP", "Cloud Computing"],
+        "vision api": ["Computer Vision", "GCP"],
+        "bigquery": ["SQL", "GCP", "Data Science"],
+        "churn": ["Data Science", "Machine Learning", "Python"],
         "tensorflow": ["Machine Learning", "Deep Learning", "Python"],
         "pytorch": ["Machine Learning", "Deep Learning", "Python"],
-        "opencv": ["Computer Vision", "Python", "Machine Learning"],
-        "sagemaker": ["AWS", "Machine Learning", "Data Science", "Python"],
-        "lambda": ["AWS", "Cloud Computing", "Python"],
-        "ec2": ["AWS", "Cloud Computing"],
-        "s3": ["AWS", "Cloud Computing"],
+        "opencv": ["Computer Vision", "Python"],
+        "sagemaker": ["AWS", "Machine Learning"],
+        "lambda": ["AWS", "Cloud Computing"],
     }
     
-    # Build skill descriptions with context
-    skill_descriptions = {}
-    for skill, keywords in skill_keywords.items():
+    # Build skill descriptions
+    skill_desc = {}
+    for skill, keywords in SKILL_GROUPS.items():
         desc = " ".join(keywords).lower()
-        
-        # Add domain-specific context
+        # Add context
         if skill == "Computer Vision":
-            desc += " image processing opencv yolo cnn detection recognition segmentation ocr facial video medical autonomous manufacturing retail security ar google cloud vision api vertex ai gcp aws rekognition churn dropout student analytics dashboard mvp"
+            desc += " image processing opencv yolo cnn detection recognition gcp aws vision api"
         elif skill == "Data Science":
-            desc += " churn analytics prediction dashboard student dropout retention eda pandas sklearn bigquery gcp aws sagemaker vertex ai machine learning statistical modeling visualization metrics kpi mvp"
+            desc += " churn analytics prediction pandas sklearn bigquery gcp aws sagemaker"
         elif skill == "Machine Learning":
-            desc += " supervised unsupervised classification regression neural network deep learning tensorflow pytorch sklearn xgboost training prediction model churn dropout student analytics gcp aws sagemaker vertex ai"
-        elif skill in ["GCP", "Google Cloud"]:
-            desc += " google cloud platform bigquery vertex ai vision api cloud functions compute engine cloud run cloud storage dataflow pub/sub kubernetes gke firebase churn analytics dashboard mvp"
+            desc += " tensorflow pytorch sklearn xgboost training prediction model"
+        elif skill in ["GCP", "Cloud Computing"]:
+            desc += " google cloud bigquery vertex ai cloud functions compute engine"
         elif skill == "AWS":
-            desc += " amazon web services ec2 s3 lambda sagemaker rds dynamodb cloudfront cloudwatch iam vpc api gateway kinesis glue athena churn analytics dashboard"
-        elif skill == "Cloud Computing":
-            desc += " gcp aws azure google cloud amazon serverless kubernetes docker container deployment infrastructure devops ci/cd pipeline cloud platform services"
-        elif skill == "Python":
-            desc += " pandas numpy matplotlib sklearn tensorflow pytorch flask django streamlit automation scripting api backend data analysis machine learning churn analytics"
-        elif skill == "SQL":
-            desc += " database query join aggregation postgres mysql bigquery analytics data warehouse etl reporting"
-        
-        skill_descriptions[skill] = desc
+            desc += " ec2 s3 lambda sagemaker rds dynamodb cloudfront"
+        skill_desc[skill] = desc
     
-    # Calculate co-occurrence boost
-    cooccurrence_boost = {}
-    for trigger, related_skills in skill_cooccurrence.items():
+    # Calculate boosts
+    boost = {}
+    for trigger, skills in cooccurrence.items():
         if trigger in cv_lower:
-            for skill in related_skills:
-                if skill in skill_descriptions:
-                    cooccurrence_boost[skill] = cooccurrence_boost.get(skill, 0) + 0.04
+            for s in skills:
+                boost[s] = boost.get(s, 0) + 0.05
     
-    # TF-IDF Vectorization
+    # TF-IDF
     vectorizer = TfidfVectorizer(max_features=150, stop_words='english', ngram_range=(1, 2))
     
     try:
-        all_texts = list(skill_descriptions.values()) + [cv_lower]
-        tfidf_matrix = vectorizer.fit_transform(all_texts)
-        cv_vector = tfidf_matrix[-1]
-        skill_vectors = tfidf_matrix[:-1]
-        similarities = cosine_similarity(cv_vector, skill_vectors)[0]
+        texts = list(skill_desc.values()) + [cv_lower]
+        matrix = vectorizer.fit_transform(texts)
+        cv_vec = matrix[-1]
+        skill_vecs = matrix[:-1]
+        sims = cosine_similarity(cv_vec, skill_vecs)[0]
         
-        # Extract top features for debug
-        if return_debug_info:
+        if return_debug:
             features = vectorizer.get_feature_names_out()
-            cv_array = cv_vector.toarray()[0]
-            top_idx = cv_array.argsort()[-15:][::-1]
-            debug_info["features"] = [(features[i], cv_array[i]) for i in top_idx if cv_array[i] > 0]
+            arr = cv_vec.toarray()[0]
+            top_idx = arr.argsort()[-15:][::-1]
+            debug["features"] = [(features[i], arr[i]) for i in top_idx if arr[i] > 0]
         
-        # Detect skills
-        for idx, skill in enumerate(skill_descriptions.keys()):
-            score = similarities[idx] + cooccurrence_boost.get(skill, 0)
+        for idx, skill in enumerate(skill_desc.keys()):
+            score = sims[idx] + boost.get(skill, 0)
             
             # Dynamic thresholds
-            if skill in ["Computer Vision", "Data Science", "Machine Learning", "Deep Learning"]:
-                threshold = 0.04
-            elif skill in ["Python", "SQL", "AWS", "GCP", "Google Cloud", "Cloud Computing"]:
-                threshold = 0.06
+            if skill in ["Computer Vision", "Data Science", "Machine Learning", "Deep Learning", "NLP"]:
+                thresh = 0.05
+            elif skill in ["Python", "SQL", "AWS", "GCP", "Cloud Computing"]:
+                thresh = 0.07
             else:
-                threshold = 0.12
+                thresh = 0.12
             
-            if return_debug_info:
-                debug_info["scores"][skill] = score
-                debug_info["threshold_used"][skill] = threshold
-                if skill in cooccurrence_boost:
-                    debug_info["boosted"][skill] = cooccurrence_boost[skill]
+            if return_debug:
+                debug["scores"][skill] = score
+                debug["thresholds"][skill] = thresh
+                if skill in boost:
+                    debug["boosted"][skill] = boost[skill]
             
-            if score > threshold:
-                detected_skills.add(skill)
+            if score > thresh:
+                detected.add(skill)
                 
     except Exception as e:
-        if return_debug_info:
-            debug_info["error"] = str(e)
+        if return_debug:
+            debug["error"] = str(e)
     
-    return (detected_skills, debug_info) if return_debug_info else detected_skills
+    return (detected, debug) if return_debug else detected
 
 
-
-# ============================================================================
-# FUNCTION: PDF TEXT EXTRACTION
-# ============================================================================
-# TEXT MINING PILLAR: Extension to handle PDF documents
-# ============================================================================
-
+# =============================================================================
+# TEXT EXTRACTION
+# =============================================================================
 def extract_text_from_pdf(pdf_file) -> str:
-    """
-    Estrae il testo da un file PDF caricato dall'utente.
-    
-    ALGORITMO:
-    1. Legge il file PDF usando PyPDF2
-    2. Itera su tutte le pagine
-    3. Estrae il testo da ogni pagina
-    4. Concatena tutto in un'unica stringa
-    
-    Args:
-        pdf_file: File PDF caricato tramite st.file_uploader
-    
-    Returns:
-        str: Testo estratto dal PDF
-    
-    Raises:
-        Exception: Se PyPDF2 non Ã¨ installato o il PDF Ã¨ corrotto
-    """
+    """Extract text from uploaded PDF."""
     if PdfReader is None:
-        raise ImportError(
-            "PyPDF2 non Ã¨ installato. "
-            "Installa con: pip install PyPDF2"
-        )
-    
+        raise ImportError("PyPDF2 not installed. Run: pip install PyPDF2")
     try:
-        # Crea un oggetto PdfReader dal file caricato
-        pdf_reader = PdfReader(pdf_file)
-        
-        # Lista per accumulare il testo di tutte le pagine
-        text_parts = []
-        
-        # Itera su tutte le pagine del PDF
-        for page_num, page in enumerate(pdf_reader.pages):
-            # Estrai il testo dalla pagina
-            page_text = page.extract_text()
-            
-            if page_text:
-                text_parts.append(page_text)
-        
-        # Join all text with spaces
-        full_text = " ".join(text_parts)
-        
-        return full_text
-    
+        reader = PdfReader(pdf_file)
+        return " ".join(page.extract_text() or "" for page in reader.pages)
     except Exception as e:
-        raise Exception(f"Error reading PDF: {str(e)}")
+        raise Exception(f"PDF reading error: {str(e)}")
 
 
-# ============================================================================
-# CORE FUNCTION: TEXT MINING & KEYWORD EXTRACTION (AI-ENHANCED)
-# ============================================================================
-# NLP PILLAR: Implements intelligent keyword extraction using multi-layer AI
-# Simile al task NLP del laboratorio (rake_nltk), ma con approccio custom
-# ============================================================================
-
-def normalize_and_extract(text: str) -> Set[str]:
-    """
-    Estrae le competenze dal testo usando Text Mining e Pattern Matching,
-    poi applica inferenza intelligente per dedurre skill implicite.
-    
-    ALGORITMO:
-    1. Normalizzazione: Converte il testo in lowercase per case-insensitive matching
-    2. Pattern Matching: Usa regex per trovare keyword esatte (con word boundaries)
-    3. Normalizzazione Semantica: Mappa variazioni diverse allo stesso concetto
-    4. INFERENZA INTELLIGENTE: Deduce skill implicite (NOVITÃ€!)
-    
-    Args:
-        text (str): Testo da analizzare (annuncio di lavoro o CV)
-    
-    Returns:
-        Set[str]: Set di skill normalizzate + skill inferite
-    
-    Esempio:
-        Input: "Data Scientist con Microsoft Office"
-        Step 1-3: {"Data Scientist", "Microsoft Office"}
-        Step 4 (inferenza): {"Data Scientist", "Python", "SQL", "Machine Learning",
-                             "Microsoft Office", "Excel", "Word", "PowerPoint"}
-    """
-    # Set per memorizzare le skill trovate (usa Set per evitare duplicati)
-    found_skills = set()
-    
-    # STEP 1: Normalizzazione testo - converte tutto in minuscolo
+def extract_keywords(text: str) -> Set[str]:
+    """Extract skills using regex pattern matching."""
+    found = set()
     text_lower = text.lower()
     
-    # STEP 2: Iterazione su tutti i gruppi di competenze
-    for main_skill, variations in SKILL_GROUPS.items():
-        # Per ogni variazione di questa skill
-        for variation in variations:
-            # STEP 3: Pattern Matching con Regex
-            # \b = word boundary (evita match parziali: "python" in "pythonic")
-            # re.escape() = escape caratteri speciali (es. C++, C#, .NET)
-            pattern = r'\b' + re.escape(variation.lower()) + r'\b'
-            
-            # STEP 4: Ricerca pattern nel testo
+    for skill, variations in SKILL_GROUPS.items():
+        for var in variations:
+            pattern = r'\b' + re.escape(var.lower()) + r'(?:s|es|ing|ed)?\b'
             if re.search(pattern, text_lower):
-                # Skill trovata! Aggiungi al set usando il nome normalizzato
-                found_skills.add(main_skill)
-                # Break: una sola variazione basta per riconoscere la skill
+                found.add(skill)
                 break
     
-    # STEP 5 (NUOVO): INFERENZA SKILL IMPLICITE
-    # Espande il set con competenze deducibili logicamente
-    all_skills = infer_implied_skills(found_skills)
-    
-    return all_skills
+    return found
 
 
-# ============================================================================
-# FUNZIONE: CALCOLO METRICHE DI COMPATIBILITÃ€
-# ============================================================================
-# PILASTRO DATA ANALYSIS: Calcola scoring e metriche quantitative
-# ============================================================================
-
-def calculate_match(job_skills: Set[str], cv_skills: Set[str]) -> Tuple[float, Set[str], Set[str]]:
-    """
-    Calcola la percentuale di match e identifica skill possedute vs mancanti.
-    IMPORTANTE: Le soft skills sono ESCLUSE dal calcolo della percentuale.
+# =============================================================================
+# MAIN ANALYSIS
+# =============================================================================
+def analyze_gap(cv_text: str, job_text: str) -> Dict:
+    """Analyze skill gap between CV and job requirements."""
+    # Extract skills
+    cv_regex = extract_keywords(cv_text)
+    cv_ml = ml_skill_matcher(cv_text)
+    cv_skills = cv_regex | cv_ml
     
-    ALGORITMO:
-    1. Filtra soft skills da entrambi i set
-    2. Intersezione: Trova skill comuni (job_skills âˆ© cv_skills)
-    3. Differenza: Trova skill mancanti (job_skills - cv_skills)
-    4. Scoring: Percentuale = (skill_comuni / skill_richieste) * 100
+    job_regex = extract_keywords(job_text)
+    job_ml = ml_skill_matcher(job_text)
+    job_skills = job_regex | job_ml
     
-    Args:
-        job_skills (Set[str]): Competenze richieste dall'annuncio
-        cv_skills (Set[str]): Competenze possedute dal candidato
+    # Calculate gaps
+    matching = cv_skills & job_skills
+    missing = job_skills - cv_skills
+    extra = cv_skills - job_skills
     
-    Returns:
-        Tuple[float, Set[str], Set[str]]: 
-            - Percentuale di match (0-100) basata su HARD SKILLS
-            - Set di skill possedute
-            - Set di skill mancanti
-    """
-    # STEP 1: Filtra soft skills (non contano per la percentuale)
-    hard_job_skills = job_skills - SOFT_SKILLS
-    hard_cv_skills = cv_skills - SOFT_SKILLS
+    # Match percentage
+    match_pct = len(matching) / len(job_skills) * 100 if job_skills else 0
     
-    # Caso edge: nessuna hard skill richiesta
-    if not hard_job_skills:
-        return 0.0, set(), set()
-    
-    # STEP 2: OPERAZIONI INSIEMISTICHE (Set Theory) - solo hard skills
-    matched_skills = hard_job_skills.intersection(hard_cv_skills)  # A âˆ© B
-    missing_skills = hard_job_skills.difference(hard_cv_skills)    # A - B
-    
-    # STEP 3: CALCOLO PERCENTUALE DI MATCH (solo hard skills)
-    # Formula: (hard_skill_match / hard_skill_totali_richieste) * 100
-    match_percentage = (len(matched_skills) / len(hard_job_skills)) * 100
-    
-    return match_percentage, matched_skills, missing_skills
+    return {
+        "cv_skills": cv_skills,
+        "job_skills": job_skills,
+        "matching": matching,
+        "missing": missing,
+        "extra": extra,
+        "match_percentage": match_pct
+    }
 
 
-# ============================================================================
-# FUNZIONE: GENERAZIONE FEEDBACK QUALITATIVO
-# ============================================================================
-
-def get_match_message(percentage: float) -> str:
-    """
-    Converte il punteggio numerico in feedback testuale per l'utente.
-    
-    THRESHOLDS:
-    - < 40%: Match Basso (profilo junior o requisiti eccessivi)
-    - 40-75%: Match Medio (buona base, serve integrazione)
-    - > 75%: Match Alto (profilo ideale)
-    
-    Args:
-        percentage (float): Percentuale di compatibilitÃ  (0-100)
-    
-    Returns:
-        str: Messaggio formattato con emoji e descrizione
-    """
-    if percentage < 40:
-        return "ðŸ”´ Match Basso - Richieste forse irrealistiche o profilo junior"
-    elif percentage <= 75:
-        return "ðŸŸ¡ Match Medio - Buona base"
-    else:
-        return "ðŸŸ¢ Match Alto - Profilo ideale"
-
-
-# ==============================================================================
-# INTERFACCIA UTENTE - LINKEDIN PROFESSIONAL DESIGN
-# ============================================================================
-
-# ==============================================================================
-# HIDDEN ML DEBUG SIDEBAR (Password Protected)
-# ==============================================================================
+# =============================================================================
+# SIDEBAR (ML Debug Panel)
+# =============================================================================
 with st.sidebar:
-    st.markdown("### âš™ï¸ ML Debug Panel")
-    st.caption("Click â˜° icon (top-left) to open/close")
-    password = st.text_input("Password:", type="password", key="ml_debug_pwd")
+    st.markdown("## ⚙️ ML Debug Panel")
+    st.caption("Password protected debugging tools")
+    
+    password = st.text_input("Password:", type="password", key="debug_pwd")
     
     if password == "1234":
-        st.success("âœ… Access Granted")
-        st.markdown("---")
+        st.success("✅ Access Granted")
+        st.divider()
         
-        # Enable debugging checkbox
-        debug_enabled = st.checkbox("ðŸ”¬ Enable ML Debugging", help="Captures detailed ML metrics on next analysis")
-        st.session_state['ml_debug_enabled'] = debug_enabled
+        debug_on = st.checkbox("🔬 Enable ML Debug Mode", help="Show detailed ML metrics")
+        st.session_state["ml_debug"] = debug_on
         
-        if debug_enabled:
-            st.markdown("### ï¿½ Model Architecture")
+        if debug_on:
+            st.markdown("### Model Config")
             st.code("""
 TF-IDF Vectorizer:
-â”œâ”€ max_features: 200
-â”œâ”€ ngram_range: (1,2)
-â”œâ”€ stop_words: english
-â””â”€ metric: cosine_similarity
+├─ max_features: 150
+├─ ngram_range: (1,2)
+└─ metric: cosine_similarity
 
 Thresholds:
-â”œâ”€ CV/DS/ML: 0.08
-â”œâ”€ Python/SQL: 0.12  
-â””â”€ Others: 0.18
+├─ CV/DS/ML/NLP: 0.05
+├─ Python/SQL/Cloud: 0.07
+└─ Others: 0.12
             """, language="yaml")
             
-            st.markdown("---")
-            
-            # Show debug data if available
-            if 'debug_ml_scores' in st.session_state:
-                debug_data = st.session_state['debug_ml_scores']
+            if "debug_data" in st.session_state:
+                data = st.session_state["debug_data"]
                 
-                # Vectorizer statistics
-                if 'features' in debug_data and debug_data['features']:
-                    st.markdown("### ðŸ§® TF-IDF Analysis")
-                    total_features = len(debug_data['features'])
-                    non_zero = sum(1 for _, score in debug_data['features'] if score > 0)
-                    
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        st.metric("Features Extracted", non_zero)
-                    with col2:
-                        st.metric("Total Vocabulary", 200)
-                    
-                    st.markdown("**Top 15 Features (by TF-IDF weight):**")
-                    features_df = []
-                    for feature, weight in debug_data['features'][:15]:
-                        features_df.append({
-                            "Term": feature,
-                            "TF-IDF": f"{weight:.4f}"
-                        })
-                    
+                if "features" in data and data["features"]:
+                    st.markdown("### Top TF-IDF Features")
+                    for feat, weight in data["features"][:10]:
+                        st.text(f"{feat}: {weight:.4f}")
+                
+                if "scores" in data:
+                    st.markdown("### Skill Scores")
                     import pandas as pd
-                    st.dataframe(pd.DataFrame(features_df), use_container_width=True, hide_index=True)
-                
-                # Similarity scores with statistics
-                if 'scores' in debug_data:
-                    st.markdown("---")
-                    st.markdown("### ðŸŽ¯ Similarity Scores")
-                    
-                    scores = list(debug_data['scores'].values())
-                    import numpy as np
-                    
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        st.metric("Mean", f"{np.mean(scores):.3f}")
-                    with col2:
-                        st.metric("Max", f"{np.max(scores):.3f}")
-                    with col3:
-                        st.metric("Std Dev", f"{np.std(scores):.3f}")
-                    
-                    # Skills sorted by similarity
-                    st.markdown("**All Skills (sorted by score):**")
-                    scores_df = []
-                    for skill, score in sorted(debug_data['scores'].items(), key=lambda x: x[1], reverse=True):
-                        threshold = debug_data['threshold_used'].get(skill, 0.18)
-                        matched = "âœ…" if score > threshold else "âŒ"
-                        delta = score - threshold
-                        scores_df.append({
-                            "Skill": skill,
-                            "Score": f"{score:.4f}",
-                            "Threshold": f"{threshold:.2f}",
-                            "Î”": f"{delta:+.4f}",
-                            "Match": matched
-                        })
-                    
-                    st.dataframe(pd.DataFrame(scores_df), use_container_width=True, hide_index=True, height=400)
-                    
-                    # Distribution insights
-                    matched_count = sum(1 for item in scores_df if item["Match"] == "âœ…")
-                    st.info(f"**Detection Rate:** {matched_count}/{len(scores_df)} skills matched ({matched_count/len(scores_df)*100:.1f}%)")
-                    
-            else:
-                st.warning("âš ï¸ No data yet. Upload CV/Job to see metrics.")
-    
-    elif password and password != "1234":
-        st.error("âŒ Invalid Password")
+                    rows = []
+                    for skill, score in sorted(data["scores"].items(), key=lambda x: -x[1]):
+                        thresh = data["thresholds"].get(skill, 0.12)
+                        status = "✅" if score > thresh else "❌"
+                        rows.append({"Skill": skill, "Score": f"{score:.3f}", "Thresh": f"{thresh:.2f}", "Match": status})
+                    st.dataframe(pd.DataFrame(rows), height=300)
+    elif password:
+        st.error("❌ Wrong password")
 
 
-# Professional Header
-st.markdown("""
-<div class="linkedin-header">
-    <h1>ðŸŽ¯ Job Seeker Helper</h1>
-    <p>AI-Powered CV-Job Matching Platform</p>
-</div>
-""", unsafe_allow_html=True)
+# =============================================================================
+# MAIN UI
+# =============================================================================
+st.title("🎯 Job Seeker Helper")
+st.markdown("**Analyze your CV against job descriptions to find skill gaps and get personalized learning recommendations.**")
 
-# ============================================================================
-# SEZIONE INPUT: Due colonne per annuncio e CV
-# ============================================================================
-col1, col2 = st.columns(2)  # Layout a 2 colonne
+# Input columns
+col1, col2 = st.columns(2)
 
 with col1:
-    st.subheader("ðŸ“‹ Annuncio di Lavoro")
-    # Text area per input annuncio
-    job_text = st.text_area(
-        "Incolla qui il testo dell'annuncio",
-        height=300,
-        placeholder="Cerca Software Engineer con esperienza in Python, SQL, Docker..."
-    )
+    st.markdown("### 📄 Your CV")
+    cv_input = st.radio("Input method:", ["Paste Text", "Upload PDF"], key="cv_method", horizontal=True)
+    
+    if cv_input == "Paste Text":
+        cv_text = st.text_area("Paste your CV here:", height=250, placeholder="Paste your CV content...")
+    else:
+        cv_file = st.file_uploader("Upload CV PDF", type=["pdf"], key="cv_pdf")
+        cv_text = ""
+        if cv_file:
+            try:
+                cv_text = extract_text_from_pdf(cv_file)
+                st.success(f"✅ Extracted {len(cv_text)} characters")
+            except Exception as e:
+                st.error(f"Error: {e}")
 
 with col2:
-    st.subheader("ðŸ“„ Il tuo CV / Lista Skill")
+    st.markdown("### 💼 Job Description")
+    job_input = st.radio("Input method:", ["Paste Text", "Upload PDF"], key="job_method", horizontal=True)
     
-    # Tab per scegliere tra testo o PDF
-    input_method = st.radio(
-        "ModalitÃ  di input:",
-        ["ðŸ“ Testo", "ðŸ“Ž Upload PDF"],
-        horizontal=True,
-        label_visibility="collapsed"
-    )
-    
-    cv_text = ""
-    
-    if input_method == "ðŸ“ Testo":
-        # Text area per input CV manuale
-        cv_text = st.text_area(
-            "Incolla qui il tuo CV o lista di competenze",
-            height=300,
-            placeholder="Esperienza con Python, JavaScript, React, PostgreSQL...",
-            key="cv_text_input"
-        )
+    if job_input == "Paste Text":
+        job_text = st.text_area("Paste job description:", height=250, placeholder="Paste job description...")
     else:
-        # File uploader per PDF
-        uploaded_file = st.file_uploader(
-            "Carica il tuo CV in formato PDF",
-            type=["pdf"],
-            help="Carica un file PDF del tuo curriculum vitae"
-        )
-        
-        if uploaded_file is not None:
+        job_file = st.file_uploader("Upload Job PDF", type=["pdf"], key="job_pdf")
+        job_text = ""
+        if job_file:
             try:
-                # Estrai testo dal PDF
-                with st.spinner("ðŸ“– Lettura del PDF in corso..."):
-                    cv_text = extract_text_from_pdf(uploaded_file)
-                
-                st.success(f"âœ… PDF caricato! Estratti {len(cv_text)} caratteri.")
-            
-            except ImportError as e:
-                st.error(
-                    "âŒ PyPDF2 non installato. "
-                    "Esegui: `pip install PyPDF2`"
-                )
+                job_text = extract_text_from_pdf(job_file)
+                st.success(f"✅ Extracted {len(job_text)} characters")
             except Exception as e:
-                st.error(f"âŒ Errore nella lettura del PDF: {str(e)}")
-        else:
-            st.info("ðŸ‘† Carica un file PDF per iniziare l'analisi")
+                st.error(f"Error: {e}")
 
-st.markdown("---")  # Separatore
-
-# ============================================================================
-# SEZIONE PROCESSING: Logica di analisi al click del bottone
-# ============================================================================
-
-# Bottone di analisi (type="primary" â†’ colore acceso, use_container_width â†’ full width)
-if st.button("ðŸ” Analizza Match", type="primary", use_container_width=True):
-    
-    # VALIDAZIONE INPUT: Verifica che entrambi i campi siano compilati
-    if not job_text or not cv_text:
-        st.warning("âš ï¸ Compila entrambi i campi per procedere con l'analisi!")
-    
+# Analyze button
+if st.button("🔍 Analyze Skill Gap", type="primary", use_container_width=True):
+    if not cv_text or not job_text:
+        st.warning("⚠️ Please provide both CV and Job Description")
     else:
-        # ====================================================================
-        # PIPELINE DI ANALISI
-        # ====================================================================
-        
-        # STEP 1: TEXT MINING - Estrazione keyword da entrambi i testi
-        job_skills = normalize_and_extract(job_text)   # Skill richieste
-        cv_skills = normalize_and_extract(cv_text)     # Skill possedute
-        
-        # STEP 2: SCORING - Calcolo compatibilitÃ 
-        match_percentage, matched_skills, missing_skills = calculate_match(
-            job_skills, cv_skills
-        )
-        
-        # ====================================================================
-        # VISUALIZZAZIONE RISULTATI - DESIGN PROFESSIONALE
-        # ====================================================================
-        
-        st.markdown("---")
-        
-        # CARD RISULTATI con chart interattivo
-        col_chart, col_metrics = st.columns([1, 1])
-        
-        with col_chart:
-            st.subheader("ðŸ“Š Match Analysis")
+        with st.spinner("Analyzing..."):
+            # Run ML with debug if enabled
+            if st.session_state.get("ml_debug"):
+                _, debug_data = ml_skill_matcher(cv_text, return_debug=True)
+                st.session_state["debug_data"] = debug_data
             
-            # Donut Chart - LinkedIn Style
-            fig = go.Figure(data=[go.Pie(
-                labels=['Matched Skills', 'Skills Gap'],
-                values=[len(matched_skills), len(missing_skills)],
-                hole=0.65,
-                marker=dict(colors=['#0077B5', '#E9ECEF']),
-                textinfo='label+percent',
-                textfont_size=13,
-                textfont_color='#212529'
-            )])
-            
-            fig.update_layout(
-                showlegend=False,
-                height=280,
-                margin=dict(t=0, b=0, l=0, r=0),
-                paper_bgcolor='rgba(0,0,0,0)',
-                plot_bgcolor='rgba(0,0,0,0)',
-                annotations=[dict(
-                    text=f'{match_percentage:.0f}%',
-                    x=0.5, y=0.5,
-                    font_size=36,
-                    showarrow=False,
-                    font=dict(color='#0077B5', family='Arial', weight='bold')
-                )]
-            )
-            
-            st.plotly_chart(fig, use_container_width=True)
+            results = analyze_gap(cv_text, job_text)
         
-        with col_metrics:
-            st.subheader("ðŸ“ˆ Key Metrics")
-            
-            # Clean metrics display
-            m1, m2 = st.columns (2)
-            with m1:
-                st.metric("Match Score", f"{match_percentage:.0f}%")
-            with m2:
-                st.metric("Total Skills", len(job_skills))
-            
-            st.markdown("<br>", unsafe_allow_html=True)
-            
-            # Status indicator - clean design
-            if match_percentage >= 75:
-                st.success("âœ… **Strong Match** - Excellent fit for this role")
-            elif match_percentage >= 50:
-                st.info("â„¹ï¸ **Good Match** - Solid foundation, worth applying")
+        # Results
+        st.divider()
+        
+        # Score
+        pct = results["match_percentage"]
+        if pct >= 80:
+            color = "green"
+            msg = "🎉 Excellent match!"
+        elif pct >= 60:
+            color = "orange"
+            msg = "👍 Good match, some gaps to fill"
+        else:
+            color = "red"
+            msg = "📚 Significant skill gaps - learning plan needed"
+        
+        st.markdown(f"## Match Score: :{color}[{pct:.0f}%] {msg}")
+        
+        # Skills overview
+        c1, c2, c3 = st.columns(3)
+        
+        with c1:
+            st.markdown("### ✅ Matching Skills")
+            if results["matching"]:
+                for s in sorted(results["matching"]):
+                    st.markdown(f"• {s}")
             else:
-                st.warning("âš ï¸ **Developing Match** - Consider upskilling first")
+                st.info("No matching skills found")
         
-        st.markdown("<br>", unsafe_allow_html=True)
-        
-        # ====================================================================
-        # SKILL DETAILS - CATEGORIZED DRILL-DOWN
-        # ====================================================================
-        
-        # Funzione helper per categorizzare skill
-        def categorize_skills(skills_set):
-            categories = {
-                "Programming": [],
-                "Data & Analytics": [],
-                "Cloud & DevOps": [],
-                "Business Intelligence": [],
-                "Soft Skills": []
-            }
-            
-            for skill in skills_set:
-                if skill in ["Python", "Java", "JavaScript", "C++", "C#", "R", "Go"]:
-                    categories["Programming"].append(skill)
-                elif skill in ["Data Science", "Machine Learning", "NLP", "Deep Learning", "AI", "Pandas", "SQL", "PostgreSQL", "MySQL", "MongoDB"]:
-                    categories["Data & Analytics"].append(skill)
-                elif skill in ["AWS", "Azure", "GCP", "Docker", "Kubernetes", "DevOps"]:
-                    categories["Cloud & DevOps"].append(skill)
-                elif skill in ["Power BI", "Tableau", "Looker", "Excel"]:
-                    categories["Business Intelligence"].append(skill)
-                elif skill in ["Leadership", "Communication", "Teamwork", "Agile", "Project Management"]:
-                    categories["Soft Skills"].append(skill)
-                else:
-                    # Default alla categoria piÃ¹ probabile
-                    if "data" in skill.lower() or "sql" in skill.lower():
-                        categories["Data & Analytics"].append(skill)
-                    else:
-                        categories["Programming"].append(skill)
-            
-            # Rimuovi categorie vuote
-            return {k: v for k, v in categories.items() if v}
-        
-        col_matched, col_missing = st.columns(2)
-        
-        # === MATCHED SKILLS - COMPACT ===
-        with col_matched:
-            st.subheader("âœ… Matched Skills")
-            
-            if matched_skills:
-                categorized_matched = categorize_skills(matched_skills)
-                
-                # Mostra count compatto
-                st.metric("Total Matched", len(matched_skills))
-                
-                # Drill-down per categoria
-                for category, skills in categorized_matched.items():
-                    with st.expander(f"ðŸ“ {category} ({len(skills)})"):
-                        for skill in sorted(skills):
-                            st.success(f"âœ“ {skill}", icon="âœ…")
+        with c2:
+            st.markdown("### ❌ Missing Skills")
+            if results["missing"]:
+                for s in sorted(results["missing"]):
+                    st.markdown(f"• {s}")
             else:
-                st.info("No skills matched")
+                st.success("No missing skills!")
         
-        # === MISSING SKILLS - DETAILED LEARNING RESOURCES ===
-        with col_missing:
-            st.subheader("âŒ Skills Gap")
-            
-            if missing_skills:
-                categorized_missing = categorize_skills(missing_skills)
-                
-                # Mostra count
-                st.metric("Skills to Develop", len(missing_skills))
-                
-                # Drill-down per ogni skill con risorse COMPLETE
-                for category, skills in categorized_missing.items():
-                    with st.expander(f"ðŸ“ {category} ({len(skills)})", expanded=(category == list(categorized_missing.keys())[0])):
-                        for skill in sorted(skills):
-                            st.error(f"**{skill}**", icon="âŒ")
-                            
-                            # Ottieni risorse complete
-                            resource = LEARNING_RESOURCES.get(skill, DEFAULT_LEARNING_RESOURCE)
-                            
-                            # Box with complete details
-                            with st.container():
-                                # Metrics row
-                                c1, c2 = st.columns(2)
-                                with c1:
-                                    st.caption(f"â±ï¸ **Time:** {resource['tempo']}")
-                                with c2:
-                                    st.caption(f"ðŸ“Š **Level:** {resource['difficoltÃ ']}")
-                                
-                                # Project Idea (NEW - highlighted)
-                                if 'project' in resource:
-                                    st.markdown(resource['project'])
-                                    st.markdown("")
-                                
-                                # Learning path
-                                st.markdown("**ðŸ“š Courses:**")
-                                for i, corso in enumerate(resource['corsi'], 1):
-                                    st.markdown(f"{i}. {corso}")
-                                
-                                st.markdown(f"**ðŸ› ï¸ Practice:** {resource['pratica']}")
-                                st.markdown(f"**ðŸ† Cert:** {resource['certificazioni']}")
-                                
-                                st.markdown("---")
-                
-                # Suggerimento strategico
-                st.info("ðŸ’¡ **Strategy:** Focus on one category at a time. Start with highest priority skills for this role.")
-            
+        with c3:
+            st.markdown("### ➕ Extra Skills")
+            if results["extra"]:
+                for s in sorted(results["extra"]):
+                    st.markdown(f"• {s}")
             else:
-                st.success("ðŸŽ‰ Perfect match! You have all required skills!")
-                st.balloons()
+                st.info("No extra skills")
         
-        # ====================================================================
-        # STATISTICHE AGGIUNTIVE
-        # ====================================================================
-        st.markdown("---")
-        st.caption(
-            f"ðŸ“ˆ Skill rilevate nell'annuncio: {len(job_skills)} | "
-            f"Skill rilevate nel CV: {len(cv_skills)}"
-        )
+        # Learning recommendations for missing skills
+        if results["missing"]:
+            st.divider()
+            st.markdown("## 📚 Personalized Learning Plan")
+            st.markdown("*Specific recommendations for each missing skill:*")
+            
+            for skill in sorted(results["missing"]):
+                # Get skill-specific resource or default
+                resource = LEARNING_RESOURCES.get(skill, DEFAULT_RESOURCE)
+                
+                with st.expander(f"**{skill}** - {resource['level']} difficulty, ~{resource['time']}", expanded=False):
+                    col_a, col_b = st.columns(2)
+                    
+                    with col_a:
+                        st.markdown(f"**⏱️ Time:** {resource['time']}")
+                        st.markdown(f"**📊 Level:** {resource['level']}")
+                        st.markdown("**📚 Courses:**")
+                        for course in resource['courses']:
+                            st.markdown(f"   • {course}")
+                    
+                    with col_b:
+                        st.markdown(f"**🏆 Certification:** {resource['cert']}")
+                        st.markdown(f"**🛠️ Practice:** {resource['practice']}")
+                    
+                    st.markdown(f"**💡 Project:** {resource['project']}")
 
-# ============================================================================
-# FINE CODICE
-# ============================================================================
-# Per eseguire: streamlit run app.py
-# ============================================================================
+# Footer
+st.divider()
+st.caption("Made with ❤️ using Streamlit | ML-powered skill detection with TF-IDF + Cosine Similarity")
