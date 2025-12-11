@@ -25,16 +25,33 @@ def render_debug_page():
         st.session_state["page"] = "Home"
         st.rerun()
     st.title("🛠️ Debugger")
+    st.info("This panel helps developers understand how skills are detected and inferred.")
     
-    _, df = ml_utils.train_rf_model()
-    st.subheader("Inference Rules")
-    st.write(constants.INFERENCE_RULES)
-    st.subheader("Clusters")
-    st.write(constants.SKILL_CLUSTERS)
-    st.subheader("Project Based Skills")
-    st.write(constants.PROJECT_BASED_SKILLS)
-    st.subheader("Database")
-    st.dataframe(df, use_container_width=True)
+    tab1, tab2, tab3, tab4 = st.tabs(["🧠 Inference Logic", "🔗 Skill Clusters", "📂 Project Skills", "📚 Knowledge DB"])
+    
+    with tab1:
+        st.subheader("Hierarchical Rules")
+        st.markdown("If **Child Skill** is found → **Parent Skill** is added.")
+        # Convert dict to simple table for readability
+        inf_data = [{"Child Skill": k, "Inferred Parent(s)": ", ".join(v)} for k, v in constants.INFERENCE_RULES.items()]
+        st.dataframe(pd.DataFrame(inf_data), use_container_width=True, hide_index=True)
+
+    with tab2:
+        st.subheader("Interchangeable Groups")
+        st.markdown("Skills in the same cluster are considered **Transferable**.")
+        # Flatten clusters for display
+        cluster_data = [{"Cluster Name": k, "Members": ", ".join(sorted(v))} for k, v in constants.SKILL_CLUSTERS.items()]
+        st.dataframe(pd.DataFrame(cluster_data), use_container_width=True, hide_index=True)
+
+    with tab3:
+        st.subheader("Portfolio/Project Based")
+        st.markdown("These complex skills should be discussed in an interview/portfolio.")
+        st.write(sorted(list(constants.PROJECT_BASED_SKILLS)))
+
+    with tab4:
+        st.subheader("Training Data (Sample)")
+        _, df = ml_utils.train_rf_model()
+        st.dataframe(df, use_container_width=True)
 
 # =============================================================================
 # MAIN UI
