@@ -19,6 +19,19 @@ INFERENCE_RULES = {
     "PyTorch": ["Machine Learning", "Deep Learning"],
 }
 
+# SKILL CLUSTERS (Interchangeable skills)
+# Knowing one implies strong transferable knowledge of others.
+SKILL_CLUSTERS = {
+    "BI Tools": {"Tableau", "Power BI", "Looker", "Data Studio", "QlikView"},
+    "Cloud Providers": {"AWS", "GCP", "Azure"},
+    "JS Frameworks": {"React", "Vue", "Angular", "Svelte"},
+    "Containerization": {"Docker", "Podman", "Containerd"},
+    "Orchestration": {"Kubernetes", "OpenShift", "Nomad"},
+    "IaC": {"Terraform", "CloudFormation", "Ansible"},
+    "Deep Learning": {"TensorFlow", "PyTorch", "Keras"},
+    "SQL Dialects": {"MySQL", "PostgreSQL", "SQL Server", "Oracle", "BigQuery"},
+}
+
 # HARD SKILLS (Technical, quantifiable)
 HARD_SKILLS = {
     # Programming
@@ -54,6 +67,7 @@ HARD_SKILLS = {
     "React": ["react", "reactjs", "next.js"],
     "Tableau": ["tableau"],
     "Power BI": ["power bi", "powerbi"],
+    "Looker": ["looker", "looker studio"],
     "Excel": ["excel", "spreadsheet", "vba"],
     "Testing": ["testing", "unit test", "pytest", "jest", "selenium", "qa"],
 }
