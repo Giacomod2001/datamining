@@ -66,6 +66,16 @@ st.set_page_config(
     initial_sidebar_state="collapsed"  # Sidebar nascosta di default
 )
 
+# ML-based Skill Matching
+try:
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
+    import numpy as np
+except ImportError:
+    TfidfVectorizer = None
+    cosine_similarity = None
+    np = None
+
 # ============================================================================
 # CUSTOM CSS - LINKEDIN-INSPIRED DESIGN
 # ============================================================================
@@ -786,9 +796,9 @@ DEFAULT_LEARNING_RESOURCE = {
 
 def infer_implied_skills(detected_skills: Set[str]) -> Set[str]:
     """
-    Deduce automaticamente skill implicite basate su quelle rilevate.
+    Automatically deduce implied skills based on detected ones.
     
-    ALGORITMO:
+    ALGORITHM:
     1. Per ogni skill rilevata, controlla se ha implicazioni
     2. Se sì, aggiunge le skill implicate al set
     3. Ripete finché non ci sono più nuove skill da inferire
@@ -882,12 +892,92 @@ def semantic_skill_match(text: str, skill_variations: List[str], _nlp_model=None
     return False
 
 
+# ============================================================================
+# ML-POWERED SKILL MATCHING (Unsupervised Learning)
+# ============================================================================
+# Uses TF-IDF + Cosine Similarity for intelligent skill detection
+# Works invisibly - no training UI shown to end user
+# ============================================================================
+
+@st.cache_data
+def ml_skill_matcher(cv_text: str, skill_keywords: dict) -> Set[str]:
+    """
+    Uses ML (TF-IDF vectorization + cosine similarity) to intelligently match skills.
+    
+    This solves the problem where:
+    - CV says "built MVP analyzing student churn rate" 
+    - Should detect: Data Science, Machine Learning, Python
+    - Traditional regex misses context
+    
+    Args:
+        cv_text: Full CV text
+        skill_keywords: Dict mapping skill name to list of related terms
+        
+    Returns:
+        Set of detected skills based on semantic similarity
+    """
+    if not TfidfVectorizer or not cosine_similarity:
+        return set()  # Fallback if sklearn not available
+    
+    detected_skills = set()
+    
+    # Prepare skill descriptions for vectorization
+    skill_descriptions = {}
+    for skill, keywords in skill_keywords.items():
+        # Create rich description from keywords
+        description = " ".join(keywords)
+        # Add context words for better matching
+        if skill == "Computer Vision":
+            description += " image processing classification detection recognition visual analysis opencv yolo cnn"
+        elif skill == "Data Science":
+            description += " churn analysis prediction modeling analytics insights dashboard metrics visualization"
+        elif skill == "Machine Learning":
+            description += " model training prediction classification regression supervised unsupervised algorithm"
+        
+        skill_descriptions[skill] = description
+    
+    # Create TF-IDF vectors
+    vectorizer = TfidfVectorizer(
+        max_features=200,
+        stop_words='english',
+        ngram_range=(1, 2)  # Include bigrams for better context
+    )
+    
+    try:
+        # Fit vectorizer on skill descriptions + CV text
+        all_texts = list(skill_descriptions.values()) + [cv_text.lower()]
+        tfidf_matrix = vectorizer.fit_transform(all_texts)
+        
+        # CV vector is the last one
+        cv_vector = tfidf_matrix[-1]
+        skill_vectors = tfidf_matrix[:-1]
+        
+        # Calculate cosine similarity
+        similarities = cosine_similarity(cv_vector, skill_vectors)[0]
+        
+        # Detect skills with similarity > threshold
+        for idx, skill in enumerate(skill_descriptions.keys()):
+            similarity_score = similarities[idx]
+            
+            # Lower threshold for important skills
+            threshold = 0.15 if skill in ["Data Science", "Machine Learning", "Python", "SQL"] else 0.20
+            
+            if similarity_score > threshold:
+                detected_skills.add(skill)
+                
+    except Exception:
+        # Silent fallback - don't show errors to user
+        pass
+    
+    return detected_skills
+
+
 
 
 # ============================================================================
-# FUNZIONE: ESTRAZIONE TESTO DA PDF
+# FUNCTION: PDF TEXT EXTRACTION
 # ============================================================================
-# PILASTRO TEXT MINING: Estensione per gestire documenti PDF
+# TEXT MINING PILLAR: Extension to handle PDF documents
 # ============================================================================
 
 def extract_text_from_pdf(pdf_file) -> str:
@@ -930,19 +1020,19 @@ def extract_text_from_pdf(pdf_file) -> str:
             if page_text:
                 text_parts.append(page_text)
         
-        # Unisci tutto il testo con spazi
+        # Join all text with spaces
         full_text = " ".join(text_parts)
         
         return full_text
     
     except Exception as e:
-        raise Exception(f"Errore nella lettura del PDF: {str(e)}")
+        raise Exception(f"Error reading PDF: {str(e)}")
 
 
 # ============================================================================
-# FUNZIONE CORE: TEXT MINING E KEYWORD EXTRACTION
+# CORE FUNCTION: TEXT MINING & KEYWORD EXTRACTION (AI-ENHANCED)
 # ============================================================================
-# PILASTRO NLP: Questa funzione implementa l'estrazione intelligente di keyword
+# NLP PILLAR: Implements intelligent keyword extraction using multi-layer AI
 # Simile al task NLP del laboratorio (rake_nltk), ma con approccio custom
 # ============================================================================
 
