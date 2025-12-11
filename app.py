@@ -67,97 +67,138 @@ st.set_page_config(
 )
 
 # ============================================================================
-# CUSTOM CSS - DESIGN SYSTEM PROFESSIONALE
+# CUSTOM CSS - LINKEDIN-INSPIRED DESIGN
 # ============================================================================
 st.markdown("""
 <style>
-    /* Color Palette Enterprise */
+    /* LinkedIn Color Palette */
     :root {
-        --primary: #6366f1;
-        --primary-dark: #4f46e5;
-        --success: #10b981;
-        --warning: #f59e0b;
-        --error: #ef4444;
-        --bg-dark: #0f172a;
-        --text-light: #f8fafc;
+        --linkedin-blue: #0077B5;
+        --linkedin-dark: #004182;
+        --white: #FFFFFF;
+        --gray-50: #F8F9FA;
+        --gray-100: #E9ECEF;
+        --gray-200: #DEE2E6;
+        --gray-700: #495057;
+        --gray-900: #212529;
+        --success: #057642;
+        --danger: #CC1016;
     }
     
-    /* Header Gradient */
-    .main-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 2rem;
-        border-radius: 1rem;
+    /* Global Styles */
+    .main {
+        background-color: var(--gray-50);
+    }
+    
+    /* Professional Header */
+    .linkedin-header {
+        background: linear-gradient(135deg, var(--linkedin-blue) 0%, var(--linkedin-dark) 100%);
+        padding: 2.5rem 2rem;
+        border-radius: 8px;
         margin-bottom: 2rem;
-        text-align: center;
-        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 2px 8px rgba(0, 119, 181, 0.15);
     }
     
-    .main-header h1 {
-        color: white;
-        font-size: 3rem;
-        font-weight: 800;
+    .linkedin-header h1 {
+        color: var(--white);
+        font-size: 2.5rem;
+        font-weight: 600;
         margin: 0;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        letter-spacing: -0.5px;
     }
     
-    .main-header p {
-        color: rgba(255,255,255,0.9);
-        font-size: 1.2rem;
+    .linkedin-header p {
+        color: rgba(255,255,255,0.95);
+        font-size: 1.1rem;
         margin-top: 0.5rem;
+        font-weight: 300;
     }
     
-    /* Cards */
-    .result-card {
-        background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-        border-radius: 1rem;
+    /* Card Containers */
+    .results-card {
+        background: var(--white);
+        border-radius: 8px;
         padding: 1.5rem;
         margin: 1rem 0;
-        border-left: 4px solid var(--primary);
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        border: 1px solid var(--gray-200);
     }
     
-    /* Skill Pills */
-    .skill-pill {
+    /* Skill Badges - LinkedIn Style */
+    .skill-badge {
         display: inline-block;
-        background: var(--success);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 2rem;
+        background: var(--linkedin-blue);
+        color: var(--white);
+        padding: 0.4rem 0.9rem;
+        border-radius: 16px;
         margin: 0.25rem;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .skill-badge-missing {
+        background: var(--gray-200);
+        color: var(--gray-700);
+    }
+    
+    /* Clean Streamlit Elements */
+    .stButton > button {
+        background-color: var(--linkedin-blue);
+        color: var(--white);
+        border: none;
+        border-radius: 24px;
+        padding: 0.6rem 2rem;
         font-weight: 600;
-        box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+        font-size: 1rem;
+        transition: all 0.2s;
     }
     
-    .skill-pill-missing {
-        background: var(--error);
-        box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+    .stButton > button:hover {
+        background-color: var(--linkedin-dark);
+        box-shadow: 0 4px 12px rgba(0, 119, 181, 0.2);
     }
     
-    /* Animations */
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+    /* Progress Bar */
+    .stProgress > div > div {
+        background-color: var(--linkedin-blue);
     }
     
-    .fade-in {
-        animation: fadeIn 0.5s ease-out;
+    /* Metrics */
+    [data-testid="stMetricValue"] {
+        color: var(--linkedin-blue);
+        font-size: 2rem;
     }
     
-    /* Hide Streamlit branding */
+    /* Remove Streamlit Branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
+    header {visibility: hidden;}
     
-    /* Custom scrollbar */
+    /* Custom Scrollbar */
     ::-webkit-scrollbar {
         width: 8px;
+        height: 8px;
     }
     ::-webkit-scrollbar-track {
-        background: #1e293b;
+        background: var(--gray-100);
     }
     ::-webkit-scrollbar-thumb {
-        background: var(--primary);
+        background: var(--linkedin-blue);
         border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--linkedin-dark);
+    }
+    
+    /* Input Fields */
+    .stTextArea textarea {
+        border-radius: 8px;
+        border: 1px solid var(--gray-200);
+    }
+    
+    .stTextArea textarea:focus {
+        border-color: var(--linkedin-blue);
+        box-shadow: 0 0 0 1px var(--linkedin-blue);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -1008,16 +1049,14 @@ def get_match_message(percentage: float) -> str:
 
 
 # ==============================================================================
-# INTERFACCIA UTENTE STREAMLIT - DESIGN MODERNO
-# ============================================================================
-# PILASTRO VIBE CODING: UI generata con approccio dichiarativo e intuitivo
+# INTERFACCIA UTENTE - LINKEDIN PROFESSIONAL DESIGN
 # ============================================================================
 
-# Header professionale con gradient
+# Professional Header
 st.markdown("""
-<div class="main-header fade-in">
-    <h1>🎯 JOB SEEKER HELPER</h1>
-    <p>Intelligent CV-Job Matching powered by AI & NLP</p>
+<div class="linkedin-header">
+    <h1>🎯 Job Seeker Helper</h1>
+    <p>AI-Powered CV-Job Matching Platform</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -1119,104 +1158,96 @@ if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
         col_chart, col_metrics = st.columns([1, 1])
         
         with col_chart:
-            st.subheader("📊 Analisi Match")
+            st.subheader("📊 Match Analysis")
             
-            # Donut Chart con Plotly
+            # Donut Chart - LinkedIn Style
             fig = go.Figure(data=[go.Pie(
-                labels=['Skill Possedute', 'Skill Mancanti'],
+                labels=['Matched Skills', 'Skills Gap'],
                 values=[len(matched_skills), len(missing_skills)],
-                hole=0.6,
-                marker=dict(colors=['#10b981', '#ef4444']),
+                hole=0.65,
+                marker=dict(colors=['#0077B5', '#E9ECEF']),
                 textinfo='label+percent',
-                textfont_size=14
+                textfont_size=13,
+                textfont_color='#212529'
             )])
             
             fig.update_layout(
                 showlegend=False,
-                height=300,
+                height=280,
                 margin=dict(t=0, b=0, l=0, r=0),
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)',
                 annotations=[dict(
                     text=f'{match_percentage:.0f}%',
                     x=0.5, y=0.5,
-                    font_size=40,
+                    font_size=36,
                     showarrow=False,
-                    font=dict(color='#6366f1', family='Arial Black')
+                    font=dict(color='#0077B5', family='Arial', weight='bold')
                 )]
             )
             
             st.plotly_chart(fig, use_container_width=True)
         
         with col_metrics:
-            st.subheader("📈 Metriche")
+            st.subheader("📈 Key Metrics")
             
-            # Metrics cards
-            metric_col1, metric_col2 = st.columns(2)
-            with metric_col1:
-                st.metric("Match %", f"{match_percentage:.1f}%", 
-                         delta="Alta compatibilità" if match_percentage > 75 else None)
-            with metric_col2:
-                st.metric("Skill Totali", len(job_skills))
+            # Clean metrics display
+            m1, m2 = st.columns (2)
+            with m1:
+                st.metric("Match Score", f"{match_percentage:.0f}%")
+            with m2:
+                st.metric("Total Skills", len(job_skills))
             
-            # Match level indicator
-            if match_percentage < 40:
-                st.error("🔴 Match Basso - Molte skill da sviluppare")
-            elif match_percentage <= 75:
-                st.warning("🟡 Match Medio - Buona base, serve integrazione")
+            st.markdown("<br>", unsafe_allow_html=True)
+            
+            # Status indicator - clean design
+            if match_percentage >= 75:
+                st.success("✅ **Strong Match** - Excellent fit for this role")
+            elif match_percentage >= 50:
+                st.info("ℹ️ **Good Match** - Solid foundation, worth applying")
             else:
-                st.success("🟢 Match Alto - Profilo ideale per il ruolo!")
+                st.warning("⚠️ **Developing Match** - Consider upskilling first")
         
-        st.markdown("---")
+        st.markdown("<br>", unsafe_allow_html=True)
         
         # ====================================================================
-        # DETTAGLIO SKILL: Layout a due colonne
+        # SKILL DETAILS - CLEAN LINKEDIN STYLE
         # ====================================================================
         col_matched, col_missing = st.columns(2)
         
-        # COLONNA SINISTRA: Skill possedute (verde ✓)
+        # MATCHED SKILLS
         with col_matched:
-            st.subheader("✅ Skill Possedute")
+            st.subheader("✅ Matched Skills")
             if matched_skills:
-                # Ordina alfabeticamente e mostra con success badge
                 for skill in sorted(matched_skills):
-                    st.success(f"✓ {skill}")
+                    st.success(f"✓ {skill}", icon="✅")
             else:
-                st.write("Nessuna skill in comune trovata.")
+                st.write("No skills matched")
         
-        # COLONNA DESTRA: Skill mancanti con GUIDA COMPATTA
+        # MISSING SKILLS  
         with col_missing:
-            st.subheader("❌ Skill Mancanti")
+            st.subheader("❌ Skills Gap")
             
             if missing_skills:
                 missing_list = sorted(missing_skills)
-                st.markdown(f"**{len(missing_list)} competenze** da sviluppare")
+                st.markdown(f"**{len(missing_list)} skills** to develop")
+                st.markdown("")
                 
-                # Mostra solo TOP 3 skill con raccomandazioni
-                st.markdown("---")
-                st.markdown("**🎯 Priorità (Top 3):**")
-                
-                for skill in missing_list[:3]:  # Solo prime 3
-                    st.error(f"✗ {skill}")
+                # Show top 3 with learning resources
+                for skill in missing_list[:3]:
+                    st.error(f"✗ {skill}", icon="❌")
                     resource = LEARNING_RESOURCES.get(skill, DEFAULT_LEARNING_RESOURCE)
-                    
-                    # Info compatta in una riga
-                    st.caption(
-                        f"⏱️ {resource['tempo']} | "
-                        f"📊 {resource['difficoltà']} | "
-                        f"📖 {resource['corsi'][0]}"
-                    )
+                    st.caption(f"📚 {resource['tempo']} · {resource['difficoltà']} · {resource['corsi'][0]}")
                 
-                # Altre skill (se ci sono) in expander compatto
+                # Remaining skills (collapsed)
                 if len(missing_list) > 3:
-                    with st.expander(f"➕ Altre {len(missing_list) - 3} skill da sviluppare"):
+                    with st.expander(f"➕ {len(missing_list) - 3} more skills"):
                         for skill in missing_list[3:]:
-                            resource = LEARNING_RESOURCES.get(skill, DEFAULT_LEARNING_RESOURCE)
-                            st.write(f"• **{skill}** - {resource['tempo']}, {resource['difficoltà']}")
+                            st.write(f"• {skill}")
                 
-                # Consiglio finale compatto
-                st.info("💡 Inizia dalla prima skill in lista (più rilevante)")
-            
+                st.info("💡 **Tip:** Start with the first skill listed (highest priority)")
             else:
-                st.success("🎉 Hai tutte le skill richieste!")
+                st.success("🎉 You have all required skills!")
                 st.balloons()
         
         # ====================================================================
