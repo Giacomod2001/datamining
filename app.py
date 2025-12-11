@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import constants
 import ml_utils
+import urllib.parse
 
 # =============================================================================
 # PAGE CONFIG
@@ -41,7 +42,7 @@ def render_debug_page():
 def render_home():
     with st.sidebar:
         st.title("🎯 Job Seeker Helper")
-        st.info("Features:\n- **Smart Inference** (BigQuery → Cloud)\n- **Transferable Skills** (Looker → Power BI)\n- **Project Review** (Computer Vision)")
+        st.info("Features:\n- **Smart Inference** (BigQuery → Cloud)\n- **Transferable Skills** (Looker → Power BI)\n- **Dynamic Resources** (Auto-search for any skill)")
         st.divider()
         if st.toggle("Developer Mode"):
              if st.button("Open Debugger"):
@@ -108,7 +109,6 @@ def render_results(res):
 
     st.subheader("🛠️ Technical Skills Analysis")
     
-    # 5 Columns for: Matched, Transferable, Proj Review, Missing, Bonus
     c1, c2, c3, c4, c5 = st.columns(5)
     
     with c1:
@@ -118,7 +118,6 @@ def render_results(res):
         
     with c2:
         st.markdown("#### ⚠️ Transferable")
-        # .get() to avoid KeyError
         transferable = res.get("transferable", {})
         if transferable:
             for missing, present in transferable.items():
@@ -129,7 +128,6 @@ def render_results(res):
 
     with c3:
         st.markdown("#### 📂 Portfolio")
-        # Project based skills
         projects = res.get("project_review", set())
         if projects:
             for s in projects:
@@ -147,36 +145,37 @@ def render_results(res):
         st.markdown("#### ➕ Bonus")
         for s in res["extra_hard"]: st.write(f"- {s}")
 
-    # SOFT SKILLS
     st.divider()
     
-    sc1, sc2 = st.columns(2)
-    with sc1:
-        st.subheader("🗣️ Soft Skills (Interview)")
-        required_soft = res["matching_soft"] | res["missing_soft"]
-        if required_soft:
-            for s in required_soft:
-                check = "✅" if s in res["matching_soft"] else "⬜"
-                st.write(f"{check} {s}")
-        else:
-            st.caption("No soft skills explicitly found.")
-            
-    with sc2:
-         pass # Spacer
-
     # LEARNING PLAN
     if res["missing_hard"]:
-        st.divider()
-        st.subheader("📚 Learning Recommendations")
-        for s in res["missing_hard"]:
-            r = constants.LEARNING_RESOURCES.get(s, constants.DEFAULT_RESOURCE)
-            with st.expander(f"Learn {s}"):
-                # Fix: Iterate list properly
-                courses = r.get("courses", [])
-                st.write("**Courses:**")
-                for c in courses:
-                    st.markdown(f"- {c}")
-                st.write(f"**Project:** {r.get('project', 'N/A')}")
+        st.subheader("� Learning Actions")
+        
+        for skill in res["missing_hard"]:
+            # Check if we have a specific known resource, otherwise DEFAULT (empty)
+            r = constants.LEARNING_RESOURCES.get(skill, None)
+            
+            with st.expander(f"Action Plan: **{skill}**"):
+                if r:
+                    # Known resource
+                    st.markdown("**Recommended Courses:**")
+                    for c in r["courses"]:
+                        st.write(f"- {c}")
+                    st.markdown(f"**Project:** {r['project']}")
+                else:
+                    # Dynamic Fallback
+                    st.warning(f"No specific guide found for '{skill}', but here are direct search links:")
+                    
+                    # Create safe URL queries
+                    q_skill = urllib.parse.quote(skill)
+                    
+                    lc1, lc2, lc3 = st.columns(3)
+                    with lc1:
+                        st.markdown(f"**[🔍 Google Search](https://www.google.com/search?q=learn+{q_skill}+tutorial)**")
+                    with lc2:
+                        st.markdown(f"**[📺 YouTube Courses](https://www.youtube.com/results?search_query=learn+{q_skill})**")
+                    with lc3:
+                         st.markdown(f"**[🎓 Coursera / Udemy](https://www.google.com/search?q=site:coursera.org+OR+site:udemy.com+{q_skill})**")
 
 if __name__ == "__main__":
     if st.session_state["page"] == "Debugger":
