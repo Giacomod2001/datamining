@@ -546,7 +546,244 @@ SKILL_IMPLICATIONS = {
 
 LEARNING_RESOURCES = {
     # ------------------------------------------------------------------------
-    # LINGUAGGI DI PROGRAMMAZIONE
+    # PROGRAMMING LANGUAGES
+    # ------------------------------------------------------------------------
+    "Python": {
+        "difficoltà": "Medium",
+        "tempo": "2-3 months",
+        "corsi": [
+            "Python for Everybody (Coursera - Free)",
+            "Complete Python Bootcamp (Udemy)",
+            "Official Python Documentation"
+        ],
+        "pratica": "Build a data analysis dashboard with Pandas + Streamlit. Create a web scraper for job postings. Automate your daily tasks with scripts.",
+        "certificazioni": "PCAP (Python Institute Certified Associate Programmer)",
+        "project": "**Project Idea:** Build a Personal Finance Tracker - Use Pandas for data manipulation, Matplotlib for visualization, and save data to CSV/SQLite. Add expense categorization and monthly reports."
+    },
+    "Java": {
+        "difficoltà": "Medium-High",
+        "tempo": "3-4 months",
+        "corsi": ["Java Programming MOOC (University of Helsinki)", "Oracle Java Tutorials"],
+        "pratica": "Build a REST API with Spring Boot for a todo app. Implement CRUD operations with a database connection.",
+        "certificazioni": "Oracle Certified Associate Java Programmer",
+        "project": "**Project Idea:** Employee Management System - Spring Boot backend with MySQL, REST endpoints for employee CRUD, authentication with Spring Security, deploy to Heroku."
+    },
+    "JavaScript": {
+        "difficoltà": "Medium",
+        "tempo": "2-3 months",
+        "corsi": ["freeCodeCamp JavaScript Curriculum", "JavaScript.info (Free & Interactive)"],
+        "pratica": "Build an interactive portfolio website with form validation. Create a weather app using a public API. Add animations with vanilla JS.",
+        "certificazioni": "Focus on portfolio projects over certifications",
+        "project": "**Project Idea:** Real-Time Chat Application - Use WebSockets for live messaging, LocalStorage for chat history, fetch API for user profiles. Deploy on Netlify."
+    },
+    
+    # ------------------------------------------------------------------------
+    # DATA SCIENCE & AI
+    # ------------------------------------------------------------------------
+    "Machine Learning": {
+        "difficoltà": "High",
+        "tempo": "4-6 months",
+        "corsi": [
+            "Machine Learning by Andrew Ng (Coursera - Gold Standard)",
+            "Fast.ai Practical Deep Learning for Coders"
+        ],
+        "pratica": "Compete in Kaggle competitions (start with Titanic dataset). Build a movie recommendation system. Create an image classifier for your own dataset.",
+        "certificazioni": "Google ML Engineer Professional Certificate",
+        "project": "**Project Idea:** Housing Price Predictor - Use scikit-learn with real Zillow data, feature engineering (location, size, age), compare Linear Regression vs Random Forest, deploy with Flask API + React frontend."
+    },
+    "Data Science": {
+        "difficoltà": "Medium-High",
+        "tempo": "3-5 months",
+        "corsi": ["IBM Data Science Professional Certificate", "DataCamp Data Scientist Career Track"],
+        "pratica": "Analyze a public dataset (COVID-19, elections, sports stats). Create data visualizations with Plotly. Write a technical blog post explaining your findings.",
+        "certificazioni": "IBM Data Science Professional Certificate",
+        "project": "**Project Idea:** Customer Churn Analysis - Download telecom dataset, perform EDA with Pandas, visualize patterns with Seaborn, build predictive model, create Streamlit dashboard showing insights."
+    },
+    "Pandas": {
+        "difficoltà": "Low-Medium",
+        "tempo": "2-4 weeks",
+        "corsi": ["Pandas Official Tutorials", "DataCamp Pandas Fundamentals"],
+        "pratica": "Clean and analyze your own spreadsheet data. Merge multiple CSV files. Create pivot tables and aggregations for business metrics.",
+        "certificazioni": "Not required - demonstrate through projects",
+        "project": "**Project Idea:** Sales Data Reporter - Load sales CSV, clean missing values, group by product/date, calculate KPIs (revenue, growth rate), export monthly summary Excel reports with styled formatting."
+    },
+    "NLP": {
+        "difficoltà": "High",
+        "tempo": "3-4 months",
+        "corsi": ["NLP Specialization (deeplearning.ai)", "Hugging Face Course (Free)"],
+        "pratica": "Build a sentiment analyzer for product reviews. Create a chatbot with intent classification. Fine-tune a BERT model on your own dataset.",
+        "certificazioni": "Demonstrate through portfolio projects",
+        "project": "**Project Idea:** Job Description Analyzer - Use spaCy for entity extraction (skills, locations, salary), implement TF-IDF for keyword matching, build API to categorize jobs by seniority level, visualize skill trends."
+    },
+    
+    # ------------------------------------------------------------------------
+    # DATABASE & SQL
+    # ------------------------------------------------------------------------
+    "SQL": {
+        "difficoltà": "Low-Medium",
+        "tempo": "3-6 weeks",
+        "corsi": ["Mode SQL Tutorial", "SQLBolt (Interactive)", "Codecademy Learn SQL"],
+        "pratica": "Download a sample database (Northwind, Sakila). Write complex JOINs across 3+ tables. Optimize slow queries with indexes. Create views for reporting.",
+        "certificazioni": "Practice is more valuable than certs",
+        "project": "**Project Idea:** E-commerce Analytics Database - Design schema (users, orders, products), write queries for: top customers, monthly revenue, product recommendations using self-joins, create stored procedures for reports."
+    },
+    
+    # ------------------------------------------------------------------------
+    # CLOUD & DEVOPS
+    # ------------------------------------------------------------------------
+    "AWS": {
+        "difficoltà": "Medium-High",
+        "tempo": "2-3 months",
+        "corsi": ["AWS Cloud Practitioner Essentials (Free)", "A Cloud Guru AWS Path"],
+        "pratica": "Deploy a static website to S3 with CloudFront. Set up EC2 instance and connect via SSH. Create Lambda function triggered by S3 upload (all free tier).",
+        "certificazioni": "AWS Certified Cloud Practitioner (entry-level)",
+        "project": "**Project Idea:** Serverless Image Resizer - Use S3 for storage, Lambda to auto-resize uploaded images, API Gateway for REST endpoints, DynamoDB for metadata, CloudWatch for monitoring. Stay in free tier."
+    },
+    "Docker": {
+        "difficoltà": "Medium",
+        "tempo": "2-3 weeks",
+        "corsi": ["Docker Official Get Started Guide", "Docker Mastery (Udemy)"],
+        "pratica": "Dockerize your existing Python/Node app. Use docker-compose for multi-container setup (app + database). Push images to Docker Hub.",
+        "certificazioni": "Hands-on experience over certification",
+        "project": "**Project Idea:** Microservices Blog Platform - Frontend (React) container, Backend (Flask) container, PostgreSQL container, Nginx reverse proxy. Use docker-compose for orchestration, environment variables for config."
+    },
+    "Kubernetes": {
+        "difficoltà": "High",
+        "tempo": "2-3 mesi",
+        "corsi": ["Kubernetes for Beginners (Udemy)", "Official K8s Documentation"],
+        "pratica": "Deploy app to local Minikube cluster. Create deployments, services, and ingress. Practice rolling updates and rollbacks.",
+        "certificazioni": "CKA (Certified Kubernetes Administrator)",
+        "project": "**Project Idea:** Scalable API Backend - Deploy Flask API with 3 replicas, use LoadBalancer service, implement health checks, configure auto-scaling, add persistent volume for database, monitor with Prometheus."
+    },
+    
+    # ------------------------------------------------------------------------
+    # FRONTEND
+    # ------------------------------------------------------------------------
+    "React": {
+        "difficoltà": "Medium",
+        "tempo": "1-2 months",
+        "corsi": ["React Official Docs (Best resource!)", "Scrimba Learn React for Free"],
+        "pratica": "Build 5 different apps: todo list, weather app, quiz game, e-commerce cart, blog with routing. Focus on hooks (useState, useEffect, useContext).",
+        "certificazioni": "Portfolio projects are essential",
+        "project": "**Project Idea:** Job Board Dashboard - Fetch jobs from API, implement search/filter by location/skill, save favorites to localStorage, use React Router for pages, styled-components for design, deploy to Vercel."
+    },
+    "HTML/CSS": {
+        "difficoltà": "Low",
+        "tempo": "2-4 weeks",
+        "corsi": ["freeCodeCamp Responsive Web Design", "MDN Web Docs (Reference)"],
+        "pratica": "Clone 10 landing pages from real companies. Build responsive layouts with Flexbox and Grid. Add CSS animations and transitions.",
+        "certificazioni": "Not required",
+        "project": "**Project Idea:** Personal Portfolio Site - Fully responsive design, hero section with gradient, projects grid with hover effects, contact form, smooth scroll navigation, optimize for mobile-first, deploy to GitHub Pages."
+    },
+    
+    # ------------------------------------------------------------------------
+    # BUSINESS INTELLIGENCE
+    # ------------------------------------------------------------------------
+    "Excel": {
+        "difficoltà": "Low-Medium",
+        "tempo": "2-3 weeks",
+        "corsi": ["Excel Essential Training (LinkedIn Learning)", "Chandoo.org Tutorials"],
+        "pratica": "Build a sales dashboard with pivot tables and charts. Automate reports with VLOOKUP, INDEX-MATCH. Create macros for repetitive tasks.",
+        "certificazioni": "Microsoft Office Specialist Excel",
+        "project": "**Project Idea:** Personal Budget Manager - Monthly expense tracker with categories, formulas for totals/averages, conditional formatting for overspending, pivot charts for trends, macro button to generate PDF report."
+    },
+    "Power BI": {
+        "difficoltà": "Medium",
+        "tempo": "1-2 months",
+        "corsi": ["Microsoft Power BI Training (Free)", "Enterprise DNA YouTube Channel"],
+        "pratica": "Connect to real data source (Excel, SQL, API). Build interactive dashboard with slicers and drill-down. Publish to Power BI Service.",
+        "certificazioni": "Microsoft Certified: Data Analyst Associate",
+        "project": "**Project Idea:** Sales Performance Dashboard - Import sales data, create star schema with dimensions, build KPI cards (revenue, growth, targets), add time intelligence for YoY comparison, interactive map visual, publish and share link."
+    },
+    "Tableau": {
+        "difficoltà": "Medium",
+        "tempo": "1-2 months",
+        "corsi": ["Tableau Desktop Specialist Path", "Tableau Public Gallery for Inspiration"],
+        "pratica": "Create 5 viz types: bar, line, map, scatter, heatmap. Build a story dashboard. Publish to Tableau Public and share on LinkedIn.",
+        "certificazioni": "Tableau Desktop Specialist",
+        "project": "**Project Idea:** COVID-19 Global Tracker - Live data from Johns Hopkins, choropleth map by country, time series for cases/deaths, calculated fields for mortality rate, parameters for country selection, publish viz on Tableau Public."
+    },
+    "Looker": {
+        "difficoltà": "Medium",
+        "tempo": "1-2 months",
+        "corsi": ["Google Cloud Skills Boost - Looker", "Looker Official Docs"],
+        "pratica": "Build dashboards in Looker Studio (free). Connect Google Sheets or BigQuery as data source. Create calculated fields and filters.",
+        "certificazioni": "Google Cloud Professional Data Engineer (includes Looker)",
+        "project": "**Project Idea:** Website Analytics Dashboard - Connect to Google Analytics data, create metrics for traffic/bounce rate/conversions, add date range filter, compare periods, visualize user journey funnel, schedule email reports."
+    },
+    
+    # ------------------------------------------------------------------------
+    # SOFT SKILLS
+    # ------------------------------------------------------------------------
+    "Teamwork": {
+        "difficoltà": "Low-Medium",
+        "tempo": "Ongoing practice",
+        "corsi": ["Not applicable - learn by doing"],
+        "pratica": "Contribute to open source projects on GitHub. Join hackathons (online or local). Participate in team coding challenges. Use pull requests and code reviews.",
+        "certificazioni": "Not applicable",
+        "project": "**Practice:** Find beginner-friendly GitHub repos with 'good first issue' label. Fork, fix bug, submit PR with clear description. Respond professionally to code review feedback."
+    },
+    "Communication": {
+        "difficoltà": "Medium",
+        "tempo": "Ongoing practice",
+        "corsi": ["Public Speaking courses (Coursera)", "Technical Writing guides"],
+        "pratica": "Start a technical blog (Medium, dev.to). Give presentations at meetups. Create tutorial videos. Write clear documentation for your projects.",
+        "certificazioni": "Not applicable",
+        "project": "**Practice:** Write 5 blog posts explaining technical concepts you learned. Record a 5-min YouTube video coding tutorial. Present a personal project at a local meetup or online community."
+    },
+    "Leadership": {
+        "difficoltà": "Medium-High",
+        "tempo": "Ongoing development",
+        "corsi": ["Leadership courses (Coursera, LinkedIn Learning)"],
+        "pratica": "Lead a small team project (even 2-3 people). Mentor junior developers. Organize study groups or coding sessions.",
+        "certificazioni": "PMP (Project Management Professional)",
+        "project": "**Practice:** Initiate an open-source project, recruit 2-3 contributors, assign tasks, review PRs, manage the roadmap, facilitate discussions, and deliver v1.0."
+    },
+    "Agile": {
+        "difficoltà": "Low-Medium",
+        "tempo": "2-4 weeks",
+        "corsi": ["Scrum.org Learning Path (Free)", "Agile Foundations (LinkedIn)"],
+        "pratica": "Apply Agile to personal projects: use Trello/Jira for sprints, daily standup notes, retrospectives. Join Agile team if possible.",
+        "certificazioni": "PSM I (Professional Scrum Master)",
+        "project": "**Practice:** Manage your next project with 2-week sprints, create user stories with acceptance criteria, track velocity, hold mini-retrospectives to improve process."
+    },
+    
+    # ------------------------------------------------------------------------
+    # TESTING & VERSION CONTROL
+    # ------------------------------------------------------------------------
+    "Testing": {
+        "difficoltà": "Low-Medium",
+        "tempo": "1-2 months",
+        "corsi": ["Test Automation University (Free)", "Software Testing Fundamentals"],
+        "pratica": "Write unit tests for your Python/JS projects. Use pytest or Jest. Aim for 80%+ code coverage. Set up CI/CD with GitHub Actions to run tests automatically.",
+        "certificazioni": "ISTQB Foundation Level",
+        "project": "**Project Idea:** Test a To-Do API - Write unit tests for CRUD functions, integration tests for database operations, mock external APIs, achieve 90% coverage, configure GitHub Actions to run tests on every PR."
+    },
+    "Git": {
+        "difficoltà": "Low",
+        "tempo": "1-2 weeks",
+        "corsi": ["Git Official Tutorial", "Learn Git Branching (Interactive Game)"],
+        "pratica": "Use Git daily for all projects. Practice branching strategies (feature branches). Resolve merge conflicts. Contribute to open source repos.",
+        "certificazioni": "Not necessary - practical skill",
+        "project": "**Practice:** Create a repo, make 3 feature branches, use meaningful commit messages (conventional commits), practice rebasing, squash commits before merging, use .gitignore and .gitattributes files."
+    },
+}
+
+# Default resource for unmapped skills
+DEFAULT_LEARNING_RESOURCE = {
+    "difficoltà": "Varies",
+    "tempo": "1-3 months",
+    "corsi": ["Search on Coursera, Udemy, freeCodeCamp, YouTube"],
+    "pratica": "Start with official documentation. Build 2-3 small projects. Join relevant online communities (Reddit, Discord).",
+    "certificazioni": "Check online for available industry certifications",
+    "project": "**General Approach:** Find a real-world problem you care about. Break it into weekly milestones. Build incrementally. Document your process. Share on GitHub with README."
+}
+
+
+
+# ============================================================================
+# FUNZIONE: INFERENZA SKILL IMPLICITE
+# ============================================================================
     # ------------------------------------------------------------------------
     "Python": {
         "difficoltà": "Media",
