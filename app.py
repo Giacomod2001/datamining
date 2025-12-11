@@ -1211,43 +1211,103 @@ if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
         st.markdown("<br>", unsafe_allow_html=True)
         
         # ====================================================================
-        # SKILL DETAILS - CLEAN LINKEDIN STYLE
+        # SKILL DETAILS - CATEGORIZED DRILL-DOWN
         # ====================================================================
+        
+        # Funzione helper per categorizzare skill
+        def categorize_skills(skills_set):
+            categories = {
+                "Programming": [],
+                "Data & Analytics": [],
+                "Cloud & DevOps": [],
+                "Business Intelligence": [],
+                "Soft Skills": []
+            }
+            
+            for skill in skills_set:
+                if skill in ["Python", "Java", "JavaScript", "C++", "C#", "R", "Go"]:
+                    categories["Programming"].append(skill)
+                elif skill in ["Data Science", "Machine Learning", "NLP", "Deep Learning", "AI", "Pandas", "SQL", "PostgreSQL", "MySQL", "MongoDB"]:
+                    categories["Data & Analytics"].append(skill)
+                elif skill in ["AWS", "Azure", "GCP", "Docker", "Kubernetes", "DevOps"]:
+                    categories["Cloud & DevOps"].append(skill)
+                elif skill in ["Power BI", "Tableau", "Looker", "Excel"]:
+                    categories["Business Intelligence"].append(skill)
+                elif skill in ["Leadership", "Communication", "Teamwork", "Agile", "Project Management"]:
+                    categories["Soft Skills"].append(skill)
+                else:
+                    # Default alla categoria più probabile
+                    if "data" in skill.lower() or "sql" in skill.lower():
+                        categories["Data & Analytics"].append(skill)
+                    else:
+                        categories["Programming"].append(skill)
+            
+            # Rimuovi categorie vuote
+            return {k: v for k, v in categories.items() if v}
+        
         col_matched, col_missing = st.columns(2)
         
-        # MATCHED SKILLS
+        # === MATCHED SKILLS - COMPACT ===
         with col_matched:
             st.subheader("✅ Matched Skills")
+            
             if matched_skills:
-                for skill in sorted(matched_skills):
-                    st.success(f"✓ {skill}", icon="✅")
+                categorized_matched = categorize_skills(matched_skills)
+                
+                # Mostra count compatto
+                st.metric("Total Matched", len(matched_skills))
+                
+                # Drill-down per categoria
+                for category, skills in categorized_matched.items():
+                    with st.expander(f"📁 {category} ({len(skills)})"):
+                        for skill in sorted(skills):
+                            st.success(f"✓ {skill}", icon="✅")
             else:
-                st.write("No skills matched")
+                st.info("No skills matched")
         
-        # MISSING SKILLS  
+        # === MISSING SKILLS - DETAILED LEARNING RESOURCES ===
         with col_missing:
             st.subheader("❌ Skills Gap")
             
             if missing_skills:
-                missing_list = sorted(missing_skills)
-                st.markdown(f"**{len(missing_list)} skills** to develop")
-                st.markdown("")
+                categorized_missing = categorize_skills(missing_skills)
                 
-                # Show top 3 with learning resources
-                for skill in missing_list[:3]:
-                    st.error(f"✗ {skill}", icon="❌")
-                    resource = LEARNING_RESOURCES.get(skill, DEFAULT_LEARNING_RESOURCE)
-                    st.caption(f"📚 {resource['tempo']} · {resource['difficoltà']} · {resource['corsi'][0]}")
+                # Mostra count
+                st.metric("Skills to Develop", len(missing_skills))
                 
-                # Remaining skills (collapsed)
-                if len(missing_list) > 3:
-                    with st.expander(f"➕ {len(missing_list) - 3} more skills"):
-                        for skill in missing_list[3:]:
-                            st.write(f"• {skill}")
+                # Drill-down per ogni skill con risorse COMPLETE
+                for category, skills in categorized_missing.items():
+                    with st.expander(f"📁 {category} ({len(skills)})", expanded=(category == list(categorized_missing.keys())[0])):
+                        for skill in sorted(skills):
+                            st.error(f"**{skill}**", icon="❌")
+                            
+                            # Ottieni risorse complete
+                            resource = LEARNING_RESOURCES.get(skill, DEFAULT_LEARNING_RESOURCE)
+                            
+                            # Box con dettagli completi
+                            with st.container():
+                                # Metrics row
+                                c1, c2 = st.columns(2)
+                                with c1:
+                                    st.caption(f"⏱️ **Time:** {resource['tempo']}")
+                                with c2:
+                                    st.caption(f"📊 **Level:** {resource['difficoltà']}")
+                                
+                                # Learning path completo
+                                st.markdown("**📚 Learning Path:**")
+                                for i, corso in enumerate(resource['corsi'], 1):
+                                    st.markdown(f"{i}. {corso}")
+                                
+                                st.markdown(f"**🛠️ Practice:** {resource['pratica']}")
+                                st.markdown(f"**🏆 Certification:** {resource['certificazioni']}")
+                                
+                                st.markdown("---")
                 
-                st.info("💡 **Tip:** Start with the first skill listed (highest priority)")
+                # Suggerimento strategico
+                st.info("💡 **Strategy:** Focus on one category at a time. Start with highest priority skills for this role.")
+            
             else:
-                st.success("🎉 You have all required skills!")
+                st.success("🎉 Perfect match! You have all required skills!")
                 st.balloons()
         
         # ====================================================================
