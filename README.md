@@ -1,160 +1,76 @@
-# Job Seeker Helper
+# 🎯 Job Seeker Helper
 
-## Panoramica
+**Universal CV Analyzer & Gap Matcher**
 
-**Job Seeker Helper** è un sistema di analisi automatizzata per la valutazione della compatibilità tra profilo professionale e requisiti lavorativi. Il software implementa algoritmi di text mining per estrarre e confrontare competenze tecniche da documenti testuali, fornendo metriche quantitative di corrispondenza.
-
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.0+-red.svg)](https://streamlit.io/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
-## Descrizione del Progetto
-
-Il presente applicativo costituisce uno strumento di supporto decisionale per candidati professionali nella fase di job matching. Tramite l'utilizzo di tecniche di Natural Language Processing basate su espressioni regolari, il sistema esegue:
-
-- Estrazione automatica di competenze tecniche da annunci di lavoro
-- Parsing delle competenze presenti nel curriculum vitae del candidato
-- Calcolo dell'indice di compatibilità percentuale
-- Generazione di report analitici sulle competenze possedute e carenti
-
-## Architettura Funzionale
-
-### Componenti Principali
-
-Il sistema è strutturato secondo i seguenti moduli:
-
-1. **Modulo di Estrazione**: Implementazione di pattern matching tramite regex per l'identificazione di oltre 150 keyword tecniche organizzate per categoria (linguaggi di programmazione, framework, strumenti, metodologie)
-
-2. **Modulo di Analisi**: Algoritmo di confronto insiemistico per la determinazione delle competenze in comune e delle lacune formative
-
-3. **Modulo di Presentazione**: Interfaccia utente sviluppata con framework Streamlit per la visualizzazione dei risultati analitici
-
-### Categorie di Competenze Rilevate
-
-Il database interno comprende le seguenti macro-categorie:
-
-- Linguaggi di programmazione (Python, Java, JavaScript, C++, ecc.)
-- Framework frontend e backend (React, Angular, Django, Spring, ecc.)
-- Sistemi di gestione database (SQL, MongoDB, PostgreSQL, Oracle, ecc.)
-- Piattaforme cloud e DevOps (AWS, Azure, Docker, Kubernetes, ecc.)
-- Data Science e Machine Learning (TensorFlow, PyTorch, Pandas, ecc.)
-- Metodologie di sviluppo (Agile, Scrum, DevOps, TDD, ecc.)
-- Soft skills e competenze manageriali
-
-## Requisiti di Sistema
-
-### Prerequisiti
-
-- Python versione 3.8 o superiore
-- Package manager pip
-
-### Dipendenze
-
-Le dipendenze del progetto sono specificate nel file `requirements.txt`:
-
-```
-streamlit>=1.28.0
-```
-
-## Procedura di Installazione
-
-1. Clonare il repository dal sistema di versionamento:
-
-```bash
-git clone https://github.com/your-username/job-seeker-helper.git
-cd job-seeker-helper
-```
-
-2. Installare le dipendenze necessarie:
-
-```bash
-pip install -r requirements.txt
-```
-
-3. Avviare l'applicazione:
-
-```bash
-streamlit run app.py
-```
-
-4. Accedere all'interfaccia web attraverso il browser al seguente indirizzo: `http://localhost:8501`
-
-## Modalità d'Uso
-
-### Workflow Operativo
-
-1. **Input Annuncio**: Inserire il testo completo dell'annuncio di lavoro nell'area di testo dedicata
-2. **Input Curriculum**: Inserire il curriculum vitae o l'elenco delle competenze possedute nell'apposita sezione
-3. **Esecuzione Analisi**: Avviare il processo di matching tramite il pulsante "Analizza Match"
-4. **Interpretazione Output**: Consultare i risultati analitici visualizzati
-
-### Componenti dell'Output
-
-Il sistema restituisce le seguenti informazioni:
-
-- **Indice di Compatibilità**: Percentuale di corrispondenza tra requisiti e competenze possedute
-- **Progress Indicator**: Rappresentazione grafica del livello di match
-- **Valutazione Qualitativa**: Classificazione del profilo (Basso/Medio/Alto)
-- **Analisi Dettagliata**: Elenco suddiviso delle competenze possedute e mancanti
-
-## Interpretazione dei Risultati
-
-| Range Percentuale | Classificazione | Interpretazione |
-|-------------------|-----------------|------------------|
-| 0% - 39% | Match Basso | Discrepanza significativa tra profilo e requisiti. Potenziale profilo junior o requisiti non allineati |
-| 40% - 75% | Match Medio | Corrispondenza parziale. Presenza di competenze base con necessità di integrazione |
-| 76% - 100% | Match Alto | Elevata compatibilità. Profilo in linea con i requisiti della posizione |
-
-## Stack Tecnologico
-
-- **Backend**: Python 3.8+
-- **Framework UI**: Streamlit
-- **Text Processing**: Modulo `re` (Regular Expressions) standard library Python
-- **Type Hinting**: Typing module per type safety
-
-## Struttura del Repository
-
-```
-job-seeker-helper/
-├── app.py              # Applicazione principale Streamlit
-├── requirements.txt    # Dipendenze Python
-├── README.md          # Documentazione tecnica
-├── LICENSE            # Termini di licenza MIT
-└── .gitignore         # Configurazione Git
-```
-
-## Sviluppi Futuri
-
-La roadmap di evoluzione del progetto prevede:
-
-- Estensione del database keyword con categorie settoriali specifiche
-- Implementazione funzionalità di export in formato PDF
-- Supporto per localizzazione multilingua
-- Integrazione con API di piattaforme di recruiting (LinkedIn API, Indeed API)
-- Implementazione di algoritmi di Machine Learning per matching avanzato
-
-## Contributi
-
-Il progetto accetta contribuzioni secondo le seguenti modalità:
-
-- Segnalazione di bug tramite issue tracker
-- Proposte di enhancement e nuove funzionalità
-- Pull request con miglioramenti del codice
-
-Si raccomanda di seguire le best practices di sviluppo Python (PEP 8) e di includere documentazione appropriata.
-
-## Autori e Crediti
-
-Il progetto è stato sviluppato da:
-
-- **Luca Tallarico**
-- **Ruben Scoletta**
-- **Giacomo Dellacqua**
-
-## Licenza
-
-Il software è distribuito sotto licenza MIT. Per i termini completi della licenza, consultare il file [LICENSE](LICENSE).
+A smart, AI-powered Streamlit dashboard that analyzes your CV against Job Descriptions, detecting both technical gaps and transferable skills. Now supports **all domains** (Tech, Business, Languages, Marketing) and provides dynamic learning resources.
 
 ---
 
-© 2025 - Job Seeker Helper Project
+## ✨ Key Features
+
+### 🧠 Intelligent Analysis
+- **Hierarchical Inference**: Knows that `BigQuery` implies `Cloud Computing` and `SQL`.
+- **Transferable Skills Logic**: If a job asks for `Power BI` but you know `Looker`, it's marked as **⚠️ Transferable** (Yellow) rather than Missing.
+- **Generic Fallback**: Works for any job type (e.g., Zoology, Translation) by auto-extracting key terms if no standard skills are found.
+
+### 🔍 Deep Insights
+- **Hard vs. Soft Skills**: Separates technical requirements from behavioral traits (which are flagged for Interview discussion).
+- **Project-Based Skills**: Complex domains like `Computer Vision` or `System Design` are suggested for **Portfolio Review** rather than simple keyword matching.
+- **Dynamic Learning Resources**: Generates **one-click search links** (Google, YouTube, Coursera) for any missing skill.
+
+### 🛠️ Developer Mode
+- **Protected Debugger**: Access the internal logic (Inference Rules, Skill Clusters) via password protection.
+- **Transparent Logic**: Visualize exactly *why* a skill was matched or inferred.
+
+---
+
+## 🚀 Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/your-username/job-seeker-helper.git
+   cd job-seeker-helper
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+   *Dependencies include `streamlit`, `pandas`, `scikit-learn`, `plotly`, `PyPDF2`.*
+
+3. **Run the app**:
+   ```bash
+   streamlit run app.py
+   ```
+
+---
+
+## 📖 Usage
+
+1. **Upload your CV**: Supports PDF upload or text paste.
+2. **Upload Job Description**: Supports PDF upload or text paste.
+3. **Click "Measure Matching"**:
+   - See your **Match Score** (weighted by transferable skills).
+   - Review **Missing Skills** with direct learning links.
+   - Check **Soft Skills** to prepare stories for your interview.
+4. **Developer Mode**:
+   - Toggle "Developer Mode" in the sidebar.
+   - Enter Password: **`1234`**.
+   - Explore the inference engine and database.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: [Streamlit](https://streamlit.io/)
+- **NLP / ML**: `scikit-learn` (TF-IDF & Random Forest), Regex Patterns
+- **PDF Parsing**: `PyPDF2`
+- **Visualization**: `Plotly`, Streamlit Native Charts
+
+---
+
+## 🙏 Acknowledgments
+
+- **Streamlit Community**: For the amazing layout primitives and theming support.
+- **Scikit-Learn**: For the robust TF-IDF and Machine Learning capabilities.
+- **Open Source**: Built with ❤️ using Python's open ecosystem.
