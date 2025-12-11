@@ -20,21 +20,148 @@ Licenza: MIT
 # ============================================================================
 import streamlit as st  # Framework per interfaccia web interattiva
 import re              # Regex per pattern matching e text mining
-from typing import Set, Tuple, List  # Type hints per code clarity
+from typing import Set, Tuple, List, Optional  # Type hints per code clarity
 import io              # Input/Output per gestione file in memoria
+import plotly.graph_objects as go  # Grafici interattivi
+import plotly.express as px  # Charts veloci
+
+# PDF Processing
 try:
     from PyPDF2 import PdfReader  # Lettura e estrazione testo da PDF
 except ImportError:
     PdfReader = None  # Fallback se PyPDF2 non è installato
 
+# NLP Avanzato con spaCy
+try:
+    import spacy
+    from spacy.matcher import PhraseMatcher
+    # Lazy loading del modello (caricato solo quando necessario)
+    @st.cache_resource
+    def load_nlp_model():
+        """Carica modello spaCy con caching per performance"""
+        try:
+            return spacy.load("en_core_web_md")  # Medium model con word vectors
+        except OSError:
+            st.warning("⚠️ Modello spaCy non trovato. Esegui: python -m spacy download en_core_web_md")
+            return None
+except ImportError:
+    spacy = None
+    PhraseMatcher = None
+    def load_nlp_model():
+        return None
+
+# Fuzzy matching per typos
+try:
+    import Levenshtein
+except ImportError:
+    Levenshtein = None
+
 # ============================================================================
 # CONFIGURAZIONE APPLICAZIONE WEB
 # ============================================================================
 st.set_page_config(
-    page_title="Job Seeker Helper",  # Titolo che appare nel tab del browser
-    page_icon="🎯",                  # Emoji come favicon
-    layout="wide"                     # Layout espanso per sfruttare lo schermo
+    page_title="Job Seeker Helper - AI Powered",
+    page_icon="🎯",
+    layout="wide",  # Layout espanso
+    initial_sidebar_state="collapsed"  # Sidebar nascosta di default
 )
+
+# ============================================================================
+# CUSTOM CSS - DESIGN SYSTEM PROFESSIONALE
+# ============================================================================
+st.markdown("""
+<style>
+    /* Color Palette Enterprise */
+    :root {
+        --primary: #6366f1;
+        --primary-dark: #4f46e5;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --error: #ef4444;
+        --bg-dark: #0f172a;
+        --text-light: #f8fafc;
+    }
+    
+    /* Header Gradient */
+    .main-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem;
+        border-radius: 1rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+    }
+    
+    .main-header h1 {
+        color: white;
+        font-size: 3rem;
+        font-weight: 800;
+        margin: 0;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .main-header p {
+        color: rgba(255,255,255,0.9);
+        font-size: 1.2rem;
+        margin-top: 0.5rem;
+    }
+    
+    /* Cards */
+    .result-card {
+        background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        border-left: 4px solid var(--primary);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    /* Skill Pills */
+    .skill-pill {
+        display: inline-block;
+        background: var(--success);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        margin: 0.25rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+    }
+    
+    .skill-pill-missing {
+        background: var(--error);
+        box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.5s ease-out;
+    }
+    
+    /* Hide Streamlit branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #1e293b;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: var(--primary);
+        border-radius: 4px;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 
 # ============================================================================
 # DATABASE KNOWLEDGE BASE - GRUPPI DI COMPETENZE CORRELATE
@@ -638,6 +765,60 @@ def infer_implied_skills(detected_skills: Set[str]) -> Set[str]:
 
 
 
+# ============================================================================
+# FUNZIONE: SIMILARITÀ SEMANTICA CON spaCy (NLP AVANZATO)
+# ============================================================================
+# PILASTRO NLP AVANZATO: Matching intelligente oltre le keyword esatte
+# ============================================================================
+
+@st.cache_data
+def semantic_skill_match(text: str, skill_variations: List[str], _nlp_model=None, threshold: float = 0.75) -> bool:
+    """
+    Usa spaCy word vectors per matching semantico.
+    
+    Riconosce skill anche se non sono keyword esatte ma semanticamente simili.
+    Esempio: "Python programmer" matcha con "Python developer"
+    
+    Args:
+        text: Testo dove cercare
+        skill_variations: Lista di variazioni della skill
+        _nlp_model: Modello spaCy (prefix _ per evitare hashing in cache)
+        threshold: Soglia di similarity (0-1), default 0.75
+    
+    Returns:
+        bool: True se trova match semantico
+    """
+    if not _nlp_model or not hasattr(_nlp_model, 'vocab'):
+        # Fallback a regex se spaCy non disponibile
+        text_lower = text.lower()
+        for variation in skill_variations:
+            pattern = r'\b' + re.escape(variation.lower()) + r'\b'
+            if re.search(pattern, text_lower):
+                return True
+        return False
+    
+    # Processa il testo con spaCy
+    doc = _nlp_model(text.lower())
+    
+    # Per ogni variazione della skill
+    for variation in skill_variations:
+        variation_doc = _nlp_model(variation.lower())
+        
+        # Calcola similarità usando word vectors
+        if variation_doc.has_vector and doc.has_vector:
+            similarity = variation_doc.similarity(doc)
+            if similarity >= threshold:
+                return True
+        
+        # Fallback: regex se no word vectors
+        pattern = r'\b' + re.escape(variation.lower()) + r'\b'
+        if re.search(pattern, text.lower()):
+            return True
+    
+    return False
+
+
+
 
 # ============================================================================
 # FUNZIONE: ESTRAZIONE TESTO DA PDF
@@ -826,16 +1007,19 @@ def get_match_message(percentage: float) -> str:
         return "🟢 Match Alto - Profilo ideale"
 
 
-# ============================================================================
-# INTERFACCIA UTENTE STREAMLIT
+# ==============================================================================
+# INTERFACCIA UTENTE STREAMLIT - DESIGN MODERNO
 # ============================================================================
 # PILASTRO VIBE CODING: UI generata con approccio dichiarativo e intuitivo
 # ============================================================================
 
-# Header principale
-st.title("🎯 Job Seeker Helper")
-st.markdown("### Analizza la compatibilità tra annuncio di lavoro e il tuo CV")
-st.markdown("---")  # Separatore visuale
+# Header professionale con gradient
+st.markdown("""
+<div class="main-header fade-in">
+    <h1>🎯 JOB SEEKER HELPER</h1>
+    <p>Intelligent CV-Job Matching powered by AI & NLP</p>
+</div>
+""", unsafe_allow_html=True)
 
 # ============================================================================
 # SEZIONE INPUT: Due colonne per annuncio e CV
@@ -926,20 +1110,60 @@ if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
         )
         
         # ====================================================================
-        # VISUALIZZAZIONE RISULTATI
+        # VISUALIZZAZIONE RISULTATI - DESIGN PROFESSIONALE
         # ====================================================================
         
         st.markdown("---")
-        st.subheader("📊 Risultato dell'Analisi")
         
-        # METRICA PRINCIPALE: Percentuale di match
-        st.metric("Percentuale di Match", f"{match_percentage:.1f}%")
+        # CARD RISULTATI con chart interattivo
+        col_chart, col_metrics = st.columns([1, 1])
         
-        # PROGRESS BAR: Visualizzazione grafica (0.0 - 1.0)
-        st.progress(match_percentage / 100)
+        with col_chart:
+            st.subheader("📊 Analisi Match")
+            
+            # Donut Chart con Plotly
+            fig = go.Figure(data=[go.Pie(
+                labels=['Skill Possedute', 'Skill Mancanti'],
+                values=[len(matched_skills), len(missing_skills)],
+                hole=0.6,
+                marker=dict(colors=['#10b981', '#ef4444']),
+                textinfo='label+percent',
+                textfont_size=14
+            )])
+            
+            fig.update_layout(
+                showlegend=False,
+                height=300,
+                margin=dict(t=0, b=0, l=0, r=0),
+                annotations=[dict(
+                    text=f'{match_percentage:.0f}%',
+                    x=0.5, y=0.5,
+                    font_size=40,
+                    showarrow=False,
+                    font=dict(color='#6366f1', family='Arial Black')
+                )]
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
         
-        # MESSAGGIO QUALITATIVO: Feedback basato su threshold
-        st.info(get_match_message(match_percentage))
+        with col_metrics:
+            st.subheader("📈 Metriche")
+            
+            # Metrics cards
+            metric_col1, metric_col2 = st.columns(2)
+            with metric_col1:
+                st.metric("Match %", f"{match_percentage:.1f}%", 
+                         delta="Alta compatibilità" if match_percentage > 75 else None)
+            with metric_col2:
+                st.metric("Skill Totali", len(job_skills))
+            
+            # Match level indicator
+            if match_percentage < 40:
+                st.error("🔴 Match Basso - Molte skill da sviluppare")
+            elif match_percentage <= 75:
+                st.warning("🟡 Match Medio - Buona base, serve integrazione")
+            else:
+                st.success("🟢 Match Alto - Profilo ideale per il ruolo!")
         
         st.markdown("---")
         
