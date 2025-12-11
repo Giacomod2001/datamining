@@ -1,6 +1,6 @@
 """
 ===================================================================================
-JOB SEEKER HELPER - Analizzatore di Compatibilità CV/Annunci di Lavoro
+JOB SEEKER HELPER - Analizzatore di CompatibilitÃ  CV/Annunci di Lavoro
 ===================================================================================
 Progetto: Text Mining e NLP per Job Matching
 
@@ -8,7 +8,7 @@ PILASTRI DEL PROGETTO:
 1. TEXT MINING & NLP: Estrazione automatica di keyword da testi non strutturati
 2. PATTERN MATCHING: Utilizzo di regex per riconoscimento intelligente
 3. ENVIRONMENT MANAGEMENT: Gestione dipendenze Python (requirements.txt)
-4. DATA ANALYSIS: Calcolo metriche e scoring di compatibilità
+4. DATA ANALYSIS: Calcolo metriche e scoring di compatibilitÃ 
 
 Autori: Luca Tallarico, Ruben Scoletta, Giacomo Dellacqua
 Licenza: MIT
@@ -29,7 +29,7 @@ import plotly.express as px  # Charts veloci
 try:
     from PyPDF2 import PdfReader  # Lettura e estrazione testo da PDF
 except ImportError:
-    PdfReader = None  # Fallback se PyPDF2 non è installato
+    PdfReader = None  # Fallback se PyPDF2 non Ã¨ installato
 
 # NLP Avanzato con spaCy
 try:
@@ -42,7 +42,7 @@ try:
         try:
             return spacy.load("en_core_web_md")  # Medium model con word vectors
         except OSError:
-            st.warning("⚠️ Modello spaCy non trovato. Esegui: python -m spacy download en_core_web_md")
+            st.warning("âš ï¸ Modello spaCy non trovato. Esegui: python -m spacy download en_core_web_md")
             return None
 except ImportError:
     spacy = None
@@ -61,9 +61,9 @@ except ImportError:
 # ============================================================================
 st.set_page_config(
     page_title="Job Seeker Helper - AI Powered",
-    page_icon="🎯",
+    page_icon="ðŸŽ¯",
     layout="wide",  # Layout espanso
-    initial_sidebar_state="collapsed"  # Open with ☰ icon (top-left) for ML debug
+    initial_sidebar_state="collapsed"  # Open with â˜° icon (top-left) for ML debug
 )
 
 # ML-based Skill Matching
@@ -220,7 +220,7 @@ st.markdown("""
 # PILASTRO NLP: Normalizzazione semantica delle competenze
 # Ogni gruppo rappresenta un CONCETTO (chiave) con le sue VARIAZIONI (valori)
 # Questo permette di riconoscere sinonimi e varianti ortografiche
-# Esempio: "Machine Learning", "ML", "Deep Learning" → tutti riconosciuti come "Machine Learning"
+# Esempio: "Machine Learning", "ML", "Deep Learning" â†’ tutti riconosciuti come "Machine Learning"
 # ============================================================================
 
 SKILL_GROUPS = {
@@ -444,8 +444,8 @@ SKILL_GROUPS = {
 # ============================================================================
 # SOFT SKILLS - ESCLUSE DAL CALCOLO DEL MATCH
 # ============================================================================
-# Le soft skills non vengono conteggiate nella percentuale di compatibilità
-# perché sono soggettive e difficili da quantificare
+# Le soft skills non vengono conteggiate nella percentuale di compatibilitÃ 
+# perchÃ© sono soggettive e difficili da quantificare
 # ============================================================================
 
 SOFT_SKILLS = {
@@ -464,7 +464,7 @@ SOFT_SKILLS = {
 # PILASTRO NLP AVANZATO: Deduzione intelligente di competenze correlate
 # Se un CV menziona una skill "macro", il sistema inferisce automaticamente
 # le competenze "micro" che essa implica
-# Esempio: "Microsoft Office" → Excel, Word, PowerPoint
+# Esempio: "Microsoft Office" â†’ Excel, Word, PowerPoint
 # ============================================================================
 
 SKILL_IMPLICATIONS = {
@@ -477,7 +477,7 @@ SKILL_IMPLICATIONS = {
     "G Suite": ["Excel", "Looker"],
     
     # ------------------------------------------------------------------------
-    # RUOLI PROFESSIONALI → SKILL TECNICHE
+    # RUOLI PROFESSIONALI â†’ SKILL TECNICHE
     # ------------------------------------------------------------------------
     "Data Scientist": ["Python", "SQL", "Machine Learning", "Pandas", "Data Science"],
     "Data Analyst": ["SQL", "Excel", "Python", "Data Science"],
@@ -490,7 +490,7 @@ SKILL_IMPLICATIONS = {
     "Mobile Developer": ["Mobile Development", "Git"],
     
     # ------------------------------------------------------------------------
-    # FRAMEWORK → LINGUAGGI BASE
+    # FRAMEWORK â†’ LINGUAGGI BASE
     # ------------------------------------------------------------------------
     "Python": ["Pandas"],  # Se usi Python, sai usare Pandas
     "React": ["JavaScript", "HTML/CSS", "Frontend"],
@@ -503,7 +503,7 @@ SKILL_IMPLICATIONS = {
     "Express": ["JavaScript", "Backend"],
     
     # ------------------------------------------------------------------------
-    # DATA SCIENCE → TOOL ECOSISTEMA
+    # DATA SCIENCE â†’ TOOL ECOSISTEMA
     # ------------------------------------------------------------------------
     "Machine Learning": ["Python", "Data Science", "Pandas"],
     "Deep Learning": ["Python", "Machine Learning", "Data Science", "Pandas"],
@@ -513,7 +513,7 @@ SKILL_IMPLICATIONS = {
     "Big Data": ["Data Science", "SQL"],
     
     # ------------------------------------------------------------------------
-    # CLOUD → COMPETENZE CORRELATE
+    # CLOUD â†’ COMPETENZE CORRELATE
     # ------------------------------------------------------------------------
     "AWS": ["Cloud", "DevOps"],
     "Azure": ["Cloud", "DevOps"],
@@ -522,7 +522,7 @@ SKILL_IMPLICATIONS = {
     "Kubernetes": ["Docker", "DevOps", "Cloud"],
     
     # ------------------------------------------------------------------------
-    # DATABASE → SQL GENERAL
+    # DATABASE â†’ SQL GENERAL
     # ------------------------------------------------------------------------
     "PostgreSQL": ["SQL", "Database Management"],
     "MySQL": ["SQL", "Database Management"],
@@ -539,7 +539,7 @@ SKILL_IMPLICATIONS = {
     "Looker": ["SQL", "Data Science", "Power BI", "Tableau"],
     
     # ------------------------------------------------------------------------
-    # METODOLOGIE → SOFT SKILLS
+    # METODOLOGIE â†’ SOFT SKILLS
     # ------------------------------------------------------------------------
     "Agile": ["Teamwork", "Communication", "Project Management"],
     "Scrum": ["Agile", "Teamwork", "Project Management"],
@@ -559,7 +559,7 @@ LEARNING_RESOURCES = {
     # PROGRAMMING LANGUAGES
     # ------------------------------------------------------------------------
     "Python": {
-        "difficoltà": "Medium",
+        "difficoltÃ ": "Medium",
         "tempo": "2-3 months",
         "corsi": [
             "Python for Everybody (Coursera - Free)",
@@ -571,7 +571,7 @@ LEARNING_RESOURCES = {
         "project": "**Project Idea:** Build a Personal Finance Tracker - Use Pandas for data manipulation, Matplotlib for visualization, and save data to CSV/SQLite. Add expense categorization and monthly reports."
     },
     "Java": {
-        "difficoltà": "Medium-High",
+        "difficoltÃ ": "Medium-High",
         "tempo": "3-4 months",
         "corsi": ["Java Programming MOOC (University of Helsinki)", "Oracle Java Tutorials"],
         "pratica": "Build a REST API with Spring Boot for a todo app. Implement CRUD operations with a database connection.",
@@ -579,7 +579,7 @@ LEARNING_RESOURCES = {
         "project": "**Project Idea:** Employee Management System - Spring Boot backend with MySQL, REST endpoints for employee CRUD, authentication with Spring Security, deploy to Heroku."
     },
     "JavaScript": {
-        "difficoltà": "Medium",
+        "difficoltÃ ": "Medium",
         "tempo": "2-3 months",
         "corsi": ["freeCodeCamp JavaScript Curriculum", "JavaScript.info (Free & Interactive)"],
         "pratica": "Build an interactive portfolio website with form validation. Create a weather app using a public API. Add animations with vanilla JS.",
@@ -591,7 +591,7 @@ LEARNING_RESOURCES = {
     # DATA SCIENCE & AI
     # ------------------------------------------------------------------------
     "Machine Learning": {
-        "difficoltà": "High",
+        "difficoltÃ ": "High",
         "tempo": "4-6 months",
         "corsi": [
             "Machine Learning by Andrew Ng (Coursera - Gold Standard)",
@@ -602,7 +602,7 @@ LEARNING_RESOURCES = {
         "project": "**Project Idea:** Housing Price Predictor - Use scikit-learn with real Zillow data, feature engineering (location, size, age), compare Linear Regression vs Random Forest, deploy with Flask API + React frontend."
     },
     "Data Science": {
-        "difficoltà": "Medium-High",
+        "difficoltÃ ": "Medium-High",
         "tempo": "3-5 months",
         "corsi": ["IBM Data Science Professional Certificate", "DataCamp Data Scientist Career Track"],
         "pratica": "Analyze a public dataset (COVID-19, elections, sports stats). Create data visualizations with Plotly. Write a technical blog post explaining your findings.",
@@ -610,7 +610,7 @@ LEARNING_RESOURCES = {
         "project": "**Project Idea:** Customer Churn Analysis - Download telecom dataset, perform EDA with Pandas, visualize patterns with Seaborn, build predictive model, create Streamlit dashboard showing insights."
     },
     "Pandas": {
-        "difficoltà": "Low-Medium",
+        "difficoltÃ ": "Low-Medium",
         "tempo": "2-4 weeks",
         "corsi": ["Pandas Official Tutorials", "DataCamp Pandas Fundamentals"],
         "pratica": "Clean and analyze your own spreadsheet data. Merge multiple CSV files. Create pivot tables and aggregations for business metrics.",
@@ -618,7 +618,7 @@ LEARNING_RESOURCES = {
         "project": "**Project Idea:** Sales Data Reporter - Load sales CSV, clean missing values, group by product/date, calculate KPIs (revenue, growth rate), export monthly summary Excel reports with styled formatting."
     },
     "NLP": {
-        "difficoltà": "High",
+        "difficoltÃ ": "High",
         "tempo": "3-4 months",
         "corsi": ["NLP Specialization (deeplearning.ai)", "Hugging Face Course (Free)"],
         "pratica": "Build a sentiment analyzer for product reviews. Create a chatbot with intent classification. Fine-tune a BERT model on your own dataset.",
@@ -630,7 +630,7 @@ LEARNING_RESOURCES = {
     # DATABASE & SQL
     # ------------------------------------------------------------------------
     "SQL": {
-        "difficoltà": "Low-Medium",
+        "difficoltÃ ": "Low-Medium",
         "tempo": "3-6 weeks",
         "corsi": ["Mode SQL Tutorial", "SQLBolt (Interactive)", "Codecademy Learn SQL"],
         "pratica": "Download a sample database (Northwind, Sakila). Write complex JOINs across 3+ tables. Optimize slow queries with indexes. Create views for reporting.",
@@ -642,7 +642,7 @@ LEARNING_RESOURCES = {
     # CLOUD & DEVOPS
     # ------------------------------------------------------------------------
     "AWS": {
-        "difficoltà": "Medium-High",
+        "difficoltÃ ": "Medium-High",
         "tempo": "2-3 months",
         "corsi": ["AWS Cloud Practitioner Essentials (Free)", "A Cloud Guru AWS Path"],
         "pratica": "Deploy a static website to S3 with CloudFront. Set up EC2 instance and connect via SSH. Create Lambda function triggered by S3 upload (all free tier).",
@@ -650,7 +650,7 @@ LEARNING_RESOURCES = {
         "project": "**Project Idea:** Serverless Image Resizer - Use S3 for storage, Lambda to auto-resize uploaded images, API Gateway for REST endpoints, DynamoDB for metadata, CloudWatch for monitoring. Stay in free tier."
     },
     "Docker": {
-        "difficoltà": "Medium",
+        "difficoltÃ ": "Medium",
         "tempo": "2-3 weeks",
         "corsi": ["Docker Official Get Started Guide", "Docker Mastery (Udemy)"],
         "pratica": "Dockerize your existing Python/Node app. Use docker-compose for multi-container setup (app + database). Push images to Docker Hub.",
@@ -658,7 +658,7 @@ LEARNING_RESOURCES = {
         "project": "**Project Idea:** Microservices Blog Platform - Frontend (React) container, Backend (Flask) container, PostgreSQL container, Nginx reverse proxy. Use docker-compose for orchestration, environment variables for config."
     },
     "Kubernetes": {
-        "difficoltà": "High",
+        "difficoltÃ ": "High",
         "tempo": "2-3 mesi",
         "corsi": ["Kubernetes for Beginners (Udemy)", "Official K8s Documentation"],
         "pratica": "Deploy app to local Minikube cluster. Create deployments, services, and ingress. Practice rolling updates and rollbacks.",
@@ -670,7 +670,7 @@ LEARNING_RESOURCES = {
     # FRONTEND
     # ------------------------------------------------------------------------
     "React": {
-        "difficoltà": "Medium",
+        "difficoltÃ ": "Medium",
         "tempo": "1-2 months",
         "corsi": ["React Official Docs (Best resource!)", "Scrimba Learn React for Free"],
         "pratica": "Build 5 different apps: todo list, weather app, quiz game, e-commerce cart, blog with routing. Focus on hooks (useState, useEffect, useContext).",
@@ -678,7 +678,7 @@ LEARNING_RESOURCES = {
         "project": "**Project Idea:** Job Board Dashboard - Fetch jobs from API, implement search/filter by location/skill, save favorites to localStorage, use React Router for pages, styled-components for design, deploy to Vercel."
     },
     "HTML/CSS": {
-        "difficoltà": "Low",
+        "difficoltÃ ": "Low",
         "tempo": "2-4 weeks",
         "corsi": ["freeCodeCamp Responsive Web Design", "MDN Web Docs (Reference)"],
         "pratica": "Clone 10 landing pages from real companies. Build responsive layouts with Flexbox and Grid. Add CSS animations and transitions.",
@@ -690,7 +690,7 @@ LEARNING_RESOURCES = {
     # BUSINESS INTELLIGENCE
     # ------------------------------------------------------------------------
     "Excel": {
-        "difficoltà": "Low-Medium",
+        "difficoltÃ ": "Low-Medium",
         "tempo": "2-3 weeks",
         "corsi": ["Excel Essential Training (LinkedIn Learning)", "Chandoo.org Tutorials"],
         "pratica": "Build a sales dashboard with pivot tables and charts. Automate reports with VLOOKUP, INDEX-MATCH. Create macros for repetitive tasks.",
@@ -698,7 +698,7 @@ LEARNING_RESOURCES = {
         "project": "**Project Idea:** Personal Budget Manager - Monthly expense tracker with categories, formulas for totals/averages, conditional formatting for overspending, pivot charts for trends, macro button to generate PDF report."
     },
     "Power BI": {
-        "difficoltà": "Medium",
+        "difficoltÃ ": "Medium",
         "tempo": "1-2 months",
         "corsi": ["Microsoft Power BI Training (Free)", "Enterprise DNA YouTube Channel"],
         "pratica": "Connect to real data source (Excel, SQL, API). Build interactive dashboard with slicers and drill-down. Publish to Power BI Service.",
@@ -706,7 +706,7 @@ LEARNING_RESOURCES = {
         "project": "**Project Idea:** Sales Performance Dashboard - Import sales data, create star schema with dimensions, build KPI cards (revenue, growth, targets), add time intelligence for YoY comparison, interactive map visual, publish and share link."
     },
     "Tableau": {
-        "difficoltà": "Medium",
+        "difficoltÃ ": "Medium",
         "tempo": "1-2 months",
         "corsi": ["Tableau Desktop Specialist Path", "Tableau Public Gallery for Inspiration"],
         "pratica": "Create 5 viz types: bar, line, map, scatter, heatmap. Build a story dashboard. Publish to Tableau Public and share on LinkedIn.",
@@ -714,7 +714,7 @@ LEARNING_RESOURCES = {
         "project": "**Project Idea:** COVID-19 Global Tracker - Live data from Johns Hopkins, choropleth map by country, time series for cases/deaths, calculated fields for mortality rate, parameters for country selection, publish viz on Tableau Public."
     },
     "Looker": {
-        "difficoltà": "Medium",
+        "difficoltÃ ": "Medium",
         "tempo": "1-2 months",
         "corsi": ["Google Cloud Skills Boost - Looker", "Looker Official Docs"],
         "pratica": "Build dashboards in Looker Studio (free). Connect Google Sheets or BigQuery as data source. Create calculated fields and filters.",
@@ -726,7 +726,7 @@ LEARNING_RESOURCES = {
     # SOFT SKILLS
     # ------------------------------------------------------------------------
     "Teamwork": {
-        "difficoltà": "Low-Medium",
+        "difficoltÃ ": "Low-Medium",
         "tempo": "Ongoing practice",
         "corsi": ["Not applicable - learn by doing"],
         "pratica": "Contribute to open source projects on GitHub. Join hackathons (online or local). Participate in team coding challenges. Use pull requests and code reviews.",
@@ -734,7 +734,7 @@ LEARNING_RESOURCES = {
         "project": "**Practice:** Find beginner-friendly GitHub repos with 'good first issue' label. Fork, fix bug, submit PR with clear description. Respond professionally to code review feedback."
     },
     "Communication": {
-        "difficoltà": "Medium",
+        "difficoltÃ ": "Medium",
         "tempo": "Ongoing practice",
         "corsi": ["Public Speaking courses (Coursera)", "Technical Writing guides"],
         "pratica": "Start a technical blog (Medium, dev.to). Give presentations at meetups. Create tutorial videos. Write clear documentation for your projects.",
@@ -742,7 +742,7 @@ LEARNING_RESOURCES = {
         "project": "**Practice:** Write 5 blog posts explaining technical concepts you learned. Record a 5-min YouTube video coding tutorial. Present a personal project at a local meetup or online community."
     },
     "Leadership": {
-        "difficoltà": "Medium-High",
+        "difficoltÃ ": "Medium-High",
         "tempo": "Ongoing development",
         "corsi": ["Leadership courses (Coursera, LinkedIn Learning)"],
         "pratica": "Lead a small team project (even 2-3 people). Mentor junior developers. Organize study groups or coding sessions.",
@@ -750,7 +750,7 @@ LEARNING_RESOURCES = {
         "project": "**Practice:** Initiate an open-source project, recruit 2-3 contributors, assign tasks, review PRs, manage the roadmap, facilitate discussions, and deliver v1.0."
     },
     "Agile": {
-        "difficoltà": "Low-Medium",
+        "difficoltÃ ": "Low-Medium",
         "tempo": "2-4 weeks",
         "corsi": ["Scrum.org Learning Path (Free)", "Agile Foundations (LinkedIn)"],
         "pratica": "Apply Agile to personal projects: use Trello/Jira for sprints, daily standup notes, retrospectives. Join Agile team if possible.",
@@ -762,7 +762,7 @@ LEARNING_RESOURCES = {
     # TESTING & VERSION CONTROL
     # ------------------------------------------------------------------------
     "Testing": {
-        "difficoltà": "Low-Medium",
+        "difficoltÃ ": "Low-Medium",
         "tempo": "1-2 months",
         "corsi": ["Test Automation University (Free)", "Software Testing Fundamentals"],
         "pratica": "Write unit tests for your Python/JS projects. Use pytest or Jest. Aim for 80%+ code coverage. Set up CI/CD with GitHub Actions to run tests automatically.",
@@ -770,7 +770,7 @@ LEARNING_RESOURCES = {
         "project": "**Project Idea:** Test a To-Do API - Write unit tests for CRUD functions, integration tests for database operations, mock external APIs, achieve 90% coverage, configure GitHub Actions to run tests on every PR."
     },
     "Git": {
-        "difficoltà": "Low",
+        "difficoltÃ ": "Low",
         "tempo": "1-2 weeks",
         "corsi": ["Git Official Tutorial", "Learn Git Branching (Interactive Game)"],
         "pratica": "Use Git daily for all projects. Practice branching strategies (feature branches). Resolve merge conflicts. Contribute to open source repos.",
@@ -781,7 +781,7 @@ LEARNING_RESOURCES = {
 
 # Default resource for unmapped skills
 DEFAULT_LEARNING_RESOURCE = {
-    "difficoltà": "Varies",
+    "difficoltÃ ": "Varies",
     "tempo": "1-3 months",
     "corsi": ["Search on Coursera, Udemy, freeCodeCamp, YouTube"],
     "pratica": "Start with official documentation. Build 2-3 small projects. Join relevant online communities (Reddit, Discord).",
@@ -800,8 +800,8 @@ def infer_implied_skills(detected_skills: Set[str]) -> Set[str]:
     
     ALGORITHM:
     1. Per ogni skill rilevata, controlla se ha implicazioni
-    2. Se sì, aggiunge le skill implicate al set
-    3. Ripete finché non ci sono più nuove skill da inferire
+    2. Se sÃ¬, aggiunge le skill implicate al set
+    3. Ripete finchÃ© non ci sono piÃ¹ nuove skill da inferire
     
     Args:
         detected_skills (Set[str]): Skill rilevate direttamente dal testo
@@ -814,10 +814,10 @@ def infer_implied_skills(detected_skills: Set[str]) -> Set[str]:
         Output: {"Microsoft Office", "Excel", "Word", "PowerPoint", 
                  "Data Scientist", "Python", "SQL", "Machine Learning", "Pandas"}
     """
-    # Inizia con le skill già rilevate
+    # Inizia con le skill giÃ  rilevate
     all_skills = detected_skills.copy()
     
-    # CICLO DI INFERENZA: continua finché trova nuove skill
+    # CICLO DI INFERENZA: continua finchÃ© trova nuove skill
     newly_added = True
     while newly_added:
         newly_added = False
@@ -840,7 +840,7 @@ def infer_implied_skills(detected_skills: Set[str]) -> Set[str]:
 
 
 # ============================================================================
-# FUNZIONE: SIMILARITÀ SEMANTICA CON spaCy (NLP AVANZATO)
+# FUNZIONE: SIMILARITÃ€ SEMANTICA CON spaCy (NLP AVANZATO)
 # ============================================================================
 # PILASTRO NLP AVANZATO: Matching intelligente oltre le keyword esatte
 # ============================================================================
@@ -878,7 +878,7 @@ def semantic_skill_match(text: str, skill_variations: List[str], _nlp_model=None
     for variation in skill_variations:
         variation_doc = _nlp_model(variation.lower())
         
-        # Calcola similarità usando word vectors
+        # Calcola similaritÃ  usando word vectors
         if variation_doc.has_vector and doc.has_vector:
             similarity = variation_doc.similarity(doc)
             if similarity >= threshold:
@@ -900,703 +900,112 @@ def semantic_skill_match(text: str, skill_variations: List[str], _nlp_model=None
 # ============================================================================
 
 @st.cache_data
-def ml_skill_matcher(cv_text: str, skill_keywords: dict, return_debug_info: bool = False) -> Set[str] | tuple:
+def ml_skill_matcher(cv_text: str, skill_keywords: dict, return_debug_info: bool = False):
     """
-    Uses ML (TF-IDF vectorization + cosine similarity) to intelligently match skills.
-    
-    This solves the problem where:
-    - CV says "built MVP analyzing student churn rate" 
-    - Should detect: Data Science, Machine Learning, Python
-    - Traditional regex misses context
-    
-    Args:
-        cv_text: Full CV text
-        skill_keywords: Dict mapping skill name to list of related terms
-        return_debug_info: If True, returns (skills, debug_dict) for inspection
-        
-    Returns:
-        Set of detected skills OR (skills, debug_info) if return_debug_info=True
+    ML-based skill detection using TF-IDF + Cosine Similarity.
+    Includes co-occurrence boosting: 'google cloud' boosts GCP, Cloud Computing, etc.
     """
     if not TfidfVectorizer or not cosine_similarity:
         return (set(), {}) if return_debug_info else set()
     
     detected_skills = set()
-    debug_info = {"scores": {}, "features": [], "threshold_used": {}}
-    
-    # Prepare skill descriptions - ENTERPRISE DATA MINING APPROACH
-    # Uses skill co-occurrence, dependency graphs, and cross-platform detection
-    skill_descriptions = {}
-    
-    # SKILL CO-OCCURRENCE MAPPING (Data Mining Intelligence)
-    # If we detect term X, we also boost related skills Y
-    skill_cooccurrence = {
-        # Cloud platforms - boost related cloud skills
-        "google cloud": ["AWS", "Cloud Computing", "GCP", "Computer Vision", "Machine Learning", "Data Science"],
-        "gcp": ["AWS", "Cloud Computing", "Google Cloud", "BigQuery", "Computer Vision", "Machine Learning"],
-        "vision api": ["Computer Vision", "Machine Learning", "Google Cloud", "AWS", "Image Processing"],
-        "bigquery": ["SQL", "Data Science", "Google Cloud", "Data Warehouse", "Analytics"],
-        
-        # Project types - detect all related skills
-        "churn": ["Data Science", "Machine Learning", "Python", "SQL", "Analytics", "Prediction"],
-        "dropout": ["Data Science", "Machine Learning", "Python", "Computer Vision", "Analytics"],
-        "student analytics": ["Data Science", "Machine Learning", "Python", "Dashboard", "Visualization"],
-        
-        # Services imply platforms
-        "lambda": ["AWS", "Cloud Computing", "Serverless", "Python"],
-        "ec2": ["AWS", "Cloud Computing", "Linux", "DevOps"],
-        "s3": ["AWS", "Cloud Computing", "Storage", "Data Engineering"],
-        "sagemaker": ["AWS", "Machine Learning", "Data Science", "Python", "MLOps"],
-        
-        # Tools imply skills
-        "tensorflow": ["Machine Learning", "Deep Learning", "Python", "Neural Networks"],
-        "pytorch": ["Machine Learning", "Deep Learning", "Python", "Neural Networks"],
-        "opencv": ["Computer Vision", "Python", "Image Processing", "Machine Learning"],
-        "sklearn": ["Machine Learning", "Python", "Data Science", "Statistics"],
-        "pandas": ["Python", "Data Science", "Data Analysis", "ETL"],
-        
-        # Architectures imply multiple skills
-        "microservices": ["Docker", "Kubernetes", "Cloud Computing", "AWS", "API Design"],
-        "serverless": ["AWS", "Lambda", "Cloud Computing", "API Gateway"],
-        "mlops": ["Machine Learning", "DevOps", "Docker", "Python", "CI/CD"],
-    }
-    
-    for skill, keywords in skill_keywords.items():
-        description = " ".join(keywords)
-        
-        # ULTRA-COMPREHENSIVE CONTEXT (300+ terms per major skill)
-        if skill == "Computer Vision":
-            description += """ image processing classification detection recognition visual opencv yolo cnn resnet
-            object faster-rcnn mask-rcnn yolov5 yolov8 detectron2 mediapipe tensorflow keras pytorch
-            facial face-detection dlib biometric authentication recognition
-            ocr tesseract easyocr text-extraction document-scanning invoice-reading
-            segmentation semantic instance panoptic unet deeplabv3 mask-r-cnn
-            video motion-tracking kalman optical-flow action-recognition activity
-            medical-imaging xray ct-scan mri diagnosis pathology radiology cancer tumor
-            autonomous-driving self-driving lidar perception sensor-fusion lane-detection
-            manufacturing quality-control defect-detection anomaly-inspection visual-testing
-            retail shelf-monitoring product-recognition inventory cashierless-store
-            security surveillance crowd-counting person-detection intrusion facial-recognition
-            augmented-reality ar-filters snapchat instagram virtual-try-on face-filters
-            google-cloud-vision aws-rekognition azure-computer-vision cloud-vision-api
-            vertex-ai vision-api ml-kit automl-vision custom-training
-            gcp google-cloud platform cloud-ai cloud-ml cloud-services
-            edge-detection canny sobel preprocessing augmentation normalization
-            transfer-learning fine-tuning pretrained imagenet vgg resnet inception
-            annotation labeling roboflow labelimg cvat supervisely ground-truth
-            churn dropout student analytics prediction dashboard mvp behavior patterns"""
-            
-        elif skill == "Data Science":
-            description += """ churn customer retention ltv lifetime-value turnover prediction
-            dropout student academic performance early-warning intervention dashboard
-            eda exploratory pandas-profiling sweetviz visualization statistical
-            cleaning preprocessing imputation missing outliers normalization scaling
-            feature-engineering polynomial interaction encoding onehot label
-            forecasting timeseries arima prophet lstm regression predictive
-            classification logistic randomforest xgboost catboost lightgbm neural
-            clustering kmeans dbscan hierarchical gmm segmentation groups
-            ab-testing hypothesis ttest chisquare anova experimentation causal
-            recommendation collaborative content-based matrix-factorization
-            cohort retention funnel conversion journey behavioral metrics
-            association-rules apriori marketbasket cross-sell upsell
-            sentiment opinion aspect emotion brand-monitoring nlp
-            scraping beautifulsoup selenium api etl pipeline airflow
-            spark hadoop hive bigquery distributed pyspark databricks
-            streaming kafka flink kinesis realtime event-processing
-            supervised labeled training validation accuracy precision recall
-            unsupervised unlabeled anomaly dimensionality pca tsne
-            ensemble bagging boosting stacking voting blending
-            hyperparameter grid bayesian optuna crossvalidation
-            evaluation confusion-matrix roc auc precision-recall
-            matplotlib seaborn plotly altair bokeh tableau powerbi looker
-            jupyter python r sql numpy scipy statsmodels
-            aws sagemaker azure googlecloud colab vertexai snowflake
-            mlops deployment monitoring drift mlflow kubeflow
-            postgresql mysql mongodb elasticsearch datawarehouse redshift
-            mvp prototype kpi business-impact stakeholder reporting
-            google-cloud gcp bigquery vertex-ai dataflow cloud-functions
-            analytics metrics insights dashboard visualization storytelling"""
-            
-        elif skill == "Machine Learning":
-            description += """ supervised labeled dataset training validation test stratified
-            classification binary multiclass logistic decisiontree randomforest
-            regression linear polynomial ridge lasso elasticnet svr gradientboosting
-            neural deeplearning mlp backpropagation activation relu sigmoid
-            convolutional cnn image resnet vgg inception mobilenet efficientnet
-            recurrent rnn lstm gru sequence timeseries language bidirectional
-            transformer attention bert gpt roberta t5 encoder decoder pretrained
-            unsupervised clustering kmeans dbscan hierarchical gmm elbow silhouette
-            dimensionalityreduction pca svd tsne umap autoencoder manifold
-            ensemble bagging boosting adaboost gradient xgboost lightgbm catboost
-            regularization l1 l2 lasso dropout batchnorm earlystopping
-            optimization gradient-descent adam sgd rmsprop momentum learningrate
-            loss mse mae rmse crossentropy hinge huber quantile
-            evaluation accuracy precision recall f1 roc auc confusion
-            crossvalidation kfold stratified leaveoneout bootstrap validationcurve
-            hyperparameter gridsearch randomsearch bayesian optuna raytune
-            featureselection univariate recursive rfe mutual-information importance
-            imbalanced smote adasyn oversampling undersampling classweight focal
-            transferlearning pretrained finetuning domain-adaptation fewshot zeroshot
-            onlinelearning incremental streaming minibatch adaptive update
-            reinforcement qlearning dqn policy-gradient actorcritic reward
-            autoencoder variational vae representation latent reconstruction
-            generative gan discriminator generator wgan stylegan diffusion
-            explainable shap lime permutation interpretability fairness bias
-            deployment api flask fastapi inference serving batch realtime edge
-            mlops cicd pipeline versioning experiment mlflow wandb monitoring
-            scikit-learn tensorflow keras pytorch xgboost lightgbm catboost jax
-            aws-sagemaker azure-ml databricks vertex-ai ray distributed gpu tpu
-            google-cloud gcp vertex-ai automl custom-training cloud-functions
-            churn prediction student dropout intervention automated intelligent"""
-            
-        elif skill == "Python":
-            description += """ pandas dataframe groupby pivot merge join query csv parquet
-            numpy array matrix vectorization broadcasting linalg random
-            matplotlib seaborn plotly charts scatter line bar heatmap visualization
-            streamlit gradio flask fastapi django webapp dashboard api backend
-            sklearn ml classification regression clustering preprocessing pipeline
-            tensorflow keras pytorch deeplearning neuralnetwork cnn rnn
-            opencv pillow imageprocessing resize crop filter computerv
-
-ision
-            selenium beautifulsoup scrapy webscraping automation crawler
-            requests urllib api http get post json oauth authentication
-            nltk spacy transformers nlp tokenization stemming ner sentiment
-            asyncio threading multiprocessing concurrent parallel async await
-            pytest unittest mock fixture testing tdd coverage integration
-            sqlalchemy orm database postgresql mysql sqlite pool connection
-            celery rabbitmq redis taskqueue background worker scheduler
-            logging debug pdb breakpoint traceback exception handling
-            argparse click cli parser arguments options flags subcommands
-            pathlib os filesystem io directory walk create delete move
-            json pickle yaml config serialization parsing dump load
-            datetime timezone timestamp strftime timedelta calendar utc
-            regex pattern findall search replace split groups lookahead
-            decorator generator comprehension lambda map filter functional
-            class inheritance polymorphism magic-methods oop encapsulation
-            typehints mypy annotations protocol generic typing validation
-            venv conda poetry pip requirements dependency packaging
-            git versioncontrol branch merge commit push github-actions cicd
-            jupyter ipython interactive kernel cell markdown notebook
-            black flake8 pylint formatting linting pep8 style
-            subprocess shell execute pipe automation scripting
-            encryption ssl hash bcrypt jwt security cryptography
-            datastructures list dict set tuple queue stack heap algorithm
-            google-cloud gcp cloud-functions app-engine cloud-run bigquery
-            profiling eda imputation churn analytics dashboard mvp production"""
-            
-        elif skill in ["AWS", "GCP", "Google Cloud", "Cloud Computing"]:
-            # Cloud platforms get MASSIVE cross-platform context
-            description += """ ec2 s3 lambda rds vpc cloudfront dynamodb sagemaker fargate eks
-            compute instances ami autoscaling loadbalancer elasticbeanstalk ecs
-            storage bucket glacier ebs efs s3 object datalake archival
-            database aurora redshift neptune timestream postgresql mysql
-            networking subnet routetable securitygroup nacl vpc peering
-            serverless apigateway stepfunctions eventbridge cloud-functions
-            container docker kubernetes orchestration fargate eks gke
-            devops codepipeline codebuild codedeploy ci-cd jenkins gitlab
-            monitoring cloudwatch logs metrics alarms xray observability
-            iam roles policies permissions security identity access
-            cdn edge caching distribution acceleration performance
-            dns route53 domain hosted-zone traffic-routing failover
-            email ses smtp notifications messaging communication
-            queue sqs fifo messaging decoupling asynchronous processing
-            pubsub sns topics subscriptions fanout notification broadcast
-            streaming kinesis datastream firehose analytics realtime
-            dataprocessing glue athena emr spark hadoop etl transform
-            machinelearning sagemaker training inference endpoints mlops
-            cost-optimization budgets reserved spot savings billing
-            backup disaster-recovery snapshots vault replication archive
-            migration database server application discovery transfer
-            hybrid directconnect vpn transit on-premise connectivity
-            compliance gdpr hipaa pci audit trail governance security
-            analytics quicksight bigquery looker datastudio visualization
-            iot iotcore greengrass device shadow mqtt edge telemetry
-            cloudformation terraform infrastructure-as-code iac provisioning
-            google-cloud gcp compute-engine app-engine cloud-run cloud-functions
-            gcp-storage cloud-sql bigquery dataflow pub-sub vertex-ai
-            cloud-vision vision-api translation speech natural-language ml-api
-            kubernetes gke anthos service-mesh istio microservices
-            firebase firestore realtime-database authentication hosting
-            dataproc bigtable spanner memorystore caching nosql
-            stackdriver monitoring logging trace profiling debugging
-            identity-platform iam service-accounts oauth2 authentication
-            network vpc subnet firewall loadbalancer cdn armor ddos
-            artifact-registry container-registry gcr docker image repository
-            deployment manager terraform ansible configuration automation
-            professional architect associate developer certification exam
-            churn analytics prediction dashboard mlops deployment production"""
-        
-        else:
-            # Generic boost
-            description += f" {skill.lower()} development programming technology engineering framework library api deployment production architecture design pattern practice project implementation"
-        
-        skill_descriptions[skill] = description
-    
-    # Add CV text context with co-occurrence boosting
+    debug_info = {"scores": {}, "features": [], "threshold_used": {}, "boosted": {}}
     cv_lower = cv_text.lower()
     
-    # Detect co-occurrences and boost related skills
+    # SKILL CO-OCCURRENCE: detecting one term boosts related skills
+    skill_cooccurrence = {
+        "google cloud": ["GCP", "Cloud Computing", "Computer Vision", "Machine Learning", "Data Science", "BigQuery"],
+        "gcp": ["GCP", "Cloud Computing", "Computer Vision", "Machine Learning", "BigQuery"],
+        "vision api": ["Computer Vision", "Machine Learning", "GCP", "Google Cloud"],
+        "bigquery": ["SQL", "Data Science", "GCP", "Google Cloud"],
+        "churn": ["Data Science", "Machine Learning", "Python", "SQL"],
+        "dropout": ["Data Science", "Machine Learning", "Python", "Computer Vision"],
+        "student analytics": ["Data Science", "Machine Learning", "Python"],
+        "tensorflow": ["Machine Learning", "Deep Learning", "Python"],
+        "pytorch": ["Machine Learning", "Deep Learning", "Python"],
+        "opencv": ["Computer Vision", "Python", "Machine Learning"],
+        "sagemaker": ["AWS", "Machine Learning", "Data Science", "Python"],
+        "lambda": ["AWS", "Cloud Computing", "Python"],
+        "ec2": ["AWS", "Cloud Computing"],
+        "s3": ["AWS", "Cloud Computing"],
+    }
+    
+    # Build skill descriptions with context
+    skill_descriptions = {}
+    for skill, keywords in skill_keywords.items():
+        desc = " ".join(keywords).lower()
+        
+        # Add domain-specific context
+        if skill == "Computer Vision":
+            desc += " image processing opencv yolo cnn detection recognition segmentation ocr facial video medical autonomous manufacturing retail security ar google cloud vision api vertex ai gcp aws rekognition churn dropout student analytics dashboard mvp"
+        elif skill == "Data Science":
+            desc += " churn analytics prediction dashboard student dropout retention eda pandas sklearn bigquery gcp aws sagemaker vertex ai machine learning statistical modeling visualization metrics kpi mvp"
+        elif skill == "Machine Learning":
+            desc += " supervised unsupervised classification regression neural network deep learning tensorflow pytorch sklearn xgboost training prediction model churn dropout student analytics gcp aws sagemaker vertex ai"
+        elif skill in ["GCP", "Google Cloud"]:
+            desc += " google cloud platform bigquery vertex ai vision api cloud functions compute engine cloud run cloud storage dataflow pub/sub kubernetes gke firebase churn analytics dashboard mvp"
+        elif skill == "AWS":
+            desc += " amazon web services ec2 s3 lambda sagemaker rds dynamodb cloudfront cloudwatch iam vpc api gateway kinesis glue athena churn analytics dashboard"
+        elif skill == "Cloud Computing":
+            desc += " gcp aws azure google cloud amazon serverless kubernetes docker container deployment infrastructure devops ci/cd pipeline cloud platform services"
+        elif skill == "Python":
+            desc += " pandas numpy matplotlib sklearn tensorflow pytorch flask django streamlit automation scripting api backend data analysis machine learning churn analytics"
+        elif skill == "SQL":
+            desc += " database query join aggregation postgres mysql bigquery analytics data warehouse etl reporting"
+        
+        skill_descriptions[skill] = desc
+    
+    # Calculate co-occurrence boost
     cooccurrence_boost = {}
     for trigger, related_skills in skill_cooccurrence.items():
         if trigger in cv_lower:
-            for related in related_skills:
-                if related in skill_descriptions:
-                    # Boost: append trigger term to skill description
-                    skill_descriptions[related] += f" {trigger} context-match detected project"
-                    cooccurrence_boost[related] = cooccurrence_boost.get(related, 0) + 0.03  # +3% boost
-        
-        # Add MASSIVE context for critical skills
-        if skill == "Computer Vision":
-            description += """ image processing classification detection recognition visual opencv yolo cnn resnet
-            object detection faster-rcnn mask-rcnn yolov5 yolov8 detectron2 mediapipe
-            facial recognition face detection dlib face_recognition biometric authentication
-            ocr optical character recognition tesseract easyocr document scanning text extraction
-            image segmentation semantic instance panoptic unet mask deeplabv3
-            video analysis motion detection tracking kalman filter optical flow action recognition
-            medical imaging x-ray ct mri diagnosis pathology radiology cancer detection
-            autonomous driving self-driving perception lidar radar camera sensor fusion lane detection
-            manufacturing quality inspection defect detection anomaly visual inspection
-            retail shelf monitoring product recognition inventory tracking
-            security surveillance crowd counting person detection intrusion alert
-            augmented reality ar filters snapchat instagram face filters virtual try-on
-            3d reconstruction point cloud slam structure-from-motion photogrammetry
-            image preprocessing normalization augmentation rotation flip crop resize
-            edge detection canny sobel laplacian contour finding
-            feature extraction sift surf orb histogram equalization
-            transfer learning fine-tuning pretrained imagenet vgg resnet inception efficientnet
-            gans style transfer cyclegan pix2pix image-to-image neural style
-            real-time processing streaming webcam raspberry pi edge deployment
-            tensorflow keras pytorch torchvision pillow opencv scikit-image
-            annotation roboflow labelimg cvat supervisely ground truth labeling
-            churn dropout student analytics prediction dashboard mvp visual patterns behavior"""
-            
-        elif skill == "Data Science":
-            description += """ churn analysis customer turnover retention prediction lifetime value ltv
-            student dropout rate academic performance early warning dashboard intervention
-            exploratory data analysis eda pandas profiling sweetviz statistical summary
-            data cleaning preprocessing imputation missing values outliers normalization scaling
-            feature engineering polynomial interaction encoding one-hot label ordinal
-            predictive analytics forecasting time series arima sarima lstm prophet regression
-            classification logistic random forest xgboost catboost lightgbm neural network
-            clustering k-means dbscan hierarchical gmm segmentation customer groups
-            a/b testing hypothesis testing t-test chi-square anova experimentation causal
-            recommendation systems collaborative filtering content-based matrix factorization
-            cohort analysis retention funnel conversion user journey behavioral analytics
-            market basket association rules apriori fpgrowth cross-sell upsell
-            sentiment opinion mining aspect-based emotion detection brand monitoring
-            web scraping beautifulsoup selenium scrapy api etl data pipeline airflow
-            big data spark hadoop hive presto distributed computing pyspark databricks
-            streaming real-time kafka flink storm kinesis event processing
-            supervised learning labeled training validation test accuracy precision recall f1
-            unsupervised learning unlabeled clustering anomaly detection dimensionality pca tsne
-            ensemble bagging boosting stacking voting weighted average model blending
-            hyperparameter tuning grid random bayesian optuna hyperopt cross-validation
-            model evaluation confusion matrix roc curve auc precision-recall
-            data visualization matplotlib seaborn plotly altair bokeh interactive dashboard
-            storytelling presentation insights business intelligence reporting tableau power bi looker
-            jupyter notebook python r sql pandas numpy scipy scikit-learn statsmodels
-            cloud aws sagemaker azure ml google colab vertex ai databricks snowflake
-            mlops deployment monitoring drift mlflow kubeflow airflow pipeline automation
-            databases postgresql mysql mongodb cassandra elasticsearch data warehouse redshift
-            mvp prototype analytics dashboard stakeholder demo
-
- business impact kpi metrics"""
-            
-        elif skill == "Machine Learning":
-            description += """ supervised learning labeled dataset training validation test split stratified
-            classification binary multiclass logistic regression decision tree random forest
-            regression linear polynomial ridge lasso elasticnet svr gradient boosting
-            neural networks deep learning multilayer perceptron backpropagation activation
-            convolutional cnn image recognition resnet vgg inception mobilenet efficientnet
-            recurrent rnn lstm gru sequence time-series language modeling bidirectional
-            transformers attention bert gpt roberta t5 encoder decoder pretrained fine-tuning
-            unsupervised clustering k-means dbscan agglomerative gmm elbow silhouette
-            dimensionality reduction pca svd tsne umap autoencoder manifold learning
-            ensemble bagging boosting adaboost gradient xgboost lightgbm catboost stacking
-            regularization l1 l2 lasso ridge dropout batch normalization early stopping
-            optimization gradient descent adam sgd rmsprop momentum learning rate schedule
-            loss function mse mae rmse cross-entropy hinge huber quantile
-            evaluation accuracy precision recall f1 roc auc confusion matrix
-            cross-validation kfold stratified leave-one-out bootstrap validation curve
-            hyperparameter grid search random search bayesian optimization optuna ray tune
-            feature selection univariate recursive rfe lasso mutual information importance
-            imbalanced data smote adasyn oversampling undersampling class weight focal loss
-            transfer learning pretrained fine-tuning domain adaptation few-shot zero-shot
-            online learning incremental streaming mini-batch SGD adaptive model update
-            reinforcement q-learning dqn policy gradient actor-critic reward environment
-            autoen
-
-coder variational vae representation learning latent space reconstruction
-            generative adversarial gan discriminator generator wgan stylegan diffusion
-            explainable shap lime permutation feature importance interpretability fairness
-            deployment api flask fastapi inference serving batch real-time edge
-            mlops ci/cd pipeline versioning experiment tracking mlflow wandb monitoring drift
-            frameworks scikit-learn tensorflow keras pytorch xgboost lightgbm catboost jax
-            cloud sagemaker azure databricks vertex ai ray distributed training gpu tpu
-            churn prediction student behavior analytics dropout intervention mvp automated"""
-            
-        elif skill == "Python":
-            description += """ pandas dataframe series groupby pivot merge join query csv excel parquet
-            numpy array matrix vectorization broadcasting linear algebra random sampling
-            matplotlib pyplot seaborn plotly visualization charts scatter line bar heatmap
-            streamlit gradio flask fastapi django web app dashboard api backend rest
-            scikit-learn machine learning classification regression clustering preprocessing
-            tensorflow keras pytorch deep learning neural network cnn rnn transformer
-            opencv pillow image processing resize crop filter transform computer vision
-            selenium beautifulsoup scrapy web scraping automation bot crawler parsing
-            requests urllib api consumption http get post json authentication oauth
-            nltk spacy transformers nlp tokenization stemming lemmatization ner sentiment
-            asyncio threading multiprocessing concurrent parallel async await coroutine
-            pytest unittest mock fixture testing tdd coverage integration end-to-end
-            sqlalchemy orm query database postgresql mysql sqlite connection pool
-            celery rabbitmq redis task queue background worker scheduler cron
-            logging debug pdb ipdb breakpoint traceback exception error handling
-            argparse click command-line cli parser arguments options flags subcommands
-            pathlib os filesystem file io directory walk create delete move copy
-            json pickle yaml toml config serialization deserialization parsing dump load
-            datetime timezone utc timestamp strftime strptime timedelta calendar
-            regex pattern matching findall search replace split groups lookahead
-            decorator generator comprehension lambda map filter reduce functional
-            class inheritance polymorphism magic methods dunder oop encapsulation
-            type hints mypy annotations protocol generic static typing validation
-            virtual environment venv conda poetry pip requirements dependency management
-            git version control branch merge commit push pull github actions ci/cd
-            jupyter notebook ipython interactive kernel cell markdown execution
-            black flake8 pylint isort code formatting linting pep8 style guide
-            subprocess shell command execute pipe communicate automation script
-            encryption ssl tls hash bcrypt jwt token security cryptography
-            data structures list dict set tuple queue stack heap tree graph algorithm
-            pandas profiling eda missing values imputation outliers normalization churn mvp"""
-            
-        elif skill == "SQL":
-            description += """ select insert update delete crud operations transaction commit rollback
-            join inner left right full cross natural self join multiple tables
-            where clause filter condition and or not in between like comparison
-            group by aggregate count sum avg min max having clause rollup cube
-            order by asc desc sorting limit offset pagination top
-            subquery nested correlated exists in any all scalar table inline
-            common table expression cte recursive with clause hierarchy tree query
-            window function row_number rank dense_rank ntile partition over frame range
-            index btree hash gin gist create drop unique composite covering performance
-            constraint primary key foreign key unique not null check default cascade
-            view materialized refresh strategy indexed precomputed cache
-            stored procedure function trigger plpgsql pl/sql cursor loop exception
-            normalization 1nf 2nf 3nf bcnf denormalization star snowflake fact dimension
-            partition range list hash interval performance scaling sharding horizontal
-            replication master slave standby read replica sync async streaming logical
-            transaction acid isolation serializable repeatable read committed dirty phantom
-            explain analyze execution plan seq scan index scan bitmap cost optimizer
-            query optimization indexing statistics analyze vacuum autovacuum maintenance
-            postgresql mysql sqlite mariadb oracle mssql sql server aurora database
-            json jsonb json_agg json_build_object arrow operator path query index
-            full text search tsvector tsquery gin index ranking similarity
-            date time timestamp interval timezone extract date_trunc date_part formatting
-            string concat substring trim upper lower replace split regex pattern
-            array array_agg unnest any all contains overlap multidimensional
-            connection pool pgbouncer pgpool max_connections timeout performance
-            migration schema versioning alembic liquibase flyway baseline rollback
-            etl extract transform load data pipeline airflow dbt dimensional modeling
-            oltp olap data warehouse redshift snowflake bigquery analytics columnar
-            security sql injection prepared statement parameterized escape sanitize
-            backup pg_dump pg_restore point-in-time recovery wal archive disaster
-            monitoring pg_stat slow query log performance tuning param
-
-eter configuration
-            gui pgadmin dbeaver datagrip sql workbench query builder visual designer
-            churn analysis retention cohort user behavior funnel conversion metrics dashboard"""
-            
-        elif skill == "React":
-            description += """ jsx component functional class hooks lifecycle render props children
-            state useState reducer context props drilling immutable update setState
-            effect useEffect cleanup dependency array side effect lifecycle mount unmount
-            ref useRef dom manipulation imperative handle forwarding callback
-            memo useMemo optimization performance rerender expensive computation cache
-            callback useCallback dependency reference stability prevent rerender
-            context useContext provider consumer global state theme authenticated user
-            reducer useReducer action dispatch complex state logic centralized
-            custom hook reusable logic composition encapsulation abstraction useLocal
-            routing react-router-dom browserrouter route link navlink params query navigate
-            form controlled uncontrolled validation formik react-hook-form yup schema
-            styling css modules styled-components emotion tailwind sass scss inline
-            state management redux toolkit mobx zustand recoil jotai xstate finite
-            performance lazy suspense code-splitting dynamic import bundle size loading
-            error boundary componentdidcatch fallback ui graceful degradation try catch
-            ssr ssg nextjs getserversideprops getstaticprops incremental isr pre-rendering
-            typescript interface type props generic utility infer strict null safety
-            testing jest react-testing-library enzyme snapshot unit integration e2e
-            api fetch axios swr react-query tanstack-query mutation cache invalidation
-            websocket realtime pusher socket.io ably live updates subscription
-            authentication jwt oauth session cookie firebase auth0 clerk supabase
-            deployment vercel netlify aws amplify cloudfront s3 github pages static
-            build webpack vite create-react-app rollup parcel esbuild compiler bundler
-            linting prettier eslint airbnb standard code formatting rules config
-            accessibility aria semantic html keyboard wcag screen reader a11y audit
-            responsive flexbox grid media query mobile-first breakpoint adaptive
-            animation framer-motion react-spring gsap css transition keyframe physics
-            chart recharts victory chart.js d3 nivo data visualization graph plot
-            map leaflet google mapbox geolocation marker cluster heatmap routing
-            drag-drop react-dnd react-beautiful-dnd sortable kanban board reorder
-            virtualization react-window react-virtualized infinite scroll large list
-            i18n react-intl react-i18next translation locale multi-language rtl format
-            pwa progressive web app service worker offline cache manifest installable
-            graphql apollo client relay query mutation subscription cache normalized
-            component library material-ui mui ant-design chakra bootstrap radix shadcn
-            portal createportal modal dialog tooltip overlay popover escape dom hierarchy"""
-            
-        elif skill == "AWS":
-            description += """ ec2 instance ami auto-scaling elastic load-balancer spot reserved compute
-            s3 bucket object storage versioning lifecycle glacier deep-archive cloudfront cdn
-            lambda serverless function trigger event api-gateway step-functions layer runtime
-            rds aurora postgres mysql mariadb oracle sql-server database replica snapshot
-            dynamodb nosql table partition sort secondary-index stream dax cache
-            vpc subnet security-group nacl internet-gateway nat route-table peering transit
-            iam role policy user group permission assume sts mfa service-account least-privilege
-            cloudwatch logs metrics alarm dashboard eventbridge rule schedule pattern target
-            sqs queue fifo standard visibility dead-letter message decouple asynchronous
-            sns topic subscription email sms push fanout notification pub-sub messaging
-            kinesis stream firehose analytics shard consumer producer real-time ingestion
-            elastic-beanstalk platform deployment version blue-green rolling immutable
-            ecs fargate task definition service cluster container docker orchestration
-            eks kubernetes node-group pod deployment helm eksctl kubectl managed
-            codepipeline codebuild codedeploy codecommit ci-cd artifact source build deploy
-            cloudformation stack template parameter output nested change-set infrastructure
-            sagemaker notebook training inference endpoint pipeline model-registry mlops
-            glue crawler catalog job spark etl schema-evolution data-lake athena
-            redshift warehouse cluster node spectrum federated query olap columnar
-            route53 dns hosted-zone alias record traffic-policy health-check failover
-            cloudfront distribution origin edge cache behavior invalidation lambda@edge
-            api-gateway rest http websocket authorizer throttle usage-plan key stage
-            secrets-manager parameter-store ssm kms encryption key rotation secure
-            backup vault plan recovery-point retention lifecycle cross-region disaster
-            migration dms sms application-discovery server database schema conversion
-            direct-connect vpn site-to-site client hybrid cloud dedicated low-latency
-            organization scp service-control-policy consolidated-billing member account
-            cost-explorer budgets cost-allocation-tag reserved spot savings-plan optimization
-            well-architected framework pillar reliability security performance cost operational
-            compliance gdpr hipaa pci sox iso fips audit trail cloudtrail config
-            guardduty security-hub inspector macie threat-detection vulnerability scanning
-            shield waf ddos protection rule acl rate-limit geo-blocking bot-control
-            x-ray tracing distributed microservice latency bottleneck service-map analytics
-            eventbridge scheduler rule target event-driven reactive serverless architecture
-            step-functions state-machine workflow orchestration parallel choice wait retry
-            amplify mobile frontend hosting ci-cd authentication datastore appsync graphql
-            iot-core thing shadow rule fleet provisioning greengrass edge device mqtt
-            churn dashboard analytics prediction sagemaker ml model deploy monitor train"""
-            
-        elif skill == "Docker":
-            description += """ dockerfile image container registry build run exec stop rm prune
-            from alpine ubuntu debian base-image minimal lightweight secure official
-            run install package apt yum apk command layer cache optimization
-            copy add workdir chown permission file directory context .dockerignore
-            cmd entrypoint exec form shell form default command override argument
-            env environment variable arg build-time secret password configuration
-            expose port publish mapping host network bridge overlay bind
-            volume mount bind named tmpfs persistent data stateful storage lifecycle
-            compose yaml service network depends_on healthcheck restart scale profiles
-            multi-stage build pattern optimization size reduction intermediate final
-            layer caching dependency install source code separate rebuild efficient
-            network bridge host none macvlan overlay dns service-discovery container-name
-            log driver json-file syslog journald fluentd gelf awslogs centralized
-            health check interval timeout retries start-period liveness readiness probe
-            security non-root user capability drop apparmor seccomp readonly filesystem
-            scan vulnerability trivy clair snyk aqua grype sbom cve audit compliance
-            resource limit cpu memory swap reservation constraint cgroup control
-            restart policy always unless-stopped on-failure no automatic recovery
-            swarm mode stack service replicas rolling-update placement constraint secret
-            kubernetes deployment pod service ingress configmap secret volume pvc
-            registry docker-hub ecr gcr acr quay harbor private authenticated push pull
-            ci-cd pipeline github-actions jenkins gitlab circle-ci build test deploy automated
-            development hot-reload volume-mount local binding live-update nodemon
-            production build minify optimize distroless scratch rootless readonly immutable
-            monitoring prometheus grafana cadvisor metrics exporter dashboard alert resource
-            logging efk elk fluentd elasticsearch kibana log-aggregation centralized query
-            runtime containerd cri-o runc alternatives oci-compliant low-level execution
-            buildkit buildx cross-platform arm amd64 multi-arch qemu binfmt cache remote
-            debug attach interactive shell exec logs inspect top stats troubleshoot
-            orchestration kubernetes swarm nomad mesos distributed cluster scaling ha
-            microservices api gateway service-mesh istio linkerd consul envoy sidecar
-            storage plugin driver nfs cifs gluster ceph distributed shared persistent
-            churn analytics student dashboard prediction mvp containerized deployment scalable"""
-            
-        elif skill == "NLP":
-            description += """ tokenization word sentence subword bpe wordpiece sentencepiece splitting
-            preprocessing cleaning lowercase punctuation stopword stemming lemmatization
-            vectorization bag-of-words tfidf count word2vec glove fasttext embedding
-            transformer attention self-attention multi-head encoder decoder positional
-            bert roberta albert distilbert electra deberta pretrained fine-tuning masked
-            gpt gpt2 gpt3 gpt4 language-model autoregressive generation completion text
-            t5 bart encoder-decoder seq2seq translation summarization conditional generation
-            named-entity-recognition ner spacy stanza flair biobert person organization location
-            part-of-speech pos tagging morphology syntax grammar universal-dependencies
-            dependency parsing constituency tree syntax semantic role srl relation
-            sentiment analysis opinion mining polarity aspect-based emotion classification
-            text classification topic modeling lda nmf clustering categorization labeling
-            question answering qa extractive generative squad retrieval reader ranker
-            summarization abstractive extractive rouge bleu meteor document news article
-            machine translation neural-mt attention transformer fairseq marian opus google
-            information extraction relation triplet knowledge-graph entity linking coreference
-            language generation creative conditional sampling nucleus top-k temperature
-            chatbot conversational dialogue intent slot entity rasa dialogflow watson
-            speech recognition asr whisper wav2vec deepspeech transcription audio waveform
-            text-to-speech tts tacotron wavenet glow-tts synthesis prosody voice-cloning
-            information retrieval search ranking bm25 tf-idf elasticsearch solr lucene
-            semantic search sentence-transformer sbert mpnet cosine similarity embedding
-            spell checking autocorrect autocomplete suggestion fuzzy-matching levenshtein
-            huggingface transformers pipeline tokenizer model hub datasets evaluate trainer
-            pytorch tensorflow keras jax flax deep-learning framework neural-network
-            dataset loading preprocessing augmentation paraphrase backtranslation cleaning
-            evaluation accuracy f1 precision recall bleu rouge perplexity human
-            fine-tuning transfer domain-adaptation lora prefix prompt adapter efficient
-            prompt engineering in-context few-shot zero-shot chain-of-thought instruction
-            langchain llama-index rag retrieval-augmented-generation vector-database agent
-            vector-store pinecone weaviate chroma faiss qdrant milvus similarity search
-            embeddings openai cohere sentence-transformers universal-sentence-encoder dense
-            churn prediction student dropout sentiment dashboard analytics text-mining insight"""
-        
-        else:
-            # Generic enhancement for other skills
-            description += f" {skill.lower()} development coding programming technology software engineering library framework api deployment production system architecture design pattern best-practice"
-        
-        skill_descriptions[skill] = description
+            for skill in related_skills:
+                if skill in skill_descriptions:
+                    cooccurrence_boost[skill] = cooccurrence_boost.get(skill, 0) + 0.04
     
-    # Create TF-IDF vectors
-    vectorizer = TfidfVectorizer(
-        max_features=200,
-        stop_words='english',
-        ngram_range=(1, 2)  # Include bigrams for better context
-    )
+    # TF-IDF Vectorization
+    vectorizer = TfidfVectorizer(max_features=150, stop_words='english', ngram_range=(1, 2))
     
     try:
-        # Fit vectorizer on skill descriptions + CV text
-        all_texts = list(skill_descriptions.values()) + [cv_text.lower()]
+        all_texts = list(skill_descriptions.values()) + [cv_lower]
         tfidf_matrix = vectorizer.fit_transform(all_texts)
-        
-        # CV vector is the last one
         cv_vector = tfidf_matrix[-1]
         skill_vectors = tfidf_matrix[:-1]
-        
-        # Calculate cosine similarity
         similarities = cosine_similarity(cv_vector, skill_vectors)[0]
         
-        # Store top features for debugging
+        # Extract top features for debug
         if return_debug_info:
-            feature_names = vectorizer.get_feature_names_out()
+            features = vectorizer.get_feature_names_out()
             cv_array = cv_vector.toarray()[0]
-            top_indices = cv_array.argsort()[-20:][::-1]
-            debug_info["features"] = [(feature_names[i], cv_array[i]) for i in top_indices if cv_array[i] > 0]
+            top_idx = cv_array.argsort()[-15:][::-1]
+            debug_info["features"] = [(features[i], cv_array[i]) for i in top_idx if cv_array[i] > 0]
         
-        # Detect skills with similarity > threshold + apply co-occurrence boost
+        # Detect skills
         for idx, skill in enumerate(skill_descriptions.keys()):
-            similarity_score = similarities[idx]
+            score = similarities[idx] + cooccurrence_boost.get(skill, 0)
             
-            # Apply co-occurrence boost
-            if skill in cooccurrence_boost:
-                similarity_score += cooccurrence_boost[skill]
-            
-            # VERY LOW thresholds for cloud/CV/DS/ML (data mining intelligence)
+            # Dynamic thresholds
             if skill in ["Computer Vision", "Data Science", "Machine Learning", "Deep Learning"]:
-                threshold = 0.05  # Ultra-low for context detection
+                threshold = 0.04
             elif skill in ["Python", "SQL", "AWS", "GCP", "Google Cloud", "Cloud Computing"]:
-                threshold = 0.07  # Very low for common skills
-            elif skill in ["Docker", "Kubernetes", "React", "NLP"]:
-                threshold = 0.10
+                threshold = 0.06
             else:
-                threshold = 0.15
+                threshold = 0.12
             
-            # Store debug info
             if return_debug_info:
-                debug_info["scores"][skill] = similarity_score
+                debug_info["scores"][skill] = score
                 debug_info["threshold_used"][skill] = threshold
                 if skill in cooccurrence_boost:
-                    debug_info.setdefault("boosted", {})[skill] = cooccurrence_boost[skill]
+                    debug_info["boosted"][skill] = cooccurrence_boost[skill]
             
-            if similarity_score > threshold:
+            if score > threshold:
                 detected_skills.add(skill)
                 
     except Exception as e:
-        # Store error in debug info
         if return_debug_info:
             debug_info["error"] = str(e)
-        pass
     
     return (detected_skills, debug_info) if return_debug_info else detected_skills
-    """
-    Uses ML (TF-IDF vectorization + cosine similarity) to intelligently match skills.
-    
-    This solves the problem where:
-    - CV says "built MVP analyzing student churn rate" 
-    - Should detect: Data Science, Machine Learning, Python
-    - Traditional regex misses context
-    
-    Args:
-        cv_text: Full CV text
-        skill_keywords: Dict mapping skill name to list of related terms
-        
-    Returns:
-        Set of detected skills based on semantic similarity
-    """
-    if not TfidfVectorizer or not cosine_similarity:
-        return set()  # Fallback if sklearn not available
-    
-    detected_skills = set()
-    
-    # Prepare skill descriptions for vectorization
-    skill_descriptions = {}
-    for skill, keywords in skill_keywords.items():
-        # Create rich description from keywords
-        description = " ".join(keywords)
-        # Add context words for better matching
-        if skill == "Computer Vision":
-            description += " image processing classification detection recognition visual analysis opencv yolo cnn object detection pattern recognition churn prediction student analytics dropout prevention mvp dashboard"
-        elif skill == "Data Science":
-            description += " churn analysis prediction modeling analytics insights dashboard metrics visualization student retention dropout rate mvp data-driven decision"
-        elif skill == "Machine Learning":
-            description += " model training prediction classification regression supervised unsupervised algorithm churn forecasting student behavior analysis"
-        elif skill == "Python":
-            description += " pandas numpy matplotlib streamlit flask data analysis automation scripting"
-        
-        skill_descriptions[skill] = description
-    
-    # Create TF-IDF vectors
-    vectorizer = TfidfVectorizer(
-        max_features=200,
-        stop_words='english',
-        ngram_range=(1, 2)  # Include bigrams for better context
-    )
-    
-    try:
-        # Fit vectorizer on skill descriptions + CV text
-        all_texts = list(skill_descriptions.values()) + [cv_text.lower()]
-        tfidf_matrix = vectorizer.fit_transform(all_texts)
-        
-        # CV vector is the last one
-        cv_vector = tfidf_matrix[-1]
-        skill_vectors = tfidf_matrix[:-1]
-        
-        # Calculate cosine similarity
-        similarities = cosine_similarity(cv_vector, skill_vectors)[0]
-        
-        # Detect skills with similarity > threshold
-        for idx, skill in enumerate(skill_descriptions.keys()):
-            similarity_score = similarities[idx]
-            
-            # Much lower threshold for CV/DS/ML to catch context-based matches
-            if skill in ["Computer Vision", "Data Science", "Machine Learning"]:
-                threshold = 0.08  # Very low for churn/student analytics detection
-            elif skill in ["Python", "SQL"]:
-                threshold = 0.12
-            else:
-                threshold = 0.18
-            
-            if similarity_score > threshold:
-                detected_skills.add(skill)
-                
-    except Exception:
-        # Silent fallback - don't show errors to user
-        pass
-    
-    return detected_skills
-
 
 
 
@@ -1623,11 +1032,11 @@ def extract_text_from_pdf(pdf_file) -> str:
         str: Testo estratto dal PDF
     
     Raises:
-        Exception: Se PyPDF2 non è installato o il PDF è corrotto
+        Exception: Se PyPDF2 non Ã¨ installato o il PDF Ã¨ corrotto
     """
     if PdfReader is None:
         raise ImportError(
-            "PyPDF2 non è installato. "
+            "PyPDF2 non Ã¨ installato. "
             "Installa con: pip install PyPDF2"
         )
     
@@ -1671,7 +1080,7 @@ def normalize_and_extract(text: str) -> Set[str]:
     1. Normalizzazione: Converte il testo in lowercase per case-insensitive matching
     2. Pattern Matching: Usa regex per trovare keyword esatte (con word boundaries)
     3. Normalizzazione Semantica: Mappa variazioni diverse allo stesso concetto
-    4. INFERENZA INTELLIGENTE: Deduce skill implicite (NOVITÀ!)
+    4. INFERENZA INTELLIGENTE: Deduce skill implicite (NOVITÃ€!)
     
     Args:
         text (str): Testo da analizzare (annuncio di lavoro o CV)
@@ -1715,7 +1124,7 @@ def normalize_and_extract(text: str) -> Set[str]:
 
 
 # ============================================================================
-# FUNZIONE: CALCOLO METRICHE DI COMPATIBILITÀ
+# FUNZIONE: CALCOLO METRICHE DI COMPATIBILITÃ€
 # ============================================================================
 # PILASTRO DATA ANALYSIS: Calcola scoring e metriche quantitative
 # ============================================================================
@@ -1727,7 +1136,7 @@ def calculate_match(job_skills: Set[str], cv_skills: Set[str]) -> Tuple[float, S
     
     ALGORITMO:
     1. Filtra soft skills da entrambi i set
-    2. Intersezione: Trova skill comuni (job_skills ∩ cv_skills)
+    2. Intersezione: Trova skill comuni (job_skills âˆ© cv_skills)
     3. Differenza: Trova skill mancanti (job_skills - cv_skills)
     4. Scoring: Percentuale = (skill_comuni / skill_richieste) * 100
     
@@ -1750,7 +1159,7 @@ def calculate_match(job_skills: Set[str], cv_skills: Set[str]) -> Tuple[float, S
         return 0.0, set(), set()
     
     # STEP 2: OPERAZIONI INSIEMISTICHE (Set Theory) - solo hard skills
-    matched_skills = hard_job_skills.intersection(hard_cv_skills)  # A ∩ B
+    matched_skills = hard_job_skills.intersection(hard_cv_skills)  # A âˆ© B
     missing_skills = hard_job_skills.difference(hard_cv_skills)    # A - B
     
     # STEP 3: CALCOLO PERCENTUALE DI MATCH (solo hard skills)
@@ -1774,17 +1183,17 @@ def get_match_message(percentage: float) -> str:
     - > 75%: Match Alto (profilo ideale)
     
     Args:
-        percentage (float): Percentuale di compatibilità (0-100)
+        percentage (float): Percentuale di compatibilitÃ  (0-100)
     
     Returns:
         str: Messaggio formattato con emoji e descrizione
     """
     if percentage < 40:
-        return "🔴 Match Basso - Richieste forse irrealistiche o profilo junior"
+        return "ðŸ”´ Match Basso - Richieste forse irrealistiche o profilo junior"
     elif percentage <= 75:
-        return "🟡 Match Medio - Buona base"
+        return "ðŸŸ¡ Match Medio - Buona base"
     else:
-        return "🟢 Match Alto - Profilo ideale"
+        return "ðŸŸ¢ Match Alto - Profilo ideale"
 
 
 # ==============================================================================
@@ -1795,31 +1204,31 @@ def get_match_message(percentage: float) -> str:
 # HIDDEN ML DEBUG SIDEBAR (Password Protected)
 # ==============================================================================
 with st.sidebar:
-    st.markdown("### ⚙️ ML Debug Panel")
-    st.caption("Click ☰ icon (top-left) to open/close")
+    st.markdown("### âš™ï¸ ML Debug Panel")
+    st.caption("Click â˜° icon (top-left) to open/close")
     password = st.text_input("Password:", type="password", key="ml_debug_pwd")
     
     if password == "1234":
-        st.success("✅ Access Granted")
+        st.success("âœ… Access Granted")
         st.markdown("---")
         
         # Enable debugging checkbox
-        debug_enabled = st.checkbox("🔬 Enable ML Debugging", help="Captures detailed ML metrics on next analysis")
+        debug_enabled = st.checkbox("ðŸ”¬ Enable ML Debugging", help="Captures detailed ML metrics on next analysis")
         st.session_state['ml_debug_enabled'] = debug_enabled
         
         if debug_enabled:
-            st.markdown("### � Model Architecture")
+            st.markdown("### ï¿½ Model Architecture")
             st.code("""
 TF-IDF Vectorizer:
-├─ max_features: 200
-├─ ngram_range: (1,2)
-├─ stop_words: english
-└─ metric: cosine_similarity
+â”œâ”€ max_features: 200
+â”œâ”€ ngram_range: (1,2)
+â”œâ”€ stop_words: english
+â””â”€ metric: cosine_similarity
 
 Thresholds:
-├─ CV/DS/ML: 0.08
-├─ Python/SQL: 0.12  
-└─ Others: 0.18
+â”œâ”€ CV/DS/ML: 0.08
+â”œâ”€ Python/SQL: 0.12  
+â””â”€ Others: 0.18
             """, language="yaml")
             
             st.markdown("---")
@@ -1830,7 +1239,7 @@ Thresholds:
                 
                 # Vectorizer statistics
                 if 'features' in debug_data and debug_data['features']:
-                    st.markdown("### 🧮 TF-IDF Analysis")
+                    st.markdown("### ðŸ§® TF-IDF Analysis")
                     total_features = len(debug_data['features'])
                     non_zero = sum(1 for _, score in debug_data['features'] if score > 0)
                     
@@ -1854,7 +1263,7 @@ Thresholds:
                 # Similarity scores with statistics
                 if 'scores' in debug_data:
                     st.markdown("---")
-                    st.markdown("### 🎯 Similarity Scores")
+                    st.markdown("### ðŸŽ¯ Similarity Scores")
                     
                     scores = list(debug_data['scores'].values())
                     import numpy as np
@@ -1872,33 +1281,33 @@ Thresholds:
                     scores_df = []
                     for skill, score in sorted(debug_data['scores'].items(), key=lambda x: x[1], reverse=True):
                         threshold = debug_data['threshold_used'].get(skill, 0.18)
-                        matched = "✅" if score > threshold else "❌"
+                        matched = "âœ…" if score > threshold else "âŒ"
                         delta = score - threshold
                         scores_df.append({
                             "Skill": skill,
                             "Score": f"{score:.4f}",
                             "Threshold": f"{threshold:.2f}",
-                            "Δ": f"{delta:+.4f}",
+                            "Î”": f"{delta:+.4f}",
                             "Match": matched
                         })
                     
                     st.dataframe(pd.DataFrame(scores_df), use_container_width=True, hide_index=True, height=400)
                     
                     # Distribution insights
-                    matched_count = sum(1 for item in scores_df if item["Match"] == "✅")
+                    matched_count = sum(1 for item in scores_df if item["Match"] == "âœ…")
                     st.info(f"**Detection Rate:** {matched_count}/{len(scores_df)} skills matched ({matched_count/len(scores_df)*100:.1f}%)")
                     
             else:
-                st.warning("⚠️ No data yet. Upload CV/Job to see metrics.")
+                st.warning("âš ï¸ No data yet. Upload CV/Job to see metrics.")
     
     elif password and password != "1234":
-        st.error("❌ Invalid Password")
+        st.error("âŒ Invalid Password")
 
 
 # Professional Header
 st.markdown("""
 <div class="linkedin-header">
-    <h1>🎯 Job Seeker Helper</h1>
+    <h1>ðŸŽ¯ Job Seeker Helper</h1>
     <p>AI-Powered CV-Job Matching Platform</p>
 </div>
 """, unsafe_allow_html=True)
@@ -1909,7 +1318,7 @@ st.markdown("""
 col1, col2 = st.columns(2)  # Layout a 2 colonne
 
 with col1:
-    st.subheader("📋 Annuncio di Lavoro")
+    st.subheader("ðŸ“‹ Annuncio di Lavoro")
     # Text area per input annuncio
     job_text = st.text_area(
         "Incolla qui il testo dell'annuncio",
@@ -1918,19 +1327,19 @@ with col1:
     )
 
 with col2:
-    st.subheader("📄 Il tuo CV / Lista Skill")
+    st.subheader("ðŸ“„ Il tuo CV / Lista Skill")
     
     # Tab per scegliere tra testo o PDF
     input_method = st.radio(
-        "Modalità di input:",
-        ["📝 Testo", "📎 Upload PDF"],
+        "ModalitÃ  di input:",
+        ["ðŸ“ Testo", "ðŸ“Ž Upload PDF"],
         horizontal=True,
         label_visibility="collapsed"
     )
     
     cv_text = ""
     
-    if input_method == "📝 Testo":
+    if input_method == "ðŸ“ Testo":
         # Text area per input CV manuale
         cv_text = st.text_area(
             "Incolla qui il tuo CV o lista di competenze",
@@ -1949,20 +1358,20 @@ with col2:
         if uploaded_file is not None:
             try:
                 # Estrai testo dal PDF
-                with st.spinner("📖 Lettura del PDF in corso..."):
+                with st.spinner("ðŸ“– Lettura del PDF in corso..."):
                     cv_text = extract_text_from_pdf(uploaded_file)
                 
-                st.success(f"✅ PDF caricato! Estratti {len(cv_text)} caratteri.")
+                st.success(f"âœ… PDF caricato! Estratti {len(cv_text)} caratteri.")
             
             except ImportError as e:
                 st.error(
-                    "❌ PyPDF2 non installato. "
+                    "âŒ PyPDF2 non installato. "
                     "Esegui: `pip install PyPDF2`"
                 )
             except Exception as e:
-                st.error(f"❌ Errore nella lettura del PDF: {str(e)}")
+                st.error(f"âŒ Errore nella lettura del PDF: {str(e)}")
         else:
-            st.info("👆 Carica un file PDF per iniziare l'analisi")
+            st.info("ðŸ‘† Carica un file PDF per iniziare l'analisi")
 
 st.markdown("---")  # Separatore
 
@@ -1970,12 +1379,12 @@ st.markdown("---")  # Separatore
 # SEZIONE PROCESSING: Logica di analisi al click del bottone
 # ============================================================================
 
-# Bottone di analisi (type="primary" → colore acceso, use_container_width → full width)
-if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
+# Bottone di analisi (type="primary" â†’ colore acceso, use_container_width â†’ full width)
+if st.button("ðŸ” Analizza Match", type="primary", use_container_width=True):
     
     # VALIDAZIONE INPUT: Verifica che entrambi i campi siano compilati
     if not job_text or not cv_text:
-        st.warning("⚠️ Compila entrambi i campi per procedere con l'analisi!")
+        st.warning("âš ï¸ Compila entrambi i campi per procedere con l'analisi!")
     
     else:
         # ====================================================================
@@ -1986,7 +1395,7 @@ if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
         job_skills = normalize_and_extract(job_text)   # Skill richieste
         cv_skills = normalize_and_extract(cv_text)     # Skill possedute
         
-        # STEP 2: SCORING - Calcolo compatibilità
+        # STEP 2: SCORING - Calcolo compatibilitÃ 
         match_percentage, matched_skills, missing_skills = calculate_match(
             job_skills, cv_skills
         )
@@ -2001,7 +1410,7 @@ if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
         col_chart, col_metrics = st.columns([1, 1])
         
         with col_chart:
-            st.subheader("📊 Match Analysis")
+            st.subheader("ðŸ“Š Match Analysis")
             
             # Donut Chart - LinkedIn Style
             fig = go.Figure(data=[go.Pie(
@@ -2032,7 +1441,7 @@ if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
             st.plotly_chart(fig, use_container_width=True)
         
         with col_metrics:
-            st.subheader("📈 Key Metrics")
+            st.subheader("ðŸ“ˆ Key Metrics")
             
             # Clean metrics display
             m1, m2 = st.columns (2)
@@ -2045,11 +1454,11 @@ if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
             
             # Status indicator - clean design
             if match_percentage >= 75:
-                st.success("✅ **Strong Match** - Excellent fit for this role")
+                st.success("âœ… **Strong Match** - Excellent fit for this role")
             elif match_percentage >= 50:
-                st.info("ℹ️ **Good Match** - Solid foundation, worth applying")
+                st.info("â„¹ï¸ **Good Match** - Solid foundation, worth applying")
             else:
-                st.warning("⚠️ **Developing Match** - Consider upskilling first")
+                st.warning("âš ï¸ **Developing Match** - Consider upskilling first")
         
         st.markdown("<br>", unsafe_allow_html=True)
         
@@ -2079,7 +1488,7 @@ if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
                 elif skill in ["Leadership", "Communication", "Teamwork", "Agile", "Project Management"]:
                     categories["Soft Skills"].append(skill)
                 else:
-                    # Default alla categoria più probabile
+                    # Default alla categoria piÃ¹ probabile
                     if "data" in skill.lower() or "sql" in skill.lower():
                         categories["Data & Analytics"].append(skill)
                     else:
@@ -2092,7 +1501,7 @@ if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
         
         # === MATCHED SKILLS - COMPACT ===
         with col_matched:
-            st.subheader("✅ Matched Skills")
+            st.subheader("âœ… Matched Skills")
             
             if matched_skills:
                 categorized_matched = categorize_skills(matched_skills)
@@ -2102,15 +1511,15 @@ if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
                 
                 # Drill-down per categoria
                 for category, skills in categorized_matched.items():
-                    with st.expander(f"📁 {category} ({len(skills)})"):
+                    with st.expander(f"ðŸ“ {category} ({len(skills)})"):
                         for skill in sorted(skills):
-                            st.success(f"✓ {skill}", icon="✅")
+                            st.success(f"âœ“ {skill}", icon="âœ…")
             else:
                 st.info("No skills matched")
         
         # === MISSING SKILLS - DETAILED LEARNING RESOURCES ===
         with col_missing:
-            st.subheader("❌ Skills Gap")
+            st.subheader("âŒ Skills Gap")
             
             if missing_skills:
                 categorized_missing = categorize_skills(missing_skills)
@@ -2120,9 +1529,9 @@ if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
                 
                 # Drill-down per ogni skill con risorse COMPLETE
                 for category, skills in categorized_missing.items():
-                    with st.expander(f"📁 {category} ({len(skills)})", expanded=(category == list(categorized_missing.keys())[0])):
+                    with st.expander(f"ðŸ“ {category} ({len(skills)})", expanded=(category == list(categorized_missing.keys())[0])):
                         for skill in sorted(skills):
-                            st.error(f"**{skill}**", icon="❌")
+                            st.error(f"**{skill}**", icon="âŒ")
                             
                             # Ottieni risorse complete
                             resource = LEARNING_RESOURCES.get(skill, DEFAULT_LEARNING_RESOURCE)
@@ -2132,9 +1541,9 @@ if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
                                 # Metrics row
                                 c1, c2 = st.columns(2)
                                 with c1:
-                                    st.caption(f"⏱️ **Time:** {resource['tempo']}")
+                                    st.caption(f"â±ï¸ **Time:** {resource['tempo']}")
                                 with c2:
-                                    st.caption(f"📊 **Level:** {resource['difficoltà']}")
+                                    st.caption(f"ðŸ“Š **Level:** {resource['difficoltÃ ']}")
                                 
                                 # Project Idea (NEW - highlighted)
                                 if 'project' in resource:
@@ -2142,20 +1551,20 @@ if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
                                     st.markdown("")
                                 
                                 # Learning path
-                                st.markdown("**📚 Courses:**")
+                                st.markdown("**ðŸ“š Courses:**")
                                 for i, corso in enumerate(resource['corsi'], 1):
                                     st.markdown(f"{i}. {corso}")
                                 
-                                st.markdown(f"**🛠️ Practice:** {resource['pratica']}")
-                                st.markdown(f"**🏆 Cert:** {resource['certificazioni']}")
+                                st.markdown(f"**ðŸ› ï¸ Practice:** {resource['pratica']}")
+                                st.markdown(f"**ðŸ† Cert:** {resource['certificazioni']}")
                                 
                                 st.markdown("---")
                 
                 # Suggerimento strategico
-                st.info("💡 **Strategy:** Focus on one category at a time. Start with highest priority skills for this role.")
+                st.info("ðŸ’¡ **Strategy:** Focus on one category at a time. Start with highest priority skills for this role.")
             
             else:
-                st.success("🎉 Perfect match! You have all required skills!")
+                st.success("ðŸŽ‰ Perfect match! You have all required skills!")
                 st.balloons()
         
         # ====================================================================
@@ -2163,7 +1572,7 @@ if st.button("🔍 Analizza Match", type="primary", use_container_width=True):
         # ====================================================================
         st.markdown("---")
         st.caption(
-            f"📈 Skill rilevate nell'annuncio: {len(job_skills)} | "
+            f"ðŸ“ˆ Skill rilevate nell'annuncio: {len(job_skills)} | "
             f"Skill rilevate nel CV: {len(cv_skills)}"
         )
 
