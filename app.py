@@ -28,6 +28,8 @@ def render_debug_page():
     _, df = ml_utils.train_rf_model()
     st.subheader("Inference Rules (Logic)")
     st.write(constants.INFERENCE_RULES)
+    st.subheader("Skill Clusters (Equivalent Skills)")
+    st.write(constants.SKILL_CLUSTERS)
     st.subheader("Skill Database")
     st.dataframe(df, use_container_width=True)
 
@@ -105,7 +107,9 @@ def render_results(res):
 
     # HARD SKILLS GRID
     st.subheader("🛠️ Technical Skills (Hard Skills)")
-    c1, c2, c3 = st.columns(3)
+    
+    # Use 4 columns now to include Transferable
+    c1, c2, c3, c4 = st.columns(4)
     
     with c1:
         st.markdown("#### ✅ Matched")
@@ -113,11 +117,20 @@ def render_results(res):
         if not res["matching_hard"]: st.caption("None")
         
     with c2:
+        st.markdown("#### ⚠️ Transferable")
+        if res["transferable"]:
+            for missing, present in res["transferable"].items():
+                st.write(f"- **{missing}**") 
+                st.caption(f"(Known via {present})")
+        else:
+            st.caption("None")
+
+    with c3:
         st.markdown("#### ❌ Missing")
         for s in res["missing_hard"]: st.write(f"- **{s}**")
         if not res["missing_hard"]: st.success("All clear!")
 
-    with c3:
+    with c4:
         st.markdown("#### ➕ Bonus")
         for s in res["extra_hard"]: st.write(f"- {s}")
 
@@ -141,7 +154,7 @@ def render_results(res):
     # LEARNING PLAN
     if res["missing_hard"]:
         st.divider()
-        st.subheader("📚 Learning Recommendations")
+        st.subheader("📚 Learning Recommendations (For Critical Skills)")
         for s in res["missing_hard"]:
             r = constants.LEARNING_RESOURCES.get(s, constants.DEFAULT_RESOURCE)
             with st.expander(f"Learn {s}"):
