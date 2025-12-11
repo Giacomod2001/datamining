@@ -118,8 +118,9 @@ def render_results(res):
         
     with c2:
         st.markdown("#### ⚠️ Transferable")
-        if res["transferable"]:
-            for missing, present in res["transferable"].items():
+        transferable = res.get("transferable", {})
+        if transferable:
+            for missing, present in transferable.items():
                 st.write(f"- **{missing}**") 
                 st.caption(f"(Known via {present})")
         else:
