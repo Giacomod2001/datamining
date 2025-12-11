@@ -109,22 +109,46 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     cv_hard, cv_soft = extract_skills_from_text(cv_text)
     job_hard, job_soft = extract_skills_from_text(job_text)
     
-    # Calculate Gaps (Hard Skills Only for Match Score)
+    # Calculate Initial Gaps
     matching_hard = cv_hard & job_hard
-    missing_hard = job_hard - cv_hard
+    initial_missing_hard = job_hard - cv_hard
     extra_hard = cv_hard - job_hard
     
+    # Logic for TRANSFERABLE SKILLS
+    # Move from "Missing" to "Transferable" if user has equivalent skill
+    transferable = {} # {missing_skill: owned_equivalent_skill}
+    final_missing_hard = set()
+    
+    for missing in initial_missing_hard:
+        found_transferable = False
+        # Check if this missing skill belongs to any cluster
+        for cluster_name, members in constants.SKILL_CLUSTERS.items():
+            if missing in members:
+                # Check if user has ANY other skill in this cluster
+                user_has = members.intersection(cv_hard)
+                if user_has:
+                    # Yes! User has a transferable skill
+                    transferable[missing] = list(user_has)[0] # Just pick one as proof
+                    found_transferable = True
+                    break
+        
+        if not found_transferable:
+            final_missing_hard.add(missing)
+            
     # Soft Skills Analysis (Just for info)
     matching_soft = cv_soft & job_soft
     missing_soft = job_soft - cv_soft
     
     # Score logic
-    match_pct = len(matching_hard) / len(job_hard) * 100 if job_hard else 0
+    # Partial credit (0.5) for transferable skills
+    score_points = len(matching_hard) + (len(transferable) * 0.5)
+    match_pct = score_points / len(job_hard) * 100 if job_hard else 0
     
     return {
         "match_percentage": match_pct,
         "matching_hard": matching_hard,
-        "missing_hard": missing_hard,
+        "missing_hard": final_missing_hard,
+        "transferable": transferable,
         "extra_hard": extra_hard,
         "matching_soft": matching_soft,
         "missing_soft": missing_soft
