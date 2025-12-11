@@ -900,7 +900,403 @@ def semantic_skill_match(text: str, skill_variations: List[str], _nlp_model=None
 # ============================================================================
 
 @st.cache_data
-def ml_skill_matcher(cv_text: str, skill_keywords: dict) -> Set[str]:
+def ml_skill_matcher(cv_text: str, skill_keywords: dict, return_debug_info: bool = False) -> Set[str] | tuple:
+    """
+    Uses ML (TF-IDF vectorization + cosine similarity) to intelligently match skills.
+    
+    This solves the problem where:
+    - CV says "built MVP analyzing student churn rate" 
+    - Should detect: Data Science, Machine Learning, Python
+    - Traditional regex misses context
+    
+    Args:
+        cv_text: Full CV text
+        skill_keywords: Dict mapping skill name to list of related terms
+        return_debug_info: If True, returns (skills, debug_dict) for inspection
+        
+    Returns:
+        Set of detected skills OR (skills, debug_info) if return_debug_info=True
+    """
+    if not TfidfVectorizer or not cosine_similarity:
+        return (set(), {}) if return_debug_info else set()
+    
+    detected_skills = set()
+    debug_info = {"scores": {}, "features": [], "threshold_used": {}}
+    
+    # Prepare skill descriptions for vectorization - ULTRA-COMPREHENSIVE DATASET
+    # This is the ML model's "training data" - more context = better matching
+    skill_descriptions = {}
+    for skill, keywords in skill_keywords.items():
+        # Base description from keywords
+        description = " ".join(keywords)
+        
+        # Add MASSIVE context for critical skills
+        if skill == "Computer Vision":
+            description += """ image processing classification detection recognition visual opencv yolo cnn resnet
+            object detection faster-rcnn mask-rcnn yolov5 yolov8 detectron2 mediapipe
+            facial recognition face detection dlib face_recognition biometric authentication
+            ocr optical character recognition tesseract easyocr document scanning text extraction
+            image segmentation semantic instance panoptic unet mask deeplabv3
+            video analysis motion detection tracking kalman filter optical flow action recognition
+            medical imaging x-ray ct mri diagnosis pathology radiology cancer detection
+            autonomous driving self-driving perception lidar radar camera sensor fusion lane detection
+            manufacturing quality inspection defect detection anomaly visual inspection
+            retail shelf monitoring product recognition inventory tracking
+            security surveillance crowd counting person detection intrusion alert
+            augmented reality ar filters snapchat instagram face filters virtual try-on
+            3d reconstruction point cloud slam structure-from-motion photogrammetry
+            image preprocessing normalization augmentation rotation flip crop resize
+            edge detection canny sobel laplacian contour finding
+            feature extraction sift surf orb histogram equalization
+            transfer learning fine-tuning pretrained imagenet vgg resnet inception efficientnet
+            gans style transfer cyclegan pix2pix image-to-image neural style
+            real-time processing streaming webcam raspberry pi edge deployment
+            tensorflow keras pytorch torchvision pillow opencv scikit-image
+            annotation roboflow labelimg cvat supervisely ground truth labeling
+            churn dropout student analytics prediction dashboard mvp visual patterns behavior"""
+            
+        elif skill == "Data Science":
+            description += """ churn analysis customer turnover retention prediction lifetime value ltv
+            student dropout rate academic performance early warning dashboard intervention
+            exploratory data analysis eda pandas profiling sweetviz statistical summary
+            data cleaning preprocessing imputation missing values outliers normalization scaling
+            feature engineering polynomial interaction encoding one-hot label ordinal
+            predictive analytics forecasting time series arima sarima lstm prophet regression
+            classification logistic random forest xgboost catboost lightgbm neural network
+            clustering k-means dbscan hierarchical gmm segmentation customer groups
+            a/b testing hypothesis testing t-test chi-square anova experimentation causal
+            recommendation systems collaborative filtering content-based matrix factorization
+            cohort analysis retention funnel conversion user journey behavioral analytics
+            market basket association rules apriori fpgrowth cross-sell upsell
+            sentiment opinion mining aspect-based emotion detection brand monitoring
+            web scraping beautifulsoup selenium scrapy api etl data pipeline airflow
+            big data spark hadoop hive presto distributed computing pyspark databricks
+            streaming real-time kafka flink storm kinesis event processing
+            supervised learning labeled training validation test accuracy precision recall f1
+            unsupervised learning unlabeled clustering anomaly detection dimensionality pca tsne
+            ensemble bagging boosting stacking voting weighted average model blending
+            hyperparameter tuning grid random bayesian optuna hyperopt cross-validation
+            model evaluation confusion matrix roc curve auc precision-recall
+            data visualization matplotlib seaborn plotly altair bokeh interactive dashboard
+            storytelling presentation insights business intelligence reporting tableau power bi looker
+            jupyter notebook python r sql pandas numpy scipy scikit-learn statsmodels
+            cloud aws sagemaker azure ml google colab vertex ai databricks snowflake
+            mlops deployment monitoring drift mlflow kubeflow airflow pipeline automation
+            databases postgresql mysql mongodb cassandra elasticsearch data warehouse redshift
+            mvp prototype analytics dashboard stakeholder demo
+
+ business impact kpi metrics"""
+            
+        elif skill == "Machine Learning":
+            description += """ supervised learning labeled dataset training validation test split stratified
+            classification binary multiclass logistic regression decision tree random forest
+            regression linear polynomial ridge lasso elasticnet svr gradient boosting
+            neural networks deep learning multilayer perceptron backpropagation activation
+            convolutional cnn image recognition resnet vgg inception mobilenet efficientnet
+            recurrent rnn lstm gru sequence time-series language modeling bidirectional
+            transformers attention bert gpt roberta t5 encoder decoder pretrained fine-tuning
+            unsupervised clustering k-means dbscan agglomerative gmm elbow silhouette
+            dimensionality reduction pca svd tsne umap autoencoder manifold learning
+            ensemble bagging boosting adaboost gradient xgboost lightgbm catboost stacking
+            regularization l1 l2 lasso ridge dropout batch normalization early stopping
+            optimization gradient descent adam sgd rmsprop momentum learning rate schedule
+            loss function mse mae rmse cross-entropy hinge huber quantile
+            evaluation accuracy precision recall f1 roc auc confusion matrix
+            cross-validation kfold stratified leave-one-out bootstrap validation curve
+            hyperparameter grid search random search bayesian optimization optuna ray tune
+            feature selection univariate recursive rfe lasso mutual information importance
+            imbalanced data smote adasyn oversampling undersampling class weight focal loss
+            transfer learning pretrained fine-tuning domain adaptation few-shot zero-shot
+            online learning incremental streaming mini-batch SGD adaptive model update
+            reinforcement q-learning dqn policy gradient actor-critic reward environment
+            autoen
+
+coder variational vae representation learning latent space reconstruction
+            generative adversarial gan discriminator generator wgan stylegan diffusion
+            explainable shap lime permutation feature importance interpretability fairness
+            deployment api flask fastapi inference serving batch real-time edge
+            mlops ci/cd pipeline versioning experiment tracking mlflow wandb monitoring drift
+            frameworks scikit-learn tensorflow keras pytorch xgboost lightgbm catboost jax
+            cloud sagemaker azure databricks vertex ai ray distributed training gpu tpu
+            churn prediction student behavior analytics dropout intervention mvp automated"""
+            
+        elif skill == "Python":
+            description += """ pandas dataframe series groupby pivot merge join query csv excel parquet
+            numpy array matrix vectorization broadcasting linear algebra random sampling
+            matplotlib pyplot seaborn plotly visualization charts scatter line bar heatmap
+            streamlit gradio flask fastapi django web app dashboard api backend rest
+            scikit-learn machine learning classification regression clustering preprocessing
+            tensorflow keras pytorch deep learning neural network cnn rnn transformer
+            opencv pillow image processing resize crop filter transform computer vision
+            selenium beautifulsoup scrapy web scraping automation bot crawler parsing
+            requests urllib api consumption http get post json authentication oauth
+            nltk spacy transformers nlp tokenization stemming lemmatization ner sentiment
+            asyncio threading multiprocessing concurrent parallel async await coroutine
+            pytest unittest mock fixture testing tdd coverage integration end-to-end
+            sqlalchemy orm query database postgresql mysql sqlite connection pool
+            celery rabbitmq redis task queue background worker scheduler cron
+            logging debug pdb ipdb breakpoint traceback exception error handling
+            argparse click command-line cli parser arguments options flags subcommands
+            pathlib os filesystem file io directory walk create delete move copy
+            json pickle yaml toml config serialization deserialization parsing dump load
+            datetime timezone utc timestamp strftime strptime timedelta calendar
+            regex pattern matching findall search replace split groups lookahead
+            decorator generator comprehension lambda map filter reduce functional
+            class inheritance polymorphism magic methods dunder oop encapsulation
+            type hints mypy annotations protocol generic static typing validation
+            virtual environment venv conda poetry pip requirements dependency management
+            git version control branch merge commit push pull github actions ci/cd
+            jupyter notebook ipython interactive kernel cell markdown execution
+            black flake8 pylint isort code formatting linting pep8 style guide
+            subprocess shell command execute pipe communicate automation script
+            encryption ssl tls hash bcrypt jwt token security cryptography
+            data structures list dict set tuple queue stack heap tree graph algorithm
+            pandas profiling eda missing values imputation outliers normalization churn mvp"""
+            
+        elif skill == "SQL":
+            description += """ select insert update delete crud operations transaction commit rollback
+            join inner left right full cross natural self join multiple tables
+            where clause filter condition and or not in between like comparison
+            group by aggregate count sum avg min max having clause rollup cube
+            order by asc desc sorting limit offset pagination top
+            subquery nested correlated exists in any all scalar table inline
+            common table expression cte recursive with clause hierarchy tree query
+            window function row_number rank dense_rank ntile partition over frame range
+            index btree hash gin gist create drop unique composite covering performance
+            constraint primary key foreign key unique not null check default cascade
+            view materialized refresh strategy indexed precomputed cache
+            stored procedure function trigger plpgsql pl/sql cursor loop exception
+            normalization 1nf 2nf 3nf bcnf denormalization star snowflake fact dimension
+            partition range list hash interval performance scaling sharding horizontal
+            replication master slave standby read replica sync async streaming logical
+            transaction acid isolation serializable repeatable read committed dirty phantom
+            explain analyze execution plan seq scan index scan bitmap cost optimizer
+            query optimization indexing statistics analyze vacuum autovacuum maintenance
+            postgresql mysql sqlite mariadb oracle mssql sql server aurora database
+            json jsonb json_agg json_build_object arrow operator path query index
+            full text search tsvector tsquery gin index ranking similarity
+            date time timestamp interval timezone extract date_trunc date_part formatting
+            string concat substring trim upper lower replace split regex pattern
+            array array_agg unnest any all contains overlap multidimensional
+            connection pool pgbouncer pgpool max_connections timeout performance
+            migration schema versioning alembic liquibase flyway baseline rollback
+            etl extract transform load data pipeline airflow dbt dimensional modeling
+            oltp olap data warehouse redshift snowflake bigquery analytics columnar
+            security sql injection prepared statement parameterized escape sanitize
+            backup pg_dump pg_restore point-in-time recovery wal archive disaster
+            monitoring pg_stat slow query log performance tuning param
+
+eter configuration
+            gui pgadmin dbeaver datagrip sql workbench query builder visual designer
+            churn analysis retention cohort user behavior funnel conversion metrics dashboard"""
+            
+        elif skill == "React":
+            description += """ jsx component functional class hooks lifecycle render props children
+            state useState reducer context props drilling immutable update setState
+            effect useEffect cleanup dependency array side effect lifecycle mount unmount
+            ref useRef dom manipulation imperative handle forwarding callback
+            memo useMemo optimization performance rerender expensive computation cache
+            callback useCallback dependency reference stability prevent rerender
+            context useContext provider consumer global state theme authenticated user
+            reducer useReducer action dispatch complex state logic centralized
+            custom hook reusable logic composition encapsulation abstraction useLocal
+            routing react-router-dom browserrouter route link navlink params query navigate
+            form controlled uncontrolled validation formik react-hook-form yup schema
+            styling css modules styled-components emotion tailwind sass scss inline
+            state management redux toolkit mobx zustand recoil jotai xstate finite
+            performance lazy suspense code-splitting dynamic import bundle size loading
+            error boundary componentdidcatch fallback ui graceful degradation try catch
+            ssr ssg nextjs getserversideprops getstaticprops incremental isr pre-rendering
+            typescript interface type props generic utility infer strict null safety
+            testing jest react-testing-library enzyme snapshot unit integration e2e
+            api fetch axios swr react-query tanstack-query mutation cache invalidation
+            websocket realtime pusher socket.io ably live updates subscription
+            authentication jwt oauth session cookie firebase auth0 clerk supabase
+            deployment vercel netlify aws amplify cloudfront s3 github pages static
+            build webpack vite create-react-app rollup parcel esbuild compiler bundler
+            linting prettier eslint airbnb standard code formatting rules config
+            accessibility aria semantic html keyboard wcag screen reader a11y audit
+            responsive flexbox grid media query mobile-first breakpoint adaptive
+            animation framer-motion react-spring gsap css transition keyframe physics
+            chart recharts victory chart.js d3 nivo data visualization graph plot
+            map leaflet google mapbox geolocation marker cluster heatmap routing
+            drag-drop react-dnd react-beautiful-dnd sortable kanban board reorder
+            virtualization react-window react-virtualized infinite scroll large list
+            i18n react-intl react-i18next translation locale multi-language rtl format
+            pwa progressive web app service worker offline cache manifest installable
+            graphql apollo client relay query mutation subscription cache normalized
+            component library material-ui mui ant-design chakra bootstrap radix shadcn
+            portal createportal modal dialog tooltip overlay popover escape dom hierarchy"""
+            
+        elif skill == "AWS":
+            description += """ ec2 instance ami auto-scaling elastic load-balancer spot reserved compute
+            s3 bucket object storage versioning lifecycle glacier deep-archive cloudfront cdn
+            lambda serverless function trigger event api-gateway step-functions layer runtime
+            rds aurora postgres mysql mariadb oracle sql-server database replica snapshot
+            dynamodb nosql table partition sort secondary-index stream dax cache
+            vpc subnet security-group nacl internet-gateway nat route-table peering transit
+            iam role policy user group permission assume sts mfa service-account least-privilege
+            cloudwatch logs metrics alarm dashboard eventbridge rule schedule pattern target
+            sqs queue fifo standard visibility dead-letter message decouple asynchronous
+            sns topic subscription email sms push fanout notification pub-sub messaging
+            kinesis stream firehose analytics shard consumer producer real-time ingestion
+            elastic-beanstalk platform deployment version blue-green rolling immutable
+            ecs fargate task definition service cluster container docker orchestration
+            eks kubernetes node-group pod deployment helm eksctl kubectl managed
+            codepipeline codebuild codedeploy codecommit ci-cd artifact source build deploy
+            cloudformation stack template parameter output nested change-set infrastructure
+            sagemaker notebook training inference endpoint pipeline model-registry mlops
+            glue crawler catalog job spark etl schema-evolution data-lake athena
+            redshift warehouse cluster node spectrum federated query olap columnar
+            route53 dns hosted-zone alias record traffic-policy health-check failover
+            cloudfront distribution origin edge cache behavior invalidation lambda@edge
+            api-gateway rest http websocket authorizer throttle usage-plan key stage
+            secrets-manager parameter-store ssm kms encryption key rotation secure
+            backup vault plan recovery-point retention lifecycle cross-region disaster
+            migration dms sms application-discovery server database schema conversion
+            direct-connect vpn site-to-site client hybrid cloud dedicated low-latency
+            organization scp service-control-policy consolidated-billing member account
+            cost-explorer budgets cost-allocation-tag reserved spot savings-plan optimization
+            well-architected framework pillar reliability security performance cost operational
+            compliance gdpr hipaa pci sox iso fips audit trail cloudtrail config
+            guardduty security-hub inspector macie threat-detection vulnerability scanning
+            shield waf ddos protection rule acl rate-limit geo-blocking bot-control
+            x-ray tracing distributed microservice latency bottleneck service-map analytics
+            eventbridge scheduler rule target event-driven reactive serverless architecture
+            step-functions state-machine workflow orchestration parallel choice wait retry
+            amplify mobile frontend hosting ci-cd authentication datastore appsync graphql
+            iot-core thing shadow rule fleet provisioning greengrass edge device mqtt
+            churn dashboard analytics prediction sagemaker ml model deploy monitor train"""
+            
+        elif skill == "Docker":
+            description += """ dockerfile image container registry build run exec stop rm prune
+            from alpine ubuntu debian base-image minimal lightweight secure official
+            run install package apt yum apk command layer cache optimization
+            copy add workdir chown permission file directory context .dockerignore
+            cmd entrypoint exec form shell form default command override argument
+            env environment variable arg build-time secret password configuration
+            expose port publish mapping host network bridge overlay bind
+            volume mount bind named tmpfs persistent data stateful storage lifecycle
+            compose yaml service network depends_on healthcheck restart scale profiles
+            multi-stage build pattern optimization size reduction intermediate final
+            layer caching dependency install source code separate rebuild efficient
+            network bridge host none macvlan overlay dns service-discovery container-name
+            log driver json-file syslog journald fluentd gelf awslogs centralized
+            health check interval timeout retries start-period liveness readiness probe
+            security non-root user capability drop apparmor seccomp readonly filesystem
+            scan vulnerability trivy clair snyk aqua grype sbom cve audit compliance
+            resource limit cpu memory swap reservation constraint cgroup control
+            restart policy always unless-stopped on-failure no automatic recovery
+            swarm mode stack service replicas rolling-update placement constraint secret
+            kubernetes deployment pod service ingress configmap secret volume pvc
+            registry docker-hub ecr gcr acr quay harbor private authenticated push pull
+            ci-cd pipeline github-actions jenkins gitlab circle-ci build test deploy automated
+            development hot-reload volume-mount local binding live-update nodemon
+            production build minify optimize distroless scratch rootless readonly immutable
+            monitoring prometheus grafana cadvisor metrics exporter dashboard alert resource
+            logging efk elk fluentd elasticsearch kibana log-aggregation centralized query
+            runtime containerd cri-o runc alternatives oci-compliant low-level execution
+            buildkit buildx cross-platform arm amd64 multi-arch qemu binfmt cache remote
+            debug attach interactive shell exec logs inspect top stats troubleshoot
+            orchestration kubernetes swarm nomad mesos distributed cluster scaling ha
+            microservices api gateway service-mesh istio linkerd consul envoy sidecar
+            storage plugin driver nfs cifs gluster ceph distributed shared persistent
+            churn analytics student dashboard prediction mvp containerized deployment scalable"""
+            
+        elif skill == "NLP":
+            description += """ tokenization word sentence subword bpe wordpiece sentencepiece splitting
+            preprocessing cleaning lowercase punctuation stopword stemming lemmatization
+            vectorization bag-of-words tfidf count word2vec glove fasttext embedding
+            transformer attention self-attention multi-head encoder decoder positional
+            bert roberta albert distilbert electra deberta pretrained fine-tuning masked
+            gpt gpt2 gpt3 gpt4 language-model autoregressive generation completion text
+            t5 bart encoder-decoder seq2seq translation summarization conditional generation
+            named-entity-recognition ner spacy stanza flair biobert person organization location
+            part-of-speech pos tagging morphology syntax grammar universal-dependencies
+            dependency parsing constituency tree syntax semantic role srl relation
+            sentiment analysis opinion mining polarity aspect-based emotion classification
+            text classification topic modeling lda nmf clustering categorization labeling
+            question answering qa extractive generative squad retrieval reader ranker
+            summarization abstractive extractive rouge bleu meteor document news article
+            machine translation neural-mt attention transformer fairseq marian opus google
+            information extraction relation triplet knowledge-graph entity linking coreference
+            language generation creative conditional sampling nucleus top-k temperature
+            chatbot conversational dialogue intent slot entity rasa dialogflow watson
+            speech recognition asr whisper wav2vec deepspeech transcription audio waveform
+            text-to-speech tts tacotron wavenet glow-tts synthesis prosody voice-cloning
+            information retrieval search ranking bm25 tf-idf elasticsearch solr lucene
+            semantic search sentence-transformer sbert mpnet cosine similarity embedding
+            spell checking autocorrect autocomplete suggestion fuzzy-matching levenshtein
+            huggingface transformers pipeline tokenizer model hub datasets evaluate trainer
+            pytorch tensorflow keras jax flax deep-learning framework neural-network
+            dataset loading preprocessing augmentation paraphrase backtranslation cleaning
+            evaluation accuracy f1 precision recall bleu rouge perplexity human
+            fine-tuning transfer domain-adaptation lora prefix prompt adapter efficient
+            prompt engineering in-context few-shot zero-shot chain-of-thought instruction
+            langchain llama-index rag retrieval-augmented-generation vector-database agent
+            vector-store pinecone weaviate chroma faiss qdrant milvus similarity search
+            embeddings openai cohere sentence-transformers universal-sentence-encoder dense
+            churn prediction student dropout sentiment dashboard analytics text-mining insight"""
+        
+        else:
+            # Generic enhancement for other skills
+            description += f" {skill.lower()} development coding programming technology software engineering library framework api deployment production system architecture design pattern best-practice"
+        
+        skill_descriptions[skill] = description
+    
+    # Create TF-IDF vectors
+    vectorizer = TfidfVectorizer(
+        max_features=200,
+        stop_words='english',
+        ngram_range=(1, 2)  # Include bigrams for better context
+    )
+    
+    try:
+        # Fit vectorizer on skill descriptions + CV text
+        all_texts = list(skill_descriptions.values()) + [cv_text.lower()]
+        tfidf_matrix = vectorizer.fit_transform(all_texts)
+        
+        # CV vector is the last one
+        cv_vector = tfidf_matrix[-1]
+        skill_vectors = tfidf_matrix[:-1]
+        
+        # Calculate cosine similarity
+        similarities = cosine_similarity(cv_vector, skill_vectors)[0]
+        
+        # Store top features for debugging
+        if return_debug_info:
+            feature_names = vectorizer.get_feature_names_out()
+            cv_array = cv_vector.toarray()[0]
+            top_indices = cv_array.argsort()[-20:][::-1]
+            debug_info["features"] = [(feature_names[i], cv_array[i]) for i in top_indices if cv_array[i] > 0]
+        
+        # Detect skills with similarity > threshold
+        for idx, skill in enumerate(skill_descriptions.keys()):
+            similarity_score = similarities[idx]
+            
+            # Much lower threshold for CV/DS/ML to catch context-based matches
+            if skill in ["Computer Vision", "Data Science", "Machine Learning"]:
+                threshold = 0.08  # Very low for churn/student analytics detection
+            elif skill in ["Python", "SQL"]:
+                threshold = 0.12
+            else:
+                threshold = 0.18
+            
+            # Store debug info
+            if return_debug_info:
+                debug_info["scores"][skill] = similarity_score
+                debug_info["threshold_used"][skill] = threshold
+            
+            if similarity_score > threshold:
+                detected_skills.add(skill)
+                
+    except Exception as e:
+        # Store error in debug info
+        if return_debug_info:
+            debug_info["error"] = str(e)
+        pass
+    
+    return (detected_skills, debug_info) if return_debug_info else detected_skills
     """
     Uses ML (TF-IDF vectorization + cosine similarity) to intelligently match skills.
     
@@ -928,11 +1324,13 @@ def ml_skill_matcher(cv_text: str, skill_keywords: dict) -> Set[str]:
         description = " ".join(keywords)
         # Add context words for better matching
         if skill == "Computer Vision":
-            description += " image processing classification detection recognition visual analysis opencv yolo cnn"
+            description += " image processing classification detection recognition visual analysis opencv yolo cnn object detection pattern recognition churn prediction student analytics dropout prevention mvp dashboard"
         elif skill == "Data Science":
-            description += " churn analysis prediction modeling analytics insights dashboard metrics visualization"
+            description += " churn analysis prediction modeling analytics insights dashboard metrics visualization student retention dropout rate mvp data-driven decision"
         elif skill == "Machine Learning":
-            description += " model training prediction classification regression supervised unsupervised algorithm"
+            description += " model training prediction classification regression supervised unsupervised algorithm churn forecasting student behavior analysis"
+        elif skill == "Python":
+            description += " pandas numpy matplotlib streamlit flask data analysis automation scripting"
         
         skill_descriptions[skill] = description
     
@@ -959,8 +1357,13 @@ def ml_skill_matcher(cv_text: str, skill_keywords: dict) -> Set[str]:
         for idx, skill in enumerate(skill_descriptions.keys()):
             similarity_score = similarities[idx]
             
-            # Lower threshold for important skills
-            threshold = 0.15 if skill in ["Data Science", "Machine Learning", "Python", "SQL"] else 0.20
+            # Much lower threshold for CV/DS/ML to catch context-based matches
+            if skill in ["Computer Vision", "Data Science", "Machine Learning"]:
+                threshold = 0.08  # Very low for churn/student analytics detection
+            elif skill in ["Python", "SQL"]:
+                threshold = 0.12
+            else:
+                threshold = 0.18
             
             if similarity_score > threshold:
                 detected_skills.add(skill)
@@ -1164,6 +1567,67 @@ def get_match_message(percentage: float) -> str:
 # ==============================================================================
 # INTERFACCIA UTENTE - LINKEDIN PROFESSIONAL DESIGN
 # ============================================================================
+
+# ==============================================================================
+# HIDDEN ML DEBUG SIDEBAR (Password Protected)
+# ==============================================================================
+with st.sidebar:
+    st.markdown("### 🔒 ML Debug Panel")
+    password = st.text_input("Password:", type="password", key="ml_debug_pwd")
+    
+    if password == "1234":
+        st.success("✅ Access Granted")
+        st.markdown("---")
+        st.markdown("### 📊 ML Model Inspector")
+        
+        # Create a test for debugging
+        debug_enabled = st.checkbox("Enable ML Debugging")
+        st.session_state['ml_debug_enabled'] = debug_enabled
+        
+        if debug_enabled:
+            st.info("💡 **How the ML Model Works:**")
+            st.markdown("""
+            1. **TF-IDF Vectorization**: Converts text to numerical features
+            2. **Cosine Similarity**: Measures similarity between CV and skill descriptions
+            3. **Threshold Matching**: Skill detected if similarity > threshold
+            
+            **Thresholds:**
+            - Computer Vision, Data Science, ML: 0.08 (very low - catches context)
+            - Python, SQL: 0.12
+            - Others: 0.18
+            """)
+            
+            st.markdown("---")
+            st.markdown("**Current Session Debug Info:**")
+            
+            # Show if there's text in session state
+            if 'debug_ml_scores' in st.session_state:
+                debug_data = st.session_state['debug_ml_scores']
+                
+                st.markdown("#### Top TF-IDF Features in CV:")
+                if 'features' in debug_data and debug_data['features']:
+                    for feature, score in debug_data['features'][:10]:
+                        st.text(f"• {feature}: {score:.4f}")
+                
+                st.markdown("#### Similarity Scores:")
+                if 'scores' in debug_data:
+                    scores_df = []
+                    for skill, score in sorted(debug_data['scores'].items(), key=lambda x: x[1], reverse=True)[:15]:
+                        threshold = debug_data['threshold_used'].get(skill, 0.18)
+                        matched = "✅" if score > threshold else "❌"
+                        scores_df.append({
+                            "Skill": skill,
+                            "Score": f"{score:.4f}",
+                            "Threshold": f"{threshold:.2f}",
+                            "Match": matched
+                        })
+                    
+                    import pandas as pd
+                    st.dataframe(pd.DataFrame(scores_df), use_container_width=True)
+    
+    elif password and password != "1234":
+        st.error("❌ Invalid Password")
+
 
 # Professional Header
 st.markdown("""
