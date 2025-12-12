@@ -54,10 +54,10 @@ HARD_SKILLS = {
     "Excel": ["excel", "spreadsheet", "vlookup"],
 
     # --- LANGUAGES ---
-    "English": ["english", "eng", "en"],
-    "Spanish": ["spanish", "espanol", "esp"],
-    "French": ["french", "francais", "fr"],
-    "German": ["german", "deutsch", "de"],
+    "English": ["english", "eng", "en", "inglese"],
+    "Spanish": ["spanish", "espanol", "esp", "spagnolo"],
+    "French": ["french", "francais", "fr", "francese"],
+    "German": ["german", "deutsch", "de", "tedesco"],
     "Italian": ["italian", "italiano", "it"],
     "Chinese": ["chinese", "mandarin", "cantonese"],
     "Japanese": ["japanese"],
@@ -77,6 +77,11 @@ HARD_SKILLS = {
     "Graphic Design": ["graphic design", "photoshop", "illustrator", "indesign", "figma", "adobe cc"],
     "UX/UI Design": ["ux/ui", "user experience", "user interface", "wireframing", "prototyping"],
 
+    # --- MEDIA / MARKETING ---
+    "Marketing": ["marketing", "market analysis", "analisi di mercato"],
+    "Advertising": ["advertising", "ads", "campagne pubblicitarie", "advertising campaigns", "advertising planning"],
+    "Media Planning": ["media planning", "pianificazione media", "media strategy"],
+
     # --- TRANSLATION ---
     "Translation": ["translation", "translating", "interpreting", "localization", "subtitling"],
     "CAT Tools": ["cat tools", "trados", "memoq", "wordfast"],
@@ -86,9 +91,9 @@ HARD_SKILLS = {
 SOFT_SKILLS = {
     "Agile": ["agile", "scrum", "kanban", "sprint"],
     "Leadership": ["leadership", "team lead", "management", "mentoring"],
-    "Communication": ["communication", "presentation", "stakeholder"],
-    "Problem Solving": ["problem solving", "analytical thinking", "critical thinking"],
-    "Teamwork": ["teamwork", "collaboration", "team player"],
+    "Communication": ["communication", "presentation", "stakeholder", "comunicazione"],
+    "Problem Solving": ["problem solving", "analytical thinking", "critical thinking", "capacità analitiche"],
+    "Teamwork": ["teamwork", "collaboration", "team player", "lavoro di squadra"],
     "Time Management": ["time management", "prioritization"],
     "Attention to Detail": ["attention to detail", "precision", "accuracy"],
     "Creativity": ["creativity", "creative thinking", "innovation"],
