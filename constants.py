@@ -63,24 +63,24 @@ HARD_SKILLS = {
     "Japanese": ["japanese"],
 
     # --- BUSINESS / ADMIN ---
-    "Project Management": ["project management", "pmp", "prince2", "scrum master"],
+    "Project Management": ["project management", "pmp", "prince2", "scrum master", "project manager", "project coordination"],
     "Microsoft Office": ["microsoft office", "ms office", "office 365", "word", "powerpoint"],
     "Customer Service": ["customer service", "client support", "customer success"],
     "Sales": ["sales", "business development", "cold calling", "negotiation"],
     "Accounting": ["accounting", "bookkeeping", "quickbooks", "xero", "finance"],
-    "HR": ["human resources", "recruiting", "talent acquisition", "employee relations"],
+    "HR": ["human resources", "recruiting", "talent acquisition", "employee relations", "recruiter", "hr manager"],
 
     # --- MARKETING / CREATIVE ---
-    "SEO": ["seo", "search engine optimization", "sem"],
-    "Social Media": ["social media", "instagram", "linkedin", "tiktok", "facebook ads"],
-    "Copywriting": ["copywriting", "content writing", "blogging", "technical writing"],
-    "Graphic Design": ["graphic design", "photoshop", "illustrator", "indesign", "figma", "adobe cc"],
-    "UX/UI Design": ["ux/ui", "user experience", "user interface", "wireframing", "prototyping"],
+    "SEO": ["seo", "search engine optimization", "sem", "seo specialist"],
+    "Social Media": ["social media", "instagram", "linkedin", "tiktok", "facebook ads", "social media manager"],
+    "Copywriting": ["copywriting", "content writing", "blogging", "technical writing", "copywriter"],
+    "Graphic Design": ["graphic design", "photoshop", "illustrator", "indesign", "figma", "adobe cc", "graphic designer"],
+    "UX/UI Design": ["ux/ui", "user experience", "user interface", "wireframing", "prototyping", "product designer"],
 
     # --- MEDIA / MARKETING ---
-    "Marketing": ["marketing", "market analysis", "analisi di mercato"],
+    "Marketing": ["marketing", "market analysis", "analisi di mercato", "marketing specialist", "marketer", "marketing intern"],
     "Advertising": ["advertising", "ads", "campagne pubblicitarie", "advertising campaigns", "advertising planning"],
-    "Media Planning": ["media planning", "pianificazione media", "media strategy"],
+    "Media Planning": ["media planning", "pianificazione media", "media strategy", "media planner"],
 
     # --- TRANSLATION ---
     "Translation": ["translation", "translating", "interpreting", "localization", "subtitling"],
