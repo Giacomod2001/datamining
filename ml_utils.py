@@ -181,74 +181,165 @@ def extract_text_from_pdf(pdf_file) -> str:
 # =============================================================================
 def generate_pdf_report(res: Dict, jd_text: str = "") -> bytes:
     """
-    Generates a professional PDF report.
-    Returns bytes content of the PDF.
+    Generates a professional PDF report with advanced styling.
     """
     if not FPDF:
         return b"FPDF library missed."
         
     class PDF(FPDF):
         def header(self):
-            self.set_font('Arial', 'B', 15)
-            self.cell(0, 10, 'Job Seeker Helper - Analysis Report', 0, 1, 'C')
-            self.ln(10)
+            # Banner Navy Blue
+            self.set_fill_color(20, 29, 44)  # #141d2c
+            self.rect(0, 0, 210, 40, 'F')
+            
+            # Title
+            self.set_font('Arial', 'B', 24)
+            self.set_text_color(255, 255, 255)
+            self.set_xy(10, 10)
+            self.cell(0, 15, 'JOB SEEKER ANALYTICS', 0, 1, 'L')
+            
+            # Subtitle
+            self.set_font('Arial', 'I', 10)
+            self.set_text_color(200, 200, 200)
+            self.cell(0, 5, 'Automated Gap Analysis & Learning Roadmap', 0, 1, 'L')
+            self.ln(20)
             
         def footer(self):
             self.set_y(-15)
             self.set_font('Arial', 'I', 8)
-            self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
+            self.set_text_color(128, 128, 128)
+            self.cell(0, 10, f'Job Seeker Helper | Generated with AI | Page {self.page_no()}', 0, 0, 'C')
+
+        def section_title(self, label):
+            self.set_font('Arial', 'B', 14)
+            self.set_text_color(33, 33, 33)
+            self.set_fill_color(240, 240, 240)
+            self.cell(0, 10, f"  {label}", 0, 1, 'L', fill=True)
+            self.ln(4)
+
+        def card(self, title, content, link=None):
+            self.set_fill_color(250, 250, 250)
+            self.set_draw_color(220, 220, 220)
+            self.set_font('Arial', 'B', 11)
+            self.set_text_color(0, 0, 0)
+            
+            x = self.get_x()
+            y = self.get_y()
+            
+            self.rect(x, y, 190, 25, 'FD')
+            
+            self.set_xy(x + 5, y + 5)
+            self.cell(0, 5, title, 0, 1)
+            
+            self.set_font('Arial', '', 10)
+            self.set_text_color(80, 80, 80)
+            self.set_xy(x + 5, y + 12)
+            self.cell(0, 5, content, 0, 1)
+            
+            if link:
+                self.set_font('Arial', 'U', 9)
+                self.set_text_color(0, 102, 204)
+                self.set_xy(x + 150, y + 12)
+                self.cell(30, 5, "Open Resource ->", 0, 0, link=link)
+
+            self.ln(20)
 
     pdf = PDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
-    pdf.set_font("Arial", size=12)
     
-    # 1. Summary
+    # 1. EXECUTIVE SCORECARD
     pct = res["match_percentage"]
-    pdf.set_font("Arial", 'B', 14)
-    pdf.cell(0, 10, f"Match Score: {pct:.0f}%", 0, 1)
-    pdf.ln(5)
     
-    # 2. Skills
-    pdf.set_font("Arial", 'B', 12)
-    pdf.cell(0, 10, "Matched Skills (Keep it up!):", 0, 1)
-    pdf.set_font("Arial", size=11)
-    pdf.multi_cell(0, 7, ", ".join(res["matching_hard"]))
-    pdf.ln(5)
-    
-    pdf.set_font("Arial", 'B', 12)
-    pdf.cell(0, 10, "Missing Skills (Focus here):", 0, 1)
-    pdf.set_font("Arial", size=11)
-    pdf.multi_cell(0, 7, ", ".join(res["missing_hard"]))
-    pdf.ln(5)
+    # Logic for colors
+    if pct >= 80:
+        bg_r, bg_g, bg_b = 209, 231, 221 # Green-ish
+        txt_color = "Excellent Match"
+    elif pct >= 60:
+        bg_r, bg_g, bg_b = 255, 243, 205 # Yellow-ish
+        txt_color = "Good Potential"
+    else:
+        bg_r, bg_g, bg_b = 248, 215, 218 # Red-ish
+        txt_color = "High Gap"
 
+    pdf.set_fill_color(bg_r, bg_g, bg_b)
+    pdf.rect(10, 50, 190, 30, 'F')
+    
+    pdf.set_y(55)
+    pdf.set_x(15)
+    pdf.set_font('Arial', 'B', 20)
+    pdf.set_text_color(0, 0, 0)
+    pdf.cell(40, 10, f"{pct:.0f}%", 0, 0)
+    
+    pdf.set_font('Arial', '', 14)
+    pdf.cell(0, 10, f"Match Score: {txt_color}", 0, 1)
+    
+    pdf.set_y(65)
+    pdf.set_x(15)
+    pdf.set_font('Arial', 'I', 10)
+    pdf.cell(0, 10, "Based on comprehensive analysis of Hard Skills, Soft Skills, and Portfolio triggers.", 0, 1)
+    
+    pdf.ln(20)
+
+    # 2. SKILL MATRIX
+    pdf.section_title("SKILL BREAKDOWN")
+    
+    # Matched
+    pdf.set_font('Arial', 'B', 11)
+    pdf.set_text_color(0, 100, 0) # Dark Green
+    pdf.cell(95, 10, "✅ MATCHED SKILLS", 0, 0)
+    
+    # Missing
+    pdf.set_text_color(150, 0, 0) # Dark Red
+    pdf.cell(95, 10, "❌ MISSING SKILLS", 0, 1)
+    
+    # Reset text
+    pdf.set_font('Arial', '', 10)
+    pdf.set_text_color(50, 50, 50)
+    
+    matched_str = "\n".join([f"- {s}" for s in res["matching_hard"]])
+    missing_str = "\n".join([f"- {s}" for s in res["missing_hard"]])
+    
+    y_start = pdf.get_y()
+    pdf.multi_cell(95, 6, matched_str if matched_str else "None", border=1)
+    y_end1 = pdf.get_y()
+    
+    pdf.set_xy(105, y_start)
+    pdf.multi_cell(95, 6, missing_str if missing_str else "None", border=1)
+    y_end2 = pdf.get_y()
+    
+    pdf.set_y(max(y_end1, y_end2) + 10)
+
+    # Transferable
     if res.get("transferable"):
-        pdf.set_font("Arial", 'B', 12)
-        pdf.cell(0, 10, "Transferable Skills (You have equivalents):", 0, 1)
-        pdf.set_font("Arial", size=11)
-        text = ", ".join([f"{k} (via {v})" for k,v in res["transferable"].items()])
-        pdf.multi_cell(0, 7, text)
-        pdf.ln(5)
+        pdf.set_font('Arial', 'B', 11)
+        pdf.set_text_color(204, 153, 0) # Dark Yellow/Orange
+        pdf.cell(0, 10, "⚠️ TRANSFERABLE SKILLS (Equivalents Found)", 0, 1)
+        
+        pdf.set_font('Arial', '', 10)
+        pdf.set_text_color(50, 50, 50)
+        for missing, present in res["transferable"].items():
+             pdf.cell(0, 7, f"• Required: {missing}  ->  You have: {present}", 0, 1)
+        pdf.ln(10)
 
-    # 3. Learning Plan
+    # 3. LEARNING ROADMAP
     if res["missing_hard"]:
         pdf.add_page()
-        pdf.set_font("Arial", 'B', 14)
-        pdf.cell(0, 10, "Learning Plan", 0, 1)
+        pdf.section_title("LEARNING ROADMAP")
         pdf.ln(5)
         
-        pdf.set_font("Arial", size=11)
         for skill in res["missing_hard"]:
             r = constants.LEARNING_RESOURCES.get(skill, None)
-            pdf.set_font("Arial", 'B', 11)
-            pdf.cell(0, 8, f"Skill: {skill}", 0, 1)
-            pdf.set_font("Arial", size=11)
+            
+            content = "Use general search engines to find tutorials."
+            link_url = f"https://www.google.com/search?q=learn+{skill}"
             
             if r:
-                pdf.cell(0, 6, f"   Courses: {', '.join(r['courses'])}", 0, 1)
-                pdf.cell(0, 6, f"   Project: {r['project']}", 0, 1)
-            else:
-                 pdf.cell(0, 6, "   Search for tutorials on YouTube/Coursera.", 0, 1)
-            pdf.ln(2)
+                course_str = ", ".join(r['courses'][:1]) # Take first course
+                content = f"Recommended: {course_str}. Project Layout: {r['project']}"
+                # We assume a generic search link if no direct URL in DB (DB currently has strings titles)
+            
+            pdf.card(f"Skill Gap: {skill}", content, link=link_url)
 
     return pdf.output(dest='S').encode('latin-1')
 
