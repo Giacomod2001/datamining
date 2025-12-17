@@ -78,7 +78,7 @@ def render_home():
         st.divider()
         
         # EXPERIMENTAL FEATURE TOGGLE
-        show_project_eval = st.toggle("Project Evaluation", value=False, help("Analyze your projects alongside your CV"))
+        show_project_eval = st.toggle("Project Evaluation", value=False, help="Analyze your projects alongside your CV")
         
         if st.toggle("Developer Mode"):
              pwd = st.text_input("Enter Password", type="password", key="dev_pwd")
