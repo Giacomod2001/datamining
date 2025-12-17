@@ -26,9 +26,8 @@ Unlike traditional Applicant Tracking Systems (ATS), this tool understands skill
 ### Visual Analytics & Advanced Mining
 - **Knowledge Graph (Developer Mode)**: Interactive visualization of the skill ontology using `graphviz`, showing hierarchical relationships (e.g., BigQuery → SQL).
 - **Fuzzy Matching**: Implements `thefuzz` (Levenshtein distance) to handle typos in CVs (e.g., "Phyton" is correctly mapped to "Python").
-- **Word Cloud**: Visualizes the most relevant keywords in the Job Description (Text Mining).
 - **Match Gauge**: Interactive Plotly chart for instant score assessment.
-- **Exportable Reports**: Download your analysis summary as a text file for record-keeping.
+- **Professional PDF Reports**: Download a comprehensive analysis report including skill breakdowns, match scores, and a personalized learning plan with actionable links.
 
 ### Actionable Learning Pathways
 - **Dynamic Resource Generation**: utilizing the input gap analysis to generate targeted search queries for missing skills across educational platforms:
