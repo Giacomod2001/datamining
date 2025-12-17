@@ -243,6 +243,23 @@ def render_results(res, jd_text=None):
     st.download_button("⬇️ Download Report (TXT)", report_text, file_name="report.txt")
 
 if __name__ == "__main__":
+<<<<<<< HEAD
+=======
+    # Sidebar Global Controls
+    with st.sidebar:
+        st.divider()
+<<<<<<< HEAD
+        # Corrected Toggle Syntax
+        show_project_eval = st.toggle("🧪 Project Evaluation", value=False, help="Analyze your projects alongside your CV")
+        if show_project_eval:
+             if st.button("Open Lab 🚀"):
+                 st.session_state["page"] = "ProjectEval"
+                 st.rerun()
+=======
+        # The experimental features checkbox and project evaluation button are now handled within render_home.
+>>>>>>> 63a15b021a2b249ab6efc6699555590ee8f96687
+
+>>>>>>> 209ca2647c9a0f521e108ddf8d0fdfd5d3a39ee8
     if st.session_state["page"] == "Debugger":
         render_debug_page()
     else:
