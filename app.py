@@ -329,11 +329,12 @@ if __name__ == "__main__":
     # Sidebar Global Controls
     with st.sidebar:
         st.divider()
-        if st.checkbox("🧪 Experimental Features"):
-            st.markdown("---")
-            if st.button("📂 Project Evaluation"):
-                st.session_state["page"] = "ProjectEval"
-                st.rerun()
+        # Corrected Toggle Syntax
+        show_project_eval = st.toggle("🧪 Project Evaluation", value=False, help="Analyze your projects alongside your CV")
+        if show_project_eval:
+             if st.button("Open Lab 🚀"):
+                 st.session_state["page"] = "ProjectEval"
+                 st.rerun()
 
     if st.session_state["page"] == "Debugger":
         render_debug_page()
