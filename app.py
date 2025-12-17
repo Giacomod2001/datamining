@@ -100,54 +100,50 @@ def render_home():
         c1, c2 = st.columns(2)
         c3 = None
 
+    # Column 1: CV
     with c1:
         st.subheader("Your CV")
-        input_type = st.radio("Input Type", ["Text", "PDF"], key="cv_input", horizontal=True)
+        input_type_cv = st.radio("Input Type", ["Text", "PDF"], key="cv_input", horizontal=True, label_visibility="collapsed")
         cv = ""
-        if input_type == "Text":
-            cv = st.text_area("Paste CV text", height=200, key="cv_text")
+        if input_type_cv == "Text":
+            cv = st.text_area("Paste CV text", height=250, key="cv_text", label_visibility="visible")
         else:
-            uploaded_cv = st.file_uploader("Upload CV (PDF)", type=["pdf"], key="cv_pdf")
+            uploaded_cv = st.file_uploader("Upload CV (PDF)", type=["pdf"], key="cv_pdf", label_visibility="visible")
             if uploaded_cv:
-                try: 
-                    cv = ml_utils.extract_text_from_pdf(uploaded_cv)
-                    st.success(f"Loaded {len(cv)} characters")
-                except Exception as e:
-                    st.error(f"Error: {e}")
+                try: cv = ml_utils.extract_text_from_pdf(uploaded_cv)
+                except Exception as e: st.error(f"Error: {e}")
     
-    # Project Column (if enabled)
+    # Column 2: Project or JD
     project_text = ""
+    col2 = c2
     if show_project_eval and c3:
-        with c2: # Shift JD to c3, put Project in c2? User said "difianco a cv" (Use c2 for Project, c3 for JD)
+        with col2:
              st.subheader("Project Context")
-             input_type_proj = st.radio("Input Type", ["Text", "PDF"], key="proj_input", horizontal=True)
+             input_type_proj = st.radio("Input Type", ["Text", "PDF"], key="proj_input", horizontal=True, label_visibility="collapsed")
              if input_type_proj == "Text":
-                 project_text = st.text_area("Paste Project Desc", height=200, key="proj_text", placeholder="Describe your projects...")
+                 project_text = st.text_area("Paste Project Desc", height=250, key="proj_text", label_visibility="visible")
              else:
-                 uploaded_proj = st.file_uploader("Upload Project (PDF)", type=["pdf"], key="proj_pdf")
+                 uploaded_proj = st.file_uploader("Upload Project (PDF)", type=["pdf"], key="proj_pdf", label_visibility="visible")
                  if uploaded_proj:
-                     try: 
-                         project_text = ml_utils.extract_text_from_pdf(uploaded_proj)
-                         st.success(f"Loaded {len(project_text)} chars")
-                     except Exception as e:
-                         st.error(f"Error: {e}")
+                     try: project_text = ml_utils.extract_text_from_pdf(uploaded_proj)
+                     except Exception as e: st.error(f"Error: {e}")
+        jd_col = c3
+    else:
+        jd_col = c2
+        project_text = ""
 
-    # JD Column (Position depends on toggle)
-    jd_col = c3 if show_project_eval else c2
+    # Column 3 (or 2): Job Description
     with jd_col:
         st.subheader("Job Description")
-        input_type_jd = st.radio("Input Type", ["Text", "PDF"], key="jd_input", horizontal=True)
+        input_type_jd = st.radio("Input Type", ["Text", "PDF"], key="jd_input", horizontal=True, label_visibility="collapsed")
         jd = ""
         if input_type_jd == "Text":
-            jd = st.text_area("Paste Job text", height=200, key="jd_text")
+            jd = st.text_area("Paste Job text", height=250, key="jd_text", label_visibility="visible")
         else:
-            uploaded_jd = st.file_uploader("Upload JD (PDF)", type=["pdf"], key="jd_pdf")
+            uploaded_jd = st.file_uploader("Upload JD (PDF)", type=["pdf"], key="jd_pdf", label_visibility="visible")
             if uploaded_jd:
-                try: 
-                    jd = ml_utils.extract_text_from_pdf(uploaded_jd)
-                    st.success(f"Loaded {len(jd)} characters")
-                except Exception as e:
-                    st.error(f"Error: {e}")
+                try: jd = ml_utils.extract_text_from_pdf(uploaded_jd)
+                except Exception as e: st.error(f"Error: {e}")
 
     if st.button("🔍 Analyze", type="primary", use_container_width=True):
         if not cv or not jd:
