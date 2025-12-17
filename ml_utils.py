@@ -19,11 +19,9 @@ except ImportError:
     PdfReader = None
 
 try:
-    from wordcloud import WordCloud
-    import matplotlib.pyplot as plt
+    from fpdf import FPDF
 except ImportError:
-    WordCloud = None
-    plt = None
+    FPDF = None
 
 import constants
 
@@ -179,22 +177,80 @@ def extract_text_from_pdf(pdf_file) -> str:
         raise Exception(f"PDF Error: {str(e)}")
 
 # =============================================================================
-# VISUALIZATION UTILS
+# REPORT UTILS
 # =============================================================================
-def generate_wordcloud(text: str):
+def generate_pdf_report(res: Dict, jd_text: str = "") -> bytes:
     """
-    Generates a WordCloud object from text.
-    Returns the figure object.
+    Generates a professional PDF report.
+    Returns bytes content of the PDF.
     """
-    if not WordCloud or not plt:
-        return None
+    if not FPDF:
+        return b"FPDF library missed."
         
-    wc = WordCloud(width=800, height=400, background_color='white', colormap='viridis').generate(text)
+    class PDF(FPDF):
+        def header(self):
+            self.set_font('Arial', 'B', 15)
+            self.cell(0, 10, 'Job Seeker Helper - Analysis Report', 0, 1, 'C')
+            self.ln(10)
+            
+        def footer(self):
+            self.set_y(-15)
+            self.set_font('Arial', 'I', 8)
+            self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
+
+    pdf = PDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
     
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.imshow(wc, interpolation='bilinear')
-    ax.axis("off")
-    return fig
+    # 1. Summary
+    pct = res["match_percentage"]
+    pdf.set_font("Arial", 'B', 14)
+    pdf.cell(0, 10, f"Match Score: {pct:.0f}%", 0, 1)
+    pdf.ln(5)
+    
+    # 2. Skills
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 10, "Matched Skills (Keep it up!):", 0, 1)
+    pdf.set_font("Arial", size=11)
+    pdf.multi_cell(0, 7, ", ".join(res["matching_hard"]))
+    pdf.ln(5)
+    
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 10, "Missing Skills (Focus here):", 0, 1)
+    pdf.set_font("Arial", size=11)
+    pdf.multi_cell(0, 7, ", ".join(res["missing_hard"]))
+    pdf.ln(5)
+
+    if res.get("transferable"):
+        pdf.set_font("Arial", 'B', 12)
+        pdf.cell(0, 10, "Transferable Skills (You have equivalents):", 0, 1)
+        pdf.set_font("Arial", size=11)
+        text = ", ".join([f"{k} (via {v})" for k,v in res["transferable"].items()])
+        pdf.multi_cell(0, 7, text)
+        pdf.ln(5)
+
+    # 3. Learning Plan
+    if res["missing_hard"]:
+        pdf.add_page()
+        pdf.set_font("Arial", 'B', 14)
+        pdf.cell(0, 10, "Learning Plan", 0, 1)
+        pdf.ln(5)
+        
+        pdf.set_font("Arial", size=11)
+        for skill in res["missing_hard"]:
+            r = constants.LEARNING_RESOURCES.get(skill, None)
+            pdf.set_font("Arial", 'B', 11)
+            pdf.cell(0, 8, f"Skill: {skill}", 0, 1)
+            pdf.set_font("Arial", size=11)
+            
+            if r:
+                pdf.cell(0, 6, f"   Courses: {', '.join(r['courses'])}", 0, 1)
+                pdf.cell(0, 6, f"   Project: {r['project']}", 0, 1)
+            else:
+                 pdf.cell(0, 6, "   Search for tutorials on YouTube/Coursera.", 0, 1)
+            pdf.ln(2)
+
+    return pdf.output(dest='S').encode('latin-1')
 
 def detect_language(text: str) -> str:
     """

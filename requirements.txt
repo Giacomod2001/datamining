@@ -3,9 +3,8 @@ pandas
 numpy
 PyPDF2
 scikit-learn
-wordcloud
-matplotlib
 plotly
 thefuzz
 python-levenshtein
 graphviz
+fpdf

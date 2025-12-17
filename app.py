@@ -157,17 +157,6 @@ def render_results(res, jd_text=None):
             st.error("❌ High Gap")
             st.markdown("Significant learning required for this specific role.")
 
-    # --- WORD CLOUD SECTION ---
-    if jd_text:
-        st.divider()
-        st.subheader("☁️ Job Keywords Cloud")
-        with st.expander("Show Word Cloud", expanded=True):
-            fig_wc = ml_utils.generate_wordcloud(jd_text)
-            if fig_wc:
-                st.pyplot(fig_wc)
-            else:
-                st.info("Install 'wordcloud' to see this feature.")
-
     st.divider()
     st.subheader("🛠️ Technical Skills Analysis")
     
@@ -241,16 +230,16 @@ def render_results(res, jd_text=None):
 
     # --- EXPORT REPORT ---
     st.divider()
-    report_text = f"""
-    Job Seeker Helper Report
-    ========================
-    Match Score: {pct:.0f}%
     
-    Matched Skills: {", ".join(res["matching_hard"])}
-    Missing Skills: {", ".join(res["missing_hard"])}
-    Transferable: {", ".join(res["transferable"].keys())}
-    """
-    st.download_button("⬇️ Download Report", report_text, file_name="report.txt")
+    # Generate PDF
+    pdf_bytes = ml_utils.generate_pdf_report(res)
+    st.download_button(
+        label="⬇️ Download Professional Report (PDF)",
+        data=pdf_bytes,
+        file_name="job_seeker_report.pdf",
+        mime="application/pdf",
+        type="primary"
+    )
 
 if __name__ == "__main__":
     if st.session_state["page"] == "Debugger":
