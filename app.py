@@ -341,4 +341,3 @@ if __name__ == "__main__":
         render_project_evaluation()
     else:
         render_home()
-```
