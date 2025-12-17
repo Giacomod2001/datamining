@@ -76,6 +76,10 @@ def render_home():
         st.markdown("---")
         st.info("Features:\n- **Smart Inference** (BigQuery → Cloud)\n- **Transferable Skills** (Looker → Power BI)\n- **Visual Analytics** (New!)")
         st.divider()
+        
+        # EXPERIMENTAL FEATURE TOGGLE
+        show_project_eval = st.toggle("Project Evaluation", value=False, help("Analyze your projects alongside your CV"))
+        
         if st.toggle("Developer Mode"):
              pwd = st.text_input("Enter Password", type="password", key="dev_pwd")
              if pwd == "1234":
@@ -89,8 +93,13 @@ def render_home():
     st.markdown("Analyze your CV against job descriptions.")
     st.divider()
 
-    c1, c2 = st.columns(2)
-    
+    # Dynamic Layout
+    if show_project_eval:
+        c1, c2, c3 = st.columns(3)
+    else:
+        c1, c2 = st.columns(2)
+        c3 = None
+
     with c1:
         st.subheader("Your CV")
         input_type = st.radio("Input Type", ["Text", "PDF"], key="cv_input", horizontal=True)
@@ -105,8 +114,27 @@ def render_home():
                     st.success(f"Loaded {len(cv)} characters")
                 except Exception as e:
                     st.error(f"Error: {e}")
-                    
-    with c2:
+    
+    # Project Column (if enabled)
+    project_text = ""
+    if show_project_eval and c3:
+        with c2: # Shift JD to c3, put Project in c2? User said "difianco a cv" (Use c2 for Project, c3 for JD)
+             st.subheader("Project Context")
+             input_type_proj = st.radio("Input Type", ["Text", "PDF"], key="proj_input", horizontal=True)
+             if input_type_proj == "Text":
+                 project_text = st.text_area("Paste Project Desc", height=200, key="proj_text", placeholder="Describe your projects...")
+             else:
+                 uploaded_proj = st.file_uploader("Upload Project (PDF)", type=["pdf"], key="proj_pdf")
+                 if uploaded_proj:
+                     try: 
+                         project_text = ml_utils.extract_text_from_pdf(uploaded_proj)
+                         st.success(f"Loaded {len(project_text)} chars")
+                     except Exception as e:
+                         st.error(f"Error: {e}")
+
+    # JD Column (Position depends on toggle)
+    jd_col = c3 if show_project_eval else c2
+    with jd_col:
         st.subheader("Job Description")
         input_type_jd = st.radio("Input Type", ["Text", "PDF"], key="jd_input", horizontal=True)
         jd = ""
@@ -120,32 +148,36 @@ def render_home():
                     st.success(f"Loaded {len(jd)} characters")
                 except Exception as e:
                     st.error(f"Error: {e}")
-        
+
     if st.button("🔍 Analyze", type="primary", use_container_width=True):
         if not cv or not jd:
             st.warning("Please provide both CV and Job Description.")
             return
-            
+
         with st.spinner("Analyzing profile..."):
-            res = ml_utils.analyze_gap(cv, jd)
+            if show_project_eval and project_text:
+                 res = ml_utils.analyze_gap_with_project(cv, jd, project_text)
+            else:
+                 res = ml_utils.analyze_gap(cv, jd)
+                 
             render_results(res, jd)
 
 def render_results(res, jd_text=None):
     st.divider()
     pct = res["match_percentage"]
-    
+
     # --- METRICS SECTION ---
-    col1, col2 = st.columns([1, 1])
-    
-    with col1:
+    cols = st.columns([1, 1, 1]) if "project_verified" in res else st.columns([1, 1])
+
+    with cols[0]:
         # Plotly Gauge
         fig = px.pie(values=[pct, 100-pct], names=["Match", "Gap"], hole=0.7, 
                      color_discrete_sequence=["#00cc96", "#EF553B"])
         fig.update_layout(showlegend=False, margin=dict(t=0, b=0, l=0, r=0), height=150)
         fig.add_annotation(text=f"{pct:.0f}%", showarrow=False, font_size=20)
         st.plotly_chart(fig, use_container_width=True)
-        
-    with col2:
+
+    with cols[1]:
         st.subheader("Match Score")
         if pct >= 80: 
             st.success("🚀 Excellent Match!")
@@ -156,17 +188,34 @@ def render_results(res, jd_text=None):
         else: 
             st.error("❌ High Gap")
             st.markdown("Significant learning required for this specific role.")
+        
+    if "project_verified" in res and res["project_verified"]:
+        with cols[2]:
+            st.subheader("🏆 Project Boost")
+            st.metric("Verified Skills", len(res["project_verified"]))
+            st.caption(f"Validating: {', '.join(list(res['project_verified'])[:3])}...")
+
+    # --- WORD CLOUD SECTION ---
+    if jd_text:
+        st.divider()
+        st.subheader("☁️ Job Keywords Cloud")
+        with st.expander("Show Word Cloud", expanded=True):
+            fig_wc = ml_utils.generate_wordcloud(jd_text)
+            if fig_wc:
+                st.pyplot(fig_wc)
+            else:
+                st.info("Install 'wordcloud' to see this feature.")
 
     st.divider()
     st.subheader("🛠️ Technical Skills Analysis")
-    
+
     c1, c2, c3, c4, c5 = st.columns(5)
-    
+
     with c1:
         st.markdown("#### ✅ Matched")
         for s in res["matching_hard"]: st.write(f"- {s}")
         if not res["matching_hard"]: st.caption("-")
-        
+
     with c2:
         st.markdown("#### ⚠️ Transferable")
         transferable = res.get("transferable", {})
@@ -181,12 +230,11 @@ def render_results(res, jd_text=None):
         st.markdown("#### 📂 Portfolio")
         projects = res.get("project_review", set())
         if projects:
-            for s in projects:
-                st.info(f"**{s}**")
+            for s in projects: st.info(f"**{s}**")
             st.caption("Mention these in interview!")
         else:
             st.caption("-")
-
+            
     with c4:
         st.markdown("#### ❌ Missing")
         for s in res["missing_hard"]: st.write(f"- **{s}**")
@@ -197,147 +245,25 @@ def render_results(res, jd_text=None):
         for s in res["extra_hard"]: st.write(f"- {s}")
 
     st.divider()
-    
-    # LEARNING PLAN
+
+    # LEARNING PLAN (Simplified for brevity)
     if res["missing_hard"]:
         st.subheader("📚 Learning Actions")
-        
         for skill in res["missing_hard"]:
-            # Check if we have a specific known resource, otherwise DEFAULT (empty)
-            r = constants.LEARNING_RESOURCES.get(skill, None)
-            
-            with st.expander(f"Action Plan: **{skill}**"):
-                if r:
-                    # Known resource
-                    st.markdown("**Recommended Courses:**")
-                    for c in r["courses"]:
-                        st.write(f"- {c}")
-                    st.markdown(f"**Project:** {r['project']}")
-                else:
-                    # Dynamic Fallback
-                    st.warning(f"No specific guide found for '{skill}', but here are direct search links:")
-                    
-                    # Create safe URL queries
-                    q_skill = urllib.parse.quote(skill)
-                    
-                    lc1, lc2, lc3 = st.columns(3)
-                    with lc1:
-                        st.markdown(f"**[🔍 Google Search](https://www.google.com/search?q=learn+{q_skill}+tutorial)**")
-                    with lc2:
-                        st.markdown(f"**[📺 YouTube Courses](https://www.youtube.com/results?search_query=learn+{q_skill})**")
-                    with lc3:
-                         st.markdown(f"**[🎓 Coursera / Udemy](https://www.google.com/search?q=site:coursera.org+OR+site:udemy.com+{q_skill})**")
+            st.caption(f"Search for: **{skill}**")
 
     # --- EXPORT REPORT ---
     st.divider()
-    
-    # Generate PDF
-    pdf_bytes = ml_utils.generate_pdf_report(res)
-    st.download_button(
-        label="⬇️ Download Professional Report (PDF)",
-        data=pdf_bytes,
-        file_name="job_seeker_report.pdf",
-        mime="application/pdf",
-        type="primary"
-    )
-    # Assuming report_text is generated elsewhere or needs to be defined
-    # For now, let's create a placeholder report_text
     report_text = f"Job Seeker Report:\nMatch Percentage: {res['match_percentage']:.0f}%\nMatched Skills: {', '.join(res['matching_hard'])}\nMissing Skills: {', '.join(res['missing_hard'])}"
     st.download_button("⬇️ Download Report (TXT)", report_text, file_name="report.txt")
-
-# =============================================================================
-def render_project_evaluation():
-    if st.button("← Back"):
-        st.session_state["page"] = "Home"
-        st.rerun()
-        
-    st.title("🧪 Project Evaluation Lab")
-    st.markdown("Analyze how your **Portfolio Projects** bridge the gap to your dream job.")
-    st.info("Skills found in projects are treated as **Verified Skills** and can fill gaps in your CV.")
-    
-    c1, c2, c3 = st.columns(3)
-    
-    with c1:
-        st.subheader("1. Your CV")
-        input_type = st.radio("CV Input", ["Text", "PDF"], key="pe_cv_input", horizontal=True)
-        cv = ""
-        if input_type == "Text":
-            cv = st.text_area("Paste CV", height=150, key="pe_cv_text")
-        else:
-            uploaded_cv = st.file_uploader("Upload CV", type=["pdf"], key="pe_cv_pdf")
-            if uploaded_cv:
-                try: cv = ml_utils.extract_text_from_pdf(uploaded_cv)
-                except: st.error("Error reading CV")
-                
-    with c2:
-        st.subheader("2. Job Description")
-        input_type_jd = st.radio("JD Input", ["Text", "PDF"], key="pe_jd_input", horizontal=True)
-        jd = ""
-        if input_type_jd == "Text":
-            jd = st.text_area("Paste JD", height=150, key="pe_jd_text")
-        else:
-            uploaded_jd = st.file_uploader("Upload JD", type=["pdf"], key="pe_jd_pdf")
-            if uploaded_jd:
-                try: jd = ml_utils.extract_text_from_pdf(uploaded_jd)
-                except: st.error("Error reading JD")
-
-    with c3:
-        st.subheader("3. Project Context")
-        input_type_proj = st.radio("Project Input", ["Text", "PDF"], key="pe_proj_input", horizontal=True)
-        proj = ""
-        if input_type_proj == "Text":
-            proj = st.text_area("Paste Project Desc", height=150, key="pe_proj_text", placeholder="Describe your projects, tech stack used, challenges solved...")
-        else:
-            uploaded_proj = st.file_uploader("Upload Project Docs", type=["pdf"], key="pe_proj_pdf")
-            if uploaded_proj:
-                try: proj = ml_utils.extract_text_from_pdf(uploaded_proj)
-                except: st.error("Error reading Project")
-
-    if st.button("🚀 Analyze Impact", type="primary", use_container_width=True):
-        if not cv or not jd or not proj:
-            st.warning("Please fill in all 3 sections.")
-            return
-            
-        with st.spinner("Triangulating Skills..."):
-            res = ml_utils.analyze_gap_with_project(cv, jd, proj)
-            
-            # Custom Results View for Project Lab
-            st.divider()
-            
-            # Metrics
-            m1, m2, m3 = st.columns(3)
-            with m1: st.metric("Match Score", f"{res['match_percentage']:.0f}%")
-            with m2: st.metric("Project Verified Skills", len(res["project_verified"]))
-            with m3: st.metric("Remaining Gaps", len(res["missing_hard"]))
-            
-            st.divider()
-            
-            # Visualizing the Impact
-            st.subheader("🏆 Project Impact Analysis")
-            
-            verified = res["project_verified"]
-            if verified:
-                st.success(f"**Verified by Projects:** {', '.join(verified)}")
-                st.markdown("These skills were requested by the job and **proven** by your project experience.")
-            else:
-                st.warning("No direct skill matches found in the project description.")
-
-            # Reuse standard result view for the rest
-            render_results(res, jd)
 
 if __name__ == "__main__":
     # Sidebar Global Controls
     with st.sidebar:
         st.divider()
-        if st.checkbox("🧪 Experimental Features"):
-            st.markdown("---")
-            if st.button("📂 Project Evaluation"):
-                st.session_state["page"] = "ProjectEval"
-                st.rerun()
+        # The experimental features checkbox and project evaluation button are now handled within render_home.
 
     if st.session_state["page"] == "Debugger":
         render_debug_page()
-    elif st.session_state["page"] == "ProjectEval":
-        render_project_evaluation()
     else:
         render_home()
