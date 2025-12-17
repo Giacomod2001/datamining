@@ -2,6 +2,7 @@ import re
 import pandas as pd
 import streamlit as st
 from typing import Set, Dict, Tuple, List
+import urllib.parse
 
 # Optional Imports with robust handling
 try:
@@ -248,6 +249,21 @@ def generate_pdf_report(res: Dict, jd_text: str = "") -> bytes:
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
     
+    def clean(text):
+        """Sanitize text for FPDF (Latin-1)"""
+        if not text: return ""
+        # Replace common unicode chars
+        replacements = {
+            "’": "'", "‘": "'", "“": '"', "”": '"', "–": "-", "—": "-",
+            "…": "...", "✅": "[V]", "❌": "[X]", "⚠️": "[!]", "➕": "[+]",
+            "🚀": "", "📂": "", "☁️": "", "🛠️": "", "🎯": ""
+        }
+        for k, v in replacements.items():
+            text = text.replace(k, v)
+        
+        # Force encode to latin-1, replacing unknown with ?
+        return text.encode('latin-1', 'replace').decode('latin-1')
+
     # 1. EXECUTIVE SCORECARD
     pct = res["match_percentage"]
     
@@ -287,18 +303,18 @@ def generate_pdf_report(res: Dict, jd_text: str = "") -> bytes:
     # Matched
     pdf.set_font('Arial', 'B', 11)
     pdf.set_text_color(0, 100, 0) # Dark Green
-    pdf.cell(95, 10, "✅ MATCHED SKILLS", 0, 0)
+    pdf.cell(95, 10, clean("MATCHED SKILLS"), 0, 0)
     
     # Missing
     pdf.set_text_color(150, 0, 0) # Dark Red
-    pdf.cell(95, 10, "❌ MISSING SKILLS", 0, 1)
+    pdf.cell(95, 10, clean("MISSING SKILLS"), 0, 1)
     
     # Reset text
     pdf.set_font('Arial', '', 10)
     pdf.set_text_color(50, 50, 50)
     
-    matched_str = "\n".join([f"- {s}" for s in res["matching_hard"]])
-    missing_str = "\n".join([f"- {s}" for s in res["missing_hard"]])
+    matched_str = "\n".join([f"- {clean(s)}" for s in res["matching_hard"]])
+    missing_str = "\n".join([f"- {clean(s)}" for s in res["missing_hard"]])
     
     y_start = pdf.get_y()
     pdf.multi_cell(95, 6, matched_str if matched_str else "None", border=1)
@@ -314,12 +330,12 @@ def generate_pdf_report(res: Dict, jd_text: str = "") -> bytes:
     if res.get("transferable"):
         pdf.set_font('Arial', 'B', 11)
         pdf.set_text_color(204, 153, 0) # Dark Yellow/Orange
-        pdf.cell(0, 10, "⚠️ TRANSFERABLE SKILLS (Equivalents Found)", 0, 1)
+        pdf.cell(0, 10, clean("TRANSFERABLE SKILLS (Equivalents Found)"), 0, 1)
         
         pdf.set_font('Arial', '', 10)
         pdf.set_text_color(50, 50, 50)
         for missing, present in res["transferable"].items():
-             pdf.cell(0, 7, f"• Required: {missing}  ->  You have: {present}", 0, 1)
+             pdf.cell(0, 7, clean(f"• Required: {missing}  ->  You have: {present}"), 0, 1)
         pdf.ln(10)
 
     # 3. LEARNING ROADMAP
@@ -332,16 +348,17 @@ def generate_pdf_report(res: Dict, jd_text: str = "") -> bytes:
             r = constants.LEARNING_RESOURCES.get(skill, None)
             
             content = "Use general search engines to find tutorials."
-            link_url = f"https://www.google.com/search?q=learn+{skill}"
+            link_url = f"https://www.google.com/search?q=learn+{urllib.parse.quote(skill)}"
             
             if r:
                 course_str = ", ".join(r['courses'][:1]) # Take first course
                 content = f"Recommended: {course_str}. Project Layout: {r['project']}"
                 # We assume a generic search link if no direct URL in DB (DB currently has strings titles)
             
-            pdf.card(f"Skill Gap: {skill}", content, link=link_url)
+            pdf.card(clean(f"Skill Gap: {skill}"), clean(content), link=link_url)
 
-    return pdf.output(dest='S').encode('latin-1')
+    # Output with correct encoding handling
+    return pdf.output(dest='S').encode('latin-1', 'ignore')
 
 def detect_language(text: str) -> str:
     """
