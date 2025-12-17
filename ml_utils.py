@@ -436,3 +436,46 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
         "matching_soft": matching_soft,
         "missing_soft": missing_soft
     }
+
+# =============================================================================
+def analyze_gap_with_project(cv_text: str, job_text: str, project_text: str) -> Dict:
+    """
+    Analyzes CV + Project vs Job Description.
+    Returns standard gap analysis plus 'project_verified' skills.
+    """
+    # 1. Standard CV Analysis
+    res = analyze_gap(cv_text, job_text)
+    
+    # 2. Project Analysis
+    proj_hard, _ = extract_skills_from_text(project_text)
+    
+    # 3. Identify Verified Skills (Requested by JD AND found in Projects)
+    # These are skills that might be in 'matching_hard' (CV+JD) or 'missing_hard' (JD only)
+    # If they are in Projects, we upgrade/verify them.
+    
+    job_hard, _ = extract_skills_from_text(job_text) # Re-extract to be sure or pass it if possible, but cheap enough
+    
+    project_verified = job_hard.intersection(proj_hard)
+    
+    # Update Result
+    res["project_verified"] = project_verified
+    
+    # Boost Score? Optional. Let's keep it simple: just identifying them for now.
+    # We could recalculate match_percentage if we wanted project skills to fill gaps.
+    
+    # If a skill was missing in CV but found in Project, move it from missing to matching?
+    # Strategy: "Project skills count as skills"
+    
+    newly_found_in_project = res["missing_hard"].intersection(proj_hard)
+    if newly_found_in_project:
+        res["matching_hard"].update(newly_found_in_project)
+        res["missing_hard"] = res["missing_hard"] - newly_found_in_project
+        
+        # Recalculate Score
+        # (Simplified recalc based on previous formula in analyze_gap)
+        # score_points = len(matching_hard) + (len(transferable) * 0.5) + (len(project_review) * 0.3)
+        
+        score_points = len(res["matching_hard"]) + (len(res["transferable"]) * 0.5) + (len(res["project_review"]) * 0.3)
+        res["match_percentage"] = score_points / len(job_hard) * 100 if job_hard else 0
+
+    return res

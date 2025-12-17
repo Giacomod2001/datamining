@@ -240,9 +240,104 @@ def render_results(res, jd_text=None):
         mime="application/pdf",
         type="primary"
     )
+    # Assuming report_text is generated elsewhere or needs to be defined
+    # For now, let's create a placeholder report_text
+    report_text = f"Job Seeker Report:\nMatch Percentage: {res['match_percentage']:.0f}%\nMatched Skills: {', '.join(res['matching_hard'])}\nMissing Skills: {', '.join(res['missing_hard'])}"
+    st.download_button("⬇️ Download Report (TXT)", report_text, file_name="report.txt")
+
+# =============================================================================
+def render_project_evaluation():
+    if st.button("← Back"):
+        st.session_state["page"] = "Home"
+        st.rerun()
+        
+    st.title("🧪 Project Evaluation Lab")
+    st.markdown("Analyze how your **Portfolio Projects** bridge the gap to your dream job.")
+    st.info("Skills found in projects are treated as **Verified Skills** and can fill gaps in your CV.")
+    
+    c1, c2, c3 = st.columns(3)
+    
+    with c1:
+        st.subheader("1. Your CV")
+        input_type = st.radio("CV Input", ["Text", "PDF"], key="pe_cv_input", horizontal=True)
+        cv = ""
+        if input_type == "Text":
+            cv = st.text_area("Paste CV", height=150, key="pe_cv_text")
+        else:
+            uploaded_cv = st.file_uploader("Upload CV", type=["pdf"], key="pe_cv_pdf")
+            if uploaded_cv:
+                try: cv = ml_utils.extract_text_from_pdf(uploaded_cv)
+                except: st.error("Error reading CV")
+                
+    with c2:
+        st.subheader("2. Job Description")
+        input_type_jd = st.radio("JD Input", ["Text", "PDF"], key="pe_jd_input", horizontal=True)
+        jd = ""
+        if input_type_jd == "Text":
+            jd = st.text_area("Paste JD", height=150, key="pe_jd_text")
+        else:
+            uploaded_jd = st.file_uploader("Upload JD", type=["pdf"], key="pe_jd_pdf")
+            if uploaded_jd:
+                try: jd = ml_utils.extract_text_from_pdf(uploaded_jd)
+                except: st.error("Error reading JD")
+
+    with c3:
+        st.subheader("3. Project Context")
+        input_type_proj = st.radio("Project Input", ["Text", "PDF"], key="pe_proj_input", horizontal=True)
+        proj = ""
+        if input_type_proj == "Text":
+            proj = st.text_area("Paste Project Desc", height=150, key="pe_proj_text", placeholder="Describe your projects, tech stack used, challenges solved...")
+        else:
+            uploaded_proj = st.file_uploader("Upload Project Docs", type=["pdf"], key="pe_proj_pdf")
+            if uploaded_proj:
+                try: proj = ml_utils.extract_text_from_pdf(uploaded_proj)
+                except: st.error("Error reading Project")
+
+    if st.button("🚀 Analyze Impact", type="primary", use_container_width=True):
+        if not cv or not jd or not proj:
+            st.warning("Please fill in all 3 sections.")
+            return
+            
+        with st.spinner("Triangulating Skills..."):
+            res = ml_utils.analyze_gap_with_project(cv, jd, proj)
+            
+            # Custom Results View for Project Lab
+            st.divider()
+            
+            # Metrics
+            m1, m2, m3 = st.columns(3)
+            with m1: st.metric("Match Score", f"{res['match_percentage']:.0f}%")
+            with m2: st.metric("Project Verified Skills", len(res["project_verified"]))
+            with m3: st.metric("Remaining Gaps", len(res["missing_hard"]))
+            
+            st.divider()
+            
+            # Visualizing the Impact
+            st.subheader("🏆 Project Impact Analysis")
+            
+            verified = res["project_verified"]
+            if verified:
+                st.success(f"**Verified by Projects:** {', '.join(verified)}")
+                st.markdown("These skills were requested by the job and **proven** by your project experience.")
+            else:
+                st.warning("No direct skill matches found in the project description.")
+
+            # Reuse standard result view for the rest
+            render_results(res, jd)
 
 if __name__ == "__main__":
+    # Sidebar Global Controls
+    with st.sidebar:
+        st.divider()
+        if st.checkbox("🧪 Experimental Features"):
+            st.markdown("---")
+            if st.button("📂 Project Evaluation"):
+                st.session_state["page"] = "ProjectEval"
+                st.rerun()
+
     if st.session_state["page"] == "Debugger":
         render_debug_page()
+    elif st.session_state["page"] == "ProjectEval":
+        render_project_evaluation()
     else:
         render_home()
