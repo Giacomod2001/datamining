@@ -87,16 +87,31 @@ HARD_SKILLS = {
     "CAT Tools": ["cat tools", "trados", "memoq", "wordfast"],
 }
 
-# SOFT SKILLS
+# SOFT SKILLS (Expanded for Versatility)
 SOFT_SKILLS = {
-    "Agile": ["agile", "scrum", "kanban", "sprint", "metodologia agile"],
-    "Leadership": ["leadership", "team lead", "management", "mentoring", "gestione team", "supervisione", "guida", "coordinamento team"],
-    "Communication": ["communication", "presentation", "stakeholder", "comunicazione", "public speaking", "esposizione", "comunicazione efficace"],
-    "Problem Solving": ["problem solving", "analytical thinking", "critical thinking", "capacità analitiche", "risoluzione problemi", "pensiero critico"],
-    "Teamwork": ["teamwork", "collaboration", "team player", "lavoro di squadra", "collaborazione", "spirito di squadra"],
-    "Time Management": ["time management", "prioritization", "gestione del tempo", "pianificazione", "rispetto scadenze", "organizzazione"],
+    # --- PERSONAL ---
+    "Creativity": ["creativity", "creative thinking", "innovation", "creatività", "pensiero creativo", "innovazione", "proattività", "iniziativa"],
+    "Problem Solving": ["problem solving", "analytical thinking", "critical thinking", "capacità analitiche", "risoluzione problemi", "pensiero critico", "troubleshooting"],
+    "Adaptability": ["adaptability", "flexibility", "resilience", "adattabilità", "flessibilità", "resilienza", "gestione del cambiamento", "open to change"],
+    "Time Management": ["time management", "prioritization", "gestione del tempo", "pianificazione", "rispetto scadenze", "organizzazione", "puntualità"],
+    "Stress Management": ["stress management", "working under pressure", "gestione dello stress", "lavoro sotto pressione", "controllo emotivo"],
+
+    # --- INTERPERSONAL ---
+    "Communication": ["communication", "presentation", "stakeholder", "comunicazione", "public speaking", "esposizione", "comunicazione efficace", "ascolto attivo", "active listening"],
+    "Teamwork": ["teamwork", "collaboration", "team player", "lavoro di squadra", "collaborazione", "spirito di squadra", "cooperazione"],
+    "Leadership": ["leadership", "team lead", "management", "mentoring", "gestione team", "supervisione", "guida", "coordinamento team", "delega"],
+    "Negotiation": ["negotiation", "persuasion", "conflict resolution", "negoziazione", "mediazione", "risoluzione conflitti", "persuasione"],
+    "Empathy": ["empathy", "emotional intelligence", "patia", "intelligenza emotiva", "comprensione", "sensibilità"],
+
+    # --- RETAIL / SERVICE ---
+    "Customer Service": ["customer service", "client support", "customer orientation", "assistenza clienti", "orientamento al cliente", "servizio clienti", "supporto clienti", "gestione reclami"],
+    "Cash Handling": ["cash handling", "pos", "cash register", "uso cassa", "registratore di cassa", "gestione pagamenti", "maneggio denaro"],
+    "Sales Assistant": ["sales assistant", "shop assistant", "commesso", "addetto vendite", "visual merchandising", "allestimento"],
+
+    # --- ADMIN / OFFICE ---
+    "Data Entry": ["data entry", "typing", "inserimento dati", "velocità di digitazione", "archiviazione", "gestione documenti"],
+    "Organization": ["organization", "multitasking", "planning", "organizzazione", "ordine", "precisione", "gestione agenda"],
     "Attention to Detail": ["attention to detail", "precision", "accuracy", "attenzione ai dettagli", "precisione", "accuratezza", "cura dei dettagli"],
-    "Creativity": ["creativity", "creative thinking", "innovation", "creatività", "pensiero creativo", "innovazione", "proattività"],
 }
 
 ALL_SKILLS = {**HARD_SKILLS, **SOFT_SKILLS}

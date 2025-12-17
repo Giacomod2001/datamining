@@ -21,7 +21,11 @@ Unlike traditional Applicant Tracking Systems (ATS), this tool understands skill
 - **Universal Domain Support**: Capable of analyzing roles across Tech, Business, Marketing, and Languages using TF-IDF fallback mechanisms for unsupported domains.
 - **Bilingual Support (IT/EN)**: Native support for cross-language matching. You can upload an **Italian CV** and an **English JD** (or vice versa), and the system will correctly map skills like "Gestione Progetti" to "Project Management".
 
-### Visual Analytics (New!)
+- **Smart Language Detection**: Automatically fills "Native" skills (e.g., Italian) by analyzing CV context, removing bias for native speakers who omit language proficiency.
+
+### Visual Analytics & Advanced Mining
+- **Knowledge Graph (Developer Mode)**: Interactive visualization of the skill ontology using `graphviz`, showing hierarchical relationships (e.g., BigQuery → SQL).
+- **Fuzzy Matching**: Implements `thefuzz` (Levenshtein distance) to handle typos in CVs (e.g., "Phyton" is correctly mapped to "Python").
 - **Word Cloud**: Visualizes the most relevant keywords in the Job Description (Text Mining).
 - **Match Gauge**: Interactive Plotly chart for instant score assessment.
 - **Exportable Reports**: Download your analysis summary as a text file for record-keeping.

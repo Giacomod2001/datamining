@@ -92,6 +92,17 @@ def extract_generic_keywords(text: str, top_n=5) -> Set[str]:
 # =============================================================================
 # SKILL EXTRACTION CORE
 # =============================================================================
+# =============================================================================
+# OPTIONAL IMPORTS
+# =============================================================================
+try:
+    from thefuzz import fuzz
+except ImportError:
+    fuzz = None
+
+# =============================================================================
+# SKILL EXTRACTION CORE
+# =============================================================================
 def extract_skills_from_text(text: str) -> Tuple[Set[str], Set[str]]:
     hard_found = set()
     soft_found = set()
@@ -101,21 +112,43 @@ def extract_skills_from_text(text: str) -> Tuple[Set[str], Set[str]]:
     soft_skills = getattr(constants, "SOFT_SKILLS", {})
     inference_rules = getattr(constants, "INFERENCE_RULES", {})
     
-    # 1. Regex Match Hard Skills
+    # Pre-process text for fuzzy matching (split into words)
+    text_words = set(text_lower.split())
+
+    # 1. Regex Match Hard Skills (Exact + Fuzzy)
     for skill, variations in hard_skills.items():
+        matched = False
         for var in variations:
             pattern = r'\b' + re.escape(var.lower()) + r'(?:s|es|ing|ed)?\b'
             if re.search(pattern, text_lower):
                 hard_found.add(skill)
-                break 
+                matched = True
+                break
+        
+        # FUZZY FALLBACK (Robustness)
+        if not matched and fuzz:
+            # Check if any word in text is > 90% similar to the skill name
+            for word in text_words:
+                if fuzz.ratio(word, skill.lower()) > 90:
+                    hard_found.add(skill)
+                    break
                 
-    # 2. Regex Match Soft Skills
+    # 2. Regex Match Soft Skills (Exact + Fuzzy)
     for skill, variations in soft_skills.items():
+        matched = False
         for var in variations:
             pattern = r'\b' + re.escape(var.lower()) + r'(?:s|es|ing|ed)?\b'
             if re.search(pattern, text_lower):
                 soft_found.add(skill)
+                matched = True
                 break
+        
+        # FUZZY FALLBACK
+        if not matched and fuzz:
+             for word in text_words:
+                if fuzz.ratio(word, skill.lower()) > 90:
+                    soft_found.add(skill)
+                    break
 
     # 3. Hierarchical Inference
     inferred_skills = set()

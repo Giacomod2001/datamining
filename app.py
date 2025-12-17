@@ -30,11 +30,21 @@ def render_debug_page():
     tab1, tab2, tab3, tab4 = st.tabs(["🧠 Inference Logic", "🔗 Skill Clusters", "📂 Project Skills", "📚 Knowledge DB"])
     
     with tab1:
-        st.subheader("Hierarchical Rules")
+        st.subheader("Hierarchical Rules (Knowledge Graph)")
         st.markdown("If **Child Skill** is found → **Parent Skill** is added.")
-        # Convert dict to simple table for readability
-        inf_data = [{"Child Skill": k, "Inferred Parent(s)": ", ".join(v)} for k, v in constants.INFERENCE_RULES.items()]
-        st.dataframe(pd.DataFrame(inf_data), use_container_width=True, hide_index=True)
+        
+        # Internal Graph Logic
+        import graphviz
+        graph = graphviz.Digraph()
+        for child, parents in constants.INFERENCE_RULES.items():
+            for parent in parents:
+                graph.edge(child, parent)
+        
+        st.graphviz_chart(graph)
+        
+        with st.expander("Show Tabular Data"):
+            inf_data = [{"Child Skill": k, "Inferred Parent(s)": ", ".join(v)} for k, v in constants.INFERENCE_RULES.items()]
+            st.dataframe(pd.DataFrame(inf_data), use_container_width=True, hide_index=True)
 
     with tab2:
         st.subheader("Interchangeable Groups")
