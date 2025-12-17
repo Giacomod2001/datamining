@@ -163,12 +163,33 @@ def generate_wordcloud(text: str):
     ax.axis("off")
     return fig
 
+def detect_language(text: str) -> str:
+    """
+    Simple heuristic to detect non-explicit native language.
+    """
+    text = text.lower()
+    it_markers = {" il ", " lo ", " la ", " i ", " gli ", " le ", " di ", " è ", " e ", " per ", " delle ", " nella "}
+    en_markers = {" the ", " a ", " an ", " and ", " is ", " of ", " for ", " to ", " in ", " with ", " that ", " this "}
+    
+    it_score = sum(1 for w in it_markers if w in text)
+    en_score = sum(1 for w in en_markers if w in text)
+    
+    if it_score > en_score: return "Italian"
+    if en_score > it_score: return "English"
+    return None
+
 # =============================================================================
 # GAP ANALYSIS
 # =============================================================================
 def analyze_gap(cv_text: str, job_text: str) -> Dict:
     cv_hard, cv_soft = extract_skills_from_text(cv_text)
     job_hard, job_soft = extract_skills_from_text(job_text)
+    
+    # 0. Native Language Inference
+    # If CV is detected as Italian, we assume candidate speaks Italian (Native)
+    detected_lang = detect_language(cv_text)
+    if detected_lang:
+        cv_hard.add(detected_lang)
     
     matching_hard = cv_hard & job_hard
     initial_missing_hard = job_hard - cv_hard
