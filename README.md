@@ -19,6 +19,7 @@ Unlike traditional Applicant Tracking Systems (ATS), this tool understands skill
 - **Technical vs. Soft Skills**: Implements distinct evaluation pipelines for Hard Skills (Quantifiable) and Soft Skills (Behavioral).
 - **Portfolio-Based Triggers**: Complex domains (e.g., *Computer Vision*, *System Design*) are flagged for **Portfolio Review** rather than binary rejection, acknowledging that deep expertise requires qualitative assessment.
 - **Universal Domain Support**: Capable of analyzing roles across Tech, Business, Marketing, and Languages using TF-IDF fallback mechanisms for unsupported domains.
+- **Bilingual Support (IT/EN)**: Native support for cross-language matching. You can upload an **Italian CV** and an **English JD** (or vice versa), and the system will correctly map skills like "Gestione Progetti" to "Project Management".
 
 ### Visual Analytics (New!)
 - **Word Cloud**: Visualizes the most relevant keywords in the Job Description (Text Mining).
