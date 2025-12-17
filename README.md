@@ -29,11 +29,17 @@ Unlike traditional Applicant Tracking Systems (ATS), this tool understands skill
 - **Match Gauge**: Interactive Plotly chart for instant score assessment.
 - **Professional PDF Reports**: Download a comprehensive analysis report including skill breakdowns, match scores, and a personalized learning plan with actionable links.
 
+### Project Evaluation 
+Validate your skills through practical experience.
+- **Portfolio Triangulation**: Upload or paste project descriptions to prove skills missing in your CV.
+- **Project verified Skills**: Skills confirmed by projects are highlighted as "Project Verified" and contribute to the final match score.
+- **3-Column Dynamic Layout**: Toggle the feature to add a dedicated "Project Context" column to the main interface.
+
 ### Actionable Learning Pathways
-- **Dynamic Resource Generation**: utilizing the input gap analysis to generate targeted search queries for missing skills across educational platforms:
-  - Google Search
-  - YouTube Educational Content
-  - MOOC Platforms (Coursera/Udemy)
+- **Dynamic Resource Generation**: For every missing skill, the system generates a personalized Action Plan:
+  - **🔍 Google Search**: Targeted queries for quick tutorials.
+  - **📺 YouTube Educational Content**: Direct links to video-based learning.
+  - **🎓 MOOC Hub**: Simultaneous search across Coursera, Udemy, and LinkedIn Learning.
 
 ### Secure Developer Environment
 - **Encrypted Debugger**: Allows inspection of the internal decision-making logic, inference rules, and dataset through a password-protected interface, ensuring transparency in the AI decision process.
@@ -84,17 +90,18 @@ The application is built using a robust, modern Python stack:
 1. **Input Data**:
    - **CV Section**: Upload your formatted CV (PDF) or paste raw text.
    - **Job Description**: Upload the target JD (PDF) or paste raw text.
+   - **(Optional) Project Evaluation**: Toggle this in the sidebar to add a column for your portfolio text.
 
 2. **Analyze**:
-   - Click the **"Measure Matching"** button to initiate the NLP pipeline.
+   - Click the **"🔍 Analyze"** button to initiate the NLP pipeline.
 
 3. **Review Results**:
-   - **Match Score**: A weighted percentage indicating technical fit.
+   - **Match Score**: A weighted percentage indicating technical fit (boosted by project experience).
    - **Skill Breakdown**:
      - **Matched**: Skills present in both documents.
+     - **Project Boost**: Skills validated by your portfolio projects.
      - **Transferable**: Skills possessed that substitute requirements.
-     - **Portfolio**: Advanced topics best demonstrated via projects.
-     - **Missing**: Critical gaps with associated learning resources.
+     - **Missing**: Critical gaps with personalized action plans.
 
 4. **Developer Options**:
    - Access the Sidebar and toggle **"Developer Mode"**.
