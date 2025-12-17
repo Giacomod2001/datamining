@@ -231,11 +231,24 @@ def render_results(res, jd_text=None):
 
     st.divider()
 
-    # LEARNING PLAN (Simplified for brevity)
+    # LEARNING PLAN
     if res["missing_hard"]:
         st.subheader("📚 Learning Actions")
+        
         for skill in res["missing_hard"]:
-            st.caption(f"Search for: **{skill}**")
+            with st.expander(f"Action Plan: **{skill}**", expanded=len(res["missing_hard"]) == 1):
+                q_skill = urllib.parse.quote(skill)
+                
+                lc1, lc2, lc3 = st.columns(3)
+                with lc1:
+                    st.markdown(f"**[🔍 Google Search](https://www.google.com/search?q=learn+{q_skill}+tutorial)**")
+                    st.caption("General guides")
+                with lc2:
+                    st.markdown(f"**[📺 YouTube](https://www.youtube.com/results?search_query=learn+{q_skill})**")
+                    st.caption("Video tutorials")
+                with lc3:
+                    st.markdown(f"**[🎓 Courses](https://www.google.com/search?q=site:coursera.org+OR+site:udemy.com+OR+site:linkedin.com/learning+{q_skill})**")
+                    st.caption("Platform specific")
 
     # --- EXPORT REPORT ---
     st.divider()
