@@ -1,0 +1,2 @@
+Questo file serve a verificare il collegamento con GitHub Desktop.
+Se lo vedi in "Changes", vuol dire che funziona tutto!
