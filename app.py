@@ -191,17 +191,6 @@ def render_results(res, jd_text=None):
             st.metric("Verified Skills", len(res["project_verified"]))
             st.caption(f"Validating: {', '.join(list(res['project_verified'])[:3])}...")
 
-    # --- WORD CLOUD SECTION ---
-    if jd_text:
-        st.divider()
-        st.subheader("☁️ Job Keywords Cloud")
-        with st.expander("Show Word Cloud", expanded=True):
-            fig_wc = ml_utils.generate_wordcloud(jd_text)
-            if fig_wc:
-                st.pyplot(fig_wc)
-            else:
-                st.info("Install 'wordcloud' to see this feature.")
-
     st.divider()
     st.subheader("🛠️ Technical Skills Analysis")
 
@@ -242,11 +231,24 @@ def render_results(res, jd_text=None):
 
     st.divider()
 
-    # LEARNING PLAN (Simplified for brevity)
+    # LEARNING PLAN
     if res["missing_hard"]:
         st.subheader("📚 Learning Actions")
+        
         for skill in res["missing_hard"]:
-            st.caption(f"Search for: **{skill}**")
+            with st.expander(f"Action Plan: **{skill}**", expanded=len(res["missing_hard"]) == 1):
+                q_skill = urllib.parse.quote(skill)
+                
+                lc1, lc2, lc3 = st.columns(3)
+                with lc1:
+                    st.markdown(f"**[🔍 Google Search](https://www.google.com/search?q=learn+{q_skill}+tutorial)**")
+                    st.caption("General guides")
+                with lc2:
+                    st.markdown(f"**[📺 YouTube](https://www.youtube.com/results?search_query=learn+{q_skill})**")
+                    st.caption("Video tutorials")
+                with lc3:
+                    st.markdown(f"**[🎓 Courses](https://www.google.com/search?q=site:coursera.org+OR+site:udemy.com+OR+site:linkedin.com/learning+{q_skill})**")
+                    st.caption("Platform specific")
 
     # --- EXPORT REPORT ---
     st.divider()
@@ -254,16 +256,6 @@ def render_results(res, jd_text=None):
     st.download_button("⬇️ Download Report (TXT)", report_text, file_name="report.txt")
 
 if __name__ == "__main__":
-    # Sidebar Global Controls
-    with st.sidebar:
-        st.divider()
-        # Corrected Toggle Syntax
-        show_project_eval = st.toggle("🧪 Project Evaluation", value=False, help="Analyze your projects alongside your CV")
-        if show_project_eval:
-             if st.button("Open Lab 🚀"):
-                 st.session_state["page"] = "ProjectEval"
-                 st.rerun()
-
     if st.session_state["page"] == "Debugger":
         render_debug_page()
     else:
