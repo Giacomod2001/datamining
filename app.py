@@ -191,17 +191,6 @@ def render_results(res, jd_text=None):
             st.metric("Verified Skills", len(res["project_verified"]))
             st.caption(f"Validating: {', '.join(list(res['project_verified'])[:3])}...")
 
-    # --- WORD CLOUD SECTION ---
-    if jd_text:
-        st.divider()
-        st.subheader("☁️ Job Keywords Cloud")
-        with st.expander("Show Word Cloud", expanded=True):
-            fig_wc = ml_utils.generate_wordcloud(jd_text)
-            if fig_wc:
-                st.pyplot(fig_wc)
-            else:
-                st.info("Install 'wordcloud' to see this feature.")
-
     st.divider()
     st.subheader("🛠️ Technical Skills Analysis")
 
@@ -254,11 +243,6 @@ def render_results(res, jd_text=None):
     st.download_button("⬇️ Download Report (TXT)", report_text, file_name="report.txt")
 
 if __name__ == "__main__":
-    # Sidebar Global Controls
-    with st.sidebar:
-        st.divider()
-        # The experimental features checkbox and project evaluation button are now handled within render_home.
-
     if st.session_state["page"] == "Debugger":
         render_debug_page()
     else:
