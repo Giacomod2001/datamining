@@ -29,7 +29,7 @@ Unlike traditional Applicant Tracking Systems (ATS), this tool understands skill
 - **Match Gauge**: Interactive Plotly chart for instant score assessment.
 - **Professional PDF Reports**: Download a comprehensive analysis report including skill breakdowns, match scores, and a personalized learning plan with actionable links.
 
-### Project Evaluation (NEW)
+### Project Evaluation 
 Validate your skills through practical experience.
 - **Portfolio Triangulation**: Upload or paste project descriptions to prove skills missing in your CV.
 - **Project verified Skills**: Skills confirmed by projects are highlighted as "Project Verified" and contribute to the final match score.
