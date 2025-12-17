@@ -59,7 +59,12 @@ def render_debug_page():
 def render_home():
     with st.sidebar:
         st.title("🎯 Job Seeker Helper")
-        st.info("Features:\n- **Smart Inference** (BigQuery → Cloud)\n- **Transferable Skills** (Looker → Power BI)\n- **Dynamic Resources** (Auto-search for any skill)")
+        st.markdown("### 🚀 Instructions")
+        st.markdown("1. **Upload CV**: PDF or Text.")
+        st.markdown("2. **Upload JD**: Job Description.")
+        st.markdown("3. **Analyze**: Get insights.")
+        st.markdown("---")
+        st.info("Features:\n- **Smart Inference** (BigQuery → Cloud)\n- **Transferable Skills** (Looker → Power BI)\n- **Visual Analytics** (New!)")
         st.divider()
         if st.toggle("Developer Mode"):
              pwd = st.text_input("Enter Password", type="password", key="dev_pwd")
@@ -111,23 +116,49 @@ def render_home():
             st.warning("Please provide both CV and Job Description.")
             return
             
-        res = ml_utils.analyze_gap(cv, jd)
-        render_results(res)
+        with st.spinner("Analyzing profile..."):
+            res = ml_utils.analyze_gap(cv, jd)
+            render_results(res, jd)
 
-def render_results(res):
+def render_results(res, jd_text=None):
     st.divider()
     pct = res["match_percentage"]
     
-    col1, col2 = st.columns([1, 4])
+    # --- METRICS SECTION ---
+    col1, col2 = st.columns([1, 1])
+    
     with col1:
-        color = "green" if pct >= 80 else "orange" if pct >= 60 else "red"
-        st.markdown(f"<h1 style='color:{color}'>{pct:.0f}%</h1>", unsafe_allow_html=True)
-        st.caption("Technical Match Score")
+        # Plotly Gauge
+        fig = px.pie(values=[pct, 100-pct], names=["Match", "Gap"], hole=0.7, 
+                     color_discrete_sequence=["#00cc96", "#EF553B"])
+        fig.update_layout(showlegend=False, margin=dict(t=0, b=0, l=0, r=0), height=150)
+        fig.add_annotation(text=f"{pct:.0f}%", showarrow=False, font_size=20)
+        st.plotly_chart(fig, use_container_width=True)
+        
     with col2:
-        if pct >= 80: st.success("Great match!")
-        elif pct >= 60: st.warning("Good match.")
-        else: st.error("Gaps detected.")
+        st.subheader("Match Score")
+        if pct >= 80: 
+            st.success("🚀 Excellent Match!")
+            st.markdown("Your profile is very aligned with this role.")
+        elif pct >= 60: 
+            st.warning("⚠️ Good Potential")
+            st.markdown("Some gaps exist, but many skills are transferable.")
+        else: 
+            st.error("❌ High Gap")
+            st.markdown("Significant learning required for this specific role.")
 
+    # --- WORD CLOUD SECTION ---
+    if jd_text:
+        st.divider()
+        st.subheader("☁️ Job Keywords Cloud")
+        with st.expander("Show Word Cloud", expanded=True):
+            fig_wc = ml_utils.generate_wordcloud(jd_text)
+            if fig_wc:
+                st.pyplot(fig_wc)
+            else:
+                st.info("Install 'wordcloud' to see this feature.")
+
+    st.divider()
     st.subheader("🛠️ Technical Skills Analysis")
     
     c1, c2, c3, c4, c5 = st.columns(5)
@@ -170,7 +201,7 @@ def render_results(res):
     
     # LEARNING PLAN
     if res["missing_hard"]:
-        st.subheader("� Learning Actions")
+        st.subheader("📚 Learning Actions")
         
         for skill in res["missing_hard"]:
             # Check if we have a specific known resource, otherwise DEFAULT (empty)
@@ -197,6 +228,19 @@ def render_results(res):
                         st.markdown(f"**[📺 YouTube Courses](https://www.youtube.com/results?search_query=learn+{q_skill})**")
                     with lc3:
                          st.markdown(f"**[🎓 Coursera / Udemy](https://www.google.com/search?q=site:coursera.org+OR+site:udemy.com+{q_skill})**")
+
+    # --- EXPORT REPORT ---
+    st.divider()
+    report_text = f"""
+    Job Seeker Helper Report
+    ========================
+    Match Score: {pct:.0f}%
+    
+    Matched Skills: {", ".join(res["matching_hard"])}
+    Missing Skills: {", ".join(res["missing_hard"])}
+    Transferable: {", ".join(res["transferable"].keys())}
+    """
+    st.download_button("⬇️ Download Report", report_text, file_name="report.txt")
 
 if __name__ == "__main__":
     if st.session_state["page"] == "Debugger":

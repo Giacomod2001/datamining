@@ -20,6 +20,11 @@ Unlike traditional Applicant Tracking Systems (ATS), this tool understands skill
 - **Portfolio-Based Triggers**: Complex domains (e.g., *Computer Vision*, *System Design*) are flagged for **Portfolio Review** rather than binary rejection, acknowledging that deep expertise requires qualitative assessment.
 - **Universal Domain Support**: Capable of analyzing roles across Tech, Business, Marketing, and Languages using TF-IDF fallback mechanisms for unsupported domains.
 
+### Visual Analytics (New!)
+- **Word Cloud**: Visualizes the most relevant keywords in the Job Description (Text Mining).
+- **Match Gauge**: Interactive Plotly chart for instant score assessment.
+- **Exportable Reports**: Download your analysis summary as a text file for record-keeping.
+
 ### Actionable Learning Pathways
 - **Dynamic Resource Generation**: utilizing the input gap analysis to generate targeted search queries for missing skills across educational platforms:
   - Google Search

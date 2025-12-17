@@ -18,6 +18,13 @@ try:
 except ImportError:
     PdfReader = None
 
+try:
+    from wordcloud import WordCloud
+    import matplotlib.pyplot as plt
+except ImportError:
+    WordCloud = None
+    plt = None
+
 import constants
 
 # =============================================================================
@@ -137,6 +144,24 @@ def extract_text_from_pdf(pdf_file) -> str:
         return " ".join(page.extract_text() or "" for page in reader.pages)
     except Exception as e:
         raise Exception(f"PDF Error: {str(e)}")
+
+# =============================================================================
+# VISUALIZATION UTILS
+# =============================================================================
+def generate_wordcloud(text: str):
+    """
+    Generates a WordCloud object from text.
+    Returns the figure object.
+    """
+    if not WordCloud or not plt:
+        return None
+        
+    wc = WordCloud(width=800, height=400, background_color='white', colormap='viridis').generate(text)
+    
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.imshow(wc, interpolation='bilinear')
+    ax.axis("off")
+    return fig
 
 # =============================================================================
 # GAP ANALYSIS
