@@ -41,6 +41,7 @@ Unlike traditional Applicant Tracking Systems (ATS), this tool understands skill
     - The role you are applying for (Target Role).
     - The role you currently hold (Current Role).
   This ensures the system suggests only **True Alternatives** (e.g. valid pivots), avoiding redundant suggestions.
+- **Quality Filter (v1.31)**: Enforces a strict relevance threshold (>50%). If no alternative roles meet this criteria, the system suppresses generic "low-quality" matches and informs you that your profile is highly specialized.
 - **Direct Application**: Provides one-click links to search for these specific roles on LinkedIn and Google Jobs.
 
 ### Project Evaluation 

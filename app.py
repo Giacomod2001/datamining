@@ -9,7 +9,7 @@ import urllib.parse
 # PAGE CONFIG
 # =============================================================================
 st.set_page_config(
-    page_title="Job Seeker Helper v1.30 (QUALITY FIRST)",
+    page_title="Job Seeker Helper v1.31 (STRICT QUALITY)",
     page_icon="🎯",
     layout="wide"
 )
@@ -69,7 +69,7 @@ def render_debug_page():
 def render_home():
     with st.sidebar:
         st.title("🎯 Job Seeker Helper")
-        st.caption("v1.30 (QUALITY FIRST)")
+        st.caption("v1.31 (STRICT QUALITY)")
         st.markdown("### 🚀 Instructions")
         st.markdown("1. **Upload CV**: PDF or Text.")
         st.markdown("2. **Upload JD**: Job Description.")
@@ -376,7 +376,7 @@ def render_results(res, jd_text=None, cv_text=None):
                      for s in rec['missing'][:5]:
                          st.markdown(f"- {s}")
     else:
-        st.info("ℹ️ **High Specialization Detected**: Your profile is very strongly aligned with your current role. No other *significant* alternative matches (>30%) were found in our database.")
+        st.info("ℹ️ **Strict Quality Mode**: No alternative roles met the high confidence threshold (>50%). Your profile is uniquely specialized.")
 
     # --- EXPORT REPORT ---
     st.divider()
