@@ -9,7 +9,7 @@ import urllib.parse
 # PAGE CONFIG
 # =============================================================================
 st.set_page_config(
-    page_title="Job Seeker Helper v1.15 (POLITECNICO FIX)",
+    page_title="Job Seeker Helper v1.16 (BETTER CHARTS)",
     page_icon="🎯",
     layout="wide"
 )
@@ -69,7 +69,7 @@ def render_debug_page():
 def render_home():
     with st.sidebar:
         st.title("🎯 Job Seeker Helper")
-        st.caption("v1.15 (POLITECNICO FIX)")
+        st.caption("v1.16 (BETTER CHARTS)")
         st.markdown("### 🚀 Instructions")
         st.markdown("1. **Upload CV**: PDF or Text.")
         st.markdown("2. **Upload JD**: Job Description.")
@@ -280,6 +280,8 @@ def render_results(res, jd_text=None, cv_text=None):
                 
                 fig_cls = px.scatter(df_viz, x="x", y="y", color="cluster", symbol="Status",
                                      hover_data=["skill"], title="Skill Semantic Map (PCA + K-Means)")
+                fig_cls.update_traces(marker=dict(size=12, line=dict(width=2, color='DarkSlateGrey')), selector=dict(mode='markers'))
+                fig_cls.update_layout(showlegend=True, legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
                 st.plotly_chart(fig_cls, use_container_width=True)
                 
             with t2:
