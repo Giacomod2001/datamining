@@ -112,8 +112,8 @@ def perform_skill_clustering(skills: List[str]):
         plt.figure(figsize=(12, 7)) # Larger figure
         # Thicker lines and explicit color threshold to ensure visual coloring
         sch.set_link_color_palette(['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'])
-        # Threshold: 0.7 * max_distance is a standard heuristic to cut the tree at a "balanced" height
-        dendro = sch.dendrogram(linkage_matrix, labels=skills, leaf_rotation=45, leaf_font_size=12, above_threshold_color='#AAAAAA', color_threshold=0.7*max(linkage_matrix[:,2].max(), 0.1))
+        # Threshold: 0.85 * max_distance (Restored from v1.17 as per user request)
+        dendro = sch.dendrogram(linkage_matrix, labels=skills, leaf_rotation=45, leaf_font_size=12, above_threshold_color='#AAAAAA', color_threshold=0.85*max(linkage_matrix[:,2].max(), 0.1))
         plt.rcParams['lines.linewidth'] = 2.5 # Global setting for line thickness
         plt.title("Skill Dendrogram (Hierarchical Clustering)")
         plt.tight_layout()
