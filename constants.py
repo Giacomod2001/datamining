@@ -157,4 +157,4 @@ JOB_ARCHETYPES = {
     "Digital Marketer": {"SEO", "Social Media", "Google Analytics", "Content Marketing", "Copywriting", "Advertising", "Campaign Management", "SEM"},
     "Business Analyst": {"Business Analysis", "Requirements Gathering", "SQL", "Excel", "Process Mapping", "Communication", "Stakeholder Management", "BPMN"}
 }
-}
+
