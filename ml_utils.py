@@ -1143,6 +1143,7 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
         role_name = archetype_names[i]
         
         # Skip excluded roles (redundant)
+        if role_name in excluded_roles:
             continue
             
         role_skills = constants.JOB_ARCHETYPES[role_name]
