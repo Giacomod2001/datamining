@@ -1137,28 +1137,4 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
         
     recommendations.sort(key=lambda x: x["score"], reverse=True)
     return recommendations[:3]
-        # We need to intersect sets slightly fuzzily, but for now exact set diff + basic fuzzy normalization
-        # Actually, let's just show raw set difference of keys for simplicity
-        # (Optimized for display: we only show what's strictly missing from the definition)
-        
-        # Hard normalization to ensure set operations work (case insensitive)
-        cv_norm = {s.lower() for s in cv_skills}
-        role_norm = {s.lower() for s in role_skills}
-        
-        # Find missing
-        missing_norm = role_norm - cv_norm
-        
-        # Convert back to display names (best effort)
-        # We simply list the Archetype's original strings that weren't found
-        missing_display = [s for s in role_skills if s.lower() in missing_norm]
-        
-        recommendations.append({
-            "role": role_name,
-            "score": score * 100, # Convert to %
-            "missing": missing_display
-        })
-        
-    # Sort by Score Descending
-    recommendations.sort(key=lambda x: x["score"], reverse=True)
-    
-    return recommendations[:3] # Return top 3
+
