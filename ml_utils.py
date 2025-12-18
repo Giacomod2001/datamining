@@ -100,22 +100,24 @@ def perform_skill_clustering(skills: List[str]):
 
     try:
         # 1. Vectorize Skills
-        # Change to Character N-Grams to find similarity between "Java" vs "JavaScript" or "Data Science" vs "Computer Science"
-        vectorizer = TfidfVectorizer(stop_words='english', analyzer='char', ngram_range=(3, 5), min_df=1)
+        # ACTION: Use char-grams (2-4) to create denser connections. 
+        # This solves the "Comb Effect" by finding partial similarities (e.g. "Data" in "Data Science" and "Data Eng")
+        vectorizer = TfidfVectorizer(stop_words='english', analyzer='char', ngram_range=(2, 4), min_df=1)
         X = vectorizer.fit_transform(skills).toarray()
         
         # 2. Hierarchical Clustering (Dendrogram)
         # Using Ward's linkage (Minimizes Variances) to create balanced clusters
-        # Explicitly setting metric='euclidean' which is required for Ward
-        linkage_matrix = sch.linkage(X, method='ward', metric='euclidean')
+        linkage_matrix = sch.linkage(X, method='ward')
         
         plt.figure(figsize=(12, 7)) # Larger figure
         # Thicker lines and explicit color threshold to ensure visual coloring
         sch.set_link_color_palette(['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'])
-        # Threshold: 0.85 * max_distance (Restored from v1.17 as per user request)
-        dendro = sch.dendrogram(linkage_matrix, labels=skills, leaf_rotation=45, leaf_font_size=12, above_threshold_color='#AAAAAA', color_threshold=0.85*max(linkage_matrix[:,2].max(), 0.1))
+        
+        # Threshold: 0.7 * max (Standard for Ward). With N-Grams (2-4), the tree will be more balanced, so 0.7 works well.
+        dendro = sch.dendrogram(linkage_matrix, labels=skills, leaf_rotation=45, leaf_font_size=12, above_threshold_color='#AAAAAA', color_threshold=0.7*max(linkage_matrix[:,2].max(), 0.1))
+        
         plt.rcParams['lines.linewidth'] = 2.5 # Global setting for line thickness
-        plt.title("Skill Dendrogram (Hierarchical Clustering)")
+        plt.title("Skill Dendrogram (Ward Linkage)") # Explicit title to reassure user
         plt.tight_layout()
         dendro_path = "dendrogram.png"
         plt.savefig(dendro_path)
