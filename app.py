@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import constants
 import ml_utils
 import urllib.parse
@@ -9,7 +10,7 @@ import urllib.parse
 # PAGE CONFIG
 # =============================================================================
 st.set_page_config(
-    page_title="Job Seeker Helper v1.33 (CHART FIX)",
+    page_title="Job Seeker Helper v1.34 (NER FIX)",
     page_icon="🎯",
     layout="wide"
 )
@@ -69,7 +70,7 @@ def render_debug_page():
 def render_home():
     with st.sidebar:
         st.title("🎯 Job Seeker Helper")
-        st.caption("v1.33 (CHART FIX)")
+        st.caption("v1.34 (NER FIX)")
         st.markdown("### 🚀 Instructions")
         st.markdown("1. **Upload CV**: PDF or Text.")
         st.markdown("2. **Upload JD**: Job Description.")
@@ -167,12 +168,19 @@ def render_results(res, jd_text=None, cv_text=None):
     cols = st.columns([1, 1, 1]) if "project_verified" in res else st.columns([1, 1])
 
     with cols[0]:
-        # Plotly Gauge
-        fig = px.pie(values=[pct, 100-pct], names=["Match", "Gap"], hole=0.7, 
-                     color_discrete_sequence=["#00cc96", "#EF553B"])
-        fig.update_traces(sort=False)
+        # Plotly Pie Chart (go.Pie for absolute control)
+        fig = go.Figure(data=[go.Pie(
+            labels=['Match', 'Gap'],
+            values=[pct, 100-pct],
+            hole=0.7,
+            marker_colors=['#00cc96', '#EF553B'],
+            sort=False, # CRITICAL to keep colors aligned
+            textinfo='none'
+        )])
         fig.update_layout(showlegend=False, margin=dict(t=0, b=0, l=0, r=0), height=150)
-        fig.add_annotation(text=f"{pct:.0f}%", showarrow=False, font_size=20)
+        
+        # Center Annotation
+        fig.add_annotation(text=f"{pct:.0f}%", showarrow=False, font_size=20, x=0.5, y=0.5)
         st.plotly_chart(fig, use_container_width=True)
 
     with cols[1]:
@@ -377,7 +385,7 @@ def render_results(res, jd_text=None, cv_text=None):
                      for s in rec['missing'][:5]:
                          st.markdown(f"- {s}")
     else:
-        st.info("ℹ️ **Strict Quality Mode**: No alternative roles met the confidence threshold (>40%). Your profile is uniquely specialized.")
+        st.info("ℹ️ **Quality Mode**: No alternative roles met the confidence threshold (>30%). Your profile is uniquely specialized.")
 
     # --- EXPORT REPORT ---
     st.divider()

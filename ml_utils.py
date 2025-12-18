@@ -298,14 +298,41 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
     entities = {"Organizations": [], "Locations": [], "Persons": []}
     
     # 1. Build Exclusion Set (Skills + Headers + Common Noise)
+    # 1. Build Exclusion Set (Skills + Headers + Common Noise)
     exclusion_set = set()
     
-    # Add Hard/Soft Skills to exclusion
-    all_skills = getattr(constants, "ALL_SKILLS", {})
-    for skill_cat, skill_vars in all_skills.items():
-        exclusion_set.add(skill_cat.lower())
+    # helper to add flattened parts of skills
+    def add_to_exclusion(term):
+        parts = term.lower().split()
+        for p in parts:
+            exclusion_set.add(p)
+            
+    # Add Hard Skills
+    for skill_cat, skill_vars in constants.HARD_SKILLS.items():
+        add_to_exclusion(skill_cat)
         for var in skill_vars:
-            exclusion_set.add(var.lower())
+            add_to_exclusion(var)
+            
+    # Add Soft Skills
+    for skill_cat, skill_vars in constants.SOFT_SKILLS.items():
+        add_to_exclusion(skill_cat)
+        for var in skill_vars:
+            add_to_exclusion(var)
+
+    # Explicit Tech Jargon often mistaken for People/Orgs
+    tech_jargon = {
+        "python", "java", "scala", "c++", "c#", "net", "javascript", "typescript", "php", "ruby", "go", "golang",
+        "sql", "mysql", "postgresql", "mongodb", "redis", "cassandra", "neo4j",
+        "aws", "azure", "gcp", "docker", "kubernetes", "jenkins", "gitlab", "github", "bitbucket",
+        "numpy", "pandas", "scipy", "scikit-learn", "sklearn", "matplotlib", "seaborn", "plotly", "tableau", "powerbi",
+        "linear", "regression", "logistic", "classification", "clustering", "kmeans", "pca", "svm", "neural", "network",
+        "nlp", "bert", "gpt", "llm", "transformer", "vision", "image", "processing",
+        "agile", "scrum", "kanban", "waterfall", "jira", "confluence",
+        "marketing", "sales", "finance", "accounting", "hr", "management", "business", "analyst", "engineer", "developer",
+        "jupyter", "notebook", "studio", "code", "visual", "intelliJ", "eclipse",
+        "data", "science", "mining", "warehouse", "lake", "pipeline", "etl", "elt"
+    }
+    exclusion_set.update(tech_jargon)
 
     # Add Common CV Headers & Noise
     noise_words = {
@@ -318,6 +345,36 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "page", "of", "senior", "junior", "mid", "level", "lead", "manager", "support",
         "competenze", "esperienze", "formazione", "istruzione", "lingue", "progetti",
         "certificazioni", "interessi", "contatti", "profilo", "sommario",
+        "university", "università", "school", "scuola", "college", "institute", "politecnico", "degree", "bachelor", "master", "phd",
+        "inc", "ltd", "srl", "spa", "corp", "corporation", "company", "group", "team"
+    }
+    exclusion_set.update(noise_words)
+    
+    # 2. Extract and Filter
+    try:
+        # Tokenize and chunk
+        for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(text))):
+            if hasattr(chunk, 'label'):
+                label = chunk.label()
+                entity_name = " ".join(c[0] for c in chunk)
+                entity_lower = entity_name.lower()
+                
+                # Check 1: Exact match
+                if entity_lower in exclusion_set:
+                    continue
+                    
+                # Check 2: Parts match
+                parts = entity_lower.split()
+                if any(p in exclusion_set for p in parts):
+                    continue
+
+                if label == 'ORGANIZATION':
+                    entities["Organizations"].append(entity_name)
+                elif label == 'GPE':
+                    entities["Locations"].append(entity_name)
+                elif label == 'PERSON':
+                     if len(parts) >= 2: # Reduce single word noise
+                        entities["Persons"].append(entity_name)
         "remote", "smart working", # Removed specific cities to allow NER extraction
         "laurea", "triennale", "magistrale", "diploma", "corso", "master", "phd", "studio", "studi", "università",
         "competenza", "capacità", "conoscenza", "personale", "autorizzazione", "dati", "privacy", "buono", "ottimo", "discreto", 
@@ -1152,11 +1209,11 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
         missing_norm = role_norm - cv_norm
         missing_display = [s for s in role_skills if s.lower() in missing_norm]
         
-        # 7. Quality Filter (v1.31 Strict -> v1.33 Tuned)
-        # Only show recommendations that have a decent overlap (>40%)
-        # 50% was too strict for Junior profiles. 40% is a balanced "Strict" mode.
+        # 7. Quality Filter (v1.33 -> v1.34 Junior Friendly)
+        # Only show recommendations that have a decent overlap (>30%)
+        # 40% was still too high for "Junior -> Senior" pivots. 30% is safer.
         final_score = score * 100
-        if final_score < 40:
+        if final_score < 30:
             continue
             
         recommendations.append({
