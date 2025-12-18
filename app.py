@@ -9,7 +9,7 @@ import urllib.parse
 # PAGE CONFIG
 # =============================================================================
 st.set_page_config(
-    page_title="Job Seeker Helper v1.3",
+    page_title="Job Seeker Helper v1.4",
     page_icon="🎯",
     layout="wide"
 )
@@ -24,12 +24,16 @@ def render_debug_page():
     if st.button("← Back"):
         st.session_state["page"] = "Home"
         st.rerun()
-    st.title("🛠️ Debugger")
-    st.info("This panel helps developers understand how skills are detected and inferred.")
+    st.title("🛠️ Debugger & Experimental Analytics")
+    st.info("This panel provides advanced insights into your profile data.")
     
-    tab1, tab2, tab3, tab4 = st.tabs(["🧠 Inference Logic", "🔗 Skill Clusters", "📂 Project Skills", "📚 Knowledge DB"])
+    # Check if we have analysis results in session
+    res = st.session_state.get("last_results", None)
     
-    with tab1:
+    tabs = ["🧠 Inference", "🔗 Clusters (Rules)", "📊 Deep Clustering", "🧩 Topic Modeling", "🏷️ PER/LOC/ORG", "📚 Knowledge DB"]
+    t1, t2, t3, t4, t5, t6 = st.tabs(tabs)
+    
+    with t1:
         st.subheader("Hierarchical Rules (Knowledge Graph)")
         st.markdown("If **Child Skill** is found → **Parent Skill** is added.")
         
@@ -46,19 +50,99 @@ def render_debug_page():
             inf_data = [{"Child Skill": k, "Inferred Parent(s)": ", ".join(v)} for k, v in constants.INFERENCE_RULES.items()]
             st.dataframe(pd.DataFrame(inf_data), use_container_width=True, hide_index=True)
 
-    with tab2:
+    with t2:
         st.subheader("Interchangeable Groups")
         st.markdown("Skills in the same cluster are considered **Transferable**.")
         # Flatten clusters for display
         cluster_data = [{"Cluster Name": k, "Members": ", ".join(sorted(v))} for k, v in constants.SKILL_CLUSTERS.items()]
         st.dataframe(pd.DataFrame(cluster_data), use_container_width=True, hide_index=True)
 
-    with tab3:
-        st.subheader("Portfolio/Project Based")
-        st.markdown("These complex skills should be discussed in an interview/portfolio.")
-        st.write(sorted(list(constants.PROJECT_BASED_SKILLS)))
+    with t3:
+        st.subheader("🧠 Advanced Data Mining (Skill Clans)")
+        st.caption("Using unsupervised learning (K-Means & Ward's Method) to group your specific skills.")
+        
+        if res:
+             # 1. Prepare Data
+            all_skills = list(res["matching_hard"] | res["missing_hard"] | res["extra_hard"])
+            
+            if len(all_skills) > 3:
+                # Run Clustering
+                df_viz, dendro_path, clusters = ml_utils.perform_skill_clustering(all_skills)
+                
+                if df_viz is not None:
+                    c_t1, c_t2 = st.tabs(["📊 Scatter Plot", "🌳 Dendrogram"])
+                    
+                    with c_t1:
+                        # Enrich with Status
+                        def get_status(s):
+                            if s in res["matching_hard"]: return "Matched"
+                            if s in res["missing_hard"]: return "Missing"
+                            return "Extra"
+                        
+                        df_viz["Status"] = df_viz["skill"].apply(get_status)
+                        
+                        fig_cls = px.scatter(df_viz, x="x", y="y", color="cluster", symbol="Status",
+                                            hover_data=["skill"], title="Skill Semantic Map (PCA + K-Means)")
+                        st.plotly_chart(fig_cls, use_container_width=True)
+                        
+                    with c_t2:
+                        if dendro_path:
+                            st.image(dendro_path, caption="Skill Hierarchy (Ward's Method)")
+                
+                # GENEARTE INSIGHT
+                st.markdown("---")
+                insight_text = ml_utils.generate_cluster_insight(clusters, res["matching_hard"], res["missing_hard"])
+                st.info(insight_text)
+            else:
+                st.warning("Not enough skills detected (<3) to perform clustering.")
+        else:
+            st.warning("Please run an analysis on the Home page first to see data here.")
 
-    with tab4:
+    with t4:
+        st.subheader("🧩 Job Context Analysis (LDA)")
+        if st.session_state.get("last_jd_text"):
+            jd_text = st.session_state["last_jd_text"]
+            jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
+            
+            if len(jd_corpus) > 5:
+                topics, wc_path = ml_utils.perform_topic_modeling(jd_corpus)
+                
+                c1, c2 = st.columns([1, 2])
+                with c1:
+                    st.markdown("**Discovered Topics:**")
+                    for t in topics:
+                        st.success(t)
+                with c2:
+                    if wc_path:
+                        st.image(wc_path, caption="Topic Keywords Word Cloud")
+            else:
+                st.info("Job Description too short for Topic Modeling.")
+        else:
+            st.warning("Please analyse a job description first.")
+
+    with t5:
+        st.subheader("🏷️ Resume Entity Extraction (NER)")
+        if st.session_state.get("last_cv_text"):
+            cv_text = st.session_state["last_cv_text"]
+            entities = ml_utils.extract_entities_ner(cv_text)
+            
+            if entities:
+                ec1, ec2, ec3 = st.columns(3)
+                with ec1:
+                    st.markdown("#### 🏛️ Organizations")
+                    for org in entities.get("Organizations", [])[:10]: st.write(f"- {org}")
+                with ec2:
+                    st.markdown("#### 📍 Locations")
+                    for loc in entities.get("Locations", [])[:10]: st.write(f"- {loc}")
+                with ec3:
+                    st.markdown("#### 👤 People")
+                    for per in entities.get("Persons", [])[:10]: st.write(f"- {per}")
+            else:
+                st.info("No named entities found.")
+        else:
+            st.warning("Please analyse a CV first.")
+
+    with t6:
         st.subheader("Training Data (Sample)")
         _, df = ml_utils.train_rf_model()
         st.dataframe(df, use_container_width=True)
@@ -77,7 +161,6 @@ def render_home():
         st.info("Features:\n- **Smart Inference** (BigQuery → Cloud)\n- **Transferable Skills** (Looker → Power BI)\n- **Visual Analytics** (New!)")
         st.divider()
         
-        # EXPERIMENTAL FEATURE TOGGLE
         show_project_eval = st.toggle("Project Evaluation", value=False, help="Analyze your projects alongside your CV")
         
         if st.toggle("Developer Mode"):
@@ -155,6 +238,11 @@ def render_home():
                  res = ml_utils.analyze_gap_with_project(cv, jd, project_text)
             else:
                  res = ml_utils.analyze_gap(cv, jd)
+            
+            # Save state for debugger
+            st.session_state["last_results"] = res
+            st.session_state["last_cv_text"] = cv
+            st.session_state["last_jd_text"] = jd
                  
             render_results(res, jd, cv)
 
@@ -250,94 +338,9 @@ def render_results(res, jd_text=None, cv_text=None):
                     st.markdown(f"**[🎓 Courses](https://www.google.com/search?q=site:coursera.org+OR+site:udemy.com+OR+site:linkedin.com/learning+{q_skill})**")
                     st.caption("Platform specific")
 
-                    st.markdown(f"**[🎓 Courses](https://www.google.com/search?q=site:coursera.org+OR+site:udemy.com+OR+site:linkedin.com/learning+{q_skill})**")
-                    st.caption("Platform specific")
-
-    # --- ADVANCED MINING (Clustering) ---
-    st.divider()
-    st.subheader("🧠 Advanced Data Mining (Skill Clans)")
-    st.info("Using Unsupervised Learning (Hierarchical Clustering & K-Means) to group your skills logicially.")
-    
-    # 1. Prepare Data
-    all_skills = list(res["matching_hard"] | res["missing_hard"] | res["extra_hard"])
-    
-    if len(all_skills) > 3:
-        # Run Clustering
-        df_viz, dendro_path, clusters = ml_utils.perform_skill_clustering(all_skills)
-        
-        if df_viz is not None:
-            t1, t2 = st.tabs(["📊 Scatter Plot (K-Means)", "🌳 Dendrogram (Hierarchical)"])
-            
-            with t1:
-                # Enrich with Status
-                def get_status(s):
-                    if s in res["matching_hard"]: return "Matched"
-                    if s in res["missing_hard"]: return "Missing"
-                    return "Extra"
-                
-                df_viz["Status"] = df_viz["skill"].apply(get_status)
-                
-                fig_cls = px.scatter(df_viz, x="x", y="y", color="cluster", symbol="Status",
-                                     hover_data=["skill"], title="Skill Semantic Map (PCA + K-Means)")
-                st.plotly_chart(fig_cls, use_container_width=True)
-                
-            with t2:
-                if dendro_path:
-                    st.image(dendro_path, caption="Skill Hierarchy (Ward's Method)")
-                    st.caption("Skills joined lower down are more similar/related.")
-        
-        # GENEARTE INSIGHT (User Request: "Make it less cold")
-        st.markdown("---")
-        insight_text = ml_utils.generate_cluster_insight(clusters, res["matching_hard"], res["missing_hard"])
-        st.info(insight_text)
-                    
-    else:
-        st.warning("Not enough skills detected to perform clustering analysis (Need > 3).")
-
-    # --- NEW: TOPIC MODELING (JD) ---
-    if jd_text:
-        st.divider()
-        st.subheader("🧩 Job Context Analysis (Topic Modeling)")
-        st.caption("Using Latent Dirichlet Allocation (LDA) to identify key themes in the Job Description.")
-        
-        # Split JD into "sentences" or chunks for LDA (simple split by newline for now)
-        jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
-        
-        if len(jd_corpus) > 5:
-            topics, wc_path = ml_utils.perform_topic_modeling(jd_corpus)
-            
-            c1, c2 = st.columns([1, 2])
-            with c1:
-                st.markdown("**Discovered Topics:**")
-                for t in topics:
-                    st.success(t)
-            with c2:
-                if wc_path:
-                    st.image(wc_path, caption="Topic Keywords Word Cloud")
-        else:
-            st.info("Job Description too short for Topic Modeling.")
-
-    # --- NEW: ENTITY EXTRACTION (CV) ---
-    if cv_text:
-        st.divider()
-        st.subheader("🏷️ Resume Entity Extraction (NER)")
-        st.caption("Automatically extracting standardized entities using NLTK.")
-        
-        entities = ml_utils.extract_entities_ner(cv_text)
-        
-        if entities:
-            ec1, ec2, ec3 = st.columns(3)
-            with ec1:
-                st.markdown("#### 🏛️ Organizations")
-                for org in entities.get("Organizations", [])[:10]: st.write(f"- {org}")
-            with ec2:
-                st.markdown("#### 📍 Locations")
-                for loc in entities.get("Locations", [])[:10]: st.write(f"- {loc}")
-            with ec3:
-                st.markdown("#### 👤 People")
-                for per in entities.get("Persons", [])[:10]: st.write(f"- {per}")
-        else:
-            st.info("No named entities found.")
+    # --- ADVANCED MINING MOVED TO DEBUGGER ---
+    # The 'Advanced Data Mining', 'Topic Modeling', and 'NER' sections have been moved 
+    # to the 'render_debug_page' function as requested to clean up the main view.
 
     # --- EXPORT REPORT ---
     st.divider()
