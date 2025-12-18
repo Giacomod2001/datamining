@@ -1,4 +1,5 @@
 import re
+# Force Streamlit Cloud Update
 import pandas as pd
 import streamlit as st
 from typing import Set, Dict, Tuple, List
@@ -9,10 +10,19 @@ try:
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.pipeline import Pipeline
+    from sklearn.cluster import KMeans, AgglomerativeClustering
+    from sklearn.decomposition import PCA
+    import scipy.cluster.hierarchy as sch
+    import matplotlib.pyplot as plt
 except ImportError:
     RandomForestClassifier = None
     TfidfVectorizer = None
     Pipeline = None
+    KMeans = None
+    AgglomerativeClustering = None
+    PCA = None
+    sch = None
+    plt = None
 
 try:
     from PyPDF2 import PdfReader
@@ -70,6 +80,321 @@ def train_rf_model():
     except Exception as e:
         print(f"Training Error: {e}")
         return None, df
+
+# =============================================================================
+# CLUSTERING (Unsupervised Learning for Skills)
+# =============================================================================
+def perform_skill_clustering(skills: List[str]):
+    """
+    Performs K-Means and Hierarchical Clustering on a list of skills.
+    Returns:
+    - kmeans_fig: Plotly figure for K-Means (PCA 2D)
+    - dendrogram_img_path: Path to saved dendrogram image
+    - clusters: Dict of {skill: cluster_id}
+    """
+    if not skills or len(skills) < 3:
+        return None, None, {}
+
+    if not TfidfVectorizer or not KMeans or not sch:
+        return None, None, {}
+
+    try:
+        # 1. Vectorize Skills
+        vectorizer = TfidfVectorizer(stop_words='english', min_df=1)
+        X = vectorizer.fit_transform(skills).toarray()
+        
+        # 2. Hierarchical Clustering (Dendrogram)
+        # Using Ward's linkage as per Lecture 02
+        linkage_matrix = sch.linkage(X, method='ward')
+        
+        plt.figure(figsize=(10, 5))
+        dendro = sch.dendrogram(linkage_matrix, labels=skills, leaf_rotation=90)
+        plt.title("Skill Dendrogram (Hierarchical Clustering)")
+        plt.tight_layout()
+        dendro_path = "dendrogram.png"
+        plt.savefig(dendro_path)
+        plt.close()
+
+        # 3. K-Means Clustering
+        # Determine K (simple heuristic: sqrt(N/2) or max 3-5 for small skill sets)
+        n_clusters = max(2, min(len(skills) // 3, 5))
+        kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
+        labels = kmeans.fit_predict(X)
+        
+        skill_clusters = {skill: int(label) for skill, label in zip(skills, labels)}
+
+        # 4. Visualization (PCA to 2D)
+        pca = PCA(n_components=2)
+        coords = pca.fit_transform(X)
+        
+        df_viz = pd.DataFrame({
+            'x': coords[:, 0],
+            'y': coords[:, 1],
+            'skill': skills,
+            'cluster': [f"Cluster {l}" for l in labels]
+        })
+        
+        return df_viz, dendro_path, skill_clusters
+
+    except Exception as e:
+        print(f"Clustering Error: {e}")
+        return None, None, {}
+
+# --- NEW: TOPIC MODELING (LDA) ---
+try:
+    from sklearn.decomposition import LatentDirichletAllocation
+    from sklearn.feature_extraction.text import CountVectorizer
+    from wordcloud import WordCloud
+except ImportError:
+    LatentDirichletAllocation = None
+    CountVectorizer = None
+    WordCloud = None
+
+def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
+    """
+    Performs Latent Dirichlet Allocation (LDA) to extract topics from text.
+    Returns a list of topics (each topic is a string of keywords) and a WordCloud image path.
+    """
+    if not LatentDirichletAllocation or not CountVectorizer or not WordCloud:
+        return [], None
+
+    try:
+        # Custom Stop Words for HR/Recruiting Context (Aggressive)
+        hr_stop_words = [
+            # Structural / Sections
+            'requirements', 'qualifications', 'responsibilities', 'duties', 'summary', 
+            'overview', 'description', 'profile', 'benefits', 'education', 'experience', 
+            'skills', 'background', 'about', 'us', 'team', 'company', 'role', 'job', 
+            'position', 'candidate', 'opportunity', 'location', 'category', 'status',
+            'salary', 'compensation', 'employment', 'type', 'industry', 'department',
+            
+            # Common Adjectives / Qualifiers
+            'strong', 'excellent', 'good', 'great', 'proven', 'demonstrated', 'successful',
+            'ideal', 'passionate', 'motivated', 'proactive', 'hands-on', 'detail-oriented',
+            'dynamic', 'collaborative', 'fast-paced', 'global', 'international', 'leading',
+            'preferred', 'plus', 'advantage', 'bonus', 'desirable', 'essential', 'key',
+            'core', 'primary', 'required', 'proficient', 'proficiency', 'fluent',
+            'knowledge', 'understanding', 'familiarity', 'ability', 'capability', 
+            
+            # Common Verbs / Actions
+            'work', 'working', 'join', 'apply', 'seeking', 'looking', 'ensure', 'provide',
+            'assist', 'support', 'help', 'manage', 'lead', 'coordinate', 'communicate',
+            'collaborate', 'participate', 'contribute', 'develop', 'create', 'maintain',
+            'deliver', 'drive', 'execute', 'perform', 'build', 'using', 'based',
+            
+            # Time / Measure / Misc
+            'years', 'year', 'level', 'senior', 'junior', 'mid', 'associate', # debatable, but often generic in topic
+            'full-time', 'part-time', 'contract', 'permanent', 'temporary', 'remote', 'hybrid',
+            'degree', 'bachelor', 'master', 'phd', 'equivalent', 'related', 'relevant',
+            'including', 'include', 'includes', 'various', 'similar', 'etc', 'suite',
+            'must', 'will', 'can', 'may', 'should', 'would', 'tools', 'environment'
+        ]
+        
+        # Italian Stop Words (Manual List to avoid dependency issues)
+        it_stop_words = [
+            'di', 'a', 'da', 'in', 'con', 'su', 'per', 'tra', 'fra',
+            'il', 'lo', 'la', 'i', 'gli', 'le', 'un', 'uno', 'una',
+            'e', 'ed', 'o', 'ma', 'se', 'che', 'non', 'si', 'chi',
+            'mi', 'ti', 'ci', 'vi', 'li', 'ne', 'lei', 'lui', 'noi', 'voi', 'loro',
+            'mio', 'tuo', 'suo', 'nostro', 'vostro', 'loro',
+            'mia', 'tua', 'sua', 'nostra', 'vostra',
+            'questo', 'quello', 'quella', 'questi', 'quelle',
+            'cui', 'c', 'è', 'sono', 'siete', 'siamo', 'hanno', 'ha', 'ho', 'hai', 'hanno',
+            'avuto', 'fatto', 'fare', 'essere', 'avere', 'stato', 'stata', 'stati', 'state',
+            'presso', 'durante', 'tramite', 'verso', 'contro', 'sulla', 'dello', 'degli', 'della', 'dei', 'dal', 'dalla',
+            'ai', 'agli', 'alla', 'alle', 'negli', 'nelle', 'nella', 'del', 'al', 
+            'come', 'dove', 'quando', 'perché', 'anche', 'più', 'meno',
+            'tutto', 'tutti', 'tutta', 'tut te', 'ogni', 'altro', 'altra', 'altri', 'altre',
+            'molto', 'poco', 'abbastanza', 'proprio', 'già', 'ancora', 
+            'ecc', 'eccetera', 'via', 'poi', 'solo', 'soltanto'
+        ]
+        
+        # Manually filter stop words from vocabulary if CountVectorizer didn't catch them
+        # (Alternatively, pass list to stop_words, but 'english' + list is tricky in sklearn < 0.24)
+        # Better approach: extend the built-in english list
+        from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
+        all_stop_words = list(ENGLISH_STOP_WORDS) + hr_stop_words + it_stop_words
+        
+        tf_vectorizer = CountVectorizer(max_df=0.95, min_df=2, stop_words=all_stop_words)
+        tf = tf_vectorizer.fit_transform(text_corpus)
+
+        lda = LatentDirichletAllocation(n_components=n_topics, max_iter=10, learning_method='online', random_state=42)
+        lda.fit(tf)
+        
+        feature_names = tf_vectorizer.get_feature_names_out()
+        topics = []
+        
+        # Extract top words for each topic
+        for topic_idx, topic in enumerate(lda.components_):
+            top_features_ind = topic.argsort()[:-n_words - 1:-1]
+            top_features = [feature_names[i] for i in top_features_ind]
+            topics.append(f"Topic {topic_idx+1}: {', '.join(top_features)}")
+            
+        # Generate Word Cloud for the first topic (or combined)
+        # Flattening simple corpus for cloud
+        combined_text = " ".join(text_corpus)
+        wordcloud = WordCloud(width=800, height=400, background_color='white').generate(combined_text)
+        
+        wc_path = "topic_wordcloud.png"
+        wordcloud.to_file(wc_path)
+        
+        return topics, wc_path
+
+    except Exception as e:
+        print(f"LDA Error: {e}")
+        return [], None
+
+# --- NEW: NAMED ENTITY RECOGNITION (NER) ---
+try:
+    import nltk
+    import ssl
+
+    # Bypass SSL check for NLTK download (common issue on macOS)
+    try:
+        _create_unverified_https_context = ssl._create_unverified_context
+    except AttributeError:
+        pass
+    else:
+        ssl._create_default_https_context = _create_unverified_https_context
+
+    # Download necessary NLTK data (cached)
+    try:
+        nltk.data.find('tokenizers/punkt')
+        nltk.data.find('tokenizers/punkt_tab')
+        nltk.data.find('chunkers/maxent_ne_chunker_tab')
+        nltk.data.find('taggers/averaged_perceptron_tagger_eng')
+    except LookupError:
+        nltk.download('punkt')
+        nltk.download('punkt_tab')
+        nltk.download('averaged_perceptron_tagger')
+        nltk.download('maxent_ne_chunker')
+        nltk.download('maxent_ne_chunker_tab')
+        nltk.download('words')
+        nltk.download('averaged_perceptron_tagger_eng')
+except ImportError:
+    nltk = None
+
+def extract_entities_ner(text: str) -> Dict[str, List[str]]:
+    """
+    Extracts named entities (Organizations, GPE, Date) using NLTK with advanced filtering.
+    """
+    if not nltk:
+        return {}
+        
+    entities = {"Organizations": [], "Locations": [], "Persons": []}
+    
+    # 1. Build Exclusion Set (Skills + Headers + Common Noise)
+    exclusion_set = set()
+    
+    # Add Hard/Soft Skills to exclusion
+    all_skills = getattr(constants, "ALL_SKILLS", {})
+    for skill_cat, skill_vars in all_skills.items():
+        exclusion_set.add(skill_cat.lower())
+        for var in skill_vars:
+            exclusion_set.add(var.lower())
+
+    # Add Common CV Headers & Noise
+    noise_words = {
+        "curriculum", "vitae", "resume", "cv", "profile", "summary", 
+        "experience", "education", "skills", "projects", "languages",
+        "certifications", "interests", "references", "contacts",
+        "email", "phone", "address", "date", "present", "current",
+        "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec",
+        "january", "february", "march", "april", "june", "july", "august", "september", "october", "november", "december",
+        "page", "of", "senior", "junior", "mid", "level", "lead", "manager", "support",
+        "competenze", "esperienze", "formazione", "istruzione", "lingue", "progetti",
+        "certificazioni", "interessi", "contatti", "profilo", "sommario",
+        "milano", "roma", "torino", "napoli", "italia", "italy", "remote", "smart working", # Locations to keep in Loc but not Org/Person
+    }
+    exclusion_set.update(noise_words)
+
+    try:
+        for sent in nltk.sent_tokenize(text):
+            for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
+                if hasattr(chunk, 'label'):
+                    entity_name = ' '.join(c[0] for c in chunk)
+                    label = chunk.label()
+                    
+                    # --- FILTERS ---
+                    name_lower = entity_name.lower()
+                    
+                    # 1. Skip if in exclusion set (Skills/Headers)
+                    if name_lower in exclusion_set:
+                        continue
+                        
+                    # 2. Skip single characters or very short abbreviations
+                    if len(entity_name) < 3 and label != 'GPE': 
+                        continue
+
+                    # 3. Skip pure numbers or mixed noise (e.g. "2023-2024")
+                    if any(char.isdigit() for char in entity_name):
+                        continue
+
+                    # 4. Filter Specific Categories
+                    if label == 'ORGANIZATION':
+                        # Exclude all-caps typically headers (unless specific known orgs)
+                        if entity_name.isupper() and len(entity_name) < 10: 
+                             pass # Allow acronyms? Maybe risk. Let's filter common noise.
+                        entities["Organizations"].append(entity_name)
+                        
+                    elif label == 'GPE': # Geo-Political Entity
+                        entities["Locations"].append(entity_name)
+                        
+                    elif label == 'PERSON':
+                        # Person names rarely appear as specific skills
+                        if name_lower not in exclusion_set:
+                            entities["Persons"].append(entity_name)
+                        
+        # Deduplicate and Clean
+        for k in entities:
+             # Final pass: Remove items that exact match exclusion set again (safety)
+             clean_list = sorted(list(set(entities[k])))
+             entities[k] = [e for e in clean_list if e.lower() not in exclusion_set]
+            
+        return entities
+    except Exception as e:
+        print(f"NER Error: {e}")
+        return {}
+
+def generate_cluster_insight(clusters: Dict[str, int], matching_skills: Set[str], missing_skills: Set[str]) -> str:
+    """
+    Generates a text summary of the clustering results.
+    """
+    if not clusters:
+        return "Not enough data to generate insights."
+    
+    # Invert dictionary: Cluster ID -> List of Skills
+    cluster_groups = {}
+    for skill, cid in clusters.items():
+        if cid not in cluster_groups: cluster_groups[cid] = []
+        cluster_groups[cid].append(skill)
+        
+    insight = "### 💡 AI Analysis of your Profile Structure\n\n"
+    
+    # Identify strongest and weakest clusters
+    for cid, skills in cluster_groups.items():
+        # Calculate coverage
+        n_total = len(skills)
+        n_matched = sum(1 for s in skills if s in matching_skills)
+        coverage = (n_matched / n_total) * 100
+        
+        # Taking top 3 representative skills for the name
+        preview = ", ".join(skills[:3])
+        
+        insight += f"**Group {cid} ({preview}...)**\n"
+        insight += f"- **Coverage**: {coverage:.0f}% of these skills are in your CV.\n"
+        
+        if coverage > 75:
+            insight += "- 🚀 **Assessment**: You are very strong in this area.\n"
+        elif coverage < 30:
+            insight += "- ⚠️ **Assessment**: This seems to be a significant gap area for you.\n"
+        else:
+            insight += "- ℹ️ **Assessment**: You have some foundation here, but room to improve.\n"
+        
+        insight += "\n"
+        
+    return insight
+
 
 # =============================================================================
 # GENERIC FALLBACK (TF-IDF)

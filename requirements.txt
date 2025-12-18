@@ -1,4 +1,4 @@
-streamlit
+streamlit>=1.43.0
 pandas
 numpy
 PyPDF2
@@ -8,3 +8,9 @@ thefuzz
 python-levenshtein
 graphviz
 fpdf
+scipy
+matplotlib
+nltk
+wordcloud
+requests
+# FORCE_REBUILD_AGGRESSIVE_V1.3
