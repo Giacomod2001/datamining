@@ -126,6 +126,7 @@ LEARNING_RESOURCES = {
     
     # --- DEMO UPDATES ---
     "Tableau": {"courses": ["Tableau 2024 A-Z (Udemy)", "Data Visualization with Tableau (Coursera)"], "project": "Create a Sales Dashboard"},
+    "Power BI": {"courses": ["Microsoft Power BI Data Analyst (Coursera)", "Power BI Masterclass (Udemy)"], "project": "Build an Executive Dashboard"},
     "AWS": {"courses": ["AWS Certified Cloud Practitioner (Udemy)", "AWS Fundamentals (Coursera)"], "project": "Deploy a web app on EC2"},
     "System Design": {"courses": ["System Design Interview (Alex Xu)", "Grokking System Design"], "project": "Design a Scalable URL Shortener"},
 }

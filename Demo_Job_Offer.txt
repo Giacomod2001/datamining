@@ -1,6 +1,6 @@
 
 JOB TITLE: Senior Data Engineer
-LOCATION: Milan, Italy (Hybrid)
+LOCATION: Rome, Italy (Remote)
 
 ABOUT US:
 We are "TechCorp Srl", a leading tech company looking for a talented Senior Data Engineer to join our Innovation Hub. 
@@ -8,11 +8,12 @@ You will lead high-impact projects involving Cloud Computing and Big Data.
 
 RESPONSIBILITIES:
 - Design and deploy scalable pipelines on AWS (Amazon Web Services).
-- Create interactive dashboards for stakeholders using Tableau.
+- Create interactive dashboards for stakeholders using Power BI.
 - Communicate complex technical results to non-technical business leaders.
 - Handle massive datasets.
+- Design scalable architecture (System Design).
 
 REQUIREMENTS:
-- Hard Skills: Python, SQL, AWS, Tableau, System Design, Git.
+- Hard Skills: Python, SQL, AWS, Power BI, System Design, Git.
 - Soft Skills: Leadership, Communication, Problem Solving.
 - Experience: 5+ years in Data Science or related fields.
