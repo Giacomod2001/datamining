@@ -1103,9 +1103,21 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
         target_role_idx = jd_sims.argmax()
         target_role_score = jd_sims[target_role_idx]
         
-        # If the JD strongly matches an archetype (>30%), exclude it
-        if target_role_score > 0.3:
+        # If the JD strongly matches an archetype (>15%), exclude it
+        # Also, check heuristic text match for safety
+        jd_lower = jd_text.lower() if jd_text else ""
+        
+        # 1. Cosine Similarity Check (Lowered threshold to 15%)
+        # Because JDs often contain much noise (About Us, Benefits), the vector similarity to a pure skill list is diluted.
+        if target_role_score > 0.15:
             excluded_roles.add(archetype_names[target_role_idx])
+            
+        # 2. Heuristic Check (Explicit Mention)
+        # If the role title appears explicitly in the first 500 chars (likely title/header), exclude it
+        # Or if it appears frequently.
+        for name in archetype_names:
+            if name.lower() in jd_lower:
+                excluded_roles.add(name)
 
     # 4. Compute CV Similarity
     cv_vector = tfidf_matrix[0:1]
