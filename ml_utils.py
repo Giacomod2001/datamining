@@ -100,7 +100,8 @@ def perform_skill_clustering(skills: List[str]):
 
     try:
         # 1. Vectorize Skills
-        vectorizer = TfidfVectorizer(stop_words='english', min_df=1)
+        # Change to Character N-Grams to find similarity between "Java" vs "JavaScript" or "Data Science" vs "Computer Science"
+        vectorizer = TfidfVectorizer(stop_words='english', analyzer='char', ngram_range=(3, 5), min_df=1)
         X = vectorizer.fit_transform(skills).toarray()
         
         # 2. Hierarchical Clustering (Dendrogram)
@@ -317,7 +318,9 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "naive", "bayes", "random", "forest", "modello", "sistema", "pratico", "società", "relazioni", "pubbliche",
         "automazione", "chatbot", "ai", "digital", "technology", "intelligenza", "artificiale",
         "lavorativo", "buonoprofilo", "usa",
-        "dashboard", "dataset", "facebook", "glugulp", "sperimentazione", "streamlit", "titolo", "utilizzo", "rewatch", "continuosoft"
+        "dashboard", "dataset", "facebook", "glugulp", "sperimentazione", "streamlit", "titolo", "utilizzo", "rewatch", "continuosoft",
+        # Phase 4 Noise (Screenshot)
+        "computer", "etl", "science", "soft", "backend", "development", "git", "technical", "intermediate", "upper", "advanced"
     }
     exclusion_set.update(noise_words)
 

@@ -123,6 +123,11 @@ LEARNING_RESOURCES = {
     "Excel": {"courses": ["Excel Skills for Business (Coursera)"], "project": "Budget Dashboard"},
     "SEO": {"courses": ["Moz Beginner Guide", "Google Digital Garage"], "project": "Audit a website"},
     "Translation": {"courses": ["Translation in Practice (Coursera)"], "project": "Translate a Wikipedia article"},
+    
+    # --- DEMO UPDATES ---
+    "Tableau": {"courses": ["Tableau 2024 A-Z (Udemy)", "Data Visualization with Tableau (Coursera)"], "project": "Create a Sales Dashboard"},
+    "AWS": {"courses": ["AWS Certified Cloud Practitioner (Udemy)", "AWS Fundamentals (Coursera)"], "project": "Deploy a web app on EC2"},
+    "System Design": {"courses": ["System Design Interview (Alex Xu)", "Grokking System Design"], "project": "Design a Scalable URL Shortener"},
 }
 
 DEFAULT_RESOURCE = {
