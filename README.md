@@ -33,6 +33,12 @@ Unlike traditional Applicant Tracking Systems (ATS), this tool understands skill
 
 - **Professional Reports (PDF + TXT)**: Generate and download comprehensive analysis reports. Includes Executive Summaries, detailed Skill Gap categorization, and Strategic Recommendations in a clean, professional format.
 
+### 🔮 AI Career Compass (New v1.24)
+**Not the right job match? Find your true calling.**
+- **Nearest Centroid Classification**: Uses data mining techniques (Cosine Similarity on TF-IDF Vectors) to compare your CV against a database of industry-standard **Job Archetypes** (Centroids).
+- **Market Recommendations**: Suggests the top 3 specific roles (e.g., *Data Scientist*, *Backend Dev*) that align best with your current skillset, providing a "Similarity Score" independent of the specific JD.
+- **Direct Application**: Provides one-click links to search for these specific roles on LinkedIn and Google Jobs.
+
 ### Project Evaluation 
 Validate your skills through practical experience.
 - **Portfolio Triangulation**: Upload or paste project descriptions to prove skills missing in your CV.
