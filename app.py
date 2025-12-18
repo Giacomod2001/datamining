@@ -9,7 +9,7 @@ import urllib.parse
 # PAGE CONFIG
 # =============================================================================
 st.set_page_config(
-    page_title="Job Seeker Helper v1.13 (VISUAL POLISH)",
+    page_title="Job Seeker Helper v1.14 (CLEAN + VISUALS)",
     page_icon="🎯",
     layout="wide"
 )
@@ -69,7 +69,7 @@ def render_debug_page():
 def render_home():
     with st.sidebar:
         st.title("🎯 Job Seeker Helper")
-        st.caption("v1.13 (VISUAL POLISH)")
+        st.caption("v1.14 (CLEAN + VISUALS)")
         st.markdown("### 🚀 Instructions")
         st.markdown("1. **Upload CV**: PDF or Text.")
         st.markdown("2. **Upload JD**: Job Description.")

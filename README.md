@@ -124,3 +124,4 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 
 - **Streamlit Team**: For the rapid application development framework.
 - **Open Source Community**: For the continuous maintenance of `scikit-learn` and NLP libraries.
+- **AI Assistance**: The authors would like to acknowledge the assistance of the AI tools Gemini 3 Pro High and Antigravity for coding suggestions and debugging support during the development phase. All final implementations, testing, and documentation were carried out independently by the project team.
