@@ -250,6 +250,44 @@ def render_results(res, jd_text=None):
                     st.markdown(f"**[🎓 Courses](https://www.google.com/search?q=site:coursera.org+OR+site:udemy.com+OR+site:linkedin.com/learning+{q_skill})**")
                     st.caption("Platform specific")
 
+                    st.markdown(f"**[🎓 Courses](https://www.google.com/search?q=site:coursera.org+OR+site:udemy.com+OR+site:linkedin.com/learning+{q_skill})**")
+                    st.caption("Platform specific")
+
+    # --- ADVANCED MINING (Clustering) ---
+    st.divider()
+    st.subheader("🧠 Advanced Data Mining (Skill Clans)")
+    st.info("Using Unsupervised Learning (Hierarchical Clustering & K-Means) to group your skills logicially.")
+    
+    # 1. Prepare Data
+    all_skills = list(res["matching_hard"] | res["missing_hard"] | res["extra_hard"])
+    
+    if len(all_skills) > 3:
+        # Run Clustering
+        df_viz, dendro_path, clusters = ml_utils.perform_skill_clustering(all_skills)
+        
+        if df_viz is not None:
+            t1, t2 = st.tabs(["📊 Scatter Plot (K-Means)", "🌳 Dendrogram (Hierarchical)"])
+            
+            with t1:
+                # Enrich with Status
+                def get_status(s):
+                    if s in res["matching_hard"]: return "Matched"
+                    if s in res["missing_hard"]: return "Missing"
+                    return "Extra"
+                
+                df_viz["Status"] = df_viz["skill"].apply(get_status)
+                
+                fig_cls = px.scatter(df_viz, x="x", y="y", color="cluster", symbol="Status",
+                                     hover_data=["skill"], title="Skill Semantic Map (PCA + K-Means)")
+                st.plotly_chart(fig_cls, use_container_width=True)
+                
+            with t2:
+                if dendro_path:
+                    st.image(dendro_path, caption="Skill Hierarchy (Ward's Method)")
+                    st.caption("Skills joined lower down are more similar/related.")
+    else:
+        st.warning("Not enough skills detected to perform clustering analysis (Need > 3).")
+
     # --- EXPORT REPORT ---
     st.divider()
     report_text = f"Job Seeker Report:\nMatch Percentage: {res['match_percentage']:.0f}%\nMatched Skills: {', '.join(res['matching_hard'])}\nMissing Skills: {', '.join(res['missing_hard'])}"

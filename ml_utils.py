@@ -9,10 +9,19 @@ try:
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.pipeline import Pipeline
+    from sklearn.cluster import KMeans, AgglomerativeClustering
+    from sklearn.decomposition import PCA
+    import scipy.cluster.hierarchy as sch
+    import matplotlib.pyplot as plt
 except ImportError:
     RandomForestClassifier = None
     TfidfVectorizer = None
     Pipeline = None
+    KMeans = None
+    AgglomerativeClustering = None
+    PCA = None
+    sch = None
+    plt = None
 
 try:
     from PyPDF2 import PdfReader
@@ -70,6 +79,65 @@ def train_rf_model():
     except Exception as e:
         print(f"Training Error: {e}")
         return None, df
+
+# =============================================================================
+# CLUSTERING (Unsupervised Learning for Skills)
+# =============================================================================
+def perform_skill_clustering(skills: List[str]):
+    """
+    Performs K-Means and Hierarchical Clustering on a list of skills.
+    Returns:
+    - kmeans_fig: Plotly figure for K-Means (PCA 2D)
+    - dendrogram_img_path: Path to saved dendrogram image
+    - clusters: Dict of {skill: cluster_id}
+    """
+    if not skills or len(skills) < 3:
+        return None, None, {}
+
+    if not TfidfVectorizer or not KMeans or not sch:
+        return None, None, {}
+
+    try:
+        # 1. Vectorize Skills
+        vectorizer = TfidfVectorizer(stop_words='english', min_df=1)
+        X = vectorizer.fit_transform(skills).toarray()
+        
+        # 2. Hierarchical Clustering (Dendrogram)
+        # Using Ward's linkage as per Lecture 02
+        linkage_matrix = sch.linkage(X, method='ward')
+        
+        plt.figure(figsize=(10, 5))
+        dendro = sch.dendrogram(linkage_matrix, labels=skills, leaf_rotation=90)
+        plt.title("Skill Dendrogram (Hierarchical Clustering)")
+        plt.tight_layout()
+        dendro_path = "dendrogram.png"
+        plt.savefig(dendro_path)
+        plt.close()
+
+        # 3. K-Means Clustering
+        # Determine K (simple heuristic: sqrt(N/2) or max 3-5 for small skill sets)
+        n_clusters = max(2, min(len(skills) // 3, 5))
+        kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
+        labels = kmeans.fit_predict(X)
+        
+        skill_clusters = {skill: int(label) for skill, label in zip(skills, labels)}
+
+        # 4. Visualization (PCA to 2D)
+        pca = PCA(n_components=2)
+        coords = pca.fit_transform(X)
+        
+        df_viz = pd.DataFrame({
+            'x': coords[:, 0],
+            'y': coords[:, 1],
+            'skill': skills,
+            'cluster': [f"Cluster {l}" for l in labels]
+        })
+        
+        return df_viz, dendro_path, skill_clusters
+
+    except Exception as e:
+        print(f"Clustering Error: {e}")
+        return None, None, {}
 
 # =============================================================================
 # GENERIC FALLBACK (TF-IDF)

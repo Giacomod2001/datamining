@@ -24,6 +24,7 @@ Unlike traditional Applicant Tracking Systems (ATS), this tool understands skill
 - **Smart Language Detection**: Automatically fills "Native" skills (e.g., Italian) by analyzing CV context, removing bias for native speakers who omit language proficiency.
 
 ### Visual Analytics & Advanced Mining
+- **Skill Clustering (Unsupervised Learning)**: Uses K-Means and Hierarchical Clustering to group skills into semantic clusters, visualizing the results with interactives **Scatter Plots** and **Dendrograms**.
 - **Knowledge Graph (Developer Mode)**: Interactive visualization of the skill ontology using `graphviz`, showing hierarchical relationships (e.g., BigQuery → SQL).
 - **Fuzzy Matching**: Implements `thefuzz` (Levenshtein distance) to handle typos in CVs (e.g., "Phyton" is correctly mapped to "Python").
 - **Match Gauge**: Interactive Plotly chart for instant score assessment.
@@ -55,6 +56,7 @@ The application is built using a robust, modern Python stack:
 ![Scikit-Learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
 ![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
 ![Plotly](https://img.shields.io/badge/Plotly-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)
+![Scipy](https://img.shields.io/badge/Scipy-8CAAE6?style=for-the-badge&logo=scipy&logoColor=white)
 ![PyPDF2](https://img.shields.io/badge/PyPDF2-PDF_Parsing-red?style=for-the-badge)
 
 ---

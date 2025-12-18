@@ -8,3 +8,5 @@ thefuzz
 python-levenshtein
 graphviz
 fpdf
+scipy
+matplotlib
