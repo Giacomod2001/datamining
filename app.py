@@ -9,7 +9,7 @@ import urllib.parse
 # PAGE CONFIG
 # =============================================================================
 st.set_page_config(
-    page_title="Job Seeker Helper v1.31 (STRICT QUALITY)",
+    page_title="Job Seeker Helper v1.33 (CHART FIX)",
     page_icon="🎯",
     layout="wide"
 )
@@ -69,7 +69,7 @@ def render_debug_page():
 def render_home():
     with st.sidebar:
         st.title("🎯 Job Seeker Helper")
-        st.caption("v1.31 (STRICT QUALITY)")
+        st.caption("v1.33 (CHART FIX)")
         st.markdown("### 🚀 Instructions")
         st.markdown("1. **Upload CV**: PDF or Text.")
         st.markdown("2. **Upload JD**: Job Description.")
@@ -170,6 +170,7 @@ def render_results(res, jd_text=None, cv_text=None):
         # Plotly Gauge
         fig = px.pie(values=[pct, 100-pct], names=["Match", "Gap"], hole=0.7, 
                      color_discrete_sequence=["#00cc96", "#EF553B"])
+        fig.update_traces(sort=False)
         fig.update_layout(showlegend=False, margin=dict(t=0, b=0, l=0, r=0), height=150)
         fig.add_annotation(text=f"{pct:.0f}%", showarrow=False, font_size=20)
         st.plotly_chart(fig, use_container_width=True)
@@ -376,7 +377,7 @@ def render_results(res, jd_text=None, cv_text=None):
                      for s in rec['missing'][:5]:
                          st.markdown(f"- {s}")
     else:
-        st.info("ℹ️ **Strict Quality Mode**: No alternative roles met the high confidence threshold (>50%). Your profile is uniquely specialized.")
+        st.info("ℹ️ **Strict Quality Mode**: No alternative roles met the confidence threshold (>40%). Your profile is uniquely specialized.")
 
     # --- EXPORT REPORT ---
     st.divider()

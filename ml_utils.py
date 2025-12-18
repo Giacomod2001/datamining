@@ -1152,11 +1152,11 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
         missing_norm = role_norm - cv_norm
         missing_display = [s for s in role_skills if s.lower() in missing_norm]
         
-        # 7. Quality Filter (v1.30 -> v1.31 Strict)
-        # Only show recommendations that have a decent overlap (>50%)
-        # User requested strict filtering.
+        # 7. Quality Filter (v1.31 Strict -> v1.33 Tuned)
+        # Only show recommendations that have a decent overlap (>40%)
+        # 50% was too strict for Junior profiles. 40% is a balanced "Strict" mode.
         final_score = score * 100
-        if final_score < 50:
+        if final_score < 40:
             continue
             
         recommendations.append({
