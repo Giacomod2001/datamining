@@ -12,6 +12,7 @@ try:
     from sklearn.pipeline import Pipeline
     from sklearn.cluster import KMeans, AgglomerativeClustering
     from sklearn.decomposition import PCA
+    from sklearn.metrics.pairwise import cosine_similarity
     import scipy.cluster.hierarchy as sch
     import matplotlib.pyplot as plt
 except ImportError:
@@ -1036,3 +1037,75 @@ def generate_pdf_report(text_content: str) -> bytes:
             pdf.multi_cell(0, 6, clean_line)
             
     return pdf.output(dest='S').encode('latin-1') # Return bytes
+
+
+# =============================================================================
+# JOB RECOMMENDER (Career Compass) - v1.24
+# =============================================================================
+def recommend_roles(cv_skills: Set[str]) -> List[Tuple[str, float, List[str]]]:
+    """
+    Identifies the best fitting job roles for a given set of skills using
+    Vector Space Model (TF-IDF) and Cosine Similarity (Nearest Centroid).
+    
+    Returns:
+    - List of (Role Name, Match Score 0-100, Missing Critical Skills)
+    """
+    if not cv_skills or not constants.JOB_ARCHETYPES or not TfidfVectorizer:
+        return []
+
+    # 1. Prepare Corpus
+    # Doc 0 is the CV
+    cv_doc = " ".join(cv_skills)
+    
+    # Docs 1..N are the Archetypes
+    archetype_names = list(constants.JOB_ARCHETYPES.keys())
+    archetype_docs = [" ".join(constants.JOB_ARCHETYPES[name]) for name in archetype_names]
+    
+    corpus = [cv_doc] + archetype_docs
+    
+    # 2. Vectorization (TF-IDF)
+    # Using 'char_wb' for subword matching (e.g. "Manage" in "Management")
+    vectorizer = TfidfVectorizer(analyzer='char_wb', ngram_range=(2, 4), min_df=1)
+    tfidf_matrix = vectorizer.fit_transform(corpus)
+    
+    # 3. Compute Cosine Similarity
+    # Compare CV (index 0) with all Archetypes (indices 1..)
+    # cosine_similarity returns a matrix. We want shape (1, N_archetypes)
+    cv_vector = tfidf_matrix[0:1]
+    archetype_vectors = tfidf_matrix[1:]
+    
+    similarities = cosine_similarity(cv_vector, archetype_vectors).flatten()
+    
+    # 4. Rank and Format
+    recommendations = []
+    for i, score in enumerate(similarities):
+        role_name = archetype_names[i]
+        
+        # Calculate Missing Critical Skills for this specific role
+        # We assume Archetype skills are "required" for that role
+        role_skills = constants.JOB_ARCHETYPES[role_name]
+        # We need to intersect sets slightly fuzzily, but for now exact set diff + basic fuzzy normalization
+        # Actually, let's just show raw set difference of keys for simplicity
+        # (Optimized for display: we only show what's strictly missing from the definition)
+        
+        # Hard normalization to ensure set operations work (case insensitive)
+        cv_norm = {s.lower() for s in cv_skills}
+        role_norm = {s.lower() for s in role_skills}
+        
+        # Find missing
+        missing_norm = role_norm - cv_norm
+        
+        # Convert back to display names (best effort)
+        # We simply list the Archetype's original strings that weren't found
+        missing_display = [s for s in role_skills if s.lower() in missing_norm]
+        
+        recommendations.append({
+            "role": role_name,
+            "score": score * 100, # Convert to %
+            "missing": missing_display
+        })
+        
+    # Sort by Score Descending
+    recommendations.sort(key=lambda x: x["score"], reverse=True)
+    
+    return recommendations[:3] # Return top 3

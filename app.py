@@ -9,7 +9,7 @@ import urllib.parse
 # PAGE CONFIG
 # =============================================================================
 st.set_page_config(
-    page_title="Job Seeker Helper v1.23 (PRO REPORT)",
+    page_title="Job Seeker Helper v1.24 (JOB ADVISOR)",
     page_icon="🎯",
     layout="wide"
 )
@@ -69,7 +69,7 @@ def render_debug_page():
 def render_home():
     with st.sidebar:
         st.title("🎯 Job Seeker Helper")
-        st.caption("v1.23 (PRO REPORT)")
+        st.caption("v1.24 (JOB ADVISOR)")
         st.markdown("### 🚀 Instructions")
         st.markdown("1. **Upload CV**: PDF or Text.")
         st.markdown("2. **Upload JD**: Job Description.")
@@ -346,6 +346,39 @@ def render_results(res, jd_text=None, cv_text=None):
                 for per in entities.get("Persons", [])[:10]: st.write(f"- {per}")
         else:
             st.info("No named entities found.")
+
+    # --- JOB RECOMMENDER (AI Career Compass) ---
+    st.divider()
+    st.subheader("🔮 AI Career Compass (Alternative Paths)")
+    st.info("Based on your skill vector, here are the market roles that fit you best.")
+    
+    # Use all skills found in CV (Matched, Missing, Extra) to define the candidate vector
+    candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
+    
+    recs = ml_utils.recommend_roles(candidate_skills)
+    
+    if recs:
+        rc1, rc2, rc3 = st.columns(3)
+        cols = [rc1, rc2, rc3]
+        
+        for i, rec in enumerate(recs):
+            with cols[i]:
+                st.markdown(f"**{i+1}. {rec['role']}**")
+                score = rec['score']
+                st.progress(score / 100, text=f"{score:.0f}% Similarity")
+                
+                # "Apply Now" Link
+                q_role = urllib.parse.quote(rec['role'])
+                st.markdown(f"[🌐 Search Jobs](https://www.google.com/search?q={q_role}+jobs+near+me)")
+                st.markdown(f"[💼 LinkedIn](https://www.linkedin.com/jobs/search?keywords={q_role})")
+                
+                with st.expander("Gaps"):
+                    if rec["missing"]:
+                        for m in rec["missing"]: st.caption(f"❌ {m}")
+                    else:
+                        st.caption("Perfect Fit!")
+    else:
+        st.warning("Not enough skills extracted to recommend specific roles.")
 
     # --- EXPORT REPORT ---
     st.divider()
