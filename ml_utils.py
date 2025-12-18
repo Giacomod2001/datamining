@@ -100,26 +100,28 @@ def perform_skill_clustering(skills: List[str]):
 
     try:
         # 1. Vectorize Skills
-        # ACTION: Use char-grams (2-4) to create denser connections. 
-        # This solves the "Comb Effect" by finding partial similarities (e.g. "Data" in "Data Science" and "Data Eng")
-        vectorizer = TfidfVectorizer(stop_words='english', analyzer='char', ngram_range=(2, 4), min_df=1)
+        # ACTION: Use 'char_wb' (Character N-Grams Within Boundaries)
+        # This is CRITICAL for skills. 'char' matches "Java" and "JavaScript" well, but 'char_wb' matches "Data" in "Data Science" better.
+        # ngram_range=(2, 4) captures "SQ" in "SQL", "Py" in "Python".
+        vectorizer = TfidfVectorizer(stop_words='english', analyzer='char_wb', ngram_range=(2, 4), min_df=1)
         X = vectorizer.fit_transform(skills).toarray()
         
         # 2. Hierarchical Clustering (Dendrogram)
         # Using Ward's linkage (Minimizes Variances) to create balanced clusters
         linkage_matrix = sch.linkage(X, method='ward')
         
-        plt.figure(figsize=(12, 7)) # Larger figure
+        plt.figure(figsize=(12, 8)) # Taller figure
         # Thicker lines and explicit color threshold to ensure visual coloring
         sch.set_link_color_palette(['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'])
         
-        # Threshold: 0.7 * max (Standard for Ward). With N-Grams (2-4), the tree will be more balanced, so 0.7 works well.
+        # Threshold: 0.7 * max (Standard for Ward).
         dendro = sch.dendrogram(linkage_matrix, labels=skills, leaf_rotation=45, leaf_font_size=12, above_threshold_color='#AAAAAA', color_threshold=0.7*max(linkage_matrix[:,2].max(), 0.1))
         
         plt.rcParams['lines.linewidth'] = 2.5 # Global setting for line thickness
-        plt.title("Skill Dendrogram (Ward Linkage)") # Explicit title to reassure user
+        plt.title("Skill Dendrogram (Ward Linkage - v2)") # Explicit title to reassure user
         plt.tight_layout()
-        dendro_path = "dendrogram.png"
+        # CACHE BUSTING: Change filename to force browser reload
+        dendro_path = "dendrogram_v2.png" 
         plt.savefig(dendro_path)
         plt.close()
 
