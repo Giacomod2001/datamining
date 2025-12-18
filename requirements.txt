@@ -12,3 +12,4 @@ scipy
 matplotlib
 nltk
 wordcloud
+# Force Rebuild v1.2
