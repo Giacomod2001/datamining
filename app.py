@@ -9,7 +9,7 @@ import urllib.parse
 # PAGE CONFIG
 # =============================================================================
 st.set_page_config(
-    page_title="Job Seeker Helper v1.22 (CACHE BUSTER)",
+    page_title="Job Seeker Helper v1.23 (PRO REPORT)",
     page_icon="🎯",
     layout="wide"
 )
@@ -69,7 +69,7 @@ def render_debug_page():
 def render_home():
     with st.sidebar:
         st.title("🎯 Job Seeker Helper")
-        st.caption("v1.22 (CACHE BUSTER)")
+        st.caption("v1.23 (PRO REPORT)")
         st.markdown("### 🚀 Instructions")
         st.markdown("1. **Upload CV**: PDF or Text.")
         st.markdown("2. **Upload JD**: Job Description.")
@@ -349,8 +349,20 @@ def render_results(res, jd_text=None, cv_text=None):
 
     # --- EXPORT REPORT ---
     st.divider()
-    report_text = f"Job Seeker Report:\nMatch Percentage: {res['match_percentage']:.0f}%\nMatched Skills: {', '.join(res['matching_hard'])}\nMissing Skills: {', '.join(res['missing_hard'])}"
-    st.download_button("⬇️ Download Report (TXT)", report_text, file_name="report.txt")
+    st.subheader("📥 Export Report")
+    
+    # Generate Detailed Content
+    report_text = ml_utils.generate_detailed_report_text(res, jd_text if jd_text else "")
+    report_pdf = ml_utils.generate_pdf_report(report_text)
+    
+    col_dl1, col_dl2 = st.columns(2)
+    with col_dl1:
+        st.download_button("📄 Download Text Report", report_text, file_name="Job_Seeker_Report.txt", mime="text/plain", use_container_width=True)
+    with col_dl2:
+        if report_pdf:
+            st.download_button("📕 Download PDF Report", report_pdf, file_name="Job_Seeker_Report.pdf", mime="application/pdf", use_container_width=True)
+        else:
+            st.warning("PDF Generation unavailable (fpdf missing).")
 
 if __name__ == "__main__":
     if st.session_state["page"] == "Debugger":
