@@ -1152,9 +1152,16 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
         missing_norm = role_norm - cv_norm
         missing_display = [s for s in role_skills if s.lower() in missing_norm]
         
+        # 7. Quality Filter (v1.30)
+        # Only show recommendations that have a decent overlap (>30%)
+        # Otherwise it's just noise (e.g. 10% match is useless)
+        final_score = score * 100
+        if final_score < 30:
+            continue
+            
         recommendations.append({
             "role": role_name,
-            "score": score * 100, 
+            "score": final_score, 
             "missing": missing_display
         })
         

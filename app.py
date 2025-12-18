@@ -9,7 +9,7 @@ import urllib.parse
 # PAGE CONFIG
 # =============================================================================
 st.set_page_config(
-    page_title="Job Seeker Helper v1.29 (TRUE ALT)",
+    page_title="Job Seeker Helper v1.30 (QUALITY FIRST)",
     page_icon="🎯",
     layout="wide"
 )
@@ -69,7 +69,7 @@ def render_debug_page():
 def render_home():
     with st.sidebar:
         st.title("🎯 Job Seeker Helper")
-        st.caption("v1.29 (TRUE ALT)")
+        st.caption("v1.30 (QUALITY FIRST)")
         st.markdown("### 🚀 Instructions")
         st.markdown("1. **Upload CV**: PDF or Text.")
         st.markdown("2. **Upload JD**: Job Description.")
@@ -361,25 +361,22 @@ def render_results(res, jd_text=None, cv_text=None):
     if recs:
         rc1, rc2, rc3 = st.columns(3)
         cols = [rc1, rc2, rc3]
-        
         for i, rec in enumerate(recs):
-            with cols[i]:
-                st.markdown(f"**{i+1}. {rec['role']}**")
-                score = rec['score']
-                st.progress(score / 100, text=f"{score:.0f}% Similarity")
-                
-                # "Apply Now" Link
-                q_role = urllib.parse.quote(rec['role'])
-                st.markdown(f"[🌐 Search Jobs](https://www.google.com/search?q={q_role}+jobs+near+me)")
-                st.markdown(f"[💼 LinkedIn](https://www.linkedin.com/jobs/search?keywords={q_role})")
-                
-                with st.expander("Gaps"):
-                    if rec["missing"]:
-                        for m in rec["missing"]: st.caption(f"❌ {m}")
-                    else:
-                        st.caption("Perfect Fit!")
+             with cols[i]:
+                 st.markdown(f"##### {i+1}. {rec['role']}")
+                 st.progress(int(rec['score']))
+                 st.caption(f"**{rec['score']:.0f}% Similarity**")
+                 
+                 # Dynamic Links
+                 role_query = urllib.parse.quote(rec['role'])
+                 st.markdown(f"🌐 [Search Jobs](https://www.google.com/search?q={role_query}+jobs)")
+                 st.markdown(f"💼 [LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query})")
+                 
+                 with st.expander("Missing Skills"):
+                     for s in rec['missing'][:5]:
+                         st.markdown(f"- {s}")
     else:
-        st.warning("Not enough skills extracted to recommend specific roles.")
+        st.info("ℹ️ **High Specialization Detected**: Your profile is very strongly aligned with your current role. No other *significant* alternative matches (>30%) were found in our database.")
 
     # --- EXPORT REPORT ---
     st.divider()
