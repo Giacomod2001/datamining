@@ -140,6 +140,117 @@ def perform_skill_clustering(skills: List[str]):
         print(f"Clustering Error: {e}")
         return None, None, {}
 
+# --- NEW: TOPIC MODELING (LDA) ---
+try:
+    from sklearn.decomposition import LatentDirichletAllocation
+    from sklearn.feature_extraction.text import CountVectorizer
+    from wordcloud import WordCloud
+except ImportError:
+    LatentDirichletAllocation = None
+    CountVectorizer = None
+    WordCloud = None
+
+def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
+    """
+    Performs Latent Dirichlet Allocation (LDA) to extract topics from text.
+    Returns a list of topics (each topic is a string of keywords) and a WordCloud image path.
+    """
+    if not LatentDirichletAllocation or not CountVectorizer or not WordCloud:
+        return [], None
+
+    try:
+        # Use CountVectorizer for LDA
+        tf_vectorizer = CountVectorizer(max_df=0.95, min_df=2, stop_words='english')
+        tf = tf_vectorizer.fit_transform(text_corpus)
+
+        lda = LatentDirichletAllocation(n_components=n_topics, max_iter=10, learning_method='online', random_state=42)
+        lda.fit(tf)
+        
+        feature_names = tf_vectorizer.get_feature_names_out()
+        topics = []
+        
+        # Extract top words for each topic
+        for topic_idx, topic in enumerate(lda.components_):
+            top_features_ind = topic.argsort()[:-n_words - 1:-1]
+            top_features = [feature_names[i] for i in top_features_ind]
+            topics.append(f"Topic {topic_idx+1}: {', '.join(top_features)}")
+            
+        # Generate Word Cloud for the first topic (or combined)
+        # Flattening simple corpus for cloud
+        combined_text = " ".join(text_corpus)
+        wordcloud = WordCloud(width=800, height=400, background_color='white').generate(combined_text)
+        
+        wc_path = "topic_wordcloud.png"
+        wordcloud.to_file(wc_path)
+        
+        return topics, wc_path
+
+    except Exception as e:
+        print(f"LDA Error: {e}")
+        return [], None
+
+# --- NEW: NAMED ENTITY RECOGNITION (NER) ---
+try:
+    import nltk
+    import ssl
+
+    # Bypass SSL check for NLTK download (common issue on macOS)
+    try:
+        _create_unverified_https_context = ssl._create_unverified_context
+    except AttributeError:
+        pass
+    else:
+        ssl._create_default_https_context = _create_unverified_https_context
+
+    # Download necessary NLTK data (cached)
+    try:
+        nltk.data.find('tokenizers/punkt')
+        nltk.data.find('tokenizers/punkt_tab')
+        nltk.data.find('chunkers/maxent_ne_chunker_tab')
+        nltk.data.find('taggers/averaged_perceptron_tagger_eng')
+    except LookupError:
+        nltk.download('punkt')
+        nltk.download('punkt_tab')
+        nltk.download('averaged_perceptron_tagger')
+        nltk.download('maxent_ne_chunker')
+        nltk.download('maxent_ne_chunker_tab')
+        nltk.download('words')
+        nltk.download('averaged_perceptron_tagger_eng')
+except ImportError:
+    nltk = None
+
+def extract_entities_ner(text: str) -> Dict[str, List[str]]:
+    """
+    Extracts named entities (Organizations, GPE, Date) using NLTK.
+    """
+    if not nltk:
+        return {}
+        
+    entities = {"Organizations": [], "Locations": [], "Persons": []}
+    
+    try:
+        for sent in nltk.sent_tokenize(text):
+            for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
+                if hasattr(chunk, 'label'):
+                    entity_name = ' '.join(c[0] for c in chunk)
+                    label = chunk.label()
+                    
+                    if label == 'ORGANIZATION':
+                        entities["Organizations"].append(entity_name)
+                    elif label == 'GPE': # Geo-Political Entity
+                        entities["Locations"].append(entity_name)
+                    elif label == 'PERSON':
+                        entities["Persons"].append(entity_name)
+                        
+        # Deduplicate
+        for k in entities:
+            entities[k] = list(set(entities[k]))
+            
+        return entities
+    except Exception as e:
+        print(f"NER Error: {e}")
+        return {}
+
 def generate_cluster_insight(clusters: Dict[str, int], matching_skills: Set[str], missing_skills: Set[str]) -> str:
     """
     Generates a text summary of the clustering results.

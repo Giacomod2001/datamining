@@ -156,9 +156,9 @@ def render_home():
             else:
                  res = ml_utils.analyze_gap(cv, jd)
                  
-            render_results(res, jd)
+            render_results(res, jd, cv)
 
-def render_results(res, jd_text=None):
+def render_results(res, jd_text=None, cv_text=None):
     st.divider()
     pct = res["match_percentage"]
 
@@ -293,6 +293,51 @@ def render_results(res, jd_text=None):
                     
     else:
         st.warning("Not enough skills detected to perform clustering analysis (Need > 3).")
+
+    # --- NEW: TOPIC MODELING (JD) ---
+    if jd_text:
+        st.divider()
+        st.subheader("🧩 Job Context Analysis (Topic Modeling)")
+        st.caption("Using Latent Dirichlet Allocation (LDA) to identify key themes in the Job Description.")
+        
+        # Split JD into "sentences" or chunks for LDA (simple split by newline for now)
+        jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
+        
+        if len(jd_corpus) > 5:
+            topics, wc_path = ml_utils.perform_topic_modeling(jd_corpus)
+            
+            c1, c2 = st.columns([1, 2])
+            with c1:
+                st.markdown("**Discovered Topics:**")
+                for t in topics:
+                    st.success(t)
+            with c2:
+                if wc_path:
+                    st.image(wc_path, caption="Topic Keywords Word Cloud")
+        else:
+            st.info("Job Description too short for Topic Modeling.")
+
+    # --- NEW: ENTITY EXTRACTION (CV) ---
+    if cv_text:
+        st.divider()
+        st.subheader("🏷️ Resume Entity Extraction (NER)")
+        st.caption("Automatically extracting standardized entities using NLTK.")
+        
+        entities = ml_utils.extract_entities_ner(cv_text)
+        
+        if entities:
+            ec1, ec2, ec3 = st.columns(3)
+            with ec1:
+                st.markdown("#### 🏛️ Organizations")
+                for org in entities.get("Organizations", [])[:10]: st.write(f"- {org}")
+            with ec2:
+                st.markdown("#### 📍 Locations")
+                for loc in entities.get("Locations", [])[:10]: st.write(f"- {loc}")
+            with ec3:
+                st.markdown("#### 👤 People")
+                for per in entities.get("Persons", [])[:10]: st.write(f"- {per}")
+        else:
+            st.info("No named entities found.")
 
     # --- EXPORT REPORT ---
     st.divider()

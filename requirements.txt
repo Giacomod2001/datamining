@@ -10,3 +10,5 @@ graphviz
 fpdf
 scipy
 matplotlib
+nltk
+wordcloud
