@@ -37,7 +37,10 @@ Unlike traditional Applicant Tracking Systems (ATS), this tool understands skill
 **Not the right job match? Find your true calling.**
 - **Nearest Centroid Classification**: Uses data mining techniques (Cosine Similarity on TF-IDF Vectors) to compare your CV against a database of industry-standard **Job Archetypes** (Centroids).
 - **Market Recommendations**: Suggests the top 3 specific roles (e.g., *Data Scientist*, *Backend Dev*) that align best with your current skillset, providing a "Similarity Score" independent of the specific JD.
-- **Smart Context Filtering**: Uses NLP to classify the input JD against the Archetypes. If the JD itself matches a specific role (e.g., *Data Engineer*), that role is automatically excluded from recommendations to avoid redundancy, ensuring only *alternative* career paths are suggested.
+- **Smart Context Filtering (v1.29)**: Uses NLP to classify both the **JD** and your **CV** against Archetypes. It automatically excludes:
+    - The role you are applying for (Target Role).
+    - The role you currently hold (Current Role).
+  This ensures the system suggests only **True Alternatives** (e.g. valid pivots), avoiding redundant suggestions.
 - **Direct Application**: Provides one-click links to search for these specific roles on LinkedIn and Google Jobs.
 
 ### Project Evaluation 
