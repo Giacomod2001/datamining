@@ -316,7 +316,7 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "chatgpt", "claude", "gemini", "canva", "perplexity", "orange", "jmp", "jupyterlab",
         "naive", "bayes", "random", "forest", "modello", "sistema", "pratico", "società", "relazioni", "pubbliche",
         "automazione", "chatbot", "ai", "digital", "technology", "intelligenza", "artificiale",
-        "lavorativo", "buonoprofilo"
+        "lavorativo", "buonoprofilo", "usa"
     }
     exclusion_set.update(noise_words)
 
@@ -355,8 +355,10 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
                     # 5. Filter Specific Categories
                     if label == 'ORGANIZATION':
                         # Exclude all-caps typically headers (unless specific known orgs)
-                        if entity_name.isupper() and len(entity_name) < 20: 
-                             pass # Discard all-caps headers like "LAVORATIVO"
+                        # Rule: Allow short acronyms (IULM, IBM) < 5 chars.
+                        # Drop headers like "LAVORATIVO" (10), "ISTITUTO" (8), "PROFILO" (7)
+                        if entity_name.isupper() and len(entity_name) > 4 and len(entity_name) < 20: 
+                             pass 
                         else:
                              entities["Organizations"].append(entity_name)
                         
