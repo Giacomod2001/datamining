@@ -50,7 +50,14 @@ HARD_SKILLS = {
     "Machine Learning": ["machine learning", "ml", "deep learning", "neural network", "scikit-learn"],
     "Data Science": ["data science", "data scientist", "data analysis", "analytics"],
     "SQL": ["sql", "mysql", "postgresql", "bigquery"],
-    "Cloud Computing": ["cloud", "aws", "gcp", "azure"],
+    "Cloud Computing": ["cloud", "azure", "gcp"],
+    "AWS": ["aws", "amazon web services", "ec2", "s3", "lambda"],
+    "Azure": ["azure", "microsoft azure"],
+    "GCP": ["gcp", "google cloud platform"],
+    "Power BI": ["power bi", "powerbi", "dax"],
+    "Tableau": ["tableau"],
+    "System Design": ["system design", "distributed systems", "scalability"],
+    "Git": ["git", "github", "gitlab"],
     "Excel": ["excel", "spreadsheet", "vlookup"],
 
     # --- LANGUAGES ---
