@@ -206,7 +206,9 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
             'come', 'dove', 'quando', 'perché', 'anche', 'più', 'meno',
             'tutto', 'tutti', 'tutta', 'tut te', 'ogni', 'altro', 'altra', 'altri', 'altre',
             'molto', 'poco', 'abbastanza', 'proprio', 'già', 'ancora', 
-            'ecc', 'eccetera', 'via', 'poi', 'solo', 'soltanto'
+            'ecc', 'eccetera', 'via', 'poi', 'solo', 'soltanto',
+            # Apostrophe handling (tokenizers often split 'dell', 'all')
+            'dell', 'all', 'sull', 'dall', 'nell', 'quest', 'quant', 'tant'
         ]
         
         # Manually filter stop words from vocabulary if CountVectorizer didn't catch them
@@ -232,8 +234,9 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
             
         # Generate Word Cloud for the first topic (or combined)
         # Flattening simple corpus for cloud
+        # Flattening simple corpus for cloud
         combined_text = " ".join(text_corpus)
-        wordcloud = WordCloud(width=800, height=400, background_color='white').generate(combined_text)
+        wordcloud = WordCloud(width=800, height=400, background_color='white', stopwords=set(all_stop_words)).generate(combined_text)
         
         wc_path = "topic_wordcloud.png"
         wordcloud.to_file(wc_path)
@@ -305,6 +308,10 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "competenze", "esperienze", "formazione", "istruzione", "lingue", "progetti",
         "certificazioni", "interessi", "contatti", "profilo", "sommario",
         "milano", "roma", "torino", "napoli", "italia", "italy", "remote", "smart working", # Locations to keep in Loc but not Org/Person
+        "laurea", "triennale", "magistrale", "diploma", "corso", "master", "phd", "studio", "studi", "università",
+        "competenza", "capacità", "conoscenza", "personale", "autorizzazione", "dati", "privacy", "buono", "ottimo", 
+        "madrelingua", "scolastico", "hobby", "sport", "patente", "automunito", "disponibilità", "immediata",
+        "apprendimento", "curiosità", "economia", "finanza", "gestione", "giudizio", "impresa", "business"
     }
     exclusion_set.update(noise_words)
 
