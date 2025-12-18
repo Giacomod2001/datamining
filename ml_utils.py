@@ -373,30 +373,16 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
                 elif label == 'GPE':
                     entities["Locations"].append(entity_name)
                 elif label == 'PERSON':
-                     if len(parts) >= 2: # Reduce single word noise
                         entities["Persons"].append(entity_name)
-        "remote", "smart working", # Removed specific cities to allow NER extraction
-        "laurea", "triennale", "magistrale", "diploma", "corso", "master", "phd", "studio", "studi", "università",
-        "competenza", "capacità", "conoscenza", "personale", "autorizzazione", "dati", "privacy", "buono", "ottimo", "discreto", 
-        "madrelingua", "scolastico", "hobby", "sport", "patente", "automunito", "disponibilità", "immediata", "livello",
-        "apprendimento", "curiosità", "economia", "finanza", "gestione", "giudizio", "impresa", "business", "analisi",
-        "generative", "afm", "supporto", "aperto", "istituto", "metodi", "lettura",
-        "chatgpt", "claude", "gemini", "canva", "perplexity", "orange", "jmp", "jupyterlab",
-        "naive", "bayes", "random", "forest", "modello", "sistema", "pratico", "società", "relazioni", "pubbliche",
-        "automazione", "chatbot", "ai", "digital", "technology", "intelligenza", "artificiale",
-        "lavorativo", "buonoprofilo", "usa",
-        "dashboard", "dataset", "facebook", "glugulp", "sperimentazione", "streamlit", "titolo", "utilizzo", "rewatch", "continuosoft",
-        # Phase 4 Noise (Screenshot)
-        "computer", "etl", "science", "soft", "backend", "development", "git", "technical", "intermediate", "upper", "advanced"
-    }
-    exclusion_set.update(noise_words)
-
-    try:
-        for sent in nltk.sent_tokenize(text):
-            for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
-                if hasattr(chunk, 'label'):
-                    entity_name = ' '.join(c[0] for c in chunk)
-                    label = chunk.label()
+                        
+    except Exception as e:
+        pass # Fallback to empty if NLTK fails
+        
+    # Deduplicate and sort
+    for k in entities:
+        entities[k] = sorted(list(set(entities[k])))
+        
+    return entities
                     
                     # --- FILTERS ---
                     name_lower = entity_name.lower()
