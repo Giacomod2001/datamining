@@ -146,14 +146,15 @@ DEFAULT_RESOURCE = {
 # JOB ARCHETYPES (Centroids for Classification)
 # Used to recommend roles when the specific JD match is low.
 JOB_ARCHETYPES = {
-    "Data Scientist": {"Python", "SQL", "Machine Learning", "Data Science", "Pandas", "Statistics", "Deep Learning", "Data Visualization"},
-    "Data Analyst": {"Excel", "SQL", "Power BI", "Tableau", "Data Analysis", "Statistics", "Reporting", "Python"},
-    "Data Engineer": {"Python", "SQL", "BigQuery", "AWS", "Azure", "GCP", "Spark", "Airflow", "ETL", "Pipelines"},
-    "Backend Developer": {"Python", "Java", "SQL", "API", "Docker", "Kubernetes", "Git", "System Design", "Microservices"},
-    "Frontend Developer": {"JavaScript", "React", "Vue", "CSS", "HTML", "TypeScript", "UI/UX", "Git", "Responsive Design"},
-    "Full Stack Developer": {"JavaScript", "Python", "React", "Node.js", "SQL", "API", "Git", "Docker"},
-    "Project Manager": {"Project Management", "Agile", "Scrum", "Communication", "Leadership", "Stakeholder Management", "Jira", "Planning"},
-    "Product Manager": {"Product Management", "User Stories", "Roadmap", "Strategy", "UX/UI", "Data Analysis", "Communication"},
-    "Digital Marketer": {"SEO", "Social Media", "Google Analytics", "Content Marketing", "Copywriting", "Advertising", "Campaign Management"},
-    "Business Analyst": {"Business Analysis", "Requirements Gathering", "SQL", "Excel", "Process Mapping", "Communication", "Stakeholder Management"}
+    "Data Scientist": {"Python", "SQL", "Machine Learning", "Data Science", "Pandas", "Statistics", "Deep Learning", "Data Visualization", "AI", "Modeling"},
+    "Data Analyst": {"Excel", "SQL", "Power BI", "Tableau", "Data Analysis", "Statistics", "Reporting", "Python", "Dashboards", "KPI"},
+    "Data Engineer": {"Python", "SQL", "BigQuery", "AWS", "Azure", "GCP", "Spark", "Airflow", "ETL", "Pipelines", "Database", "Data Warehousing", "Cloud Computing", "NoSQL", "DevOps"},
+    "Backend Developer": {"Python", "Java", "SQL", "API", "Docker", "Kubernetes", "Git", "System Design", "Microservices", "Database", "Server"},
+    "Frontend Developer": {"JavaScript", "React", "Vue", "CSS", "HTML", "TypeScript", "UI/UX", "Git", "Responsive Design", "Web Development"},
+    "Full Stack Developer": {"JavaScript", "Python", "React", "Node.js", "SQL", "API", "Git", "Docker", "Web Development", "Database"},
+    "Project Manager": {"Project Management", "Agile", "Scrum", "Communication", "Leadership", "Stakeholder Management", "Jira", "Planning", "Budgeting", "Risk Management"},
+    "Product Manager": {"Product Management", "User Stories", "Roadmap", "Strategy", "UX/UI", "Data Analysis", "Communication", "Product Lifecycle"},
+    "Digital Marketer": {"SEO", "Social Media", "Google Analytics", "Content Marketing", "Copywriting", "Advertising", "Campaign Management", "SEM"},
+    "Business Analyst": {"Business Analysis", "Requirements Gathering", "SQL", "Excel", "Process Mapping", "Communication", "Stakeholder Management", "BPMN"}
+}
 }
