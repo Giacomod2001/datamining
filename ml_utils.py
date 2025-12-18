@@ -983,14 +983,11 @@ def generate_detailed_report_text(res: Dict, jd_text: str = "") -> str:
     report.append("\n")
     
     # 5. Career Compass (Context Aware)
-    # Re-calculate or use logic to suggest alternatives
     candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
-    # Function is defined later in file, so we might need to be careful with ordering or just move this func
-    # Python resolves names at runtime, so as long as recommend_roles is defined when this runs, it's fine.
-    # To be safe, we will call it if it exists in globals/scope.
     
     try:
-        recs = recommend_roles(candidate_skills)
+        # Pass JD Text to allow filtering of redundant roles
+        recs = recommend_roles(candidate_skills, jd_text)
         if recs:
             report.append("--------------------------------------------------")
             report.append("4. AI CAREER COMPASS (Alternative Paths)")
@@ -1068,48 +1065,78 @@ def generate_pdf_report(text_content: str) -> bytes:
 # =============================================================================
 # JOB RECOMMENDER (Career Compass) - v1.24
 # =============================================================================
-def recommend_roles(cv_skills: Set[str]) -> List[Tuple[str, float, List[str]]]:
+def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, float, List[str]]]:
     """
-    Identifies the best fitting job roles for a given set of skills using
-    Vector Space Model (TF-IDF) and Cosine Similarity (Nearest Centroid).
-    
-    Returns:
-    - List of (Role Name, Match Score 0-100, Missing Critical Skills)
+    Identifies the best fitting job roles excluding the one described in the JD.
     """
     if not cv_skills or not constants.JOB_ARCHETYPES or not TfidfVectorizer:
         return []
 
     # 1. Prepare Corpus
-    # Doc 0 is the CV
-    cv_doc = " ".join(cv_skills)
-    
-    # Docs 1..N are the Archetypes
     archetype_names = list(constants.JOB_ARCHETYPES.keys())
     archetype_docs = [" ".join(constants.JOB_ARCHETYPES[name]) for name in archetype_names]
     
-    corpus = [cv_doc] + archetype_docs
+    # Docs: [0=CV, 1=JD (if exists), 2..N=Archetypes]
+    corpus = [" ".join(cv_skills)]
     
-    # 2. Vectorization (TF-IDF)
-    # Using 'char_wb' for subword matching (e.g. "Manage" in "Management")
+    jd_index = -1
+    if jd_text:
+        corpus.append(jd_text)
+        jd_index = 1
+        
+    corpus.extend(archetype_docs)
+    
+    # 2. Vectorization
     vectorizer = TfidfVectorizer(analyzer='char_wb', ngram_range=(2, 4), min_df=1)
     tfidf_matrix = vectorizer.fit_transform(corpus)
     
-    # 3. Compute Cosine Similarity
-    # Compare CV (index 0) with all Archetypes (indices 1..)
-    # cosine_similarity returns a matrix. We want shape (1, N_archetypes)
+    # 3. Identify Target Role from JD (if redundant)
+    excluded_roles = set()
+    if jd_index != -1:
+        # Compare JD (doc 1) vs Archetypes (docs 2..)
+        jd_vector = tfidf_matrix[jd_index:jd_index+1]
+        arch_start_idx = jd_index + 1
+        arch_vectors = tfidf_matrix[arch_start_idx:]
+        
+        # Find closest archetype to JD
+        jd_sims = cosine_similarity(jd_vector, arch_vectors).flatten()
+        target_role_idx = jd_sims.argmax()
+        target_role_score = jd_sims[target_role_idx]
+        
+        # If the JD strongly matches an archetype (>30%), exclude it
+        if target_role_score > 0.3:
+            excluded_roles.add(archetype_names[target_role_idx])
+
+    # 4. Compute CV Similarity
     cv_vector = tfidf_matrix[0:1]
-    archetype_vectors = tfidf_matrix[1:]
+    # Archetypes are always at the end
+    arch_vectors_final = tfidf_matrix[len(corpus)-len(archetype_names):]
     
-    similarities = cosine_similarity(cv_vector, archetype_vectors).flatten()
+    similarities = cosine_similarity(cv_vector, arch_vectors_final).flatten()
     
-    # 4. Rank and Format
+    # 5. Rank and Format
     recommendations = []
     for i, score in enumerate(similarities):
         role_name = archetype_names[i]
         
-        # Calculate Missing Critical Skills for this specific role
-        # We assume Archetype skills are "required" for that role
+        # Skip excluded roles (redundant)
+        if role_name in excluded_roles:
+            continue
+            
         role_skills = constants.JOB_ARCHETYPES[role_name]
+        cv_norm = {s.lower() for s in cv_skills}
+        role_norm = {s.lower() for s in role_skills}
+        missing_norm = role_norm - cv_norm
+        missing_display = [s for s in role_skills if s.lower() in missing_norm]
+        
+        recommendations.append({
+            "role": role_name,
+            "score": score * 100, 
+            "missing": missing_display
+        })
+        
+    recommendations.sort(key=lambda x: x["score"], reverse=True)
+    return recommendations[:3]
         # We need to intersect sets slightly fuzzily, but for now exact set diff + basic fuzzy normalization
         # Actually, let's just show raw set difference of keys for simplicity
         # (Optimized for display: we only show what's strictly missing from the definition)

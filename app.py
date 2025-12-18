@@ -9,7 +9,7 @@ import urllib.parse
 # PAGE CONFIG
 # =============================================================================
 st.set_page_config(
-    page_title="Job Seeker Helper v1.26 (TUNED AI)",
+    page_title="Job Seeker Helper v1.27 (SMART CONTEXT)",
     page_icon="🎯",
     layout="wide"
 )
@@ -69,7 +69,7 @@ def render_debug_page():
 def render_home():
     with st.sidebar:
         st.title("🎯 Job Seeker Helper")
-        st.caption("v1.26 (TUNED AI)")
+        st.caption("v1.27 (SMART CONTEXT)")
         st.markdown("### 🚀 Instructions")
         st.markdown("1. **Upload CV**: PDF or Text.")
         st.markdown("2. **Upload JD**: Job Description.")
@@ -355,7 +355,8 @@ def render_results(res, jd_text=None, cv_text=None):
     # Use all skills found in CV (Matched, Missing, Extra) to define the candidate vector
     candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
     
-    recs = ml_utils.recommend_roles(candidate_skills)
+    # Pass JD Text to filter out the target role is redundant
+    recs = ml_utils.recommend_roles(candidate_skills, jd_text if jd_text else "")
     
     if recs:
         rc1, rc2, rc3 = st.columns(3)
