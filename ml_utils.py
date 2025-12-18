@@ -373,7 +373,7 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
                 elif label == 'GPE':
                     entities["Locations"].append(entity_name)
                 elif label == 'PERSON':
-                        entities["Persons"].append(entity_name)
+                    entities["Persons"].append(entity_name)
                         
     except Exception as e:
         pass # Fallback to empty if NLTK fails
@@ -383,20 +383,6 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         entities[k] = sorted(list(set(entities[k])))
         
     return entities
-                    
-                    # --- FILTERS ---
-                    name_lower = entity_name.lower()
-                    
-                    entity_tokens = name_lower.split()
-                    
-                    # 1. Partial Match Filtering (Stronger)
-                    # If ANY word in the entity name is in our exclusion set, drop it.
-                    if any(t in exclusion_set for t in entity_tokens):
-                        continue
-                        
-                    # 2. Skip single characters or very short abbreviations (unless specific)
-                    if len(entity_name) < 3 and label != 'GPE': 
-                        continue
 
                     # 3. Skip pure numbers or mixed noise (e.g. "2023-2024")
                     if any(char.isdigit() for char in entity_name):
