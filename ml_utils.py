@@ -309,9 +309,10 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "certificazioni", "interessi", "contatti", "profilo", "sommario",
         "milano", "roma", "torino", "napoli", "italia", "italy", "remote", "smart working", # Locations to keep in Loc but not Org/Person
         "laurea", "triennale", "magistrale", "diploma", "corso", "master", "phd", "studio", "studi", "università",
-        "competenza", "capacità", "conoscenza", "personale", "autorizzazione", "dati", "privacy", "buono", "ottimo", 
-        "madrelingua", "scolastico", "hobby", "sport", "patente", "automunito", "disponibilità", "immediata",
-        "apprendimento", "curiosità", "economia", "finanza", "gestione", "giudizio", "impresa", "business"
+        "competenza", "capacità", "conoscenza", "personale", "autorizzazione", "dati", "privacy", "buono", "ottimo", "discreto", 
+        "madrelingua", "scolastico", "hobby", "sport", "patente", "automunito", "disponibilità", "immediata", "livello",
+        "apprendimento", "curiosità", "economia", "finanza", "gestione", "giudizio", "impresa", "business", "analisi",
+        "generative", "afm", "supporto", "aperto", "istituto", "metodi", "lettura"
     }
     exclusion_set.update(noise_words)
 
@@ -325,23 +326,27 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
                     # --- FILTERS ---
                     name_lower = entity_name.lower()
                     
-                    # 1. Skip if in exclusion set (Skills/Headers)
-                    if name_lower in exclusion_set:
+                    entity_tokens = name_lower.split()
+                    
+                    # 1. Partial Match Filtering (Stronger)
+                    # If ANY word in the entity name is in our exclusion set, drop it.
+                    if any(t in exclusion_set for t in entity_tokens):
                         continue
                         
-                    # 2. Skip single characters or very short abbreviations
+                    # 2. Skip single characters or very short abbreviations (unless specific)
                     if len(entity_name) < 3 and label != 'GPE': 
                         continue
 
                     # 3. Skip pure numbers or mixed noise (e.g. "2023-2024")
                     if any(char.isdigit() for char in entity_name):
                         continue
+                        
+                    # 4. Length Check (Long phrases are usually garbage)
+                    if len(entity_tokens) > 4:
+                        continue
 
-                    # 4. Filter Specific Categories
+                    # 5. Filter Specific Categories
                     if label == 'ORGANIZATION':
-                        # Exclude all-caps typically headers (unless specific known orgs)
-                        if entity_name.isupper() and len(entity_name) < 10: 
-                             pass # Allow acronyms? Maybe risk. Let's filter common noise.
                         entities["Organizations"].append(entity_name)
                         
                     elif label == 'GPE': # Geo-Political Entity
