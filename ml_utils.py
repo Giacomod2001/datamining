@@ -159,8 +159,63 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
         return [], None
 
     try:
-        # Use CountVectorizer for LDA
-        tf_vectorizer = CountVectorizer(max_df=0.95, min_df=2, stop_words='english')
+        # Custom Stop Words for HR/Recruiting Context (Aggressive)
+        hr_stop_words = [
+            # Structural / Sections
+            'requirements', 'qualifications', 'responsibilities', 'duties', 'summary', 
+            'overview', 'description', 'profile', 'benefits', 'education', 'experience', 
+            'skills', 'background', 'about', 'us', 'team', 'company', 'role', 'job', 
+            'position', 'candidate', 'opportunity', 'location', 'category', 'status',
+            'salary', 'compensation', 'employment', 'type', 'industry', 'department',
+            
+            # Common Adjectives / Qualifiers
+            'strong', 'excellent', 'good', 'great', 'proven', 'demonstrated', 'successful',
+            'ideal', 'passionate', 'motivated', 'proactive', 'hands-on', 'detail-oriented',
+            'dynamic', 'collaborative', 'fast-paced', 'global', 'international', 'leading',
+            'preferred', 'plus', 'advantage', 'bonus', 'desirable', 'essential', 'key',
+            'core', 'primary', 'required', 'proficient', 'proficiency', 'fluent',
+            'knowledge', 'understanding', 'familiarity', 'ability', 'capability', 
+            
+            # Common Verbs / Actions
+            'work', 'working', 'join', 'apply', 'seeking', 'looking', 'ensure', 'provide',
+            'assist', 'support', 'help', 'manage', 'lead', 'coordinate', 'communicate',
+            'collaborate', 'participate', 'contribute', 'develop', 'create', 'maintain',
+            'deliver', 'drive', 'execute', 'perform', 'build', 'using', 'based',
+            
+            # Time / Measure / Misc
+            'years', 'year', 'level', 'senior', 'junior', 'mid', 'associate', # debatable, but often generic in topic
+            'full-time', 'part-time', 'contract', 'permanent', 'temporary', 'remote', 'hybrid',
+            'degree', 'bachelor', 'master', 'phd', 'equivalent', 'related', 'relevant',
+            'including', 'include', 'includes', 'various', 'similar', 'etc', 'suite',
+            'must', 'will', 'can', 'may', 'should', 'would', 'tools', 'environment'
+        ]
+        
+        # Italian Stop Words (Manual List to avoid dependency issues)
+        it_stop_words = [
+            'di', 'a', 'da', 'in', 'con', 'su', 'per', 'tra', 'fra',
+            'il', 'lo', 'la', 'i', 'gli', 'le', 'un', 'uno', 'una',
+            'e', 'ed', 'o', 'ma', 'se', 'che', 'non', 'si', 'chi',
+            'mi', 'ti', 'ci', 'vi', 'li', 'ne', 'lei', 'lui', 'noi', 'voi', 'loro',
+            'mio', 'tuo', 'suo', 'nostro', 'vostro', 'loro',
+            'mia', 'tua', 'sua', 'nostra', 'vostra',
+            'questo', 'quello', 'quella', 'questi', 'quelle',
+            'cui', 'c', 'è', 'sono', 'siete', 'siamo', 'hanno', 'ha', 'ho', 'hai', 'hanno',
+            'avuto', 'fatto', 'fare', 'essere', 'avere', 'stato', 'stata', 'stati', 'state',
+            'presso', 'durante', 'tramite', 'verso', 'contro', 'sulla', 'dello', 'degli', 'della', 'dei', 'dal', 'dalla',
+            'ai', 'agli', 'alla', 'alle', 'negli', 'nelle', 'nella', 'del', 'al', 
+            'come', 'dove', 'quando', 'perché', 'anche', 'più', 'meno',
+            'tutto', 'tutti', 'tutta', 'tut te', 'ogni', 'altro', 'altra', 'altri', 'altre',
+            'molto', 'poco', 'abbastanza', 'proprio', 'già', 'ancora', 
+            'ecc', 'eccetera', 'via', 'poi', 'solo', 'soltanto'
+        ]
+        
+        # Manually filter stop words from vocabulary if CountVectorizer didn't catch them
+        # (Alternatively, pass list to stop_words, but 'english' + list is tricky in sklearn < 0.24)
+        # Better approach: extend the built-in english list
+        from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
+        all_stop_words = list(ENGLISH_STOP_WORDS) + hr_stop_words + it_stop_words
+        
+        tf_vectorizer = CountVectorizer(max_df=0.95, min_df=2, stop_words=all_stop_words)
         tf = tf_vectorizer.fit_transform(text_corpus)
 
         lda = LatentDirichletAllocation(n_components=n_topics, max_iter=10, learning_method='online', random_state=42)
