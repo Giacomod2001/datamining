@@ -429,6 +429,23 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
                        entities["Persons"].append(match.group(0))
                     else:
                        entities["Persons"].append(kp.title())
+        
+        # 3. Manual Regex for Compound Organizations (Rules that NLTK misses)
+        # e.g. "Politecnico di Milano", "Università degli Studi di Roma"
+        import re
+        compound_patterns = [
+            r"Politecnico\s+di\s+[A-Z][a-z]+",
+            r"Università\s+(?:degli\s+Studi\s+)?di\s+[A-Z][a-z]+"
+        ]
+        
+        for pattern in compound_patterns:
+             matches = re.finditer(pattern, text, re.IGNORECASE)
+             for m in matches:
+                 # Get the actual text from the match preservering case from text
+                 full_name = text[m.start():m.end()]
+                 # Add if not already roughly present (avoid duplicates if NLTK accidentally got it)
+                 if not any(e.lower() == full_name.lower() for e in entities["Organizations"]):
+                     entities["Organizations"].append(full_name)
             
         return entities
     except Exception as e:
