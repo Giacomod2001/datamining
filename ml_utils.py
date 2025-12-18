@@ -139,6 +139,46 @@ def perform_skill_clustering(skills: List[str]):
         print(f"Clustering Error: {e}")
         return None, None, {}
 
+def generate_cluster_insight(clusters: Dict[str, int], matching_skills: Set[str], missing_skills: Set[str]) -> str:
+    """
+    Generates a text summary of the clustering results.
+    """
+    if not clusters:
+        return "Not enough data to generate insights."
+    
+    # Invert dictionary: Cluster ID -> List of Skills
+    cluster_groups = {}
+    for skill, cid in clusters.items():
+        if cid not in cluster_groups: cluster_groups[cid] = []
+        cluster_groups[cid].append(skill)
+        
+    insight = "### 💡 AI Analysis of your Profile Structure\n\n"
+    
+    # Identify strongest and weakest clusters
+    for cid, skills in cluster_groups.items():
+        # Calculate coverage
+        n_total = len(skills)
+        n_matched = sum(1 for s in skills if s in matching_skills)
+        coverage = (n_matched / n_total) * 100
+        
+        # Taking top 3 representative skills for the name
+        preview = ", ".join(skills[:3])
+        
+        insight += f"**Group {cid} ({preview}...)**\n"
+        insight += f"- **Coverage**: {coverage:.0f}% of these skills are in your CV.\n"
+        
+        if coverage > 75:
+            insight += "- 🚀 **Assessment**: You are very strong in this area.\n"
+        elif coverage < 30:
+            insight += "- ⚠️ **Assessment**: This seems to be a significant gap area for you.\n"
+        else:
+            insight += "- ℹ️ **Assessment**: You have some foundation here, but room to improve.\n"
+        
+        insight += "\n"
+        
+    return insight
+
+
 # =============================================================================
 # GENERIC FALLBACK (TF-IDF)
 # =============================================================================

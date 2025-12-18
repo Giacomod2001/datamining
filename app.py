@@ -285,6 +285,12 @@ def render_results(res, jd_text=None):
                 if dendro_path:
                     st.image(dendro_path, caption="Skill Hierarchy (Ward's Method)")
                     st.caption("Skills joined lower down are more similar/related.")
+        
+        # GENEARTE INSIGHT (User Request: "Make it less cold")
+        st.markdown("---")
+        insight_text = ml_utils.generate_cluster_insight(clusters, res["matching_hard"], res["missing_hard"])
+        st.info(insight_text)
+                    
     else:
         st.warning("Not enough skills detected to perform clustering analysis (Need > 3).")
 
