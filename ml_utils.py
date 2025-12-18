@@ -221,13 +221,38 @@ except ImportError:
 
 def extract_entities_ner(text: str) -> Dict[str, List[str]]:
     """
-    Extracts named entities (Organizations, GPE, Date) using NLTK.
+    Extracts named entities (Organizations, GPE, Date) using NLTK with advanced filtering.
     """
     if not nltk:
         return {}
         
     entities = {"Organizations": [], "Locations": [], "Persons": []}
     
+    # 1. Build Exclusion Set (Skills + Headers + Common Noise)
+    exclusion_set = set()
+    
+    # Add Hard/Soft Skills to exclusion
+    all_skills = getattr(constants, "ALL_SKILLS", {})
+    for skill_cat, skill_vars in all_skills.items():
+        exclusion_set.add(skill_cat.lower())
+        for var in skill_vars:
+            exclusion_set.add(var.lower())
+
+    # Add Common CV Headers & Noise
+    noise_words = {
+        "curriculum", "vitae", "resume", "cv", "profile", "summary", 
+        "experience", "education", "skills", "projects", "languages",
+        "certifications", "interests", "references", "contacts",
+        "email", "phone", "address", "date", "present", "current",
+        "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec",
+        "january", "february", "march", "april", "june", "july", "august", "september", "october", "november", "december",
+        "page", "of", "senior", "junior", "mid", "level", "lead", "manager", "support",
+        "competenze", "esperienze", "formazione", "istruzione", "lingue", "progetti",
+        "certificazioni", "interessi", "contatti", "profilo", "sommario",
+        "milano", "roma", "torino", "napoli", "italia", "italy", "remote", "smart working", # Locations to keep in Loc but not Org/Person
+    }
+    exclusion_set.update(noise_words)
+
     try:
         for sent in nltk.sent_tokenize(text):
             for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
@@ -235,16 +260,41 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
                     entity_name = ' '.join(c[0] for c in chunk)
                     label = chunk.label()
                     
+                    # --- FILTERS ---
+                    name_lower = entity_name.lower()
+                    
+                    # 1. Skip if in exclusion set (Skills/Headers)
+                    if name_lower in exclusion_set:
+                        continue
+                        
+                    # 2. Skip single characters or very short abbreviations
+                    if len(entity_name) < 3 and label != 'GPE': 
+                        continue
+
+                    # 3. Skip pure numbers or mixed noise (e.g. "2023-2024")
+                    if any(char.isdigit() for char in entity_name):
+                        continue
+
+                    # 4. Filter Specific Categories
                     if label == 'ORGANIZATION':
+                        # Exclude all-caps typically headers (unless specific known orgs)
+                        if entity_name.isupper() and len(entity_name) < 10: 
+                             pass # Allow acronyms? Maybe risk. Let's filter common noise.
                         entities["Organizations"].append(entity_name)
+                        
                     elif label == 'GPE': # Geo-Political Entity
                         entities["Locations"].append(entity_name)
-                    elif label == 'PERSON':
-                        entities["Persons"].append(entity_name)
                         
-        # Deduplicate
+                    elif label == 'PERSON':
+                        # Person names rarely appear as specific skills
+                        if name_lower not in exclusion_set:
+                            entities["Persons"].append(entity_name)
+                        
+        # Deduplicate and Clean
         for k in entities:
-            entities[k] = list(set(entities[k]))
+             # Final pass: Remove items that exact match exclusion set again (safety)
+             clean_list = sorted(list(set(entities[k])))
+             entities[k] = [e for e in clean_list if e.lower() not in exclusion_set]
             
         return entities
     except Exception as e:
