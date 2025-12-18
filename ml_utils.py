@@ -1118,21 +1118,31 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
         for name in archetype_names:
             if name.lower() in jd_lower:
                 excluded_roles.add(name)
-
-    # 4. Compute CV Similarity
+                
+    # 4. Identify Current Role from CV (Enhancement v1.29)
+    # We also want to exclude what the candidate *already* is (e.g. Data Engineer)
+    # Compare CV (doc 0) vs Archetypes
     cv_vector = tfidf_matrix[0:1]
-    # Archetypes are always at the end
-    arch_vectors_final = tfidf_matrix[len(corpus)-len(archetype_names):]
+    # Re-fetch arch vectors just to be clean
+    arch_vectors_final_check = tfidf_matrix[len(corpus)-len(archetype_names):]
     
-    similarities = cosine_similarity(cv_vector, arch_vectors_final).flatten()
+    cv_sims = cosine_similarity(cv_vector, arch_vectors_final_check).flatten()
+    current_role_idx = cv_sims.argmax()
+    current_role_score = cv_sims[current_role_idx]
     
-    # 5. Rank and Format
+    # If CV strongly matches an archetype (>25%), treat it as "Current Role" and exclude
+    if current_role_score > 0.25:
+        excluded_roles.add(archetype_names[current_role_idx])
+
+    # 5. Compute Recommendations (Similarity to remaining archetypes)
+    similarities = cv_sims # Already computed above
+    
+    # 6. Rank and Format
     recommendations = []
     for i, score in enumerate(similarities):
         role_name = archetype_names[i]
         
         # Skip excluded roles (redundant)
-        if role_name in excluded_roles:
             continue
             
         role_skills = constants.JOB_ARCHETYPES[role_name]
