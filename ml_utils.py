@@ -312,7 +312,11 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "competenza", "capacità", "conoscenza", "personale", "autorizzazione", "dati", "privacy", "buono", "ottimo", "discreto", 
         "madrelingua", "scolastico", "hobby", "sport", "patente", "automunito", "disponibilità", "immediata", "livello",
         "apprendimento", "curiosità", "economia", "finanza", "gestione", "giudizio", "impresa", "business", "analisi",
-        "generative", "afm", "supporto", "aperto", "istituto", "metodi", "lettura"
+        "generative", "afm", "supporto", "aperto", "istituto", "metodi", "lettura",
+        "chatgpt", "claude", "gemini", "canva", "perplexity", "orange", "jmp", "jupyterlab",
+        "naive", "bayes", "random", "forest", "modello", "sistema", "pratico", "società", "relazioni", "pubbliche",
+        "automazione", "chatbot", "ai", "digital", "technology", "intelligenza", "artificiale",
+        "lavorativo", "buonoprofilo"
     }
     exclusion_set.update(noise_words)
 
@@ -341,13 +345,20 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
                     if any(char.isdigit() for char in entity_name):
                         continue
                         
+                    if any(char.isdigit() for char in entity_name):
+                        continue
+                        
                     # 4. Length Check (Long phrases are usually garbage)
                     if len(entity_tokens) > 4:
                         continue
 
                     # 5. Filter Specific Categories
                     if label == 'ORGANIZATION':
-                        entities["Organizations"].append(entity_name)
+                        # Exclude all-caps typically headers (unless specific known orgs)
+                        if entity_name.isupper() and len(entity_name) < 20: 
+                             pass # Discard all-caps headers like "LAVORATIVO"
+                        else:
+                             entities["Organizations"].append(entity_name)
                         
                     elif label == 'GPE': # Geo-Political Entity
                         entities["Locations"].append(entity_name)
