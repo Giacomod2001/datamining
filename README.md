@@ -24,13 +24,13 @@ Unlike traditional Applicant Tracking Systems (ATS), this tool understands skill
 - **Smart Language Detection**: Automatically fills "Native" skills (e.g., Italian) by analyzing CV context, removing bias for native speakers who omit language proficiency.
 
 ### Visual Analytics & Advanced Mining
-- **Skill Clustering (Unsupervised Learning)**: Uses K-Means and Hierarchical Clustering (v1.21 Ward Linkage) to group skills into semantic clusters, visualizing the results with interactive **Scatter Plots** and balanced **Dendrograms**.
+- **Skill Clustering (Unsupervised Learning)**: Uses K-Means and Hierarchical Clustering (Ward Linkage) to group skills into semantic clusters, visualizing the results with interactive **Scatter Plots** and balanced **Dendrograms**.
 - **Knowledge Graph (Developer Mode)**: Interactive visualization of the skill ontology using `graphviz`, showing hierarchical relationships (e.g., BigQuery → SQL).
 - **Topic Modeling (LDA)**: Automatically identifies "Job Topics" (Key Themes) from the JD using Latent Dirichlet Allocation and visualizes them as a **Word Cloud**.
 - **Named Entity Recognition (NER)**: Extracts structured entities (Organizations, Locations, People) from the Resume using `NLTK`, transforming unstructured bio-text into structured data.
 - **Fuzzy Matching**: Implements `thefuzz` (Levenshtein distance) to handle typos in CVs (e.g., "Phyton" is correctly mapped to "Python").
 - **Match Gauge**: Interactive Plotly chart for instant score assessment.
-- **Match Gauge**: Interactive Plotly chart for instant score assessment.
+
 - **Professional Reports (PDF + TXT)**: Generate and download comprehensive analysis reports. Includes Executive Summaries, detailed Skill Gap categorization, and Strategic Recommendations in a clean, professional format.
 
 ### Project Evaluation 
