@@ -109,7 +109,10 @@ def perform_skill_clustering(skills: List[str]):
         linkage_matrix = sch.linkage(X, method='ward')
         
         plt.figure(figsize=(10, 5))
-        dendro = sch.dendrogram(linkage_matrix, labels=skills, leaf_rotation=90)
+        # Thicker lines for better visuals as requested
+        sch.set_link_color_palette(['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'])
+        dendro = sch.dendrogram(linkage_matrix, labels=skills, leaf_rotation=90, leaf_font_size=10, above_threshold_color='#AAAAAA')
+        plt.rcParams['lines.linewidth'] = 2.5 # Global setting for line thickness
         plt.title("Skill Dendrogram (Hierarchical Clustering)")
         plt.tight_layout()
         dendro_path = "dendrogram.png"
@@ -308,7 +311,7 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "page", "of", "senior", "junior", "mid", "level", "lead", "manager", "support",
         "competenze", "esperienze", "formazione", "istruzione", "lingue", "progetti",
         "certificazioni", "interessi", "contatti", "profilo", "sommario",
-        "milano", "roma", "torino", "napoli", "italia", "italy", "remote", "smart working", # Locations to keep in Loc but not Org/Person
+        "remote", "smart working", # Removed specific cities to allow NER extraction
         "laurea", "triennale", "magistrale", "diploma", "corso", "master", "phd", "studio", "studi", "università",
         "competenza", "capacità", "conoscenza", "personale", "autorizzazione", "dati", "privacy", "buono", "ottimo", "discreto", 
         "madrelingua", "scolastico", "hobby", "sport", "patente", "automunito", "disponibilità", "immediata", "livello",
