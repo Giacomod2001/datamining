@@ -316,7 +316,8 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "chatgpt", "claude", "gemini", "canva", "perplexity", "orange", "jmp", "jupyterlab",
         "naive", "bayes", "random", "forest", "modello", "sistema", "pratico", "società", "relazioni", "pubbliche",
         "automazione", "chatbot", "ai", "digital", "technology", "intelligenza", "artificiale",
-        "lavorativo", "buonoprofilo", "usa"
+        "lavorativo", "buonoprofilo", "usa",
+        "dashboard", "dataset", "facebook", "glugulp", "sperimentazione", "streamlit", "titolo", "utilizzo", "rewatch", "continuosoft"
     }
     exclusion_set.update(noise_words)
 
@@ -375,6 +376,24 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
              # Final pass: Remove items that exact match exclusion set again (safety)
              clean_list = sorted(list(set(entities[k])))
              entities[k] = [e for e in clean_list if e.lower() not in exclusion_set]
+             
+        # --- NEW IN V1.9: Cross-Reference Person vs Org ---
+        # If an Org Name (e.g. "LUCA") is a substring of a Person Name (e.g. "Luca Tallarico"), drop the Org.
+        final_orgs = []
+        people_names = [p.lower() for p in entities.get("Persons", [])]
+        
+        for org in entities.get("Organizations", []):
+            is_duplicate = False
+            for person in people_names:
+                # Check if org is a significant substring of person (len > 3 to avoid matching "Al")
+                if len(org) > 3 and org.lower() in person:
+                    is_duplicate = True
+                    break
+            
+            if not is_duplicate:
+                final_orgs.append(org)
+        
+        entities["Organizations"] = final_orgs
             
         return entities
     except Exception as e:
