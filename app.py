@@ -157,7 +157,7 @@ def render_home():
         st.title("🎯 Job Seeker Helper")
         st.caption("🚀 v1.35 - AI-Powered Career Analytics")
         
-        st.markdown("### � Quick Start")
+        st.markdown("### 📋 Quick Start")
         st.markdown("📄 **1.** Upload CV (PDF/Text)")
         st.markdown("💼 **2.** Upload Job Description")
         st.markdown("✔️ **3.** Click Analyze")
