@@ -347,8 +347,7 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "competenze", "esperienze", "formazione", "istruzione", "lingue", "progetti",
         "certificazioni", "interessi", "contatti", "profilo", "sommario",
         "university", "università", "school", "scuola", "college", "institute", "politecnico", "degree", "bachelor", "master", "phd",
-        "inc", "ltd", "srl", "spa", "corp", "corporation", "company", "group", "team",
-        "mario", "professional", "dataflow"
+        "dataflow" 
     }
     exclusion_set.update(noise_words)
     
