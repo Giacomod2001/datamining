@@ -1164,3 +1164,176 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
         
     recommendations.sort(key=lambda x: x["score"], reverse=True)
     return recommendations[:3]
+
+# =============================================================================
+# COVER LETTER ANALYSIS
+# =============================================================================
+def analyze_cover_letter(cover_letter_text: str, jd_text: str, cv_text: str = "") -> Dict:
+    """
+    Analyzes a cover letter against a job description.
+    Returns scoring, strengths, weaknesses, and suggestions.
+    Supports both English and Italian.
+    """
+    if not cover_letter_text or not jd_text:
+        return None
+    
+    # Detect language
+    cl_lang = detect_language(cover_letter_text)
+    
+    # Extract skills from JD and Cover Letter
+    jd_hard, jd_soft = extract_skills_from_text(jd_text)
+    cl_hard, cl_soft = extract_skills_from_text(cover_letter_text)
+    
+    # Extract CV skills if provided
+    cv_hard = set()
+    cv_soft = set()
+    if cv_text:
+        cv_hard, cv_soft = extract_skills_from_text(cv_text)
+    
+    # 1. KEYWORD COVERAGE ANALYSIS
+    hard_mentioned = jd_hard & cl_hard
+    hard_missing = jd_hard - cl_hard
+    soft_mentioned = jd_soft & cl_soft
+    soft_missing = jd_soft - cl_soft
+    
+    # Coverage scores
+    hard_coverage = (len(hard_mentioned) / len(jd_hard) * 100) if jd_hard else 0
+    soft_coverage = (len(soft_mentioned) / len(jd_soft) * 100) if jd_soft else 0
+    
+    # 2. LENGTH ANALYSIS
+    cl_words = len(cover_letter_text.split())
+    length_score = 100
+    length_feedback = ""
+    
+    if cl_words < 150:
+        length_score = 50
+        length_feedback = "Too short - aim for 250-400 words" if cl_lang != "Italian" else "Troppo breve - punta a 250-400 parole"
+    elif cl_words > 500:
+        length_score = 70
+        length_feedback = "Too long - keep it concise (250-400 words)" if cl_lang != "Italian" else "Troppo lunga - mantienila concisa (250-400 parole)"
+    else:
+        length_feedback = "Good length" if cl_lang != "Italian" else "Lunghezza adeguata"
+    
+    # 3. STRUCTURE ANALYSIS (Simple heuristics)
+    has_greeting = any(word in cover_letter_text.lower() for word in ['dear', 'hi', 'hello', 'gentile', 'egregio', 'spett.le'])
+    has_closing = any(word in cover_letter_text.lower() for word in ['sincerely', 'regards', 'cordiali', 'distinti', 'saluti'])
+    has_paragraphs = cover_letter_text.count('\n') >= 2
+    
+    structure_score = 0
+    if has_greeting: structure_score += 33
+    if has_closing: structure_score += 33
+    if has_paragraphs: structure_score += 34
+    
+    # 4. PERSONALIZATION CHECK
+    # Check if CV skills are mentioned (shows personalization)
+    personalization_score = 0
+    if cv_text:
+        cv_skills_in_cl = (cv_hard & cl_hard) | (cv_soft & cl_soft)
+        personalization_score = min(100, len(cv_skills_in_cl) * 20)
+    else:
+        # Fallback: Check if any specific skills are mentioned
+        personalization_score = min(100, (len(cl_hard) + len(cl_soft)) * 15)
+    
+    # 5. OVERALL SCORE (Weighted)
+    overall_score = (
+        hard_coverage * 0.35 +
+        soft_coverage * 0.15 +
+        length_score * 0.15 +
+        structure_score * 0.20 +
+        personalization_score * 0.15
+    )
+    
+    # 6. GENERATE FEEDBACK
+    strengths = []
+    improvements = []
+    
+    # Language-aware feedback
+    if cl_lang == "Italian":
+        # Strengths (Italian)
+        if hard_coverage >= 60:
+            strengths.append(f"✅ Ottima menzione delle competenze tecniche ({len(hard_mentioned)}/{len(jd_hard)})")
+        elif hard_coverage >= 30:
+            strengths.append(f"👍 Discrete menzioni delle competenze tecniche ({len(hard_mentioned)}/{len(jd_hard)})")
+        
+        if soft_coverage >= 50:
+            strengths.append(f"✅ Buona enfasi sulle soft skills")
+        
+        if structure_score >= 80:
+            strengths.append("✅ Struttura professionale ben formattata")
+        
+        if personalization_score >= 60:
+            strengths.append("✅ Lettera personalizzata con esempi specifici")
+        
+        # Improvements (Italian)
+        if hard_coverage < 40:
+            missing_sample = list(hard_missing)[:3]
+            improvements.append(f"⚠️ Menziona più competenze chiave richieste: {', '.join(missing_sample)}")
+        
+        if soft_coverage < 30 and jd_soft:
+            improvements.append(f"💡 Enfatizza soft skills come: {', '.join(list(jd_soft)[:2])}")
+        
+        if not has_greeting:
+            improvements.append("📝 Aggiungi un saluto formale (es: 'Gentile...')")
+        
+        if not has_closing:
+            improvements.append("📝 Concludi con una chiusura formale (es: 'Cordiali saluti')")
+        
+        if length_score < 80:
+            improvements.append(f"📏 {length_feedback}")
+        
+        if personalization_score < 50:
+            improvements.append("💡 Aggiungi esempi concreti e risultati quantificabili")
+    
+    else:
+        # Strengths (English)
+        if hard_coverage >= 60:
+            strengths.append(f"✅ Strong technical keyword coverage ({len(hard_mentioned)}/{len(jd_hard)})")
+        elif hard_coverage >= 30:
+            strengths.append(f"👍 Decent technical keyword mentions ({len(hard_mentioned)}/{len(jd_hard)})")
+        
+        if soft_coverage >= 50:
+            strengths.append(f"✅ Good emphasis on soft skills")
+        
+        if structure_score >= 80:
+            strengths.append("✅ Well-structured professional format")
+        
+        if personalization_score >= 60:
+            strengths.append("✅ Personalized with specific examples")
+        
+        # Improvements (English)
+        if hard_coverage < 40:
+            missing_sample = list(hard_missing)[:3]
+            improvements.append(f"⚠️ Mention more required skills: {', '.join(missing_sample)}")
+        
+        if soft_coverage < 30 and jd_soft:
+            improvements.append(f"💡 Emphasize soft skills like: {', '.join(list(jd_soft)[:2])}")
+        
+        if not has_greeting:
+            improvements.append("📝 Add a formal greeting (e.g., 'Dear Hiring Manager')")
+        
+        if not has_closing:
+            improvements.append("📝 End with a formal closing (e.g., 'Sincerely')")
+        
+        if length_score < 80:
+            improvements.append(f"📏 {length_feedback}")
+        
+        if personalization_score < 50:
+            improvements.append("💡 Add concrete examples and quantifiable results")
+    
+    return {
+        'overall_score': overall_score,
+        'hard_coverage': hard_coverage,
+        'soft_coverage': soft_coverage,
+        'length_score': length_score,
+        'structure_score': structure_score,
+        'personalization_score': personalization_score,
+        'hard_mentioned': hard_mentioned,
+        'hard_missing': hard_missing,
+        'soft_mentioned': soft_mentioned,
+        'soft_missing': soft_missing,
+        'strengths': strengths,
+        'improvements': improvements,
+        'word_count': cl_words,
+        'language': cl_lang
+    }
+

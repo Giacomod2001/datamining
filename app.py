@@ -164,7 +164,8 @@ def render_home():
         st.info("Features:\n- **Smart Inference** (BigQuery → Cloud)\n- **Transferable Skills** (Looker → Power BI)\n- **Visual Analytics** (New!)")
         st.divider()
         
-        show_project_eval = st.toggle("Project Evaluation", value=False, help="Analyze your projects alongside your CV")
+        show_project_eval = st.toggle("📂 Project Evaluation", value=False, help="Analyze your projects alongside your CV")
+        show_cover_letter = st.toggle("✉️ Cover Letter Evaluation", value=False, help="Evaluate your cover letter against the job description")
         
         if st.toggle("Developer Mode"):
              pwd = st.text_input("Enter Password", type="password", key="dev_pwd")
@@ -179,14 +180,21 @@ def render_home():
     st.markdown("Analyze your CV against job descriptions.")
     st.divider()
 
-    # Dynamic Layout
-    if show_project_eval:
-        c1, c2, c3 = st.columns(3)
-    else:
+    # Dynamic Layout based on toggles
+    num_cols = 2  # CV + JD (base)
+    if show_project_eval: num_cols += 1
+    if show_cover_letter: num_cols += 1
+    
+    if num_cols == 2:
         c1, c2 = st.columns(2)
-        c3 = None
+        c3, c4 = None, None
+    elif num_cols == 3:
+        c1, c2, c3 = st.columns(3)
+        c4 = None
+    else:  # 4 columns
+        c1, c2, c3, c4 = st.columns(4)
 
-    # Column 1: CV
+    # Column 1: CV (always present)
     with c1:
         st.subheader("Your CV")
         input_type_cv = st.radio("Input Type", ["Text", "PDF"], key="cv_input", horizontal=True, label_visibility="collapsed")
@@ -199,26 +207,43 @@ def render_home():
                 try: cv = ml_utils.extract_text_from_pdf(uploaded_cv)
                 except Exception as e: st.error(f"Error: {e}")
     
-    # Column 2: Project or JD
+    # Determine which columns to use for Project, Cover Letter, and JD
     project_text = ""
-    col2 = c2
-    if show_project_eval and c3:
-        with col2:
-             st.subheader("Project Context")
-             input_type_proj = st.radio("Input Type", ["Text", "PDF"], key="proj_input", horizontal=True, label_visibility="collapsed")
-             if input_type_proj == "Text":
-                 project_text = st.text_area("Paste Project Desc", height=250, key="proj_text", label_visibility="visible")
-             else:
-                 uploaded_proj = st.file_uploader("Upload Project (PDF)", type=["pdf"], key="proj_pdf", label_visibility="visible")
-                 if uploaded_proj:
-                     try: project_text = ml_utils.extract_text_from_pdf(uploaded_proj)
-                     except Exception as e: st.error(f"Error: {e}")
-        jd_col = c3
-    else:
-        jd_col = c2
-        project_text = ""
-
-    # Column 3 (or 2): Job Description
+    cover_letter_text = ""
+    current_col = 2  # Start from column 2
+    
+    # Project Column (if enabled)
+    if show_project_eval:
+        proj_col = c2 if current_col == 2 else (c3 if current_col == 3 else c4)
+        with proj_col:
+            st.subheader("Project Context")
+            input_type_proj = st.radio("Input Type", ["Text", "PDF"], key="proj_input", horizontal=True, label_visibility="collapsed")
+            if input_type_proj == "Text":
+                project_text = st.text_area("Paste Project Desc", height=250, key="proj_text", label_visibility="visible")
+            else:
+                uploaded_proj = st.file_uploader("Upload Project (PDF)", type=["pdf"], key="proj_pdf", label_visibility="visible")
+                if uploaded_proj:
+                    try: project_text = ml_utils.extract_text_from_pdf(uploaded_proj)
+                    except Exception as e: st.error(f"Error: {e}")
+        current_col += 1
+    
+    # Cover Letter Column (if enabled)
+    if show_cover_letter:
+        cl_col = c2 if current_col == 2 else (c3 if current_col == 3 else c4)
+        with cl_col:
+            st.subheader("Cover Letter")
+            input_type_cl = st.radio("Input Type", ["Text", "PDF"], key="cl_input", horizontal=True, label_visibility="collapsed")
+            if input_type_cl == "Text":
+                cover_letter_text = st.text_area("Paste Cover Letter", height=250, key="cl_text", label_visibility="visible")
+            else:
+                uploaded_cl = st.file_uploader("Upload Cover Letter (PDF)", type=["pdf"], key="cl_pdf", label_visibility="visible")
+                if uploaded_cl:
+                    try: cover_letter_text = ml_utils.extract_text_from_pdf(uploaded_cl)
+                    except Exception as e: st.error(f"Error: {e}")
+        current_col += 1
+    
+    # Job Description Column (always present, last column)
+    jd_col = c2 if current_col == 2 else (c3 if current_col == 3 else c4)
     with jd_col:
         st.subheader("Job Description")
         input_type_jd = st.radio("Input Type", ["Text", "PDF"], key="jd_input", horizontal=True, label_visibility="collapsed")
@@ -242,21 +267,35 @@ def render_home():
             else:
                  res = ml_utils.analyze_gap(cv, jd)
             
+            # Analyze cover letter if provided
+            cl_analysis = None
+            if show_cover_letter and cover_letter_text:
+                cl_analysis = ml_utils.analyze_cover_letter(cover_letter_text, jd, cv)
+            
             # Save state for debugger
             st.session_state["last_results"] = res
             st.session_state["last_cv_text"] = cv
             st.session_state["last_jd_text"] = jd
+            st.session_state["last_cl_analysis"] = cl_analysis
                  
-            render_results(res, jd, cv)
+            render_results(res, jd, cv, cl_analysis)
 
-def render_results(res, jd_text=None, cv_text=None):
+def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     st.divider()
     pct = res["match_percentage"]
 
     # --- METRICS SECTION ---
-    cols = st.columns([1, 1, 1]) if "project_verified" in res else st.columns([1, 1])
+    # Determine number of metrics columns based on what we have
+    metrics_cols_count = 2  # Base: CV match + assessment
+    if "project_verified" in res and res["project_verified"]:
+        metrics_cols_count += 1
+    if cl_analysis:
+        metrics_cols_count += 1
+    
+    cols = st.columns(metrics_cols_count)
+    col_idx = 0
 
-    with cols[0]:
+    with cols[col_idx]:
         # Plotly Pie Chart (go.Pie for absolute control)
         fig = go.Figure(data=[go.Pie(
             labels=['Match', 'Gap'],
@@ -271,8 +310,10 @@ def render_results(res, jd_text=None, cv_text=None):
         # Center Annotation
         fig.add_annotation(text=f"{pct:.0f}%", showarrow=False, font_size=20, x=0.5, y=0.5)
         st.plotly_chart(fig, use_container_width=True)
+    
+    col_idx += 1
 
-    with cols[1]:
+    with cols[col_idx]:
         st.subheader("Match Score")
         if pct >= 80: 
             st.success("🚀 Excellent Match!")
@@ -283,12 +324,31 @@ def render_results(res, jd_text=None, cv_text=None):
         else: 
             st.error("❌ High Gap")
             st.markdown("Significant learning required for this specific role.")
+    
+    col_idx += 1
         
     if "project_verified" in res and res["project_verified"]:
-        with cols[2]:
+        with cols[col_idx]:
             st.subheader("🏆 Project Boost")
             st.metric("Verified Skills", len(res["project_verified"]))
             st.caption(f"Validating: {', '.join(list(res['project_verified'])[:3])}...")
+        col_idx += 1
+    
+    # Cover Letter Analysis Section
+    if cl_analysis:
+        with cols[col_idx]:
+            st.subheader("✉️ Cover Letter Score")
+            cl_score = cl_analysis['overall_score']
+            
+            # Color-coded gauge
+            if cl_score >= 80:
+                st.success(f"**{cl_score:.0f}%** - Excellent!")
+            elif cl_score >= 60:
+                st.warning(f"**{cl_score:.0f}%** - Good")
+            else:
+                st.error(f"**{cl_score:.0f}%** - Needs Work")
+            
+            st.caption(f"{cl_analysis['word_count']} words | {cl_analysis['language'] or 'EN'}")
 
     st.divider()
     st.subheader("🛠️ Technical Skills Analysis")
@@ -327,6 +387,67 @@ def render_results(res, jd_text=None, cv_text=None):
     with c5:
         st.markdown("#### ➕ Bonus")
         for s in res["extra_hard"]: st.write(f"- {s}")
+
+    st.divider()
+    
+    # --- COVER LETTER DETAILED ANALYSIS ---
+    if cl_analysis:
+        st.subheader("✉️ Cover Letter Analysis")
+        
+        # Metrics Row
+        m1, m2, m3, m4 = st.columns(4)
+        with m1:
+            st.metric("Keyword Coverage", f"{cl_analysis['hard_coverage']:.0f}%", 
+                     help="Technical skills from JD mentioned in your cover letter")
+        with m2:
+            st.metric("Soft Skills", f"{cl_analysis['soft_coverage']:.0f}%",
+                     help="Soft skills from JD mentioned")
+        with m3:
+            st.metric("Structure", f"{cl_analysis['structure_score']:.0f}%",
+                     help="Professional formatting (greeting, closing, paragraphs)")
+        with m4:
+            st.metric("Personalization", f"{cl_analysis['personalization_score']:.0f}%",
+                     help="Specific examples and personal touch")
+        
+        # Feedback Columns
+        fc1, fc2 = st.columns(2)
+        
+        with fc1:
+            st.markdown("#### ✅ Strengths")
+            if cl_analysis['strengths']:
+                for strength in cl_analysis['strengths']:
+                    st.markdown(strength)
+            else:
+                st.info("No specific strengths identified yet")
+        
+        with fc2:
+            st.markdown("#### 💡 Improvements")
+            if cl_analysis['improvements']:
+                for improvement in cl_analysis['improvements']:
+                    st.markdown(improvement)
+            else:
+                st.success("Great job! No major improvements needed")
+        
+        # Keywords Coverage Detail
+        if cl_analysis['hard_mentioned'] or cl_analysis['hard_missing']:
+            st.markdown("#### 🏷️ Technical Keywords Status")
+            kc1, kc2 = st.columns(2)
+            
+            with kc1:
+                st.markdown("**✅ Mentioned**")
+                if cl_analysis['hard_mentioned']:
+                    for skill in sorted(cl_analysis['hard_mentioned']):
+                        st.write(f"- {skill}")
+                else:
+                    st.caption("None")
+            
+            with kc2:
+                st.markdown("**⚠️ Missing**")
+                if cl_analysis['hard_missing']:
+                    for skill in sorted(list(cl_analysis['hard_missing'])[:10]):
+                        st.write(f"- {skill}")
+                else:
+                    st.success("All covered!")
 
     st.divider()
 
@@ -377,7 +498,7 @@ def render_results(res, jd_text=None, cv_text=None):
                 
                 # Show keywords as tags
                 st.markdown("#### 🏷️ Parole Chiave Principali:")
-                keyword_html = " ".join([f"<span style='background-color: #e1f5ff; padding: 5px 10px; border-radius: 5px; margin: 2px; display: inline-block;'>{kw}</span>" for kw in result['keywords']])
+                keyword_html = " ".join([f"<span style='background-color: #e1f5ff; color: #1a1a1a; font-weight: 500; padding: 5px 10px; border-radius: 5px; margin: 2px; display: inline-block;'>{kw}</span>" for kw in result['keywords']])
                 st.markdown(keyword_html, unsafe_allow_html=True)
         else:
             st.info("Job Description troppo breve per l'analisi contestuale.")
@@ -402,16 +523,13 @@ def render_results(res, jd_text=None, cv_text=None):
                  st.progress(int(rec['score']))
                  st.caption(f"**{rec['score']:.0f}% Similarity**")
                  
-                 # Dynamic Links - Italian Job Boards
+                 # Dynamic Links - Working Job Boards Only
                  role_query = urllib.parse.quote(rec['role'])
                  italy_query = urllib.parse.quote(f"{rec['role']} Italia")
                  
                  st.markdown(f"🌐 [Google Jobs](https://www.google.com/search?q={role_query}+jobs)")
                  st.markdown(f"💼 [LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query})")
-                 st.markdown(f"🔍 [Indeed](https://it.indeed.com/jobs?q={italy_query})")
-                 st.markdown(f"🏢 [Randstad](https://www.randstad.it/cerca-lavoro/?q={role_query})")
-                 st.markdown(f"👔 [Adecco](https://www.adecco.it/cerca-lavoro/offerte-lavoro?k={role_query})")
-                 st.markdown(f"🎓 [AlmaLaurea](https://www.almalaurea.it/lavoro/bacheca?Mansione={role_query})")
+                 st.markdown(f"🔍 [Indeed Italia](https://it.indeed.com/jobs?q={italy_query})")
                  
                  with st.expander("Missing Skills"):
                      for s in rec['missing'][:5]:
