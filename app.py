@@ -172,6 +172,18 @@ def render_home():
         
         st.divider()
         
+        # Skills Legend with actual colored badges
+        st.markdown("### 📊 Skills Legend")
+        st.markdown("""
+<span style='background-color: #d4edda; color: #155724; font-weight: 500; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;'>Python</span> Direct match<br>
+<span style='background-color: #fff3cd; color: #856404; font-weight: 500; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;'>Power BI ← Looker</span> Transferable<br>
+<span style='background-color: #cfe2ff; color: #084298; font-weight: 500; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;'>★ System Design</span> Project-verified<br>
+<span style='background-color: #f8d7da; color: #842029; font-weight: 500; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;'>AWS</span> Missing skill<br>
+<span style='background-color: #e2e3e5; color: #41464b; font-weight: 500; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;'>+ ML</span> Bonus skill
+        """, unsafe_allow_html=True)
+        
+        st.divider()
+        
         if st.toggle("🔧 Developer Mode"):
              pwd = st.text_input("Password", type="password", key="dev_pwd")
              if pwd == "1234":
@@ -379,41 +391,50 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
 
     st.divider()
     st.subheader("🛠️ Technical Skills Analysis")
+    st.caption("Visual breakdown of your skill alignment with this position")
+    st.markdown("")  # Spacing
 
-    c1, c2, c3, c4, c5 = st.columns(5)
-
-    with c1:
-        st.markdown("#### ✅ Matched")
-        for s in res["matching_hard"]: st.write(f"- {s}")
-        if not res["matching_hard"]: st.caption("-")
-
-    with c2:
-        st.markdown("#### ⚠️ Transferable")
-        transferable = res.get("transferable", {})
-        if transferable:
-            for missing, present in transferable.items():
-                st.write(f"- **{missing}**") 
-                st.caption(f"(via {present})")
-        else:
-            st.caption("-")
-
-    with c3:
-        st.markdown("#### 📂 Portfolio")
-        projects = res.get("project_review", set())
-        if projects:
-            for s in projects: st.info(f"**{s}**")
-            st.caption("Mention these in interview!")
-        else:
-            st.caption("-")
-            
-    with c4:
-        st.markdown("#### ❌ Missing")
-        for s in res["missing_hard"]: st.write(f"- **{s}**")
-        if not res["missing_hard"]: st.success("Clear!")
-
-    with c5:
-        st.markdown("#### ➕ Bonus")
-        for s in res["extra_hard"]: st.write(f"- {s}")
+    # ✅ MATCHED SKILLS - Green tags
+    if res["matching_hard"]:
+        st.markdown("**✅ Matched Skills:**")
+        matched_html = " ".join([f"<span style='background-color: #d4edda; color: #155724; font-weight: 500; padding: 5px 10px; border-radius: 5px; margin: 3px; display: inline-block;'>{skill}</span>" for skill in sorted(res["matching_hard"])])
+        st.markdown(matched_html, unsafe_allow_html=True)
+        st.markdown("")  # Spacing
+    
+    # ⚠️ TRANSFERABLE SKILLS - Yellow tags with source
+    transferable = res.get("transferable", {})
+    if transferable:
+        st.markdown("**⚠️ Transferable Skills:**")
+        for missing, present in transferable.items():
+            transfer_html = f"<span style='background-color: #fff3cd; color: #856404; font-weight: 500; padding: 5px 10px; border-radius: 5px; margin: 3px; display: inline-block;'>{missing} <span style='opacity: 0.7;'>← {present}</span></span>"
+            st.markdown(transfer_html, unsafe_allow_html=True)
+        st.markdown("")  # Spacing
+    
+    # 📂 PROJECT-VERIFIED SKILLS - Blue tags
+    projects = res.get("project_review", set())
+    if projects:
+        st.markdown("**📂 Project-Verified Skills:**")
+        st.caption("💡 Highlight these in your interview!")
+        project_html = " ".join([f"<span style='background-color: #cfe2ff; color: #084298; font-weight: 500; padding: 5px 10px; border-radius: 5px; margin: 3px; display: inline-block;'>★ {skill}</span>" for skill in sorted(projects)])
+        st.markdown(project_html, unsafe_allow_html=True)
+        st.markdown("")  # Spacing
+    
+    # ❌ MISSING SKILLS - Red tags
+    if res["missing_hard"]:
+        st.markdown("**❌ Missing Skills:**")
+        missing_html = " ".join([f"<span style='background-color: #f8d7da; color: #842029; font-weight: 500; padding: 5px 10px; border-radius: 5px; margin: 3px; display: inline-block;'>{skill}</span>" for skill in sorted(res["missing_hard"])])
+        st.markdown(missing_html, unsafe_allow_html=True)
+    else:
+        st.success("✅ No missing skills - Perfect match!")
+    
+    st.markdown("")  # Spacing
+    
+    # ➕ BONUS SKILLS - Gray tags
+    if res["extra_hard"]:
+        st.markdown("**➕ Bonus Skills:**")
+        st.caption("Additional skills that give you competitive advantage")
+        bonus_html = " ".join([f"<span style='background-color: #e2e3e5; color: #41464b; font-weight: 500; padding: 5px 10px; border-radius: 5px; margin: 3px; display: inline-block;'>+ {skill}</span>" for skill in sorted(res["extra_hard"])])
+        st.markdown(bonus_html, unsafe_allow_html=True)
 
     st.divider()
     
