@@ -330,7 +330,8 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "agile", "scrum", "kanban", "waterfall", "jira", "confluence",
         "marketing", "sales", "finance", "accounting", "hr", "management", "business", "analyst", "engineer", "developer",
         "jupyter", "notebook", "studio", "code", "visual", "intelliJ", "eclipse",
-        "data", "science", "mining", "warehouse", "lake", "pipeline", "etl", "elt"
+        "data", "science", "mining", "warehouse", "lake", "pipeline", "etl", "elt",
+        "airflow", "glue", "hadoop", "redshift", "snowflake", "spark", "kafka", "terraform", "dags", "streaming", "expert"
     }
     exclusion_set.update(tech_jargon)
 
@@ -346,7 +347,8 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "competenze", "esperienze", "formazione", "istruzione", "lingue", "progetti",
         "certificazioni", "interessi", "contatti", "profilo", "sommario",
         "university", "università", "school", "scuola", "college", "institute", "politecnico", "degree", "bachelor", "master", "phd",
-        "inc", "ltd", "srl", "spa", "corp", "corporation", "company", "group", "team"
+        "inc", "ltd", "srl", "spa", "corp", "corporation", "company", "group", "team",
+        "mario", "professional", "dataflow"
     }
     exclusion_set.update(noise_words)
     
