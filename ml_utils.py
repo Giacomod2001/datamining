@@ -890,45 +890,279 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
 
 def analyze_gap_with_project(cv_text: str, job_text: str, project_text: str) -> Dict:
     """
-    Analyzes CV + Project vs Job Description.
-    Returns standard gap analysis plus 'project_verified' skills.
+    Enhanced Portfolio Intelligence System.
+    Analyzes CV + Project vs Job Description with comprehensive insights.
+    Returns portfolio quality score, project highlights, gap suggestions, and verified skills.
     """
     # 1. Standard CV Analysis
     res = analyze_gap(cv_text, job_text)
-
-    # 2. Project Analysis
+    
+    # 2. Extract skills from all sources
     proj_hard, _ = extract_skills_from_text(project_text)
-
-    # 3. Identify Verified Skills (Requested by JD AND found in Projects)
-    # These are skills that might be in 'matching_hard' (CV+JD) or 'missing_hard' (JD only)
-    # If they are in Projects, we upgrade/verify them.
-
-    job_hard, _ = extract_skills_from_text(job_text) # Re-extract to be sure or pass it if possible, but cheap enough
-
+    job_hard, _ = extract_skills_from_text(job_text)
+    cv_hard, _ = extract_skills_from_text(cv_text)
+    
+    # 3. Calculate Portfolio Quality Score (0-100)
+    portfolio_metrics = calculate_portfolio_quality(
+        project_skills=proj_hard,
+        job_skills=job_hard,
+        cv_skills=cv_hard,
+        project_text=project_text
+    )
+    
+    # 4. Identify Project-Verified Skills
     project_verified = job_hard.intersection(proj_hard)
-
-    # Update Result
-    res["project_verified"] = project_verified
-
-    # Boost Score? Optional. Let's keep it simple: just identifying them for now.
-    # We could recalculate match_percentage if we wanted project skills to fill gaps.
-
-    # If a skill was missing in CV but found in Project, move it from missing to matching?
-    # Strategy: "Project skills count as skills"
-
+    
+    # 5. Rank Projects and Generate Highlights
+    project_highlights = rank_projects_by_relevance(
+        project_text=project_text,
+        project_skills=proj_hard,
+        job_skills=job_hard
+    )
+    
+    # 6. Generate Interview Talking Points
+    talking_points = generate_project_talking_points(
+        project_skills=proj_hard,
+        job_skills=job_hard,
+        verified_skills=project_verified
+    )
+    
+    # 7. Suggest Gap-Filling Projects
+    gap_projects = suggest_gap_projects(
+        missing_skills=res["missing_hard"]
+    )
+    
+    # 8. Update Skills if Project Fills Gaps
     newly_found_in_project = res["missing_hard"].intersection(proj_hard)
     if newly_found_in_project:
         res["matching_hard"].update(newly_found_in_project)
         res["missing_hard"] = res["missing_hard"] - newly_found_in_project
-
-        # Recalculate Score
-        # (Simplified recalc based on previous formula in analyze_gap)
-        # score_points = len(matching_hard) + (len(transferable) * 0.5) + (len(project_review) * 0.3)
-
+        
+        # Recalculate Match Score
         score_points = len(res["matching_hard"]) + (len(res["transferable"]) * 0.5) + (len(res["project_review"]) * 0.3)
         res["match_percentage"] = score_points / len(job_hard) * 100 if job_hard else 0
-
+    
+    # 9. Add Portfolio Intelligence to Results
+    res["project_verified"] = project_verified
+    res["portfolio_quality"] = portfolio_metrics["quality_score"]
+    res["portfolio_metrics"] = portfolio_metrics
+    res["project_highlights"] = project_highlights
+    res["talking_points"] = talking_points
+    res["gap_projects"] = gap_projects
+    
     return res
+
+
+def calculate_portfolio_quality(project_skills: Set[str], job_skills: Set[str], 
+                                cv_skills: Set[str], project_text: str) -> Dict:
+    """
+    Calculates comprehensive portfolio quality metrics.
+    
+    Algorithm:
+    - Skills Coverage (40%): How many job skills are demonstrated in projects
+    - Complexity (30%): Average number of skills per project section
+    - Relevance (30%): Ratio of project skills that match job requirements
+    
+    Returns: Dict with quality_score (0-100) and component metrics
+    """
+    # 1. Skills Coverage Score
+    matched_skills = job_skills.intersection(project_skills)
+    coverage_score = (len(matched_skills) / len(job_skills) * 100) if job_skills else 0
+    
+    # 2. Complexity Score (estimate project depth)
+    # Count unique skills and estimate complexity based on diversity
+    complexity_raw = len(project_skills)
+    complexity_score = min(complexity_raw / 10 * 100, 100)  # Normalize to 0-100
+    
+    # 3. Relevance Score
+    # What % of project skills are actually relevant to the job
+    relevance_score = (len(matched_skills) / len(project_skills) * 100) if project_skills else 0
+    
+    # 4. Calculate Weighted Quality Score
+    quality_score = (
+        coverage_score * 0.4 +
+        complexity_score * 0.3 +
+        relevance_score * 0.3
+    )
+    
+    return {
+        "quality_score": round(quality_score, 1),
+        "coverage_score": round(coverage_score, 1),
+        "complexity_score": round(complexity_score, 1),
+        "relevance_score": round(relevance_score, 1),
+        "total_project_skills": len(project_skills),
+        "matched_job_skills": len(matched_skills)
+    }
+
+
+def rank_projects_by_relevance(project_text: str, project_skills: Set[str], 
+                               job_skills: Set[str]) -> List[Dict]:
+    """
+    Analyzes project text and identifies top projects to highlight.
+    
+    Returns: List of top 3 project highlights with skills and relevance scores
+    """
+    # Split project text into sections (simple heuristic: double newlines or headers)
+    # For now, treat the whole text as one project
+    # In future versions, could detect multiple projects
+    
+    highlights = []
+    
+    # Calculate relevance of the project
+    matched_skills = project_skills.intersection(job_skills)
+    relevance = (len(matched_skills) / len(job_skills) * 100) if job_skills else 0
+    
+    # Extract a snippet (first 200 chars as preview)
+    snippet = " ".join(project_text.split()[:30]) + "..."
+    
+    highlights.append({
+        "title": "Portfolio Project",
+        "snippet": snippet,
+        "verified_skills": list(matched_skills)[:8],  # Limit to 8 for display
+        "relevance_score": round(relevance, 1),
+        "total_skills": len(matched_skills)
+    })
+    
+    return highlights
+
+
+def generate_project_talking_points(project_skills: Set[str], job_skills: Set[str],
+                                    verified_skills: Set[str]) -> List[str]:
+    """
+    Generates interview talking points based on project-skill alignment.
+    
+    Returns: List of actionable talking points for interviews
+    """
+    talking_points = []
+    
+    # 1. Directly verified skills
+    if verified_skills:
+        top_verified = list(verified_skills)[:3]
+        talking_points.append(
+            f"✅ Highlight practical experience with: {', '.join(top_verified)}"
+        )
+    
+    # 2. Skill diversity
+    if len(project_skills) >= 5:
+        talking_points.append(
+            f"🎯 Emphasize your versatile skill set across {len(project_skills)} technologies"
+        )
+    
+    # 3. Gap acknowledgment strategy
+    missing = job_skills - project_skills
+    if missing and len(missing) <= 3:
+        talking_points.append(
+            f"📚 Show willingness to learn: Mention plans to develop {', '.join(list(missing)[:2])}"
+        )
+    
+    # 4. Project complexity
+    if len(project_skills) >= 8:
+        talking_points.append(
+            "🏆 Showcase project complexity - demonstrate how multiple technologies integrate"
+        )
+    
+    # Default fallback
+    if not talking_points:
+        talking_points.append(
+            "💼 Prepare to discuss specific challenges solved in your projects"
+        )
+    
+    return talking_points
+
+
+def suggest_gap_projects(missing_skills: Set[str]) -> List[Dict]:
+    """
+    Suggests specific project ideas to build missing skills.
+    
+    Returns: List of project suggestions with skills, difficulty, and resources
+    """
+    # Project templates mapped to skill categories
+    project_templates = {
+        # Data Science & ML
+        ("Python", "Machine Learning", "Data Analysis"): {
+            "title": "Build a Predictive Analytics Dashboard",
+            "description": "Create an end-to-end ML pipeline with data visualization",
+            "difficulty": "Intermediate",
+            "skills_covered": ["Python", "Machine Learning", "Data Analysis", "Visualization"]
+        },
+        ("SQL", "Database", "Data Analysis"): {
+            "title": "Design a Data Warehouse Schema",
+            "description": "Model and implement a star schema for business analytics",
+            "difficulty": "Intermediate",
+            "skills_covered": ["SQL", "Database Design", "ETL", "Data Modeling"]
+        },
+        
+        # Web Development
+        ("JavaScript", "React", "Frontend"): {
+            "title": "Build a Full-Stack Web Application",
+            "description": "Create a responsive SaaS application with modern UI",
+            "difficulty": "Intermediate",
+            "skills_covered": ["JavaScript", "React", "CSS", "REST API"]
+        },
+        ("Node.js", "Backend", "API"): {
+            "title": "Develop a RESTful API Service",
+            "description": "Build a scalable backend with authentication and database",
+            "difficulty": "Intermediate",
+            "skills_covered": ["Node.js", "Express", "Database", "API Design"]
+        },
+        
+        # Data Engineering
+        ("ETL", "Pipeline", "Cloud"): {
+            "title": "Create an Automated Data Pipeline",
+            "description": "Build cloud-based ETL workflow with monitoring",
+            "difficulty": "Advanced",
+            "skills_covered": ["ETL", "Cloud Services", "Automation", "Data Pipeline"]
+        },
+        
+        # DevOps & Cloud
+        ("Docker", "Kubernetes", "Cloud"): {
+            "title": "Deploy Containerized Microservices",
+            "description": "Set up CI/CD pipeline with container orchestration",
+            "difficulty": "Advanced",
+            "skills_covered": ["Docker", "Kubernetes", "CI/CD", "Cloud"]
+        }
+    }
+    
+    suggestions = []
+    missing_lower = {s.lower() for s in missing_skills}
+    
+    # Match missing skills to project templates
+    for skill_set, project_info in project_templates.items():
+        # Check if any skills in template match missing skills
+        template_skills_lower = {s.lower() for s in skill_set}
+        overlap = template_skills_lower.intersection(missing_lower)
+        
+        if overlap and len(overlap) >= 1:
+            # Calculate how many missing skills this project would cover
+            covered_skills = [s for s in project_info["skills_covered"] 
+                            if s.lower() in missing_lower]
+            
+            if covered_skills:
+                suggestions.append({
+                    "title": project_info["title"],
+                    "description": project_info["description"],
+                    "difficulty": project_info["difficulty"],
+                    "skills_covered": covered_skills[:4],  # Limit display
+                    "total_covered": len(covered_skills)
+                })
+    
+    # Generic fallback for unmatched skills
+    if not suggestions and missing_skills:
+        # Pick top 3 missing skills
+        top_missing = list(missing_skills)[:3]
+        suggestions.append({
+            "title": f"Custom Project with {', '.join(top_missing[:2])}",
+            "description": f"Build a hands-on project demonstrating {', '.join(top_missing)}",
+            "difficulty": "Intermediate",
+            "skills_covered": top_missing,
+            "total_covered": len(top_missing)
+        })
+    
+    # Sort by number of skills covered (most valuable first)
+    suggestions.sort(key=lambda x: x["total_covered"], reverse=True)
+    
+    return suggestions[:3]  # Return top 3 suggestions
+
 
 # =============================================================================
 # REPORT GENERATION (Text & PDF)
