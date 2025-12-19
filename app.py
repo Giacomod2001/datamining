@@ -10,11 +10,7 @@ import urllib.parse
 # PAGE CONFIG
 # =============================================================================
 st.set_page_config(
-<<<<<<< HEAD
-    page_title="Job Seeker Helper v1.4",
-=======
     page_title="Job Seeker Helper v1.34 (NER FIX)",
->>>>>>> 558201533c95a47dd2ebcf8f8b54a37a0f554b20
     page_icon="🎯",
     layout="wide"
 )
@@ -352,107 +348,9 @@ def render_results(res, jd_text=None, cv_text=None):
                     st.markdown(f"**[🎓 Courses](https://www.google.com/search?q=site:coursera.org+OR+site:udemy.com+OR+site:linkedin.com/learning+{q_skill})**")
                     st.caption("Platform specific")
 
-<<<<<<< HEAD
     # --- ADVANCED MINING MOVED TO DEBUGGER ---
     # The 'Advanced Data Mining', 'Topic Modeling', and 'NER' sections have been moved 
     # to the 'render_debug_page' function as requested to clean up the main view.
-=======
-                    st.markdown(f"**[🎓 Courses](https://www.google.com/search?q=site:coursera.org+OR+site:udemy.com+OR+site:linkedin.com/learning+{q_skill})**")
-                    st.caption("Platform specific")
-
-    # --- ADVANCED MINING (Clustering) ---
-    st.divider()
-    st.subheader("🧠 Advanced Data Mining (Skill Clans)")
-    st.info("Using Unsupervised Learning (Hierarchical Clustering & K-Means) to group your skills logicially.")
-    
-    # 1. Prepare Data
-    all_skills = list(res["matching_hard"] | res["missing_hard"] | res["extra_hard"])
-    
-    if len(all_skills) > 3:
-        # Run Clustering
-        df_viz, dendro_path, clusters = ml_utils.perform_skill_clustering(all_skills)
-        
-        if df_viz is not None:
-            t1, t2 = st.tabs(["📊 Scatter Plot (K-Means)", "🌳 Dendrogram (Hierarchical)"])
-            
-            with t1:
-                # Enrich with Status
-                def get_status(s):
-                    if s in res["matching_hard"]: return "Matched"
-                    if s in res["missing_hard"]: return "Missing"
-                    return "Extra"
-                
-                df_viz["Status"] = df_viz["skill"].apply(get_status)
-                
-                fig_cls = px.scatter(df_viz, x="x", y="y", color="cluster", symbol="Status",
-                                     hover_data=["skill"], title="Skill Semantic Map (PCA + K-Means)")
-                fig_cls.update_traces(marker=dict(size=14, line=dict(width=2, color='DarkSlateGrey')), selector=dict(mode='markers'))
-                # Fix overlap: Move legend to the right (outside) or bottom. Using standard right side.
-                fig_cls.update_layout(
-                    showlegend=True, 
-                    legend=dict(orientation="v", yanchor="top", y=1, xanchor="left", x=1.02),
-                    margin=dict(r=150) # Add margin for legend
-                )
-                st.plotly_chart(fig_cls, use_container_width=True)
-                
-            with t2:
-                if dendro_path:
-                    st.image(dendro_path, caption="Skill Hierarchy (Ward's Method)")
-                    st.caption("Skills joined lower down are more similar/related.")
-        
-        # GENEARTE INSIGHT (User Request: "Make it less cold")
-        st.markdown("---")
-        insight_text = ml_utils.generate_cluster_insight(clusters, res["matching_hard"], res["missing_hard"])
-        st.info(insight_text)
-                    
-    else:
-        st.warning("Not enough skills detected to perform clustering analysis (Need > 3).")
-
-    # --- NEW: TOPIC MODELING (JD) ---
-    if jd_text:
-        st.divider()
-        st.subheader("🧩 Job Context Analysis (Topic Modeling)")
-        st.caption("Using Latent Dirichlet Allocation (LDA) to identify key themes in the Job Description.")
-        
-        # Split JD into "sentences" or chunks for LDA (simple split by newline for now)
-        jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
-        
-        if len(jd_corpus) > 5:
-            topics, wc_path = ml_utils.perform_topic_modeling(jd_corpus)
-            
-            c1, c2 = st.columns([1, 2])
-            with c1:
-                st.markdown("**Discovered Topics:**")
-                for t in topics:
-                    st.success(t)
-            with c2:
-                if wc_path:
-                    st.image(wc_path, caption="Topic Keywords Word Cloud")
-        else:
-            st.info("Job Description too short for Topic Modeling.")
-
-    # --- NEW: ENTITY EXTRACTION (CV) ---
-    if cv_text:
-        st.divider()
-        st.subheader("🏷️ Resume Entity Extraction (NER)")
-        st.caption("Automatically extracting standardized entities using NLTK.")
-        
-        entities = ml_utils.extract_entities_ner(cv_text)
-        
-        if entities:
-            ec1, ec2, ec3 = st.columns(3)
-            with ec1:
-                st.markdown("#### 🏛️ Organizations")
-                for org in entities.get("Organizations", [])[:10]: st.write(f"- {org}")
-            with ec2:
-                st.markdown("#### 📍 Locations")
-                for loc in entities.get("Locations", [])[:10]: st.write(f"- {loc}")
-            with ec3:
-                st.markdown("#### 👤 People")
-                for per in entities.get("Persons", [])[:10]: st.write(f"- {per}")
-        else:
-            st.info("No named entities found.")
->>>>>>> 558201533c95a47dd2ebcf8f8b54a37a0f554b20
 
     # --- JOB RECOMMENDER (AI Career Compass) ---
     st.divider()
