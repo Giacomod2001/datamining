@@ -155,29 +155,35 @@ def render_debug_page():
 def render_home():
     with st.sidebar:
         st.title("🎯 Job Seeker Helper")
-        st.caption("v1.34 (NER FIX)")
-        st.markdown("### 🚀 Instructions")
-        st.markdown("1. **Upload CV**: PDF or Text.")
-        st.markdown("2. **Upload JD**: Job Description.")
-        st.markdown("3. **Analyze**: Get insights.")
-        st.markdown("---")
-        st.info("Features:\n- **Smart Inference** (BigQuery → Cloud)\n- **Transferable Skills** (Looker → Power BI)\n- **Visual Analytics** (New!)")
+        st.caption("🚀 v1.35 - AI-Powered Career Analytics")
+        
+        st.markdown("### � Quick Start")
+        st.markdown("📄 **1.** Upload CV (PDF/Text)")
+        st.markdown("💼 **2.** Upload Job Description")
+        st.markdown("✔️ **3.** Click Analyze")
+        
+        st.divider()
+        st.markdown("### ⚙️ Optional Features")
+        
+        show_project_eval = st.toggle("📂 Project Evaluation", value=False, 
+                                       help="Validate skills through your portfolio/projects")
+        show_cover_letter = st.toggle("✉️ Cover Letter Analysis", value=False, 
+                                       help="Get AI feedback on your application letter")
+        
         st.divider()
         
-        show_project_eval = st.toggle("📂 Project Evaluation", value=False, help="Analyze your projects alongside your CV")
-        show_cover_letter = st.toggle("✉️ Cover Letter Evaluation", value=False, help="Evaluate your cover letter against the job description")
-        
-        if st.toggle("Developer Mode"):
-             pwd = st.text_input("Enter Password", type="password", key="dev_pwd")
+        if st.toggle("🔧 Developer Mode"):
+             pwd = st.text_input("Password", type="password", key="dev_pwd")
              if pwd == "1234":
-                 if st.button("Open Debugger"):
+                 if st.button("🔍 Open Debugger", use_container_width=True):
                     st.session_state["page"] = "Debugger"
                     st.rerun()
              elif pwd:
-                 st.error("Wrong password")
+                 st.error("❌ Wrong password")
 
-    st.title("🎯 Job Seeker Helper")
-    st.markdown("Analyze your CV against job descriptions.")
+    st.title("🎯 Job Seeker Helper - AI Career Analytics")
+    st.markdown("🚀 **Analyze your CV, Cover Letter, and Career Path with Advanced AI**")
+    st.caption("Upload your documents below to get instant feedback on skills, gaps, and opportunities")
     st.divider()
 
     # Dynamic Layout based on toggles
@@ -431,23 +437,22 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         # Keywords Coverage Detail
         if cl_analysis['hard_mentioned'] or cl_analysis['hard_missing']:
             st.markdown("#### 🏷️ Technical Keywords Status")
-            kc1, kc2 = st.columns(2)
             
-            with kc1:
-                st.markdown("**✅ Mentioned**")
-                if cl_analysis['hard_mentioned']:
-                    for skill in sorted(cl_analysis['hard_mentioned']):
-                        st.write(f"- {skill}")
-                else:
-                    st.caption("None")
+            # Mentioned keywords as tags
+            if cl_analysis['hard_mentioned']:
+                st.markdown("**✅ Mentioned:**")
+                mentioned_html = " ".join([f"<span style='background-color: #d4edda; color: #155724; font-weight: 500; padding: 4px 8px; border-radius: 4px; margin: 2px; display: inline-block; font-size: 0.9em;'>{skill}</span>" for skill in sorted(cl_analysis['hard_mentioned'])])
+                st.markdown(mentioned_html, unsafe_allow_html=True)
+                st.markdown("")  # Spacing
             
-            with kc2:
-                st.markdown("**⚠️ Missing**")
-                if cl_analysis['hard_missing']:
-                    for skill in sorted(list(cl_analysis['hard_missing'])[:10]):
-                        st.write(f"- {skill}")
-                else:
-                    st.success("All covered!")
+            # Missing keywords as tags
+            if cl_analysis['hard_missing']:
+                st.markdown("**⚠️ Missing (consider adding):**")
+                missing_list = sorted(list(cl_analysis['hard_missing'])[:15])  # Limit to 15 for readability
+                missing_html = " ".join([f"<span style='background-color: #fff3cd; color: #856404; font-weight: 500; padding: 4px 8px; border-radius: 4px; margin: 2px; display: inline-block; font-size: 0.9em;'>{skill}</span>" for skill in missing_list])
+                st.markdown(missing_html, unsafe_allow_html=True)
+                if len(cl_analysis['hard_missing']) > 15:
+                    st.caption(f"... and {len(cl_analysis['hard_missing']) - 15} more")
 
     st.divider()
 
