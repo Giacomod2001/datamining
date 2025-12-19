@@ -295,33 +295,34 @@ def _interpret_topic_keywords(keywords: List[str]) -> str:
     # Check which category matches
     if kw_lower & cloud_tech:
         if kw_lower & data_tech:
-            return f"Cloud Data Engineering: Lavoro con piattaforme cloud ({', '.join(kw_lower & cloud_tech)}) per gestire e processare dati"
+            return f"Cloud Data Engineering: Working with cloud platforms ({', '.join(kw_lower & cloud_tech)}) to manage and process data"
         elif kw_lower & design_arch:
-            return f"Architettura Cloud: Progettazione di sistemi scalabili su {', '.join(kw_lower & cloud_tech)}"
+            return f"Cloud Architecture: Designing scalable systems on {', '.join(kw_lower & cloud_tech)}"
         else:
-            return f"Cloud Infrastructure: Focus su tecnologie cloud come {', '.join(keywords[:3])}"
+            return f"Cloud Infrastructure: Focus on cloud technologies like {', '.join(keywords[:3])}"
     
     elif kw_lower & viz_tech:
-        return f"Data Visualization & BI: Creazione di dashboard e report con strumenti come {', '.join(keywords[:3])}"
+        return f"Data Visualization & BI: Creating dashboards and reports with tools like {', '.join(keywords[:3])}"
     
     elif kw_lower & ml_ai:
-        return f"Machine Learning & AI: Sviluppo di modelli predittivi e soluzioni intelligenti"
+        return f"Machine Learning & AI: Developing predictive models and intelligent solutions"
     
     elif kw_lower & web_tech:
-        return f"Web Development: Sviluppo applicazioni web moderne con {', '.join(keywords[:3])}"
+        return f"Web Development: Building modern web applications with {', '.join(keywords[:3])}"
     
     elif kw_lower & data_tech:
-        return f"Data Management: Gestione database, ETL, e analisi dati con focus su {', '.join(keywords[:3])}"
+        return f"Data Management: Database, ETL, and data analysis focused on {', '.join(keywords[:3])}"
     
     elif kw_lower & design_arch:
-        return f"System Design: Progettazione di architetture software scalabili e distribuite"
+        return f"System Design: Designing scalable and distributed software architectures"
     
     elif kw_lower & business:
-        return f"Business Domain: Focus su aspetti business come {', '.join(keywords[:3])}"
+        return f"Business Domain: Focus on business aspects like {', '.join(keywords[:3])}"
     
     else:
         # Generic fallback
-        return f"Competenze chiave: {', '.join(keywords[:3])}"
+        return f"Key Competencies: {', '.join(keywords[:3])}"
+
 
 def _generate_job_summary(keywords: List[str]) -> str:
     """
@@ -332,28 +333,28 @@ def _generate_job_summary(keywords: List[str]) -> str:
     # Detect main domain
     if {'data', 'analytics', 'sql', 'database'} & kw_lower:
         if {'aws', 'cloud', 'azure'} & kw_lower:
-            return "🎯 Questa posizione cerca un professionista dei dati con competenze cloud per gestire pipeline e infrastrutture dati scalabili."
+            return "🎯 This position seeks a data professional with cloud expertise to manage scalable data pipelines and infrastructure."
         elif {'power', 'bi', 'tableau', 'visualization'} & kw_lower:
-            return "🎯 Questa posizione cerca un analista/engineer focalizzato su Business Intelligence e visualizzazione dati."
+            return "🎯 This position seeks an analyst/engineer focused on Business Intelligence and data visualization."
         else:
-            return "🎯 Questa posizione cerca un professionista con competenze in gestione e analisi dati."
+            return "🎯 This position seeks a professional with data management and analytics skills."
     
     elif {'engineer', 'software', 'developer', 'programming'} & kw_lower:
         if {'cloud', 'aws', 'azure', 'kubernetes'} & kw_lower:
-            return "🎯 Questa posizione cerca un software engineer con focus su cloud e architetture distribuite."
+            return "🎯 This position seeks a software engineer with focus on cloud and distributed architectures."
         else:
-            return "🎯 Questa posizione cerca un software engineer per sviluppo applicazioni."
+            return "🎯 This position seeks a software engineer for application development."
     
     elif {'design', 'architecture', 'system'} & kw_lower:
-        return "🎯 Questa posizione cerca un architect per progettare sistemi complessi e scalabili."
+        return "🎯 This position seeks an architect to design complex and scalable systems."
     
     elif {'ml', 'machine', 'learning', 'ai', 'model'} & kw_lower:
-        return "🎯 Questa posizione cerca uno specialista in Machine Learning e AI."
+        return "🎯 This position seeks a Machine Learning and AI specialist."
     
     else:
         # Generic
         top3 = ', '.join(keywords[:3])
-        return f"🎯 Questa posizione cerca competenze principalmente in: {top3}."
+        return f"🎯 This position primarily seeks expertise in: {top3}."
 
 # --- NEW: NAMED ENTITY RECOGNITION (NER) ---
 try:
