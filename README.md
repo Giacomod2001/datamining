@@ -1,121 +1,166 @@
-# Job Seeker Helper 🎯
+# Job Seeker Helper
 
-## Overview
+**AI-Powered Career Analytics for Smarter Job Applications**
 
-**Job Seeker Helper** is an advanced open-source AI-powered analytics dashboard designed to revolutionize job application analysis. By leveraging **Hierarchical Inference**, **Machine Learning**, and **Natural Language Processing**, it provides comprehensive evaluation of CVs, Job Descriptions, and Cover Letters—going far beyond simple keyword matching to understand the *semantic context* of your professional profile.
-
-This cutting-edge tool empowers job seekers with actionable insights, skill gap analysis, personalized learning pathways, and intelligent career recommendations.
+[![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
-## ✨ Key Features
+## Overview
 
-### 🧠 Semantic & Hierarchical Inference
-Unlike traditional ATS systems, our engine understands skill relationships through custom semantic logic:
-- **Inference Engine**: Automatically deduces implicit skills (e.g., *BigQuery* → *Cloud Computing* + *SQL*)
-- **Transferable Logic**: Recognizes equivalent tools (*Looker* ≈ *Power BI*), marking them as "Transferable" rather than "Missing"
-- **Cross-Domain Support**: Analyzes roles across Tech, Business, Marketing, and more using TF-IDF fallback mechanisms
+**Job Seeker Helper** is an advanced AI-powered analytics platform that transforms how you approach job applications. By leveraging Natural Language Processing, Machine Learning, and Semantic Analysis, it provides intelligent insights into:
 
-### 📊 Comprehensive Gap Analysis
-- **Technical vs. Soft Skills**: Distinct evaluation pipelines for quantifiable and behavioral competencies
-- **Portfolio-Based Triggers**: Complex domains (*Computer Vision*, *System Design*) flagged for qualitative portfolio review
-- **Bilingual Support (IT/EN)**: Upload Italian CV + English JD (or vice versa) with automatic skill mapping
-- **Smart Language Detection**: Automatically assigns native language proficiency based on CV context
+- **CV-Job Description Alignment** - Understand your fit percentage with precision
+- **Skills Gap Analysis** - Identify missing competencies with learning pathways
+- **Cover Letter Optimization** - Get actionable feedback on application quality
+- **Career Path Discovery** - Explore alternative roles based on your skillset
+- **Job Context Intelligence** - Decode what positions really need
 
-### 💡 Job Context Intelligence (NEW!)
-**Understand what the job REALLY wants:**
-- **AI-Powered Topic Analysis**: LDA-based analysis identifies key themes from job descriptions
-- **Human-Readable Interpretations**: Converts raw keywords into clear explanations (e.g., "Cloud Data Engineering: Work with AWS to manage scalable data pipelines")
-- **Visual Summary**: Shows job focus areas with interpreted categories and keyword tags
-- **Multilingual Support**: Provides insights in Italian or English based on document language
+Unlike traditional ATS systems that rely on simple keyword matching, our tool understands **semantic relationships**, recognizes **transferable skills**, and provides **personalized recommendations** for career growth.
 
-### ✉️ Cover Letter Evaluation (NEW!)
-**Optimize your application letters:**
-- **Comprehensive Scoring**: Analyzes keyword coverage (35%), soft skills (15%), length (15%), structure (20%), and personalization (15%)
-- **Actionable Feedback**: Get specific strengths and improvement suggestions
-- **Keyword Coverage**: See which required skills you mentioned vs. missed
-- **Bilingual Analysis**: Automatic language detection with localized feedback (IT/EN)
-- **Structure Validation**: Checks for proper greeting, closing, and professional formatting
+---
 
-### 🎨 Visual Analytics & Advanced Mining
-- **Skill Clustering**: K-Means and Hierarchical Clustering visualize skill relationships with interactive scatter plots and dendrograms
-- **Knowledge Graph**: Interactive skill ontology visualization showing hierarchical relationships
-- **Topic Modeling**: LDA-based job theme identification with word cloud visualization
-- **Named Entity Recognition (NER)**: Extracts Organizations, Locations, and People from resumes
-- **Fuzzy Matching**: Handles typos and variations (e.g., "Phyton" → "Python")
-- **Interactive Plotly Charts**: Real-time match score visualization
+## Key Features
+
+### 🧠 Intelligent Skill Analysis
+
+**Semantic Inference Engine**
+- Automatically deduces implicit skills (e.g., *BigQuery* → *SQL*, *Cloud Computing*, *Data Science*)
+- Recognizes tool equivalencies (*Looker Studio* ≈ *Power BI*, *GA4* ≈ *Google Analytics*)
+- Marks similar tools as "Transferable" rather than "Missing"
+
+**Comprehensive Gap Analysis**
+- Separates technical and soft skills evaluation
+- Portfolio-based verification for complex competencies
+- Bilingual support (English/Italian) with automatic skill mapping
+- Smart language detection for native proficiency
+
+### 💡 Job Intelligence
+
+**AI-Powered Context Analysis (LDA Topic Modeling)**
+- Identifies key themes and focus areas from job descriptions
+- Translates technical keywords into human-readable interpretations
+- Provides visual summaries with color-coded skill tags
+- Supports both English and Italian with localized insights
+
+### ✉️ Cover Letter Evaluation
+
+**Multi-Dimensional Scoring System**
+- **Keyword Coverage** (35%) - Technical skills mentioned vs. required
+- **Soft Skills** (15%) - Behavioral competencies alignment
+- **Length** (15%) - Optimal word count analysis (250-400 words)
+- **Structure** (20%) - Professional formatting validation
+- **Personalization** (15%) - Specific examples and customization
+
+**Actionable Feedback**
+- Strengths identification with evidence-based insights
+- Improvement suggestions with specific recommendations
+- Missing keywords highlighting for strategic additions
+- Automatic language detection (English/Italian)
+
+### 📊 Visual Analytics
+
+**Interactive Dashboards**
+- Real-time match score visualization with color-coded gauges
+- Skill clustering using K-Means and Hierarchical methods
+- Knowledge graph showing skill hierarchies and relationships
+- Word clouds for topic modeling results
+
+**Compact Tag-Based Display**
+- Color-coded skill badges (Matched, Transferable, Project-verified, Missing, Bonus)
+- Inline keyword tags for space-efficient display
+- Visual legend in sidebar for quick reference
 
 ### 🔮 AI Career Compass
-**Discover your best career paths:**
-- **Intelligent Role Recommendation**: Uses Cosine Similarity on TF-IDF vectors to suggest top 3 alternative roles
-- **Smart Filtering**: Excludes your target and current roles to show only true alternatives
-- **Quality Threshold**: Only suggests roles with >30% match to avoid low-quality recommendations
-- **Direct Job Search Links**: One-click access to:
-  - 🌐 Google Jobs
-  - 💼 LinkedIn
-  - 🔍 Indeed Italia
+
+**Intelligent Role Recommendations**
+- Uses Cosine Similarity on TF-IDF vectors for role matching
+- Suggests top 3 alternative career paths based on your skills
+- Filters out redundant suggestions (current and target roles)
+- Quality threshold (>30%) ensures relevant recommendations only
+
+**Direct Job Search Integration**
+- One-click access to Google Jobs, LinkedIn, Indeed Italia
+- Pre-filled search queries for immediate application
+- Targeted to Italian job market where relevant
 
 ### 📂 Project Evaluation
-**Validate skills through practical experience:**
-- **Portfolio Triangulation**: Upload project descriptions to prove missing skills
-- **Project-Verified Badge**: Highlighted skills confirmed through projects
-- **Dynamic Layout**: Toggle to add dedicated "Project Context" column
-- **Score Boost**: Project-verified skills contribute to final match percentage
 
-### 📚 Actionable Learning Pathways
-**Personalized skill development plans for every gap:**
-- 🔍 **Google Search**: Targeted tutorial queries
-- 📺 **YouTube**: Direct links to educational content
-- 🎓 **MOOC Hub**: Multi-platform search (Coursera, Udemy, LinkedIn Learning)
+**Portfolio Triangulation**
+- Upload project descriptions to validate missing skills
+- Project-verified skills get highlighted and contribute to match score
+- Dynamic 2-4 column layout adapts to enabled features
+- Strategic interview preparation suggestions
+
+### 📚 Learning Pathways
+
+**Personalized Skill Development**
+- Google Search links for tutorials and guides
+- YouTube educational content for video learners
+- MOOC platform searches (Coursera, Udemy, LinkedIn Learning)
+- Curated resources for specific technologies
 
 ### 📄 Professional Reports
-**Export comprehensive analysis:**
-- **PDF Reports**: Beautifully formatted with executive summary, skill breakdowns, and learning roadmap
-- **Text Reports**: Detailed markdown-formatted analysis for easy sharing
-- **Cover Letter Analysis**: Included in reports when evaluated
+
+**Comprehensive Export Options**
+- PDF reports with executive summary and detailed breakdowns
+- Text reports in clean markdown format
+- Includes CV match, cover letter analysis, and career recommendations
+- Professional formatting for sharing with mentors or coaches
 
 ### 🔐 Developer Mode
-**Transparent AI decision-making:**
-- Password-protected debugger interface
-- View inference rules, skill clusters, and internal logic
+
+**Transparent AI Decision-Making**
+- Password-protected debugger interface (default: `1234`)
+- View inference rules and skill clusters
 - Access to training data and knowledge base
 - Topic modeling and NER analysis tools
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
-![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
-![Scikit-Learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
-![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
-![Plotly](https://img.shields.io/badge/Plotly-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)
-![Scipy](https://img.shields.io/badge/Scipy-8CAAE6?style=for-the-badge&logo=scipy&logoColor=white)
-![NLTK](https://img.shields.io/badge/NLTK-NLP-blue?style=for-the-badge&logo=python&logoColor=white)
-![PyPDF2](https://img.shields.io/badge/PyPDF2-PDF_Parsing-red?style=for-the-badge)
-![FPDF](https://img.shields.io/badge/FPDF-Report_Gen-green?style=for-the-badge)
-![WordCloud](https://img.shields.io/badge/WordCloud-Visualization-orange?style=for-the-badge)
+**Core Framework**
+- **Streamlit** - Interactive web interface
+- **Python 3.8+** - Backend logic
 
-**Core Libraries:**
-- **NLP**: NLTK, scikit-learn (TF-IDF, LDA, Clustering)
-- **Data Processing**: Pandas, NumPy
-- **Visualization**: Plotly, Matplotlib, WordCloud, Graphviz
-- **PDF Handling**: PyPDF2, FPDF
-- **Fuzzy Matching**: thefuzz
+**Machine Learning & NLP**
+- **scikit-learn** - TF-IDF, LDA, Clustering, Cosine Similarity
+- **NLTK** - Named Entity Recognition, tokenization
+- **WordCloud** - Topic visualization
+
+**Data Processing**
+- **Pandas** - Data manipulation
+- **NumPy** - Numerical operations
+
+**Visualization**
+- **Plotly** - Interactive charts and gauges
+- **Matplotlib** - Static visualizations
+- **Graphviz** - Knowledge graph rendering
+
+**Document Handling**
+- **PyPDF2** - PDF text extraction
+- **FPDF** - PDF report generation
+
+**Utilities**
+- **thefuzz** - Fuzzy string matching for typo handling
+- **urllib** - URL encoding for job search links
 
 ---
 
-## 🚀 Installation & Setup
+## Installation
 
 ### Prerequisites
 - Python 3.8 or higher
-- Git
+- Git (optional, for cloning)
 
-### Step-by-Step Guide
+### Quick Setup
 
-1. **Clone the Repository**
+1. **Clone or Download**
    ```bash
-   git clone https://github.com/your-username/job-seeker-helper.git
+   git clone https://github.com/yourusername/job-seeker-helper.git
    cd job-seeker-helper
    ```
 
@@ -124,131 +169,179 @@ Unlike traditional ATS systems, our engine understands skill relationships throu
    pip install -r requirements.txt
    ```
 
-3. **Launch the Application**
+3. **Launch Application**
    ```bash
    streamlit run app.py
    ```
 
-4. **Access the App**
-   - Open your browser to `http://localhost:8501`
-   - The app will automatically open in your default browser
+4. **Access Interface**
+   - Open browser to `http://localhost:8501`
+   - Application will auto-launch in default browser
 
 ---
 
-## 📖 Usage Manual
+## Usage Guide
 
 ### Basic Workflow
 
-1. **Input Your Documents**:
-   - **CV** (Required): Upload PDF or paste text of your resume
-   - **Job Description** (Required): Upload PDF or paste JD text
-   - **Project Context** (Optional): Toggle in sidebar to add project descriptions
-   - **Cover Letter** (Optional): Toggle in sidebar to evaluatecover letter
+**Step 1: Prepare Documents**
+- Format your CV (PDF or text)
+- Obtain target job description (PDF or text)
+- Optional: Prepare cover letter and project descriptions
 
-2. **Configure Optional Features** (Sidebar):
-   - ✅ `📂 Project Evaluation` - Validate skills through portfolio
-   - ✅ `✉️ Cover Letter Evaluation` - Analyze application letter quality
-   - ✅ `Developer Mode` - Access advanced debugging tools (password: `1234`)
+**Step 2: Configure Analysis**
 
-3. **Run Analysis**:
-   - Click **"🔍 Analyze"** button
-   - Wait for comprehensive AI-powered evaluation
+Enable optional features via sidebar toggles:
+- **Project Evaluation** - Validate skills through portfolio
+- **Cover Letter Analysis** - Get AI feedback on application letter
 
-4. **Review Results**:
-   - **Match Score**: Weighted percentage showing CV-JD alignment
-   - **Cover Letter Score**: (if enabled) Analysis of your application letter
-   - **Skill Breakdown**:
-     - ✅ **Matched**: Direct skill overlaps
-     - ⚠️ **Transferable**: Equivalent skills you possess
-     - 📂 **Portfolio**: Skills verified by projects
-     - ❌ **Missing**: Gaps with learning resources
-     - ➕ **Bonus**: Extra skills bringing competitive advantage
-   - **Job Context Analysis**: What the position really seeks
-   - **Career Compass**: Alternative role recommendations
-   - **Learning Plans**: Personalized resources for skill gaps
+**Step 3: Upload & Analyze**
+1. Upload CV in column 1
+2. Upload optional Project/Cover Letter (if toggles enabled)
+3. Upload Job Description in last column
+4. Click "🔍 Analyze" button
 
-5. **Export Reports**:
-   - Download **PDF Report** for professional presentation
-   - Download **Text Report** for easy sharing and editing
+**Step 4: Review Results**
+
+The analysis provides:
+- **Match Score** - Overall CV-JD alignment percentage
+- **Cover Letter Score** - Application quality assessment (if enabled)
+- **Skill Breakdown** - Color-coded tags showing:
+  - 🟢 Green = Matched skills
+  - 🟡 Yellow = Transferable skills (with source)
+  - 🔵 Blue = Project-verified skills
+  - 🔴 Red = Missing skills (to learn)
+  - ⚪ Gray = Bonus skills (competitive advantage)
+- **Job Context** - What the position really seeks
+- **Career Compass** - Alternative role suggestions
+- **Learning Plans** - Resources for skill gaps
+
+**Step 5: Export & Apply**
+- Download PDF or Text report
+- Use learning pathways to close skill gaps
+- Improve cover letter based on suggestions
+- Apply via integrated job board links
 
 ### Advanced Features
 
-#### Developer Mode
-Access internal analytics:
-1. Enable "Developer Mode" toggle in sidebar
+**Developer Mode Access**
+1. Enable "🔧 Developer Mode" in sidebar
 2. Enter password: `1234`
-3. Click "Open Debugger"
-4. Explore:
-   - 🧠 Inference rules visualization
-   - 🔗 Skill cluster relationships
-   - 📊 Advanced clustering analysis
-   - 🧩 Topic modeling results
-   - 🏷️ NER entity extraction
-   - 📚 Training data inspection
+3. Click "🔍 Open Debugger"
+4. Explore inference rules, clusters, and analysis internals
 
 ---
 
-## 🎯 Use Cases
-
-- **Job Seekers**: Optimize CV and cover letters for specific roles
-- **Career Switchers**: Discover transferable skills and alternative paths
-- **Students/Graduates**: Identify skill gaps before entering job market
-- **HR Professionals**: Reverse-engineer ATS requirements
-- **Career Coaches**: Provide data-driven guidance to clients
-
----
-
-## 📊 Scoring Methodology
+## Scoring Methodology
 
 ### CV Match Score
-- **Direct Matches**: 100% weight
-- **Transferable Skills**: 50% weight
-- **Project-Verified Skills**: 30% weight
-- **Formula**: `(Matched + Transferable×0.5 + Projects×0.3) / Total Required × 100`
+```
+Score = (Direct Matches × 1.0) + (Transferable × 0.5) + (Projects × 0.3)
+        ───────────────────────────────────────────────────────────
+                        Total Required Skills
+
+Final Percentage = (Score / Total Required) × 100
+```
 
 ### Cover Letter Score
-- **Keyword Coverage**: 35% - Technical skills mentioned
-- **Soft Skills**: 15% - Behavioral competencies
-- **Length**: 15% - Optimal 250-400 words
-- **Structure**: 20% - Professional formatting
-- **Personalization**: 15% - Specific examples and custom content
+```
+Overall Score = (Keyword Coverage × 35%)
+              + (Soft Skills × 15%)
+              + (Length × 15%)
+              + (Structure × 20%)
+              + (Personalization × 15%)
+```
+
+**Grading Scale:**
+- 80-100% = Excellent
+- 60-79% = Good
+- 0-59% = Needs Improvement
 
 ---
 
-## 🔒 Privacy & Security
+## Use Cases
 
-- **100% Local Processing**: All analysis runs on your machine
-- **No Data Collection**: Your documents never leave your computer
-- **No External APIs**: Fully offline operation (except optional job search links)
-- **Open Source**: Transparent codeand auditable algorithms
-
----
-
-## 📝 License
-
-This project is licensed under the MIT License - see the `LICENSE` file for details.
+- **Job Seekers** - Optimize applications for specific roles
+- **Career Switchers** - Discover transferable skills and viable pivots
+- **Students/Graduates** - Identify skill gaps before entering job market
+- **HR Professionals** - Reverse-engineer ATS requirements
+- **Career Coaches** - Provide data-driven guidance to clients
+- **Recruiters** - Quickly assess candidate-role fit
 
 ---
 
-## 🙏 Acknowledgments
+## Privacy & Security
 
-- **Streamlit Team**: For the exceptional rapid development framework
-- **Scikit-Learn Community**: For world-class machine learning tools
-- **NLTK Contributors**: For comprehensive NLP capabilities
-- **Open Source Community**: For continuous innovation and support
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
+- ✅ **100% Local Processing** - All analysis runs on your machine
+- ✅ **No Data Collection** - Documents never leave your computer
+- ✅ **No External APIs** - Fully offline operation (except job search links)
+- ✅ **Open Source** - Transparent code, auditable algorithms
+- ✅ **No Tracking** - Zero analytics or user monitoring
 
 ---
 
-## 📧 Support
+## Roadmap
 
-For questions, suggestions, or feedback, please open an issue on GitHub.
+- [ ] Multi-language support (Spanish, French, German)
+- [ ] Resume builder integration
+- [ ] LinkedIn profile import
+- [ ] Interview question generator
+- [ ] Salary range estimation
+- [ ] Industry-specific templates
+- [ ] Browser extension for job board integration
+
+---
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit:
+- 🐛 Bug reports via Issues
+- 💡 Feature requests via Discussions
+- 🔧 Pull requests for improvements
+
+**Development Setup:**
+```bash
+# Fork and clone
+git clone https://github.com/yourusername/job-seeker-helper.git
+cd job-seeker-helper
+
+# Create branch
+git checkout -b feature/your-feature-name
+
+# Make changes and test
+streamlit run app.py
+
+# Submit PR
+git push origin feature/your-feature-name
+```
+
+---
+
+## License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## Acknowledgments
+
+Built with powerful open-source tools:
+- **Streamlit Team** - Exceptional rapid development framework
+- **Scikit-Learn Community** - World-class ML algorithms
+- **NLTK Contributors** - Comprehensive NLP capabilities
+- **Open Source Community** - Continuous innovation and support
+
+---
+
+## Support
+
+**Questions or Issues?**
+- 📖 Check the [Wiki](https://github.com/yourusername/job-seeker-helper/wiki) for detailed guides
+- 💬 Open an [Issue](https://github.com/yourusername/job-seeker-helper/issues) for bugs
+- 🌟 Star the repo if you find it helpful!
 
 ---
 
 **Made with ❤️ for job seekers worldwide**
+
+*Empower your career journey with AI-driven insights*
