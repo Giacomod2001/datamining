@@ -187,18 +187,18 @@ def render_home():
     st.divider()
 
     # =============================================================================
-    # LAYOUT DINAMICO: Calcola quante colonne servono in base ai toggle attivati
+    # DYNAMIC LAYOUT: Calculate how many columns are needed based on active toggles
     # =============================================================================
-    # Base: 2 colonne (CV + JD)
-    # +1 se Project Evaluation è attivo
-    # +1 se Cover Letter Evaluation è attivo
-    # Massimo: 4 colonne (CV + Project + Cover Letter + JD)
+    # Base: 2 columns (CV + JD)
+    # +1 if Project Evaluation is active
+    # +1 if Cover Letter Evaluation is active
+    # Maximum: 4 columns (CV + Project + Cover Letter + JD)
     
     num_cols = 2  # CV + JD (base)
     if show_project_eval: num_cols += 1
     if show_cover_letter: num_cols += 1
     
-    # Crea le colonne in base al numero calcolato
+    # Create columns based on calculated number
     if num_cols == 2:
         c1, c2 = st.columns(2)
         c3, c4 = None, None
@@ -209,7 +209,7 @@ def render_home():
         c1, c2, c3, c4 = st.columns(4)
 
     # =============================================================================
-    # COLONNA 1: CV (sempre presente)
+    # COLUMN 1: CV (always present)
     # =============================================================================
     with c1:
         st.subheader("Your CV")
@@ -224,15 +224,15 @@ def render_home():
                 except Exception as e: st.error(f"Error: {e}")
     
     # =============================================================================
-    # GESTIONE COLONNE OPZIONALI: Assegna dinamicamente Project, Cover Letter, JD
+    # OPTIONAL COLUMNS MANAGEMENT: Dynamically assign Project, Cover Letter, JD
     # =============================================================================
     project_text = ""
     cover_letter_text = ""
-    current_col = 2  # Inizia dalla colonna 2 (la prima è il CV)
+    current_col = 2  # Start from column 2 (first is CV)
     
-    # Colonna Project (se abilitato nel toggle)
+    # Project Column (if enabled via toggle)
     if show_project_eval:
-        # Assegna la colonna corretta in base a quante colonne sono già usate
+        # Assign the correct column based on how many are already used
         proj_col = c2 if current_col == 2 else (c3 if current_col == 3 else c4)
         with proj_col:
             st.subheader("Project Context")
@@ -244,9 +244,9 @@ def render_home():
                 if uploaded_proj:
                     try: project_text = ml_utils.extract_text_from_pdf(uploaded_proj)
                     except Exception as e: st.error(f"Error: {e}")
-        current_col += 1  # Prossima colonna
+        current_col += 1  # Move to next column
     
-    # Colonna Cover Letter (se abilitato nel toggle)
+    # Cover Letter Column (if enabled via toggle)
     if show_cover_letter:
         cl_col = c2 if current_col == 2 else (c3 if current_col == 3 else c4)
         with cl_col:
@@ -262,7 +262,7 @@ def render_home():
         current_col += 1
     
     # =============================================================================
-    # COLONNA JD: Job Description (sempre presente, ultima colonna)
+    # COLUMN JD: Job Description (always present, last column)
     # =============================================================================
     jd_col = c2 if current_col == 2 else (c3 if current_col == 3 else c4)
     with jd_col:
@@ -278,33 +278,33 @@ def render_home():
                 except Exception as e: st.error(f"Error: {e}")
 
     # =============================================================================
-    # PULSANTE ANALISI: Trigger per l'elaborazione
+    # ANALYZE BUTTON: Trigger for processing
     # =============================================================================
     if st.button("🔍 Analyze", type="primary", use_container_width=True):
-        # Validazione input
+        # Input validation
         if not cv or not jd:
             st.warning("Please provide both CV and Job Description.")
             return
 
         with st.spinner("Analyzing profile..."):
-            # Analisi CV vs JD (con o senza progetti)
+            # CV vs JD Analysis (with or without projects)
             if show_project_eval and project_text:
                  res = ml_utils.analyze_gap_with_project(cv, jd, project_text)
             else:
                  res = ml_utils.analyze_gap(cv, jd)
             
-            # Analisi Cover Letter (se fornita)
+            # Cover Letter Analysis (if provided)
             cl_analysis = None
             if show_cover_letter and cover_letter_text:
                 cl_analysis = ml_utils.analyze_cover_letter(cover_letter_text, jd, cv)
             
-            # Salva risultati in session state per il debugger
+            # Save results in session state for debugger
             st.session_state["last_results"] = res
             st.session_state["last_cv_text"] = cv
             st.session_state["last_jd_text"] = jd
             st.session_state["last_cl_analysis"] = cl_analysis
                  
-            # Mostra i risultati
+            # Display results
             render_results(res, jd, cv, cl_analysis)
 
 def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
