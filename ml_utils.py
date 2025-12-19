@@ -916,7 +916,7 @@ def analyze_gap_with_project(cv_text: str, job_text: str, project_text: str) -> 
 # =============================================================================
 # REPORT GENERATION (Text & PDF)
 # =============================================================================
-def generate_detailed_report_text(res: Dict, jd_text: str = "") -> str:
+def generate_detailed_report_text(res: Dict, jd_text: str = "", cl_analysis: Dict = None) -> str:
     """Generates a detailed text/markdown report."""
     match_pct = res['match_percentage']
     
@@ -930,6 +930,18 @@ def generate_detailed_report_text(res: Dict, jd_text: str = "") -> str:
     elif match_pct >= 60: assessment = "GOOD POTENTIAL - Some gaps, but strong foundation."
     else: assessment = "HIGH GAP - Significant preparation required."
     report.append(f"Assessment: {assessment}")
+    
+    # Cover Letter Summary (if available)
+    if cl_analysis:
+        cl_score = cl_analysis['overall_score']
+        report.append(f"Cover Letter Score: {cl_score:.1f}%")
+        if cl_score >= 80:
+            report.append("Cover Letter Assessment: EXCELLENT - Strong application letter")
+        elif cl_score >= 60:
+            report.append("Cover Letter Assessment: GOOD - Solid foundation with room for improvement")
+        else:
+            report.append("Cover Letter Assessment: NEEDS WORK - Significant improvements recommended")
+    
     report.append("\n")
 
     # 2. Skill Profile
@@ -971,16 +983,61 @@ def generate_detailed_report_text(res: Dict, jd_text: str = "") -> str:
     else:
         report.append("No critical gaps detected. You are well aligned!")
     report.append("\n")
+    
+    # 4. Cover Letter Analysis (if available)
+    if cl_analysis:
+        report.append("--------------------------------------------------")
+        report.append("3. COVER LETTER EVALUATION")
+        report.append("--------------------------------------------------")
+        report.append(f"Overall Score: {cl_analysis['overall_score']:.1f}%")
+        report.append(f"Word Count: {cl_analysis['word_count']} words")
+        report.append(f"Language: {cl_analysis['language'] or 'English'}")
+        report.append("")
+        report.append("DETAILED METRICS:")
+        report.append(f"  - Keyword Coverage: {cl_analysis['hard_coverage']:.0f}% (Technical skills mentioned)")
+        report.append(f"  - Soft Skills: {cl_analysis['soft_coverage']:.0f}% (Behavioral competencies)")
+        report.append(f"  - Structure: {cl_analysis['structure_score']:.0f}% (Professional formatting)")
+        report.append(f"  - Personalization: {cl_analysis['personalization_score']:.0f}% (Specific examples)")
+        report.append("")
+        
+        if cl_analysis.get('strengths'):
+            report.append("STRENGTHS:")
+            for strength in cl_analysis['strengths']:
+                # Remove emoji for text report
+                clean_strength = strength.replace("✅ ", "").replace("👍 ", "")
+                report.append(f"  + {clean_strength}")
+            report.append("")
+        
+        if cl_analysis.get('improvements'):
+            report.append("IMPROVEMENTS RECOMMENDED:")
+            for improvement in cl_analysis['improvements']:
+                # Remove emoji for text report
+                clean_imp = improvement.replace("⚠️ ", "").replace("💡 ", "").replace("📝 ", "").replace("📏 ", "")
+                report.append(f"  * {clean_imp}")
+            report.append("")
+        
+        if cl_analysis.get('hard_missing'):
+            missing_kws = list(cl_analysis['hard_missing'])[:10]
+            if missing_kws:
+                report.append("MISSING KEYWORDS (Consider adding):")
+                for kw in missing_kws:
+                    report.append(f"  - {kw}")
+                report.append("")
+        
+        report.append("\n")
 
-    # 4. Strategic Recommendations
+    # 5. Strategic Recommendations
+    section_num = 4 if cl_analysis else 3
     report.append("--------------------------------------------------")
-    report.append("3. STRATEGIC RECOMMENDATIONS")
+    report.append(f"{section_num}. STRATEGIC RECOMMENDATIONS")
     report.append("--------------------------------------------------")
     if match_pct < 100:
         report.append("* Close the Gap: Focus on the 'Critical Gaps' listed above.")
         report.append("* Leverage Portfolio: Explicitly mention your 'Portfolio Assets' in the interview.")
         if res.get("transferable"):
             report.append("* Explain Transferability: Be ready to explain how your existing skills apply to the missing ones.")
+        if cl_analysis and cl_analysis.get('improvements'):
+            report.append("* Improve Cover Letter: Address the improvements listed in the Cover Letter section.")
     else:
         report.append("* Prepare for Depth: Since you match well, expect deep technical questions.")
         report.append("* Soft Skills: Focus on demonstrating leadership and communication.")
@@ -988,15 +1045,16 @@ def generate_detailed_report_text(res: Dict, jd_text: str = "") -> str:
     report.append("\n")
     report.append("\n")
     
-    # 5. Career Compass (Context Aware)
+    # 6. Career Compass (Context Aware)
     candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
     
     try:
         # Pass JD Text to allow filtering of redundant roles
         recs = recommend_roles(candidate_skills, jd_text)
         if recs:
+            section_num += 1
             report.append("--------------------------------------------------")
-            report.append("4. AI CAREER COMPASS (Alternative Paths)")
+            report.append(f"{section_num}. AI CAREER COMPASS (Alternative Paths)")
             report.append("--------------------------------------------------")
             report.append("Based on your skill vector, you might also be a good fit for:")
             for i, rec in enumerate(recs):
