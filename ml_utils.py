@@ -231,28 +231,129 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
         lda.fit(tf)
 
         feature_names = tf_vectorizer.get_feature_names_out()
-        topics = []
+        topics_raw = []
+        topics_interpreted = []
 
-        # Extract top words for each topic
+        # Extract top words for each topic and interpret them
         for topic_idx, topic in enumerate(lda.components_):
             top_features_ind = topic.argsort()[:-n_words - 1:-1]
             top_features = [feature_names[i] for i in top_features_ind]
-            topics.append(f"Topic {topic_idx+1}: {', '.join(top_features)}")
+            
+            # Store raw for debugging
+            topics_raw.append(top_features)
+            
+            # Generate user-friendly interpretation
+            interpretation = _interpret_topic_keywords(top_features)
+            topics_interpreted.append(interpretation)
 
-        # Generate Word Cloud for the first topic (or combined)
-        # Flattening simple corpus for cloud
-        # Flattening simple corpus for cloud
+        # Generate summary of the job
+        all_keywords = []
+        for topic in lda.components_:
+            top_ind = topic.argsort()[-10:][::-1]
+            all_keywords.extend([feature_names[i] for i in top_ind])
+        
+        # Deduplicate and get most common
+        from collections import Counter
+        keyword_counts = Counter(all_keywords)
+        top_job_keywords = [k for k, _ in keyword_counts.most_common(8)]
+        
+        job_summary = _generate_job_summary(top_job_keywords)
+
+        # Generate Word Cloud
         combined_text = " ".join(text_corpus)
         wordcloud = WordCloud(width=800, height=400, background_color='white', stopwords=set(all_stop_words)).generate(combined_text)
         
         wc_path = "topic_wordcloud.png"
         wordcloud.to_file(wc_path)
 
-        return topics, wc_path
+        return {
+            'topics': topics_interpreted,
+            'summary': job_summary,
+            'keywords': top_job_keywords,
+            'wordcloud_path': wc_path
+        }
 
     except Exception as e:
         print(f"LDA Error: {e}")
-        return [], None
+        return None
+
+def _interpret_topic_keywords(keywords: List[str]) -> str:
+    """
+    Converts a list of keywords into a human-readable interpretation.
+    """
+    # Common technology/domain patterns
+    cloud_tech = {'aws', 'azure', 'gcp', 'cloud', 'kubernetes', 'docker'}
+    data_tech = {'data', 'sql', 'database', 'analytics', 'etl', 'pipeline', 'warehouse', 'bigquery'}
+    viz_tech = {'tableau', 'power', 'bi', 'powerbi', 'visualization', 'dashboard', 'looker'}
+    ml_ai = {'machine', 'learning', 'ai', 'model', 'deep', 'neural', 'nlp', 'scikit'}
+    web_tech = {'javascript', 'react', 'node', 'frontend', 'backend', 'api', 'rest'}
+    design_arch = {'design', 'architecture', 'scalable', 'distributed', 'system', 'infrastructure'}
+    business = {'business', 'strategy', 'marketing', 'sales', 'customer', 'revenue'}
+    
+    kw_lower = {k.lower() for k in keywords}
+    
+    # Check which category matches
+    if kw_lower & cloud_tech:
+        if kw_lower & data_tech:
+            return f"Cloud Data Engineering: Lavoro con piattaforme cloud ({', '.join(kw_lower & cloud_tech)}) per gestire e processare dati"
+        elif kw_lower & design_arch:
+            return f"Architettura Cloud: Progettazione di sistemi scalabili su {', '.join(kw_lower & cloud_tech)}"
+        else:
+            return f"Cloud Infrastructure: Focus su tecnologie cloud come {', '.join(keywords[:3])}"
+    
+    elif kw_lower & viz_tech:
+        return f"Data Visualization & BI: Creazione di dashboard e report con strumenti come {', '.join(keywords[:3])}"
+    
+    elif kw_lower & ml_ai:
+        return f"Machine Learning & AI: Sviluppo di modelli predittivi e soluzioni intelligenti"
+    
+    elif kw_lower & web_tech:
+        return f"Web Development: Sviluppo applicazioni web moderne con {', '.join(keywords[:3])}"
+    
+    elif kw_lower & data_tech:
+        return f"Data Management: Gestione database, ETL, e analisi dati con focus su {', '.join(keywords[:3])}"
+    
+    elif kw_lower & design_arch:
+        return f"System Design: Progettazione di architetture software scalabili e distribuite"
+    
+    elif kw_lower & business:
+        return f"Business Domain: Focus su aspetti business come {', '.join(keywords[:3])}"
+    
+    else:
+        # Generic fallback
+        return f"Competenze chiave: {', '.join(keywords[:3])}"
+
+def _generate_job_summary(keywords: List[str]) -> str:
+    """
+    Generates a summary sentence explaining what the job is really about.
+    """
+    kw_lower = {k.lower() for k in keywords}
+    
+    # Detect main domain
+    if {'data', 'analytics', 'sql', 'database'} & kw_lower:
+        if {'aws', 'cloud', 'azure'} & kw_lower:
+            return "🎯 Questa posizione cerca un professionista dei dati con competenze cloud per gestire pipeline e infrastrutture dati scalabili."
+        elif {'power', 'bi', 'tableau', 'visualization'} & kw_lower:
+            return "🎯 Questa posizione cerca un analista/engineer focalizzato su Business Intelligence e visualizzazione dati."
+        else:
+            return "🎯 Questa posizione cerca un professionista con competenze in gestione e analisi dati."
+    
+    elif {'engineer', 'software', 'developer', 'programming'} & kw_lower:
+        if {'cloud', 'aws', 'azure', 'kubernetes'} & kw_lower:
+            return "🎯 Questa posizione cerca un software engineer con focus su cloud e architetture distribuite."
+        else:
+            return "🎯 Questa posizione cerca un software engineer per sviluppo applicazioni."
+    
+    elif {'design', 'architecture', 'system'} & kw_lower:
+        return "🎯 Questa posizione cerca un architect per progettare sistemi complessi e scalabili."
+    
+    elif {'ml', 'machine', 'learning', 'ai', 'model'} & kw_lower:
+        return "🎯 Questa posizione cerca uno specialista in Machine Learning e AI."
+    
+    else:
+        # Generic
+        top3 = ', '.join(keywords[:3])
+        return f"🎯 Questa posizione cerca competenze principalmente in: {top3}."
 
 # --- NEW: NAMED ENTITY RECOGNITION (NER) ---
 try:

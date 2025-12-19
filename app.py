@@ -106,16 +106,17 @@ def render_debug_page():
             jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
             
             if len(jd_corpus) > 5:
-                topics, wc_path = ml_utils.perform_topic_modeling(jd_corpus)
+                result = ml_utils.perform_topic_modeling(jd_corpus)
                 
-                c1, c2 = st.columns([1, 2])
-                with c1:
-                    st.markdown("**Discovered Topics:**")
-                    for t in topics:
-                        st.success(t)
-                with c2:
-                    if wc_path:
-                        st.image(wc_path, caption="Topic Keywords Word Cloud")
+                if result:
+                    c1, c2 = st.columns([1, 2])
+                    with c1:
+                        st.markdown("**Aree Tematiche Identificate:**")
+                        for topic in result['topics']:
+                            st.success(topic)
+                    with c2:
+                        if result['wordcloud_path']:
+                            st.image(result['wordcloud_path'], caption="Topic Keywords Word Cloud")
             else:
                 st.info("Job Description too short for Topic Modeling.")
         else:
@@ -352,6 +353,35 @@ def render_results(res, jd_text=None, cv_text=None):
     # The 'Advanced Data Mining', 'Topic Modeling', and 'NER' sections have been moved 
     # to the 'render_debug_page' function as requested to clean up the main view.
 
+    # --- JOB CONTEXT ANALYSIS ---
+    if jd_text:
+        st.divider()
+        st.subheader("💡 Cosa Cerca Davvero Questa Posizione?")
+        
+        jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
+        
+        if len(jd_corpus) > 5:
+            result = ml_utils.perform_topic_modeling(jd_corpus)
+            
+            if result:
+                # Show summary prominently
+                st.info(result['summary'])
+                
+                # Show interpretations in columns
+                st.markdown("#### 📋 Aree Chiave Richieste:")
+                cols_topic = st.columns(len(result['topics']))
+                for idx, (col, topic) in enumerate(zip(cols_topic, result['topics'])):
+                    with col:
+                        st.markdown(f"**Area {idx+1}**")
+                        st.write(topic)
+                
+                # Show keywords as tags
+                st.markdown("#### 🏷️ Parole Chiave Principali:")
+                keyword_html = " ".join([f"<span style='background-color: #e1f5ff; padding: 5px 10px; border-radius: 5px; margin: 2px; display: inline-block;'>{kw}</span>" for kw in result['keywords']])
+                st.markdown(keyword_html, unsafe_allow_html=True)
+        else:
+            st.info("Job Description troppo breve per l'analisi contestuale.")
+    
     # --- JOB RECOMMENDER (AI Career Compass) ---
     st.divider()
     st.subheader("🔮 AI Career Compass (Alternative Paths)")
@@ -372,10 +402,16 @@ def render_results(res, jd_text=None, cv_text=None):
                  st.progress(int(rec['score']))
                  st.caption(f"**{rec['score']:.0f}% Similarity**")
                  
-                 # Dynamic Links
+                 # Dynamic Links - Italian Job Boards
                  role_query = urllib.parse.quote(rec['role'])
-                 st.markdown(f"🌐 [Search Jobs](https://www.google.com/search?q={role_query}+jobs)")
+                 italy_query = urllib.parse.quote(f"{rec['role']} Italia")
+                 
+                 st.markdown(f"🌐 [Google Jobs](https://www.google.com/search?q={role_query}+jobs)")
                  st.markdown(f"💼 [LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query})")
+                 st.markdown(f"🔍 [Indeed](https://it.indeed.com/jobs?q={italy_query})")
+                 st.markdown(f"🏢 [Randstad](https://www.randstad.it/cerca-lavoro/?q={role_query})")
+                 st.markdown(f"👔 [Adecco](https://www.adecco.it/cerca-lavoro/offerte-lavoro?k={role_query})")
+                 st.markdown(f"🎓 [AlmaLaurea](https://www.almalaurea.it/lavoro/bacheca?Mansione={role_query})")
                  
                  with st.expander("Missing Skills"):
                      for s in rec['missing'][:5]:
