@@ -10,7 +10,7 @@ import urllib.parse
 # PAGE CONFIG
 # =============================================================================
 st.set_page_config(
-    page_title="Job Seeker Helper v1.34 (NER FIX)",
+    page_title="Job Seeker Helper v1.37 (NER Refined)",
     page_icon="🎯",
     layout="wide"
 )
@@ -28,9 +28,9 @@ def render_debug_page():
     st.title("🛠️ Debugger")
     st.info("This panel helps developers understand how skills are detected and inferred.")
     
-    tab1, tab2, tab3, tab4 = st.tabs(["🧠 Inference Logic", "🔗 Skill Clusters", "📂 Project Skills", "📚 Knowledge DB"])
+    t1, t2, t3, t4, t5, t6 = st.tabs(["🧠 Inference", "🔗 Clusters (Rules)", "📊 Deep Clustering", "🧩 Topic Modeling", "🏷️ NER", "📚 Knowledge DB"])
     
-    with tab1:
+    with t1:
         st.subheader("Hierarchical Rules (Knowledge Graph)")
         st.markdown("If **Child Skill** is found → **Parent Skill** is added.")
         
@@ -70,7 +70,7 @@ def render_debug_page():
 def render_home():
     with st.sidebar:
         st.title("🎯 Job Seeker Helper")
-        st.caption("v1.34 (NER FIX)")
+        st.sidebar.caption("v1.37 (NER Refined)")
         st.markdown("### 🚀 Instructions")
         st.markdown("1. **Upload CV**: PDF or Text.")
         st.markdown("2. **Upload JD**: Job Description.")

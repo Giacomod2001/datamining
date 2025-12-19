@@ -347,7 +347,8 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "competenze", "esperienze", "formazione", "istruzione", "lingue", "progetti",
         "certificazioni", "interessi", "contatti", "profilo", "sommario",
         "university", "università", "school", "scuola", "college", "institute", "politecnico", "degree", "bachelor", "master", "phd",
-        "dataflow" 
+        "dataflow",
+        "migrated", "optimized", "soft", "upper", "intermediate", "computer"
     }
     exclusion_set.update(noise_words)
     
@@ -378,6 +379,21 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
                         
     except Exception as e:
         pass # Fallback to empty if NLTK fails
+
+    # 3. Post-Processing Fixes (Known Misclassifications)
+    known_locations = {"Milano", "Torino", "Roma", "Napoli", "Italy", "Italia", "Florence", "Firenze", "Venice", "Venezia", "Milan", "Turin", "Rome", "Naples"}
+    
+    # Move misclassified locations from Persons/Orgs to Locations
+    for cat in ["Persons", "Organizations"]:
+        to_move = []
+        for item in entities[cat]:
+            # Check if item is a known location (case insensitive check, but sensitive restore)
+            if item in known_locations: 
+                to_move.append(item)
+        
+        for item in to_move:
+            entities[cat].remove(item)
+            entities["Locations"].append(item)
         
     # Deduplicate and sort
     for k in entities:
