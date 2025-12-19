@@ -539,10 +539,11 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
 
     # --- EXPORT REPORT ---
     st.divider()
-    st.subheader("📥 Export Report")
+    st.subheader("📥 Export Comprehensive Report")
+    st.caption("Download your complete analysis including CV match, skills, and cover letter evaluation")
     
     # Generate Detailed Content
-    report_text = ml_utils.generate_detailed_report_text(res, jd_text if jd_text else "")
+    report_text = ml_utils.generate_detailed_report_text(res, jd_text if jd_text else "", cl_analysis)
     report_pdf = ml_utils.generate_pdf_report(report_text)
     
     col_dl1, col_dl2 = st.columns(2)
