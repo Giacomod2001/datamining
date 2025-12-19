@@ -12,6 +12,7 @@ try:
     from sklearn.pipeline import Pipeline
     from sklearn.cluster import KMeans, AgglomerativeClustering
     from sklearn.decomposition import PCA
+    from sklearn.metrics.pairwise import cosine_similarity
     import scipy.cluster.hierarchy as sch
     import matplotlib.pyplot as plt
 except ImportError:
@@ -96,18 +97,35 @@ def perform_skill_clustering(skills: List[str]):
 
     try:
         # 1. Vectorize Skills
-        vectorizer = TfidfVectorizer(stop_words='english', min_df=1)
+        # ACTION: Use 'char_wb' (Character N-Grams Within Boundaries)
+        # This is CRITICAL for skills. 'char' matches "Java" and "JavaScript" well, but 'char_wb' matches "Data" in "Data Science" better.
+        # ngram_range=(2, 4) captures "SQ" in "SQL", "Py" in "Python".
+        vectorizer = TfidfVectorizer(stop_words='english', analyzer='char_wb', ngram_range=(2, 4), min_df=1)
         X = vectorizer.fit_transform(skills).toarray()
 
         # 2. Hierarchical Clustering (Dendrogram)
-        # Using Ward's linkage as per Lecture 02
+        # Using Ward's linkage (Minimizes Variances) to create balanced clusters
         linkage_matrix = sch.linkage(X, method='ward')
+<<<<<<< HEAD
 
         plt.figure(figsize=(10, 5))
         dendro = sch.dendrogram(linkage_matrix, labels=skills, leaf_rotation=90)
         plt.title("Skill Dendrogram (Hierarchical Clustering)")
+=======
+        
+        plt.figure(figsize=(12, 8)) # Taller figure
+        # Thicker lines and explicit color threshold to ensure visual coloring
+        sch.set_link_color_palette(['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'])
+        
+        # Threshold: 0.7 * max (Standard for Ward).
+        dendro = sch.dendrogram(linkage_matrix, labels=skills, leaf_rotation=45, leaf_font_size=12, above_threshold_color='#AAAAAA', color_threshold=0.7*max(linkage_matrix[:,2].max(), 0.1))
+        
+        plt.rcParams['lines.linewidth'] = 2.5 # Global setting for line thickness
+        plt.title("Skill Dendrogram (Ward Linkage - v2)") # Explicit title to reassure user
+>>>>>>> 558201533c95a47dd2ebcf8f8b54a37a0f554b20
         plt.tight_layout()
-        dendro_path = "dendrogram.png"
+        # CACHE BUSTING: Change filename to force browser reload
+        dendro_path = "dendrogram_v2.png" 
         plt.savefig(dendro_path)
         plt.close()
 
@@ -202,7 +220,9 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
             'come', 'dove', 'quando', 'perché', 'anche', 'più', 'meno',
             'tutto', 'tutti', 'tutta', 'tut te', 'ogni', 'altro', 'altra', 'altri', 'altre',
             'molto', 'poco', 'abbastanza', 'proprio', 'già', 'ancora', 
-            'ecc', 'eccetera', 'via', 'poi', 'solo', 'soltanto'
+            'ecc', 'eccetera', 'via', 'poi', 'solo', 'soltanto',
+            # Apostrophe handling (tokenizers often split 'dell', 'all')
+            'dell', 'all', 'sull', 'dall', 'nell', 'quest', 'quant', 'tant'
         ]
 
         # Manually filter stop words from vocabulary if CountVectorizer didn't catch them
@@ -228,9 +248,15 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
 
         # Generate Word Cloud for the first topic (or combined)
         # Flattening simple corpus for cloud
+        # Flattening simple corpus for cloud
         combined_text = " ".join(text_corpus)
+<<<<<<< HEAD
         wordcloud = WordCloud(width=800, height=400, background_color='white').generate(combined_text)
 
+=======
+        wordcloud = WordCloud(width=800, height=400, background_color='white', stopwords=set(all_stop_words)).generate(combined_text)
+        
+>>>>>>> 558201533c95a47dd2ebcf8f8b54a37a0f554b20
         wc_path = "topic_wordcloud.png"
         wordcloud.to_file(wc_path)
 
@@ -280,14 +306,50 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
     entities = {"Organizations": [], "Locations": [], "Persons": []}
 
     # 1. Build Exclusion Set (Skills + Headers + Common Noise)
+    # 1. Build Exclusion Set (Skills + Headers + Common Noise)
     exclusion_set = set()
+<<<<<<< HEAD
 
     # Add Hard/Soft Skills to exclusion
     all_skills = getattr(constants, "ALL_SKILLS", {})
     for skill_cat, skill_vars in all_skills.items():
         exclusion_set.add(skill_cat.lower())
+=======
+    
+    # helper to add flattened parts of skills
+    def add_to_exclusion(term):
+        parts = term.lower().split()
+        for p in parts:
+            exclusion_set.add(p)
+            
+    # Add Hard Skills
+    for skill_cat, skill_vars in constants.HARD_SKILLS.items():
+        add_to_exclusion(skill_cat)
+>>>>>>> 558201533c95a47dd2ebcf8f8b54a37a0f554b20
         for var in skill_vars:
-            exclusion_set.add(var.lower())
+            add_to_exclusion(var)
+            
+    # Add Soft Skills
+    for skill_cat, skill_vars in constants.SOFT_SKILLS.items():
+        add_to_exclusion(skill_cat)
+        for var in skill_vars:
+            add_to_exclusion(var)
+
+    # Explicit Tech Jargon often mistaken for People/Orgs
+    tech_jargon = {
+        "python", "java", "scala", "c++", "c#", "net", "javascript", "typescript", "php", "ruby", "go", "golang",
+        "sql", "mysql", "postgresql", "mongodb", "redis", "cassandra", "neo4j",
+        "aws", "azure", "gcp", "docker", "kubernetes", "jenkins", "gitlab", "github", "bitbucket",
+        "numpy", "pandas", "scipy", "scikit-learn", "sklearn", "matplotlib", "seaborn", "plotly", "tableau", "powerbi",
+        "linear", "regression", "logistic", "classification", "clustering", "kmeans", "pca", "svm", "neural", "network",
+        "nlp", "bert", "gpt", "llm", "transformer", "vision", "image", "processing",
+        "agile", "scrum", "kanban", "waterfall", "jira", "confluence",
+        "marketing", "sales", "finance", "accounting", "hr", "management", "business", "analyst", "engineer", "developer",
+        "jupyter", "notebook", "studio", "code", "visual", "intelliJ", "eclipse",
+        "data", "science", "mining", "warehouse", "lake", "pipeline", "etl", "elt",
+        "airflow", "glue", "hadoop", "redshift", "snowflake", "spark", "kafka", "terraform", "dags", "streaming", "expert"
+    }
+    exclusion_set.update(tech_jargon)
 
     # Add Common CV Headers & Noise
     noise_words = {
@@ -300,11 +362,14 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "page", "of", "senior", "junior", "mid", "level", "lead", "manager", "support",
         "competenze", "esperienze", "formazione", "istruzione", "lingue", "progetti",
         "certificazioni", "interessi", "contatti", "profilo", "sommario",
-        "milano", "roma", "torino", "napoli", "italia", "italy", "remote", "smart working", # Locations to keep in Loc but not Org/Person
+        "university", "università", "school", "scuola", "college", "institute", "politecnico", "degree", "bachelor", "master", "phd",
+        "dataflow" 
     }
     exclusion_set.update(noise_words)
-
+    
+    # 2. Extract and Filter
     try:
+<<<<<<< HEAD
         for sent in nltk.sent_tokenize(text):
             for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
                 if hasattr(chunk, 'label'):
@@ -348,9 +413,39 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
              entities[k] = [e for e in clean_list if e.lower() not in exclusion_set]
 
         return entities
+=======
+        # Tokenize and chunk
+        for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(text))):
+            if hasattr(chunk, 'label'):
+                label = chunk.label()
+                entity_name = " ".join(c[0] for c in chunk)
+                entity_lower = entity_name.lower()
+                
+                # Check 1: Exact match
+                if entity_lower in exclusion_set:
+                    continue
+                    
+                # Check 2: Parts match
+                parts = entity_lower.split()
+                if any(p in exclusion_set for p in parts):
+                    continue
+
+                if label == 'ORGANIZATION':
+                    entities["Organizations"].append(entity_name)
+                elif label == 'GPE':
+                    entities["Locations"].append(entity_name)
+                elif label == 'PERSON':
+                    entities["Persons"].append(entity_name)
+                        
+>>>>>>> 558201533c95a47dd2ebcf8f8b54a37a0f554b20
     except Exception as e:
-        print(f"NER Error: {e}")
-        return {}
+        pass # Fallback to empty if NLTK fails
+        
+    # Deduplicate and sort
+    for k in entities:
+        entities[k] = sorted(list(set(entities[k])))
+        
+    return entities
 
 def generate_cluster_insight(clusters: Dict[str, int], matching_skills: Set[str], missing_skills: Set[str]) -> str:
     """
@@ -782,3 +877,255 @@ def analyze_gap_with_project(cv_text: str, job_text: str, project_text: str) -> 
         res["match_percentage"] = score_points / len(job_hard) * 100 if job_hard else 0
 
     return res
+
+# =============================================================================
+# REPORT GENERATION (Text & PDF)
+# =============================================================================
+def generate_detailed_report_text(res: Dict, jd_text: str = "") -> str:
+    """Generates a detailed text/markdown report."""
+    match_pct = res['match_percentage']
+    
+    # 1. Executive Summary
+    report = []
+    report.append("==================================================")
+    report.append("              JOB SEEKER ANALYSIS REPORT          ")
+    report.append("==================================================")
+    report.append(f"Match Score: {match_pct:.1f}%")
+    if match_pct >= 80: assessment = "EXCELLENT MATCH - High probability of success."
+    elif match_pct >= 60: assessment = "GOOD POTENTIAL - Some gaps, but strong foundation."
+    else: assessment = "HIGH GAP - Significant preparation required."
+    report.append(f"Assessment: {assessment}")
+    report.append("\n")
+
+    # 2. Skill Profile
+    report.append("--------------------------------------------------")
+    report.append("1. SKILL PROFILE ANALYSIS")
+    report.append("--------------------------------------------------")
+    report.append("A. DIRECT MATCHES (The Core)")
+    if res["matching_hard"]:
+        for s in sorted(res["matching_hard"]): report.append(f"   [+] {s}")
+    else:
+        report.append("   (No direct matches found)")
+    
+    report.append("\nB. TRANSFERABLE SKILLS (The Bridge)")
+    if res.get("transferable"):
+        for missing, present in res["transferable"].items():
+            report.append(f"   [~] {missing} (covered by {present})")
+    else:
+        report.append("   (No transferable skills identified)")
+        
+    report.append("\nC. PORTFOLIO ASSETS (The Boost)")
+    if res.get("project_review"):
+        for s in res["project_review"]: report.append(f"   [*] {s}")
+    else:
+        report.append("   (No specific portfolio items detected)")
+        
+    report.append("\n")
+
+    # 3. Gap Analysis
+    report.append("--------------------------------------------------")
+    report.append("2. CRITICAL GAP ANALYSIS")
+    report.append("--------------------------------------------------")
+    if res["missing_hard"]:
+        report.append("The following skills are required but missing from your profile:")
+        for s in sorted(res["missing_hard"]):
+            report.append(f"   [!] {s}")
+            # Add simple analysis if known (mock logic for now, could use knowledge graph)
+            if s in ["Python", "SQL", "Java"]: report.append(f"       -> Core technical skill. High Priority.")
+            if s in ["AWS", "Azure", "GCP"]: report.append(f"       -> Cloud infrastructure. Essential for modern roles.")
+    else:
+        report.append("No critical gaps detected. You are well aligned!")
+    report.append("\n")
+
+    # 4. Strategic Recommendations
+    report.append("--------------------------------------------------")
+    report.append("3. STRATEGIC RECOMMENDATIONS")
+    report.append("--------------------------------------------------")
+    if match_pct < 100:
+        report.append("* Close the Gap: Focus on the 'Critical Gaps' listed above.")
+        report.append("* Leverage Portfolio: Explicitly mention your 'Portfolio Assets' in the interview.")
+        if res.get("transferable"):
+            report.append("* Explain Transferability: Be ready to explain how your existing skills apply to the missing ones.")
+    else:
+        report.append("* Prepare for Depth: Since you match well, expect deep technical questions.")
+        report.append("* Soft Skills: Focus on demonstrating leadership and communication.")
+
+    report.append("\n")
+    report.append("\n")
+    
+    # 5. Career Compass (Context Aware)
+    candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
+    
+    try:
+        # Pass JD Text to allow filtering of redundant roles
+        recs = recommend_roles(candidate_skills, jd_text)
+        if recs:
+            report.append("--------------------------------------------------")
+            report.append("4. AI CAREER COMPASS (Alternative Paths)")
+            report.append("--------------------------------------------------")
+            report.append("Based on your skill vector, you might also be a good fit for:")
+            for i, rec in enumerate(recs):
+                 report.append(f"   {i+1}. {rec['role']} ({rec['score']:.0f}% Match)")
+                 if rec['missing']:
+                     missing_str = ", ".join(rec['missing'][:5])
+                     report.append(f"      Missing: {missing_str}...")
+            report.append("\n")
+    except Exception as e:
+        # Fallback if recommend_roles isn't ready or fails
+        pass
+
+    report.append("==================================================")
+    report.append("Generated by Job Seeker Helper AI")
+    report.append("==================================================")
+
+    return "\n".join(report)
+
+
+def generate_pdf_report(text_content: str) -> bytes:
+    """Converts the text report into a PDF bytes object."""
+    if not FPDF:
+        return None
+        
+    class PDF(FPDF):
+        def header(self):
+            self.set_font('Arial', 'B', 15)
+            self.cell(0, 10, 'Job Seeker Analysis Report', 0, 1, 'C')
+            self.ln(10)
+            
+        def footer(self):
+            self.set_y(-15)
+            self.set_font('Arial', 'I', 8)
+            self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
+
+    pdf = PDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    
+    # Simple line-by-line write
+    for line in text_content.split('\n'):
+        # Handle simple bolding logic based on markers
+        if "====" in line or "----" in line:
+            pdf.ln(2)
+            pdf.cell(0, 5, line, 0, 1)
+            pdf.ln(2)
+        elif line.startswith("Assessment:") or line.startswith("Match Score:"):
+            pdf.set_font("Arial", 'B', 12)
+            pdf.cell(0, 8, line, 0, 1)
+            pdf.set_font("Arial", '', 12)
+        elif line.strip().startswith(("1.", "2.", "3.")):
+             pdf.set_font("Arial", 'B', 12)
+             pdf.cell(0, 10, line, 0, 1)
+             pdf.set_font("Arial", '', 12)
+        elif line.strip().startswith(("A.", "B.", "C.")):
+             pdf.set_font("Arial", 'B', 12)
+             pdf.cell(0, 8, line, 0, 1)
+             pdf.set_font("Arial", '', 12)
+        else:
+            # Handle unicode chars roughly (FPDF doesn't love emojis/unicode standard font)
+            # Replace common bullets to safe chars
+            clean_line = line.replace('✅', '[+]').replace('❌', '[!]').replace('⚠️', '[~]').replace('🚀', '')
+            try:
+                clean_line = clean_line.encode('latin-1', 'replace').decode('latin-1')
+            except:
+                clean_line = clean_line # Fallback
+            pdf.multi_cell(0, 6, clean_line)
+            
+    return pdf.output(dest='S').encode('latin-1') # Return bytes
+
+
+# =============================================================================
+# JOB RECOMMENDER (Career Compass) - v1.24
+# =============================================================================
+def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, float, List[str]]]:
+    """
+    Identifies the best fitting job roles excluding the one described in the JD.
+    """
+    if not cv_skills or not constants.JOB_ARCHETYPES or not TfidfVectorizer:
+        return []
+
+    # 1. Prepare Corpus
+    archetype_names = list(constants.JOB_ARCHETYPES.keys())
+    archetype_docs = [" ".join(constants.JOB_ARCHETYPES[name]) for name in archetype_names]
+    
+    # Docs: [0=CV, 1=JD (if exists), 2..N=Archetypes]
+    corpus = [" ".join(cv_skills)]
+    
+    jd_index = -1
+    if jd_text:
+        corpus.append(jd_text)
+        jd_index = 1
+        
+    corpus.extend(archetype_docs)
+    
+    # 2. Vectorization
+    vectorizer = TfidfVectorizer(analyzer='char_wb', ngram_range=(2, 4), min_df=1)
+    tfidf_matrix = vectorizer.fit_transform(corpus)
+    
+    # 3. Identify Target Role from JD (if redundant)
+    excluded_roles = set()
+    if jd_index != -1:
+        # Compare JD (doc 1) vs Archetypes (docs 2..)
+        jd_vector = tfidf_matrix[jd_index:jd_index+1]
+        arch_start_idx = jd_index + 1
+        arch_vectors = tfidf_matrix[arch_start_idx:]
+        
+        # Find closest archetype to JD
+        jd_sims = cosine_similarity(jd_vector, arch_vectors).flatten()
+        target_role_idx = jd_sims.argmax()
+        target_role_score = jd_sims[target_role_idx]
+        
+        # If the JD strongly matches an archetype (>50%), exclude it
+        # Increased threshold from 0.15 to 0.50 to prevent false exclusions of valid alternatives
+        jd_lower = jd_text.lower() if jd_text else ""
+        
+        # 1. Cosine Similarity Check
+        if target_role_score > 0.50:
+            excluded_roles.add(archetype_names[target_role_idx])
+            
+        # 2. Heuristic Check (Explicit Mention in Header)
+        # Only exclude if mentioned in first 200 chars (Title area)
+        header_text = jd_lower[:200]
+        for name in archetype_names:
+            if name.lower() in header_text:
+                excluded_roles.add(name)
+                
+    # 4. Identify Current Role from CV (REMOVED in v1.36)
+    # We deliberately WANT to recommend the candidate's current role if it's a good fit.
+    # Users found it confusing that "Data Analyst" wasn't recommended for a Data Analyst profile.
+    
+    # 5. Compute Recommendations (Similarity to remaining archetypes)
+    # CV is at index 0
+    cv_vector = tfidf_matrix[0:1]
+    arch_vectors_final = tfidf_matrix[len(corpus)-len(archetype_names):]
+    similarities = cosine_similarity(cv_vector, arch_vectors_final).flatten()
+    
+    # 6. Rank and Format
+    recommendations = []
+    for i, score in enumerate(similarities):
+        role_name = archetype_names[i]
+        
+        # Skip excluded roles (redundant)
+        if role_name in excluded_roles:
+            continue
+            
+        role_skills = constants.JOB_ARCHETYPES[role_name]
+        cv_norm = {s.lower() for s in cv_skills}
+        role_norm = {s.lower() for s in role_skills}
+        missing_norm = role_norm - cv_norm
+        missing_display = [s for s in role_skills if s.lower() in missing_norm]
+        
+        # 7. Quality Filter (v1.33 -> v1.34 Junior Friendly)
+        # Only show recommendations that have a decent overlap (>30%)
+        # 40% was still too high for "Junior -> Senior" pivots. 30% is safer.
+        final_score = score * 100
+        if final_score < 30:
+            continue
+            
+        recommendations.append({
+            "role": role_name,
+            "score": final_score, 
+            "missing": missing_display
+        })
+        
+    recommendations.sort(key=lambda x: x["score"], reverse=True)
+    return recommendations[:3]

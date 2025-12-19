@@ -50,7 +50,14 @@ HARD_SKILLS = {
     "Machine Learning": ["machine learning", "ml", "deep learning", "neural network", "scikit-learn"],
     "Data Science": ["data science", "data scientist", "data analysis", "analytics"],
     "SQL": ["sql", "mysql", "postgresql", "bigquery"],
-    "Cloud Computing": ["cloud", "aws", "gcp", "azure"],
+    "Cloud Computing": ["cloud", "azure", "gcp"],
+    "AWS": ["aws", "amazon web services", "ec2", "s3", "lambda"],
+    "Azure": ["azure", "microsoft azure"],
+    "GCP": ["gcp", "google cloud platform"],
+    "Power BI": ["power bi", "powerbi", "dax"],
+    "Tableau": ["tableau"],
+    "System Design": ["system design", "distributed systems", "scalability"],
+    "Git": ["git", "github", "gitlab"],
     "Excel": ["excel", "spreadsheet", "vlookup"],
 
     # --- LANGUAGES ---
@@ -123,9 +130,31 @@ LEARNING_RESOURCES = {
     "Excel": {"courses": ["Excel Skills for Business (Coursera)"], "project": "Budget Dashboard"},
     "SEO": {"courses": ["Moz Beginner Guide", "Google Digital Garage"], "project": "Audit a website"},
     "Translation": {"courses": ["Translation in Practice (Coursera)"], "project": "Translate a Wikipedia article"},
+    
+    # --- DEMO UPDATES ---
+    "Tableau": {"courses": ["Tableau 2024 A-Z (Udemy)", "Data Visualization with Tableau (Coursera)"], "project": "Create a Sales Dashboard"},
+    "Power BI": {"courses": ["Microsoft Power BI Data Analyst (Coursera)", "Power BI Masterclass (Udemy)"], "project": "Build an Executive Dashboard"},
+    "AWS": {"courses": ["AWS Certified Cloud Practitioner (Udemy)", "AWS Fundamentals (Coursera)"], "project": "Deploy a web app on EC2"},
+    "System Design": {"courses": ["System Design Interview (Alex Xu)", "Grokking System Design"], "project": "Design a Scalable URL Shortener"},
 }
 
 DEFAULT_RESOURCE = {
     "courses": ["Search on Coursera, Udemy, or LinkedIn Learning", "Read Official Documentation"], 
     "project": "Build a portfolio piece showing this skill"
 }
+
+# JOB ARCHETYPES (Centroids for Classification)
+# Used to recommend roles when the specific JD match is low.
+JOB_ARCHETYPES = {
+    "Data Scientist": {"Python", "SQL", "Machine Learning", "Data Science", "Pandas", "Statistics", "Deep Learning", "Data Visualization", "AI", "Modeling"},
+    "Data Analyst": {"Excel", "SQL", "Power BI", "Tableau", "Data Analysis", "Statistics", "Reporting", "Python", "Dashboards", "KPI"},
+    "Data Engineer": {"Python", "SQL", "BigQuery", "AWS", "Azure", "GCP", "Spark", "Airflow", "ETL", "Pipelines", "Database", "Data Warehousing", "Cloud Computing", "NoSQL", "DevOps"},
+    "Backend Developer": {"Python", "Java", "SQL", "API", "Docker", "Kubernetes", "Git", "System Design", "Microservices", "Database", "Server"},
+    "Frontend Developer": {"JavaScript", "React", "Vue", "CSS", "HTML", "TypeScript", "UI/UX", "Git", "Responsive Design", "Web Development"},
+    "Full Stack Developer": {"JavaScript", "Python", "React", "Node.js", "SQL", "API", "Git", "Docker", "Web Development", "Database"},
+    "Project Manager": {"Project Management", "Agile", "Scrum", "Communication", "Leadership", "Stakeholder Management", "Jira", "Planning", "Budgeting", "Risk Management"},
+    "Product Manager": {"Product Management", "User Stories", "Roadmap", "Strategy", "UX/UI", "Data Analysis", "Communication", "Product Lifecycle"},
+    "Digital Marketer": {"SEO", "Social Media", "Google Analytics", "Content Marketing", "Copywriting", "Advertising", "Campaign Management", "SEM"},
+    "Business Analyst": {"Business Analysis", "Requirements Gathering", "SQL", "Excel", "Process Mapping", "Communication", "Stakeholder Management", "BPMN"}
+}
+

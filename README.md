@@ -24,13 +24,25 @@ Unlike traditional Applicant Tracking Systems (ATS), this tool understands skill
 - **Smart Language Detection**: Automatically fills "Native" skills (e.g., Italian) by analyzing CV context, removing bias for native speakers who omit language proficiency.
 
 ### Visual Analytics & Advanced Mining
-- **Skill Clustering (Unsupervised Learning)**: Uses K-Means and Hierarchical Clustering to group skills into semantic clusters, visualizing the results with interactives **Scatter Plots** and **Dendrograms**.
+- **Skill Clustering (Unsupervised Learning)**: Uses K-Means and Hierarchical Clustering (Ward Linkage) to group skills into semantic clusters, visualizing the results with interactive **Scatter Plots** and balanced **Dendrograms**.
 - **Knowledge Graph (Developer Mode)**: Interactive visualization of the skill ontology using `graphviz`, showing hierarchical relationships (e.g., BigQuery → SQL).
 - **Topic Modeling (LDA)**: Automatically identifies "Job Topics" (Key Themes) from the JD using Latent Dirichlet Allocation and visualizes them as a **Word Cloud**.
 - **Named Entity Recognition (NER)**: Extracts structured entities (Organizations, Locations, People) from the Resume using `NLTK`, transforming unstructured bio-text into structured data.
 - **Fuzzy Matching**: Implements `thefuzz` (Levenshtein distance) to handle typos in CVs (e.g., "Phyton" is correctly mapped to "Python").
 - **Match Gauge**: Interactive Plotly chart for instant score assessment.
-- **Professional PDF Reports**: Download a comprehensive analysis report including skill breakdowns, match scores, and a personalized learning plan with actionable links.
+
+- **Professional Reports (PDF + TXT)**: Generate and download comprehensive analysis reports. Includes Executive Summaries, detailed Skill Gap categorization, and Strategic Recommendations in a clean, professional format.
+
+### 🔮 AI Career Compass 
+**Not the right job match? Find your true calling.**
+- **Nearest Centroid Classification**: Uses data mining techniques (Cosine Similarity on TF-IDF Vectors) to compare your CV against a database of industry-standard **Job Archetypes** (Centroids).
+- **Market Recommendations**: Suggests the top 3 specific roles (e.g., *Data Scientist*, *Backend Dev*) that align best with your current skillset, providing a "Similarity Score" independent of the specific JD.
+- **Smart Context Filtering (v1.29)**: Uses NLP to classify both the **JD** and your **CV** against Archetypes. It automatically excludes:
+    - The role you are applying for (Target Role).
+    - The role you currently hold (Current Role).
+  This ensures the system suggests only **True Alternatives** (e.g. valid pivots), avoiding redundant suggestions.
+- **Quality Filter (v1.31)**: Enforces a strict relevance threshold (>50%). If no alternative roles meet this criteria, the system suppresses generic "low-quality" matches and informs you that your profile is highly specialized.
+- **Direct Application**: Provides one-click links to search for these specific roles on LinkedIn and Google Jobs.
 
 ### Project Evaluation 
 Validate your skills through practical experience.
@@ -61,6 +73,7 @@ The application is built using a robust, modern Python stack:
 ![Scipy](https://img.shields.io/badge/Scipy-8CAAE6?style=for-the-badge&logo=scipy&logoColor=white)
 ![NLTK](https://img.shields.io/badge/NLTK-NLP-blue?style=for-the-badge&logo=python&logoColor=white)
 ![PyPDF2](https://img.shields.io/badge/PyPDF2-PDF_Parsing-red?style=for-the-badge)
+![FPDF](https://img.shields.io/badge/FPDF-Report_Gen-green?style=for-the-badge)
 
 ---
 
@@ -107,6 +120,7 @@ The application is built using a robust, modern Python stack:
      - **Project Boost**: Skills validated by your portfolio projects.
      - **Transferable**: Skills possessed that substitute requirements.
      - **Missing**: Critical gaps with personalized action plans.
+     - **Export**: Download the full analysis as a **PDF** or **Text** file for offline use.
 
 4. **Developer Options**:
    - Access the Sidebar and toggle **"Developer Mode"**.
@@ -124,3 +138,4 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 
 - **Streamlit Team**: For the rapid application development framework.
 - **Open Source Community**: For the continuous maintenance of `scikit-learn` and NLP libraries.
+
