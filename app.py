@@ -503,7 +503,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     # --- JOB CONTEXT ANALYSIS ---
     if jd_text:
         st.divider()
-        st.subheader("💡 Cosa Cerca Davvero Questa Posizione?")
+        st.subheader("💡 What Does This Position Really Need?")
         
         jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
         
@@ -515,7 +515,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                 st.info(result['summary'])
                 
                 # Show interpretations in columns
-                st.markdown("#### 📋 Aree Chiave Richieste:")
+                st.markdown("#### 📋 Key Areas Required:")
                 cols_topic = st.columns(len(result['topics']))
                 for idx, (col, topic) in enumerate(zip(cols_topic, result['topics'])):
                     with col:
@@ -523,11 +523,11 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                         st.write(topic)
                 
                 # Show keywords as tags
-                st.markdown("#### 🏷️ Parole Chiave Principali:")
+                st.markdown("#### 🏷️ Main Keywords:")
                 keyword_html = " ".join([f"<span style='background-color: #e1f5ff; color: #1a1a1a; font-weight: 500; padding: 5px 10px; border-radius: 5px; margin: 2px; display: inline-block;'>{kw}</span>" for kw in result['keywords']])
                 st.markdown(keyword_html, unsafe_allow_html=True)
         else:
-            st.info("Job Description troppo breve per l'analisi contestuale.")
+            st.info("Job Description too brief for contextual analysis.")
     
     # --- JOB RECOMMENDER (AI Career Compass) ---
     st.divider()
