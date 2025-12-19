@@ -172,14 +172,14 @@ def render_home():
         
         st.divider()
         
-        # Skills Legend with actual colored badges
+        # Skills Legend - Minimalist with colored dots
         st.markdown("### 📊 Skills Legend")
         st.markdown("""
-<span style='background-color: #d4edda; color: #155724; font-weight: 500; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;'>Python</span> Direct match<br>
-<span style='background-color: #fff3cd; color: #856404; font-weight: 500; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;'>Power BI ← Looker</span> Transferable<br>
-<span style='background-color: #cfe2ff; color: #084298; font-weight: 500; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;'>★ System Design</span> Project-verified<br>
-<span style='background-color: #f8d7da; color: #842029; font-weight: 500; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;'>AWS</span> Missing skill<br>
-<span style='background-color: #e2e3e5; color: #41464b; font-weight: 500; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;'>+ ML</span> Bonus skill
+<span style='color: #155724; font-size: 1.2em;'>●</span> Direct match<br>
+<span style='color: #856404; font-size: 1.2em;'>●</span> Transferable<br>
+<span style='color: #084298; font-size: 1.2em;'>●</span> Project-verified<br>
+<span style='color: #842029; font-size: 1.2em;'>●</span> Missing skill<br>
+<span style='color: #41464b; font-size: 1.2em;'>●</span> Bonus skill
         """, unsafe_allow_html=True)
         
         st.divider()
