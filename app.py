@@ -9,11 +9,7 @@ import urllib.parse
 # PAGE CONFIG
 # =============================================================================
 st.set_page_config(
-<<<<<<< HEAD
     page_title="Job Seeker Helper v1.4",
-=======
-    page_title="Job Seeker Helper v1.4 (DEBUG)",
->>>>>>> 67019bacf15a2cf452bec0308a933ca47b79d657
     page_icon="🎯",
     layout="wide"
 )
