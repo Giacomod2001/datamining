@@ -106,12 +106,6 @@ def perform_skill_clustering(skills: List[str]):
         # 2. Hierarchical Clustering (Dendrogram)
         # Using Ward's linkage (Minimizes Variances) to create balanced clusters
         linkage_matrix = sch.linkage(X, method='ward')
-<<<<<<< HEAD
-
-        plt.figure(figsize=(10, 5))
-        dendro = sch.dendrogram(linkage_matrix, labels=skills, leaf_rotation=90)
-        plt.title("Skill Dendrogram (Hierarchical Clustering)")
-=======
         
         plt.figure(figsize=(12, 8)) # Taller figure
         # Thicker lines and explicit color threshold to ensure visual coloring
@@ -122,7 +116,6 @@ def perform_skill_clustering(skills: List[str]):
         
         plt.rcParams['lines.linewidth'] = 2.5 # Global setting for line thickness
         plt.title("Skill Dendrogram (Ward Linkage - v2)") # Explicit title to reassure user
->>>>>>> 558201533c95a47dd2ebcf8f8b54a37a0f554b20
         plt.tight_layout()
         # CACHE BUSTING: Change filename to force browser reload
         dendro_path = "dendrogram_v2.png" 
@@ -250,13 +243,8 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
         # Flattening simple corpus for cloud
         # Flattening simple corpus for cloud
         combined_text = " ".join(text_corpus)
-<<<<<<< HEAD
-        wordcloud = WordCloud(width=800, height=400, background_color='white').generate(combined_text)
-
-=======
         wordcloud = WordCloud(width=800, height=400, background_color='white', stopwords=set(all_stop_words)).generate(combined_text)
         
->>>>>>> 558201533c95a47dd2ebcf8f8b54a37a0f554b20
         wc_path = "topic_wordcloud.png"
         wordcloud.to_file(wc_path)
 
@@ -308,13 +296,6 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
     # 1. Build Exclusion Set (Skills + Headers + Common Noise)
     # 1. Build Exclusion Set (Skills + Headers + Common Noise)
     exclusion_set = set()
-<<<<<<< HEAD
-
-    # Add Hard/Soft Skills to exclusion
-    all_skills = getattr(constants, "ALL_SKILLS", {})
-    for skill_cat, skill_vars in all_skills.items():
-        exclusion_set.add(skill_cat.lower())
-=======
     
     # helper to add flattened parts of skills
     def add_to_exclusion(term):
@@ -325,7 +306,6 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
     # Add Hard Skills
     for skill_cat, skill_vars in constants.HARD_SKILLS.items():
         add_to_exclusion(skill_cat)
->>>>>>> 558201533c95a47dd2ebcf8f8b54a37a0f554b20
         for var in skill_vars:
             add_to_exclusion(var)
             
@@ -369,51 +349,6 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
     
     # 2. Extract and Filter
     try:
-<<<<<<< HEAD
-        for sent in nltk.sent_tokenize(text):
-            for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
-                if hasattr(chunk, 'label'):
-                    entity_name = ' '.join(c[0] for c in chunk)
-                    label = chunk.label()
-
-                    # --- FILTERS ---
-                    name_lower = entity_name.lower()
-
-                    # 1. Skip if in exclusion set (Skills/Headers)
-                    if name_lower in exclusion_set:
-                        continue
-
-                    # 2. Skip single characters or very short abbreviations
-                    if len(entity_name) < 3 and label != 'GPE': 
-                        continue
-
-                    # 3. Skip pure numbers or mixed noise (e.g. "2023-2024")
-                    if any(char.isdigit() for char in entity_name):
-                        continue
-
-                    # 4. Filter Specific Categories
-                    if label == 'ORGANIZATION':
-                        # Exclude all-caps typically headers (unless specific known orgs)
-                        if entity_name.isupper() and len(entity_name) < 10: 
-                             pass # Allow acronyms? Maybe risk. Let's filter common noise.
-                        entities["Organizations"].append(entity_name)
-
-                    elif label == 'GPE': # Geo-Political Entity
-                        entities["Locations"].append(entity_name)
-
-                    elif label == 'PERSON':
-                        # Person names rarely appear as specific skills
-                        if name_lower not in exclusion_set:
-                            entities["Persons"].append(entity_name)
-
-        # Deduplicate and Clean
-        for k in entities:
-             # Final pass: Remove items that exact match exclusion set again (safety)
-             clean_list = sorted(list(set(entities[k])))
-             entities[k] = [e for e in clean_list if e.lower() not in exclusion_set]
-
-        return entities
-=======
         # Tokenize and chunk
         for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(text))):
             if hasattr(chunk, 'label'):
@@ -437,7 +372,6 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
                 elif label == 'PERSON':
                     entities["Persons"].append(entity_name)
                         
->>>>>>> 558201533c95a47dd2ebcf8f8b54a37a0f554b20
     except Exception as e:
         pass # Fallback to empty if NLTK fails
         
