@@ -1030,39 +1030,30 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
         target_role_idx = jd_sims.argmax()
         target_role_score = jd_sims[target_role_idx]
         
-        # If the JD strongly matches an archetype (>15%), exclude it
-        # Also, check heuristic text match for safety
+        # If the JD strongly matches an archetype (>50%), exclude it
+        # Increased threshold from 0.15 to 0.50 to prevent false exclusions of valid alternatives
         jd_lower = jd_text.lower() if jd_text else ""
         
-        # 1. Cosine Similarity Check (Lowered threshold to 15%)
-        # Because JDs often contain much noise (About Us, Benefits), the vector similarity to a pure skill list is diluted.
-        if target_role_score > 0.15:
+        # 1. Cosine Similarity Check
+        if target_role_score > 0.50:
             excluded_roles.add(archetype_names[target_role_idx])
             
-        # 2. Heuristic Check (Explicit Mention)
-        # If the role title appears explicitly in the first 500 chars (likely title/header), exclude it
-        # Or if it appears frequently.
+        # 2. Heuristic Check (Explicit Mention in Header)
+        # Only exclude if mentioned in first 200 chars (Title area)
+        header_text = jd_lower[:200]
         for name in archetype_names:
-            if name.lower() in jd_lower:
+            if name.lower() in header_text:
                 excluded_roles.add(name)
                 
-    # 4. Identify Current Role from CV (Enhancement v1.29)
-    # We also want to exclude what the candidate *already* is (e.g. Data Engineer)
-    # Compare CV (doc 0) vs Archetypes
-    cv_vector = tfidf_matrix[0:1]
-    # Re-fetch arch vectors just to be clean
-    arch_vectors_final_check = tfidf_matrix[len(corpus)-len(archetype_names):]
+    # 4. Identify Current Role from CV (REMOVED in v1.36)
+    # We deliberately WANT to recommend the candidate's current role if it's a good fit.
+    # Users found it confusing that "Data Analyst" wasn't recommended for a Data Analyst profile.
     
-    cv_sims = cosine_similarity(cv_vector, arch_vectors_final_check).flatten()
-    current_role_idx = cv_sims.argmax()
-    current_role_score = cv_sims[current_role_idx]
-    
-    # If CV strongly matches an archetype (>25%), treat it as "Current Role" and exclude
-    if current_role_score > 0.25:
-        excluded_roles.add(archetype_names[current_role_idx])
-
     # 5. Compute Recommendations (Similarity to remaining archetypes)
-    similarities = cv_sims # Already computed above
+    # CV is at index 0
+    cv_vector = tfidf_matrix[0:1]
+    arch_vectors_final = tfidf_matrix[len(corpus)-len(archetype_names):]
+    similarities = cosine_similarity(cv_vector, arch_vectors_final).flatten()
     
     # 6. Rank and Format
     recommendations = []
