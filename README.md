@@ -275,18 +275,6 @@ Overall Score = (Keyword Coverage x 35%)
 
 ---
 
-## Roadmap
-
-- [ ] Multi-language support (Spanish, French, German)
-- [ ] Resume builder integration
-- [ ] LinkedIn profile import
-- [ ] Interview question generator
-- [ ] Salary range estimation
-- [ ] Industry-specific templates
-- [ ] Browser extension for job board integration
-
----
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit:
