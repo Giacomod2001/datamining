@@ -337,16 +337,56 @@ DEFAULT_RESOURCE = {
 
 # JOB ARCHETYPES (Centroids for Classification)
 # Used to recommend roles when the specific JD match is low.
+# Skills should match what extract_skills_from_text will find
 JOB_ARCHETYPES = {
-    "Data Scientist": {"Python", "SQL", "Machine Learning", "Data Science", "Pandas", "Statistics", "Deep Learning", "Data Visualization", "AI", "Modeling"},
-    "Data Analyst": {"Excel", "SQL", "Power BI", "Tableau", "Data Analysis", "Statistics", "Reporting", "Python", "Dashboards", "KPI"},
-    "Data Engineer": {"Python", "SQL", "BigQuery", "AWS", "Azure", "GCP", "Spark", "Airflow", "ETL", "Pipelines", "Database", "Data Warehousing", "Cloud Computing", "NoSQL", "DevOps"},
-    "Backend Developer": {"Python", "Java", "SQL", "API", "Docker", "Kubernetes", "Git", "System Design", "Microservices", "Database", "Server"},
-    "Frontend Developer": {"JavaScript", "React", "Vue", "CSS", "HTML", "TypeScript", "UI/UX", "Git", "Responsive Design", "Web Development"},
-    "Full Stack Developer": {"JavaScript", "Python", "React", "Node.js", "SQL", "API", "Git", "Docker", "Web Development", "Database"},
-    "Project Manager": {"Project Management", "Agile", "Scrum", "Communication", "Leadership", "Stakeholder Management", "Jira", "Planning", "Budgeting", "Risk Management"},
-    "Product Manager": {"Product Management", "User Stories", "Roadmap", "Strategy", "UX/UI", "Data Analysis", "Communication", "Product Lifecycle"},
-    "Digital Marketer": {"SEO", "Social Media", "Google Analytics", "Content Marketing", "Copywriting", "Advertising", "Campaign Management", "SEM"},
-    "Business Analyst": {"Business Analysis", "Requirements Gathering", "SQL", "Excel", "Process Mapping", "Communication", "Stakeholder Management", "BPMN"}
+    "Data Scientist": {
+        "Python", "SQL", "Machine Learning", "Data Science", "Statistics", 
+        "Deep Learning", "Data Visualization", "AI", "Modeling", "BigQuery",
+        "TensorFlow", "PyTorch", "Predictive Analytics", "GCP", "Cloud Computing"
+    },
+    "Data Analyst": {
+        "Excel", "SQL", "Power BI", "Tableau", "Looker Studio", "Data Visualization", 
+        "Statistics", "Reporting", "Python", "Dashboards", "Google Analytics", "GA4",
+        "BigQuery", "Data Science", "Business Intelligence"
+    },
+    "Data Engineer": {
+        "Python", "SQL", "BigQuery", "AWS", "Azure", "GCP", "Airflow", 
+        "Cloud Computing", "Docker", "Kubernetes", "Git", "Data Science"
+    },
+    "Backend Developer": {
+        "Python", "Java", "SQL", "Docker", "Kubernetes", "Git", 
+        "System Design", "FastAPI", "Django", "Flask", "Cloud Computing"
+    },
+    "Frontend Developer": {
+        "JavaScript", "React", "Vue", "TypeScript", "Git", "UX/UI Design"
+    },
+    "Full Stack Developer": {
+        "JavaScript", "Python", "React", "SQL", "Docker", "Git", "Node.js"
+    },
+    "Digital Marketing Analyst": {
+        "Google Analytics", "GA4", "Google Tag Manager", "Looker Studio", 
+        "A/B Testing", "Data Visualization", "Python", "SQL", "Marketing",
+        "Campaign Management", "Performance Marketing", "Dashboards", "Web Analytics"
+    },
+    "Digital Marketer": {
+        "SEO", "SEM", "Social Media", "Google Analytics", "GA4", "Marketing", 
+        "Copywriting", "Advertising", "Campaign Management", "Email Marketing",
+        "Performance Marketing", "Google Tag Manager", "A/B Testing", "CRM"
+    },
+    "Marketing Analyst": {
+        "Google Analytics", "GA4", "Looker Studio", "Data Visualization",
+        "Marketing", "Campaign Management", "A/B Testing", "SQL", "Python",
+        "Dashboards", "Reporting", "Statistics", "Performance Marketing"
+    },
+    "Business Analyst": {
+        "SQL", "Excel", "Power BI", "Tableau", "Data Visualization",
+        "Communication", "Reporting", "Dashboards", "Data Science"
+    },
+    "Project Manager": {
+        "Project Management", "Communication", "Leadership", "Teamwork"
+    },
+    "Product Manager": {
+        "Data Science", "Communication", "UX/UI Design", "Marketing"
+    }
 }
 

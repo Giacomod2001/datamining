@@ -7,6 +7,11 @@ import ml_utils
 import urllib.parse
 import styles
 
+# Clear cache on startup to ensure constants are reloaded
+# This is important when constants.py is updated
+st.cache_data.clear()
+st.cache_resource.clear()
+
 # =============================================================================
 # PAGE CONFIG - v2.0 Premium Edition
 # =============================================================================
