@@ -568,9 +568,9 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                 elif cl_score >= 60:
                     st.warning(f"**{cl_score:.0f}%** - Good, with room for improvement")
                 else:
-                st.error(f"**{cl_score:.0f}%** - Needs Work")
-            
-            st.caption(f"{cl_analysis['word_count']} words | {cl_analysis['language'] or 'EN'}")
+                    st.error(f"**{cl_score:.0f}%** - Needs Work")
+                
+                st.caption(f"{cl_analysis['word_count']} words | {cl_analysis['language'] or 'EN'}")
 
     st.divider()
     st.subheader("Technical Skills Analysis")
