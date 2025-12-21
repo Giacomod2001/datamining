@@ -5,18 +5,25 @@ import plotly.graph_objects as go
 import constants
 import ml_utils
 import urllib.parse
+import styles
 
 # =============================================================================
-# PAGE CONFIG
+# PAGE CONFIG - v2.0 Premium Edition
 # =============================================================================
 st.set_page_config(
-    page_title="Job Seeker Helper v1.34 (NER FIX)",
+    page_title="Job Seeker Helper v2.0 - AI Career Analytics",
     page_icon="🎯",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
+
+# Apply Premium CSS Theme
+st.markdown(styles.get_premium_css(), unsafe_allow_html=True)
 
 if "page" not in st.session_state:
     st.session_state["page"] = "Home"
+if "demo_mode" not in st.session_state:
+    st.session_state["demo_mode"] = False
 
 # =============================================================================
 # DEBUGGER
@@ -154,49 +161,127 @@ def render_debug_page():
 # =============================================================================
 def render_home():
     with st.sidebar:
-        st.title("🎯 Job Seeker Helper")
-        st.caption("🚀 v1.35 - AI-Powered Career Analytics")
-        
-        st.markdown("### Quick Start")
-        st.markdown("📄 **1.** Upload CV (PDF/Text)")
-        st.markdown("💼 **2.** Upload Job Description")
-        st.markdown("✔️ **3.** Click Analyze")
-        
-        st.divider()
-        st.markdown("### ⚙️ Optional Features")
-        
-        show_project_eval = st.toggle("📂 Project Evaluation", value=False, 
-                                       help="Validate skills through your portfolio/projects")
-        show_cover_letter = st.toggle("✉️ Cover Letter Analysis", value=False, 
-                                       help="Get AI feedback on your application letter")
-        
-        st.divider()
-        
-        # Skills Legend - Minimalist with colored dots
-        st.markdown("### 📊 Skills Legend")
+        # Premium Header
         st.markdown("""
-<span style='color: #155724; font-size: 1.2em;'>●</span> Direct match<br>
-<span style='color: #856404; font-size: 1.2em;'>●</span> Transferable<br>
-<span style='color: #084298; font-size: 1.2em;'>●</span> Project-verified<br>
-<span style='color: #842029; font-size: 1.2em;'>●</span> Missing skill<br>
-<span style='color: #41464b; font-size: 1.2em;'>●</span> Bonus skill
+        <div style='text-align: center; padding: 1rem 0;'>
+            <h1 style='font-size: 1.8rem; margin-bottom: 0.2rem;'>🎯 Job Seeker</h1>
+            <p style='color: #00A0DC; font-size: 0.9rem; font-weight: 600;'>AI-Powered Career Analytics</p>
+            <p style='color: #8b949e; font-size: 0.75rem;'>v2.0 Premium Edition</p>
+        </div>
         """, unsafe_allow_html=True)
         
         st.divider()
         
-        if st.toggle("🔧 Developer Mode"):
-             pwd = st.text_input("Password", type="password", key="dev_pwd")
-             if pwd == "1234":
-                 if st.button("🔍 Open Debugger", use_container_width=True):
+        # Demo Mode - Quick Start
+        st.markdown("### 🚀 Quick Start")
+        
+        col_demo1, col_demo2 = st.columns(2)
+        with col_demo1:
+            if st.button("✨ Try Demo", use_container_width=True, help="Load sample CV & JD to see the app in action"):
+                st.session_state["demo_mode"] = True
+                st.rerun()
+        with col_demo2:
+            if st.session_state.get("demo_mode"):
+                if st.button("🔄 Reset", use_container_width=True):
+                    st.session_state["demo_mode"] = False
+                    st.rerun()
+        
+        if st.session_state.get("demo_mode"):
+            st.success("✅ Demo mode active! Sample data loaded below.")
+        
+        st.divider()
+        
+        # How It Works
+        with st.expander("📖 How It Works", expanded=False):
+            st.markdown("""
+            **1. 📄 Upload Your CV**
+            - PDF or paste text directly
+            - Our AI extracts 100+ skill types
+            
+            **2. 💼 Add Job Description**  
+            - Paste from any job board
+            - We decode what they really need
+            
+            **3. 🔍 Click Analyze**
+            - Get instant skill matching
+            - See transferable skills identified
+            - Discover your career fit score
+            
+            **4. 📊 Review Insights**
+            - Personalized learning path
+            - Alternative role suggestions
+            - Interview talking points
+            """)
+        
+        st.divider()
+        
+        # Optional Features Section
+        st.markdown("### ⚙️ Analysis Options")
+        
+        show_project_eval = st.toggle(
+            "📂 Project Evaluation", 
+            value=False, 
+            help="Upload project descriptions to verify skills through your portfolio. Increases match score when projects demonstrate missing skills."
+        )
+        
+        show_cover_letter = st.toggle(
+            "✉️ Cover Letter Analysis", 
+            value=False, 
+            help="Get AI feedback on keyword coverage, structure, and personalization of your application letter."
+        )
+        
+        st.divider()
+        
+        # Skills Legend - Compact & Visual
+        with st.expander("📊 Skills Legend", expanded=True):
+            st.markdown("""
+            <div style='line-height: 2;'>
+                <span class='skill-tag-matched' style='font-size: 0.8em;'>Matched</span> Direct skill match<br>
+                <span class='skill-tag-transferable' style='font-size: 0.8em;'>Transfer</span> Similar skill found<br>
+                <span class='skill-tag-project' style='font-size: 0.8em;'>Project</span> Portfolio verified<br>
+                <span class='skill-tag-missing' style='font-size: 0.8em;'>Missing</span> Gap to fill<br>
+                <span class='skill-tag-bonus' style='font-size: 0.8em;'>Bonus</span> Extra advantage
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.divider()
+        
+        # Developer Mode - Hidden by Default
+        if st.toggle("🔧 Developer Mode", help="Access debugging tools and analytics internals"):
+            pwd = st.text_input("Password", type="password", key="dev_pwd", placeholder="Enter dev password")
+            if pwd == "1234":
+                if st.button("🔍 Open Debugger", use_container_width=True):
                     st.session_state["page"] = "Debugger"
                     st.rerun()
-             elif pwd:
-                 st.error("❌ Wrong password")
+            elif pwd:
+                st.error("❌ Wrong password")
+        
+        # Footer
+        st.divider()
+        st.markdown("""
+        <div style='text-align: center; color: #8b949e; font-size: 0.75rem;'>
+            Made with ❤️ for job seekers<br>
+            <a href='https://github.com' style='color: #00A0DC;'>GitHub</a> · 
+            <a href='#' style='color: #00A0DC;'>Docs</a>
+        </div>
+        """, unsafe_allow_html=True)
 
-    st.title("🎯 Job Seeker Helper - AI Career Analytics")
-    st.markdown("🚀 **Analyze your CV, Cover Letter, and Career Path with Advanced AI**")
-    st.caption("Upload your documents below to get instant feedback on skills, gaps, and opportunities")
-    st.divider()
+    # ==========================================================================
+    # MAIN CONTENT AREA - Hero Section
+    # ==========================================================================
+    
+    # Hero Header with Gradient
+    st.markdown("""
+    <div class='hero-gradient'>
+        <h1 style='margin: 0; font-size: 2.5rem;'>🎯 Job Seeker Helper</h1>
+        <p style='font-size: 1.2rem; color: #00A0DC; margin: 0.5rem 0;'>
+            AI-Powered Career Analytics for Smarter Applications
+        </p>
+        <p style='color: #8b949e; font-size: 0.95rem;'>
+            Upload your CV and job description to get instant insights on skills, gaps, and career opportunities
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
     # =============================================================================
     # DYNAMIC LAYOUT: Calculate how many columns are needed based on active toggles
@@ -224,16 +309,27 @@ def render_home():
     # COLUMN 1: CV (always present)
     # =============================================================================
     with c1:
-        st.subheader("Your CV")
+        st.markdown("### 📄 Your CV")
         input_type_cv = st.radio("Input Type", ["Text", "PDF"], key="cv_input", horizontal=True, label_visibility="collapsed")
+        
+        # Demo mode: pre-fill with sample CV
+        demo_cv = styles.get_demo_cv() if st.session_state.get("demo_mode") else ""
+        
         cv = ""
         if input_type_cv == "Text":
-            cv = st.text_area("Paste CV text", height=250, key="cv_text", label_visibility="visible")
+            cv = st.text_area(
+                "Paste CV text", 
+                value=demo_cv,
+                height=250, 
+                key="cv_text", 
+                placeholder="Paste your CV here or click 'Try Demo' in sidebar...",
+                label_visibility="collapsed"
+            )
         else:
             uploaded_cv = st.file_uploader("Upload CV (PDF)", type=["pdf"], key="cv_pdf", label_visibility="visible")
             if uploaded_cv:
                 try: cv = ml_utils.extract_text_from_pdf(uploaded_cv)
-                except Exception as e: st.error(f"Error: {e}")
+                except Exception as e: st.error(f"⚠️ PDF Error: {e}")
     
     # =============================================================================
     # OPTIONAL COLUMNS MANAGEMENT: Dynamically assign Project, Cover Letter, JD
@@ -278,46 +374,98 @@ def render_home():
     # =============================================================================
     jd_col = c2 if current_col == 2 else (c3 if current_col == 3 else c4)
     with jd_col:
-        st.subheader("Job Description")
+        st.markdown("### 💼 Job Description")
         input_type_jd = st.radio("Input Type", ["Text", "PDF"], key="jd_input", horizontal=True, label_visibility="collapsed")
+        
+        # Demo mode: pre-fill with sample JD
+        demo_jd = styles.get_demo_jd() if st.session_state.get("demo_mode") else ""
+        
         jd = ""
         if input_type_jd == "Text":
-            jd = st.text_area("Paste Job text", height=250, key="jd_text", label_visibility="visible")
+            jd = st.text_area(
+                "Paste Job text", 
+                value=demo_jd,
+                height=250, 
+                key="jd_text",
+                placeholder="Paste job description here or click 'Try Demo' in sidebar...",
+                label_visibility="collapsed"
+            )
         else:
             uploaded_jd = st.file_uploader("Upload JD (PDF)", type=["pdf"], key="jd_pdf", label_visibility="visible")
             if uploaded_jd:
                 try: jd = ml_utils.extract_text_from_pdf(uploaded_jd)
-                except Exception as e: st.error(f"Error: {e}")
+                except Exception as e: st.error(f"⚠️ PDF Error: {e}")
 
     # =============================================================================
-    # ANALYZE BUTTON: Trigger for processing
+    # ANALYZE BUTTON: Trigger for processing with enhanced UX
     # =============================================================================
-    if st.button("🔍 Analyze", type="primary", use_container_width=True):
-        # Input validation
+    st.markdown("")  # Spacing
+    
+    # Action buttons row
+    col_btn1, col_btn2, col_btn3 = st.columns([2, 1, 1])
+    
+    with col_btn1:
+        analyze_clicked = st.button("🔍 Analyze My Profile", type="primary", use_container_width=True)
+    
+    with col_btn2:
+        if st.button("📋 Copy Results", use_container_width=True, disabled=not st.session_state.get("last_results")):
+            # This will be handled after analysis
+            pass
+    
+    with col_btn3:
+        if st.button("🔄 Clear All", use_container_width=True):
+            st.session_state["demo_mode"] = False
+            st.session_state["last_results"] = None
+            st.rerun()
+    
+    if analyze_clicked:
+        # Input validation with friendly message
         if not cv or not jd:
-            st.warning("Please provide both CV and Job Description.")
+            st.error("⚠️ **Missing Input!** Please provide both your CV and the Job Description to continue.")
+            st.info("💡 **Tip:** Click 'Try Demo' in the sidebar to see the app in action with sample data!")
             return
 
-        with st.spinner("Analyzing profile..."):
-            # CV vs JD Analysis (with or without projects)
-            if show_project_eval and project_text:
-                 res = ml_utils.analyze_gap_with_project(cv, jd, project_text)
-            else:
-                 res = ml_utils.analyze_gap(cv, jd)
-            
-            # Cover Letter Analysis (if provided)
-            cl_analysis = None
-            if show_cover_letter and cover_letter_text:
-                cl_analysis = ml_utils.analyze_cover_letter(cover_letter_text, jd, cv)
-            
-            # Save results in session state for debugger
-            st.session_state["last_results"] = res
-            st.session_state["last_cv_text"] = cv
-            st.session_state["last_jd_text"] = jd
-            st.session_state["last_cl_analysis"] = cl_analysis
-                 
-            # Display results
-            render_results(res, jd, cv, cl_analysis)
+        # Progress bar with stages
+        progress_bar = st.progress(0, text="🔄 Initializing analysis...")
+        
+        # Stage 1: Skill Extraction
+        progress_bar.progress(20, text="📊 Extracting skills from documents...")
+        
+        # CV vs JD Analysis (with or without projects)
+        if show_project_eval and project_text:
+            progress_bar.progress(40, text="📂 Analyzing project portfolio...")
+            res = ml_utils.analyze_gap_with_project(cv, jd, project_text)
+        else:
+            res = ml_utils.analyze_gap(cv, jd)
+        
+        # Stage 2: Cover Letter (if enabled)
+        cl_analysis = None
+        if show_cover_letter and cover_letter_text:
+            progress_bar.progress(60, text="✉️ Evaluating cover letter...")
+            cl_analysis = ml_utils.analyze_cover_letter(cover_letter_text, jd, cv)
+        
+        # Stage 3: Generating insights
+        progress_bar.progress(80, text="🧠 Generating career insights...")
+        
+        # Save results in session state for debugger
+        st.session_state["last_results"] = res
+        st.session_state["last_cv_text"] = cv
+        st.session_state["last_jd_text"] = jd
+        st.session_state["last_cl_analysis"] = cl_analysis
+        
+        # Complete!
+        progress_bar.progress(100, text="✅ Analysis complete!")
+        
+        # Small delay to show completion, then display
+        import time
+        time.sleep(0.5)
+        progress_bar.empty()
+        
+        # Success message
+        st.success("🎉 **Analysis Complete!** Scroll down to see your personalized career insights.")
+             
+        # Display results
+        render_results(res, jd, cv, cl_analysis)
 
 def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     st.divider()
@@ -394,47 +542,116 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     st.caption("Visual breakdown of your skill alignment with this position")
     st.markdown("")  # Spacing
 
-    # ✅ MATCHED SKILLS - Green tags
-    if res["matching_hard"]:
-        st.markdown("**✅ Matched Skills:**")
-        matched_html = " ".join([f"<span style='background-color: #d4edda; color: #155724; font-weight: 500; padding: 5px 10px; border-radius: 5px; margin: 3px; display: inline-block;'>{skill}</span>" for skill in sorted(res["matching_hard"])])
-        st.markdown(matched_html, unsafe_allow_html=True)
-        st.markdown("")  # Spacing
+    # ==========================================================================
+    # SKILL VISUALIZATION - Radar Chart + Tags
+    # ==========================================================================
     
-    # ⚠️ TRANSFERABLE SKILLS - Yellow tags with source
-    transferable = res.get("transferable", {})
-    if transferable:
-        st.markdown("**⚠️ Transferable Skills:**")
-        for missing, present in transferable.items():
-            transfer_html = f"<span style='background-color: #fff3cd; color: #856404; font-weight: 500; padding: 5px 10px; border-radius: 5px; margin: 3px; display: inline-block;'>{missing} <span style='opacity: 0.7;'>← {present}</span></span>"
-            st.markdown(transfer_html, unsafe_allow_html=True)
-        st.markdown("")  # Spacing
+    # Create two columns: Radar Chart | Skill Tags
+    viz_col1, viz_col2 = st.columns([1, 2])
     
-    # 📂 PROJECT-VERIFIED SKILLS - Blue tags
-    projects = res.get("project_review", set())
-    if projects:
-        st.markdown("**📂 Project-Verified Skills:**")
-        st.caption("💡 Highlight these in your interview!")
-        project_html = " ".join([f"<span style='background-color: #cfe2ff; color: #084298; font-weight: 500; padding: 5px 10px; border-radius: 5px; margin: 3px; display: inline-block;'>★ {skill}</span>" for skill in sorted(projects)])
-        st.markdown(project_html, unsafe_allow_html=True)
-        st.markdown("")  # Spacing
+    with viz_col1:
+        # Radar Chart for Skill Categories
+        st.markdown("#### 📊 Skill Coverage")
+        
+        # Prepare data for radar chart
+        categories = ['Matched', 'Transferable', 'Project Verified', 'Missing', 'Bonus']
+        values = [
+            len(res["matching_hard"]),
+            len(res.get("transferable", {})),
+            len(res.get("project_review", set())),
+            len(res["missing_hard"]),
+            len(res["extra_hard"])
+        ]
+        
+        # Normalize for radar (max scale)
+        max_val = max(values) if max(values) > 0 else 1
+        normalized = [v / max_val * 100 for v in values]
+        
+        fig_radar = go.Figure()
+        
+        fig_radar.add_trace(go.Scatterpolar(
+            r=normalized + [normalized[0]],  # Close the polygon
+            theta=categories + [categories[0]],
+            fill='toself',
+            fillcolor='rgba(0, 119, 181, 0.3)',
+            line=dict(color='#0077B5', width=2),
+            name='Your Profile'
+        ))
+        
+        fig_radar.update_layout(
+            polar=dict(
+                radialaxis=dict(
+                    visible=True,
+                    range=[0, 100],
+                    showticklabels=False,
+                    gridcolor='rgba(255,255,255,0.1)'
+                ),
+                angularaxis=dict(
+                    gridcolor='rgba(255,255,255,0.1)'
+                ),
+                bgcolor='rgba(0,0,0,0)'
+            ),
+            showlegend=False,
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            margin=dict(t=30, b=30, l=30, r=30),
+            height=280
+        )
+        
+        st.plotly_chart(fig_radar, use_container_width=True)
+        
+        # Quick stats below radar
+        st.markdown(f"""
+        <div style='text-align: center; font-size: 0.85rem; color: #8b949e;'>
+            <strong style='color: #75f083;'>{len(res["matching_hard"])}</strong> matched · 
+            <strong style='color: #ffd666;'>{len(res.get("transferable", {}))}</strong> transferable · 
+            <strong style='color: #ff8a8a;'>{len(res["missing_hard"])}</strong> gaps
+        </div>
+        """, unsafe_allow_html=True)
     
-    # ❌ MISSING SKILLS - Red tags
-    if res["missing_hard"]:
-        st.markdown("**❌ Missing Skills:**")
-        missing_html = " ".join([f"<span style='background-color: #f8d7da; color: #842029; font-weight: 500; padding: 5px 10px; border-radius: 5px; margin: 3px; display: inline-block;'>{skill}</span>" for skill in sorted(res["missing_hard"])])
-        st.markdown(missing_html, unsafe_allow_html=True)
-    else:
-        st.success("✅ No missing skills - Perfect match!")
-    
-    st.markdown("")  # Spacing
-    
-    # ➕ BONUS SKILLS - Gray tags
-    if res["extra_hard"]:
-        st.markdown("**➕ Bonus Skills:**")
-        st.caption("Additional skills that give you competitive advantage")
-        bonus_html = " ".join([f"<span style='background-color: #e2e3e5; color: #41464b; font-weight: 500; padding: 5px 10px; border-radius: 5px; margin: 3px; display: inline-block;'>+ {skill}</span>" for skill in sorted(res["extra_hard"])])
-        st.markdown(bonus_html, unsafe_allow_html=True)
+    with viz_col2:
+        # ✅ MATCHED SKILLS - Green tags with new CSS
+        if res["matching_hard"]:
+            st.markdown("**✅ Matched Skills:**")
+            matched_html = " ".join([f"<span class='skill-tag-matched'>{skill}</span>" for skill in sorted(res["matching_hard"])])
+            st.markdown(matched_html, unsafe_allow_html=True)
+            st.markdown("")
+        
+        # ⚠️ TRANSFERABLE SKILLS - Yellow tags with source
+        transferable = res.get("transferable", {})
+        if transferable:
+            st.markdown("**🔄 Transferable Skills:**")
+            transfer_tags = []
+            for missing, present in transferable.items():
+                transfer_tags.append(f"<span class='skill-tag-transferable'>{missing} ← <em>{present}</em></span>")
+            st.markdown(" ".join(transfer_tags), unsafe_allow_html=True)
+            st.markdown("")
+        
+        # 📂 PROJECT-VERIFIED SKILLS - Blue tags
+        projects = res.get("project_review", set())
+        if projects:
+            st.markdown("**📂 Project-Verified Skills:**")
+            st.caption("💡 Highlight these in your interview!")
+            project_html = " ".join([f"<span class='skill-tag-project'>★ {skill}</span>" for skill in sorted(projects)])
+            st.markdown(project_html, unsafe_allow_html=True)
+            st.markdown("")
+        
+        # ❌ MISSING SKILLS - Red tags
+        if res["missing_hard"]:
+            st.markdown("**❌ Missing Skills:**")
+            missing_html = " ".join([f"<span class='skill-tag-missing'>{skill}</span>" for skill in sorted(res["missing_hard"])])
+            st.markdown(missing_html, unsafe_allow_html=True)
+        else:
+            st.success("✅ No missing skills - Perfect match!")
+        
+        st.markdown("")
+        
+        # ➕ BONUS SKILLS - Gray tags
+        if res["extra_hard"]:
+            st.markdown("**➕ Bonus Skills:**")
+            st.caption("Additional skills that give you competitive advantage")
+            bonus_html = " ".join([f"<span class='skill-tag-bonus'>+ {skill}</span>" for skill in sorted(res["extra_hard"])])
+            st.markdown(bonus_html, unsafe_allow_html=True)
 
     st.divider()
     

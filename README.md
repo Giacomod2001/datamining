@@ -1,10 +1,22 @@
 # Job Seeker Helper
 
-**AI-Powered Career Analytics for Smarter Job Applications**
+**🚀 AI-Powered Career Analytics for Smarter Job Applications**
 
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-2.0-0077B5?style=flat)](CHANGELOG.md)
+
+---
+
+## 🎉 What's New in v2.0 Premium Edition
+
+- **✨ Demo Mode** - Try the app instantly with sample CV & job description
+- **📊 Radar Chart** - Visual skill coverage visualization
+- **🎨 Premium UI** - LinkedIn-inspired dark theme with glassmorphism effects
+- **⚡ Progress Tracking** - Animated progress bar during analysis
+- **🔄 Enhanced UX** - Tooltips, how-it-works guide, better error messages
+- **🏷️ Animated Skill Tags** - Hover effects and gradient backgrounds
 
 ---
 

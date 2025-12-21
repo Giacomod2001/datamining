@@ -13,4 +13,4 @@ matplotlib
 nltk
 wordcloud
 requests
-# FORCE_REBUILD_AGGRESSIVE_V1.3
+# JOB_SEEKER_HELPER_V2.0_PREMIUM
