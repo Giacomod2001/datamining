@@ -1,43 +1,131 @@
 # HIERARCHICAL INFERENCE RULES (Parent -> Child implied)
 INFERENCE_RULES = {
-    "BigQuery": ["Cloud Computing", "SQL", "Data Science"],
+    # Cloud & Data
+    "BigQuery": ["Cloud Computing", "SQL", "Data Science", "Data Warehousing"],
     "GCP": ["Cloud Computing"],
     "AWS": ["Cloud Computing"],
     "Azure": ["Cloud Computing"],
-    "React": ["Frontend"],
-    "Vue": ["Frontend"],
-    "Angular": ["Frontend"],
+    "Snowflake": ["Cloud Computing", "SQL", "Data Warehousing"],
+    "Redshift": ["Cloud Computing", "SQL", "Data Warehousing", "AWS"],
+    
+    # Frontend
+    "React": ["Frontend", "JavaScript"],
+    "Vue": ["Frontend", "JavaScript"],
+    "Angular": ["Frontend", "JavaScript", "TypeScript"],
+    "Next.js": ["Frontend", "React", "JavaScript"],
+    
+    # DevOps & Infrastructure
     "Git": ["Version Control", "DevOps"],
-    "Docker": ["DevOps"],
-    "Kubernetes": ["DevOps"],
-    "Terraform": ["DevOps"],
-    "Tableau": ["Data Visualization"],
-    "Power BI": ["Data Visualization"],
-    "Looker": ["Data Visualization"],
-    "Looker Studio": ["Data Visualization"],
-    "Data Studio": ["Data Visualization"],
-    "Google Data Studio": ["Data Visualization"],
-    "GA4": ["Web Analytics", "Analytics"],
+    "Docker": ["DevOps", "Containerization"],
+    "Kubernetes": ["DevOps", "Containerization", "Orchestration"],
+    "Terraform": ["DevOps", "IaC"],
+    "Airflow": ["Data Engineering", "ETL", "Python"],
+    
+    # BI & Visualization
+    "Tableau": ["Data Visualization", "BI"],
+    "Power BI": ["Data Visualization", "BI"],
+    "Looker": ["Data Visualization", "BI"],
+    "Looker Studio": ["Data Visualization", "BI"],
+    "Data Studio": ["Data Visualization", "BI"],
+    "Google Data Studio": ["Data Visualization", "BI"],
+    "Metabase": ["Data Visualization", "BI"],
+    
+    # Analytics
+    "GA4": ["Web Analytics", "Analytics", "Google Analytics"],
     "Google Analytics": ["Web Analytics", "Analytics"],
-    "TensorFlow": ["Machine Learning", "Deep Learning"],
-    "PyTorch": ["Machine Learning", "Deep Learning"],
+    "Adobe Analytics": ["Web Analytics", "Analytics"],
+    
+    # ML & AI
+    "TensorFlow": ["Machine Learning", "Deep Learning", "Python"],
+    "PyTorch": ["Machine Learning", "Deep Learning", "Python"],
+    "Scikit-learn": ["Machine Learning", "Python"],
+    
+    # Programming Languages (implicit skills)
+    "Pandas": ["Python", "Data Analysis"],
+    "NumPy": ["Python", "Data Analysis"],
+    "Django": ["Python", "Backend", "Web Development"],
+    "Flask": ["Python", "Backend", "Web Development"],
+    "FastAPI": ["Python", "Backend", "API Development"],
+    "Spring Boot": ["Java", "Backend"],
+    "Node.js": ["JavaScript", "Backend"],
 }
 
-# SKILL CLUSTERS (Interchangeable skills)
+# SKILL CLUSTERS (Interchangeable/Equivalent skills)
+# If a job requires skill A and candidate has skill B from the same cluster, 
+# it counts as a transferable skill
 SKILL_CLUSTERS = {
-    "BI Tools": {"Tableau", "Power BI", "Looker", "Looker Studio", "Data Studio", "Google Data Studio", "QlikView"},
-    "Analytics Tools": {"Google Analytics", "GA4", "Adobe Analytics", "Matomo", "Mixpanel", "Amplitude"},
-    "Cloud Providers": {"AWS", "GCP", "Azure"},
-    "JS Frameworks": {"React", "Vue", "Angular", "Svelte"},
-    "Containerization": {"Docker", "Podman", "Containerd"},
-    "Orchestration": {"Kubernetes", "OpenShift", "Nomad"},
-    "IaC": {"Terraform", "CloudFormation", "Ansible"},
-    "Deep Learning": {"TensorFlow", "PyTorch", "Keras"},
-    "SQL Dialects": {"MySQL", "PostgreSQL", "SQL Server", "Oracle", "BigQuery"},
-    "Office Suites": {"Microsoft Office", "Google Workspace", "LibreOffice"},
-    "Project Mgmt": {"Jira", "Asana", "Trello", "Monday.com", "ClickUp"},
-    "CRM": {"Salesforce", "HubSpot", "Zoho"},
-    "Translation Tools": {"Trados", "MemoQ", "Wordfast", "OmegaT"},
+    # BI & Visualization Tools - ALL EQUIVALENT
+    "BI Tools": {
+        "Tableau", "Power BI", "Looker", "Looker Studio", "Data Studio", 
+        "Google Data Studio", "QlikView", "Qlik Sense", "Metabase", "Superset",
+        "Sisense", "Domo", "Mode Analytics", "Redash"
+    },
+    
+    # Web Analytics - ALL EQUIVALENT
+    "Analytics Tools": {
+        "Google Analytics", "GA4", "Adobe Analytics", "Matomo", 
+        "Mixpanel", "Amplitude", "Heap", "Pendo", "Hotjar"
+    },
+    
+    # Cloud Providers - EQUIVALENT for general cloud skills
+    "Cloud Providers": {"AWS", "GCP", "Azure", "Google Cloud", "Amazon Web Services"},
+    
+    # JavaScript Frameworks - EQUIVALENT
+    "JS Frameworks": {"React", "Vue", "Angular", "Svelte", "Next.js", "Nuxt.js"},
+    
+    # Python Web Frameworks - EQUIVALENT
+    "Python Web Frameworks": {"Django", "Flask", "FastAPI", "Pyramid"},
+    
+    # Containerization - EQUIVALENT
+    "Containerization": {"Docker", "Podman", "Containerd", "LXC"},
+    
+    # Container Orchestration - EQUIVALENT
+    "Orchestration": {"Kubernetes", "OpenShift", "Nomad", "Docker Swarm", "K8s"},
+    
+    # Infrastructure as Code - EQUIVALENT
+    "IaC": {"Terraform", "CloudFormation", "Ansible", "Pulumi", "Chef", "Puppet"},
+    
+    # ML Frameworks - EQUIVALENT
+    "ML Frameworks": {"TensorFlow", "PyTorch", "Keras", "JAX", "MXNet"},
+    
+    # SQL Databases - EQUIVALENT for SQL skills
+    "SQL Databases": {
+        "MySQL", "PostgreSQL", "SQL Server", "Oracle", "BigQuery", 
+        "Snowflake", "Redshift", "SQLite", "MariaDB"
+    },
+    
+    # NoSQL Databases - EQUIVALENT
+    "NoSQL Databases": {"MongoDB", "Cassandra", "DynamoDB", "Redis", "Elasticsearch", "Neo4j"},
+    
+    # Data Orchestration - EQUIVALENT
+    "Data Orchestration": {"Airflow", "Luigi", "Prefect", "Dagster", "dbt"},
+    
+    # Office Suites - EQUIVALENT
+    "Office Suites": {"Microsoft Office", "Google Workspace", "LibreOffice", "Office 365"},
+    
+    # Spreadsheets - EQUIVALENT
+    "Spreadsheets": {"Excel", "Google Sheets", "Numbers", "Calc"},
+    
+    # Project Management - EQUIVALENT
+    "Project Mgmt": {"Jira", "Asana", "Trello", "Monday.com", "ClickUp", "Notion", "Basecamp"},
+    
+    # CRM - EQUIVALENT
+    "CRM": {"Salesforce", "HubSpot", "Zoho", "Pipedrive", "Microsoft Dynamics"},
+    
+    # Design Tools - EQUIVALENT
+    "Design Tools": {"Figma", "Sketch", "Adobe XD", "InVision", "Axure"},
+    
+    # Graphic Design - EQUIVALENT
+    "Graphic Suite": {"Photoshop", "Illustrator", "InDesign", "Canva", "GIMP", "Affinity"},
+    
+    # Translation/CAT Tools - EQUIVALENT
+    "Translation Tools": {"Trados", "MemoQ", "Wordfast", "OmegaT", "Memsource", "Smartcat"},
+    
+    # Version Control - EQUIVALENT
+    "Version Control": {"Git", "GitHub", "GitLab", "Bitbucket", "SVN"},
+    
+    # Communication Tools - EQUIVALENT
+    "Communication": {"Slack", "Microsoft Teams", "Discord", "Zoom", "Google Meet"},
 }
 
 # PROJECT BASED SKILLS (Evaluation via Portfolio)

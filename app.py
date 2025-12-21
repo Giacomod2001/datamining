@@ -272,7 +272,7 @@ def render_home():
     # Hero Header with Gradient
     st.markdown("""
     <div class='hero-gradient'>
-        <h1 style='margin: 0; font-size: 2.5rem;'>🎯 Job Seeker Helper</h1>
+        <h1 style='margin: 0; font-size: 2.5rem;'>Job Seeker Helper</h1>
         <p style='font-size: 1.2rem; color: #00A0DC; margin: 0.5rem 0;'>
             AI-Powered Career Analytics for Smarter Applications
         </p>
@@ -532,120 +532,57 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
             st.caption(f"{cl_analysis['word_count']} words | {cl_analysis['language'] or 'EN'}")
 
     st.divider()
-    st.subheader("🛠️ Technical Skills Analysis")
-    st.caption("Visual breakdown of your skill alignment with this position")
+    st.subheader("Technical Skills Analysis")
+    st.caption("Breakdown of your skill alignment with this position")
     st.markdown("")  # Spacing
 
     # ==========================================================================
-    # SKILL VISUALIZATION - Radar Chart + Tags
+    # SKILL DISPLAY - Simple tag-based layout (no radar chart)
     # ==========================================================================
     
-    # Create two columns: Radar Chart | Skill Tags
-    viz_col1, viz_col2 = st.columns([1, 2])
-    
-    with viz_col1:
-        # Radar Chart for Skill Categories
-        st.markdown("#### 📊 Skill Coverage")
-        
-        # Prepare data for radar chart
-        categories = ['Matched', 'Transferable', 'Project Verified', 'Missing', 'Bonus']
-        values = [
-            len(res["matching_hard"]),
-            len(res.get("transferable", {})),
-            len(res.get("project_review", set())),
-            len(res["missing_hard"]),
-            len(res["extra_hard"])
-        ]
-        
-        # Normalize for radar (max scale)
-        max_val = max(values) if max(values) > 0 else 1
-        normalized = [v / max_val * 100 for v in values]
-        
-        fig_radar = go.Figure()
-        
-        fig_radar.add_trace(go.Scatterpolar(
-            r=normalized + [normalized[0]],  # Close the polygon
-            theta=categories + [categories[0]],
-            fill='toself',
-            fillcolor='rgba(0, 119, 181, 0.3)',
-            line=dict(color='#0077B5', width=2),
-            name='Your Profile'
-        ))
-        
-        fig_radar.update_layout(
-            polar=dict(
-                radialaxis=dict(
-                    visible=True,
-                    range=[0, 100],
-                    showticklabels=False,
-                    gridcolor='rgba(255,255,255,0.1)'
-                ),
-                angularaxis=dict(
-                    gridcolor='rgba(255,255,255,0.1)'
-                ),
-                bgcolor='rgba(0,0,0,0)'
-            ),
-            showlegend=False,
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            margin=dict(t=30, b=30, l=30, r=30),
-            height=280
-        )
-        
-        st.plotly_chart(fig_radar, use_container_width=True)
-        
-        # Quick stats below radar
-        st.markdown(f"""
-        <div style='text-align: center; font-size: 0.85rem; color: #8b949e;'>
-            <strong style='color: #75f083;'>{len(res["matching_hard"])}</strong> matched · 
-            <strong style='color: #ffd666;'>{len(res.get("transferable", {}))}</strong> transferable · 
-            <strong style='color: #ff8a8a;'>{len(res["missing_hard"])}</strong> gaps
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with viz_col2:
-        # ✅ MATCHED SKILLS - Green tags with new CSS
-        if res["matching_hard"]:
-            st.markdown("**✅ Matched Skills:**")
-            matched_html = " ".join([f"<span class='skill-tag-matched'>{skill}</span>" for skill in sorted(res["matching_hard"])])
-            st.markdown(matched_html, unsafe_allow_html=True)
-            st.markdown("")
-        
-        # ⚠️ TRANSFERABLE SKILLS - Yellow tags with source
-        transferable = res.get("transferable", {})
-        if transferable:
-            st.markdown("**🔄 Transferable Skills:**")
-            transfer_tags = []
-            for missing, present in transferable.items():
-                transfer_tags.append(f"<span class='skill-tag-transferable'>{missing} ← <em>{present}</em></span>")
-            st.markdown(" ".join(transfer_tags), unsafe_allow_html=True)
-            st.markdown("")
-        
-        # 📂 PROJECT-VERIFIED SKILLS - Blue tags
-        projects = res.get("project_review", set())
-        if projects:
-            st.markdown("**📂 Project-Verified Skills:**")
-            st.caption("💡 Highlight these in your interview!")
-            project_html = " ".join([f"<span class='skill-tag-project'>★ {skill}</span>" for skill in sorted(projects)])
-            st.markdown(project_html, unsafe_allow_html=True)
-            st.markdown("")
-        
-        # ❌ MISSING SKILLS - Red tags
-        if res["missing_hard"]:
-            st.markdown("**❌ Missing Skills:**")
-            missing_html = " ".join([f"<span class='skill-tag-missing'>{skill}</span>" for skill in sorted(res["missing_hard"])])
-            st.markdown(missing_html, unsafe_allow_html=True)
-        else:
-            st.success("✅ No missing skills - Perfect match!")
-        
+    # Matched Skills - Green tags
+    if res["matching_hard"]:
+        st.markdown("**Matched Skills:**")
+        matched_html = " ".join([f"<span class='skill-tag-matched'>{skill}</span>" for skill in sorted(res["matching_hard"])])
+        st.markdown(matched_html, unsafe_allow_html=True)
         st.markdown("")
-        
-        # ➕ BONUS SKILLS - Gray tags
-        if res["extra_hard"]:
-            st.markdown("**➕ Bonus Skills:**")
-            st.caption("Additional skills that give you competitive advantage")
-            bonus_html = " ".join([f"<span class='skill-tag-bonus'>+ {skill}</span>" for skill in sorted(res["extra_hard"])])
-            st.markdown(bonus_html, unsafe_allow_html=True)
+    
+    # Transferable Skills - Yellow tags with source
+    transferable = res.get("transferable", {})
+    if transferable:
+        st.markdown("**Transferable Skills:**")
+        st.caption("You have equivalent skills that match these requirements")
+        transfer_tags = []
+        for missing, present in transferable.items():
+            transfer_tags.append(f"<span class='skill-tag-transferable'>{missing} ← <em>{present}</em></span>")
+        st.markdown(" ".join(transfer_tags), unsafe_allow_html=True)
+        st.markdown("")
+    
+    # Project-Verified Skills - Blue tags
+    projects = res.get("project_review", set())
+    if projects:
+        st.markdown("**Project-Verified Skills:**")
+        st.caption("Highlight these in your interview")
+        project_html = " ".join([f"<span class='skill-tag-project'>{skill}</span>" for skill in sorted(projects)])
+        st.markdown(project_html, unsafe_allow_html=True)
+        st.markdown("")
+    
+    # Missing Skills - Red tags
+    if res["missing_hard"]:
+        st.markdown("**Missing Skills:**")
+        missing_html = " ".join([f"<span class='skill-tag-missing'>{skill}</span>" for skill in sorted(res["missing_hard"])])
+        st.markdown(missing_html, unsafe_allow_html=True)
+    else:
+        st.success("No missing skills - Perfect match!")
+    
+    st.markdown("")
+    
+    # Bonus Skills - Gray tags
+    if res["extra_hard"]:
+        st.markdown("**Bonus Skills:**")
+        st.caption("Additional skills that give you competitive advantage")
+        bonus_html = " ".join([f"<span class='skill-tag-bonus'>+ {skill}</span>" for skill in sorted(res["extra_hard"])])
+        st.markdown(bonus_html, unsafe_allow_html=True)
 
     st.divider()
     

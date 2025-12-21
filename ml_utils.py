@@ -815,17 +815,79 @@ def generate_pdf_report(res: Dict, jd_text: str = "") -> bytes:
 
 def detect_language(text: str) -> str:
     """
-    Simple heuristic to detect non-explicit native language.
+    Enhanced language detection for native language inference.
+    If a CV is written in a specific language, we can infer the candidate 
+    is likely a native speaker of that language.
+    
+    Supports: Italian, English, Spanish, French, German, Portuguese
+    Returns the detected native language as a skill string.
     """
     text = text.lower()
-    it_markers = {" il ", " lo ", " la ", " i ", " gli ", " le ", " di ", " è ", " e ", " per ", " delle ", " nella "}
-    en_markers = {" the ", " a ", " an ", " and ", " is ", " of ", " for ", " to ", " in ", " with ", " that ", " this "}
-
-    it_score = sum(1 for w in it_markers if w in text)
-    en_score = sum(1 for w in en_markers if w in text)
-
-    if it_score > en_score: return "Italian"
-    if en_score > it_score: return "English"
+    
+    # Language markers (common words unique to each language)
+    language_markers = {
+        "Italian": {
+            "markers": {" il ", " lo ", " la ", " gli ", " le ", " di ", " è ", " per ", 
+                       " delle ", " nella ", " sono ", " che ", " con ", " una ", " del ",
+                       " nel ", " alla ", " dalla ", " presso ", " laurea ", " esperienza ",
+                       " competenze ", " lavoro ", " sviluppo ", " gestione "},
+            "strong_markers": {" esperienza lavorativa", " istruzione ", " competenze tecniche",
+                              " laurea in ", " presso ", " dal ", " al "}
+        },
+        "English": {
+            "markers": {" the ", " a ", " an ", " and ", " is ", " of ", " for ", " to ", 
+                       " in ", " with ", " that ", " this ", " have ", " has ", " was ",
+                       " were ", " been ", " experience ", " skills ", " work ", " team "},
+            "strong_markers": {" work experience ", " education ", " skills ", " bachelor",
+                              " master ", " university ", " developed ", " managed "}
+        },
+        "Spanish": {
+            "markers": {" el ", " la ", " los ", " las ", " de ", " en ", " que ", " y ",
+                       " es ", " para ", " con ", " una ", " por ", " como ", " más ",
+                       " del ", " experiencia ", " trabajo ", " desarrollo "},
+            "strong_markers": {" experiencia laboral ", " educación ", " habilidades ",
+                              " licenciatura ", " universidad ", " desarrollé "}
+        },
+        "French": {
+            "markers": {" le ", " la ", " les ", " de ", " du ", " des ", " et ", " en ",
+                       " est ", " une ", " un ", " pour ", " avec ", " dans ", " sur ",
+                       " expérience ", " travail ", " développement "},
+            "strong_markers": {" expérience professionnelle ", " formation ", " compétences ",
+                              " licence ", " université ", " développé "}
+        },
+        "German": {
+            "markers": {" der ", " die ", " das ", " und ", " in ", " ist ", " mit ", " für ",
+                       " von ", " zu ", " auf ", " bei ", " eine ", " einer ", " eines ",
+                       " erfahrung ", " arbeit ", " entwicklung "},
+            "strong_markers": {" berufserfahrung ", " ausbildung ", " kenntnisse ",
+                              " bachelor ", " universität ", " entwickelt "}
+        },
+        "Portuguese": {
+            "markers": {" o ", " a ", " os ", " as ", " de ", " em ", " que ", " e ",
+                       " é ", " para ", " com ", " uma ", " por ", " como ", " mais ",
+                       " do ", " experiência ", " trabalho ", " desenvolvimento "},
+            "strong_markers": {" experiência profissional ", " educação ", " habilidades ",
+                              " licenciatura ", " universidade ", " desenvolvi "}
+        }
+    }
+    
+    # Calculate scores for each language
+    scores = {}
+    for lang, data in language_markers.items():
+        # Count regular markers
+        regular_score = sum(1 for w in data["markers"] if w in text)
+        # Strong markers count double
+        strong_score = sum(2 for w in data["strong_markers"] if w in text)
+        scores[lang] = regular_score + strong_score
+    
+    # Find the best match
+    best_lang = max(scores, key=scores.get)
+    best_score = scores[best_lang]
+    
+    # Only return if score is significant (at least 3 markers found)
+    if best_score >= 3:
+        return best_lang
+    
     return None
 
 # =============================================================================
