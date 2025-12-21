@@ -299,24 +299,31 @@ def render_debug_page():
         
         with kb_tab1:
             st.markdown("**How inference works:** When a specific skill is found, related parent skills are automatically inferred.")
+            st.markdown("")
             
-            # Visualize as graph
-            import graphviz
-            graph = graphviz.Digraph()
-            graph.attr(bgcolor='transparent')
-            graph.attr('node', style='filled', fillcolor='#21262d', fontcolor='white')
-            graph.attr('edge', color='#0077B5')
+            # Show as readable cards instead of unreadable graph
+            st.markdown("#### Inference Rules Overview")
             
+            # Group by parent skill
+            parent_to_children = {}
             for child, parents in constants.INFERENCE_RULES.items():
                 for parent in parents:
-                    graph.edge(child, parent)
+                    if parent not in parent_to_children:
+                        parent_to_children[parent] = []
+                    parent_to_children[parent].append(child)
             
-            st.graphviz_chart(graph)
+            # Display as expandable cards
+            for parent, children in sorted(parent_to_children.items()):
+                with st.expander(f"{parent} (inferred from {len(children)} skills)"):
+                    children_html = " ".join([f"<span class='skill-tag-matched'>{c}</span>" for c in sorted(children)])
+                    st.markdown(children_html, unsafe_allow_html=True)
             
-            # Table view
-            with st.expander("View as Table"):
-                inf_data = [{"Skill": k, "Infers": ", ".join(v)} for k, v in constants.INFERENCE_RULES.items()]
-                st.dataframe(pd.DataFrame(inf_data), use_container_width=True, hide_index=True)
+            st.divider()
+            
+            # Full table view
+            st.markdown("#### Complete Mapping Table")
+            inf_data = [{"Child Skill": k, "Infers Parent": ", ".join(v)} for k, v in constants.INFERENCE_RULES.items()]
+            st.dataframe(pd.DataFrame(inf_data), use_container_width=True, hide_index=True)
         
         with kb_tab2:
             st.markdown("**Skill clusters:** Skills in the same cluster are considered transferable/equivalent.")
