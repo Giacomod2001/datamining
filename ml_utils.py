@@ -907,7 +907,6 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
 
     # Stats
     skill_clusters = getattr(constants, "SKILL_CLUSTERS", {})
-    project_skills = getattr(constants, "PROJECT_BASED_SKILLS", set())
 
     # Logic 1: Transferable
     transferable = {} 
@@ -924,19 +923,15 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
         if not found_transferable:
             remaining_missing.add(missing)
 
-    # Logic 2: Project-Based
+    # Note: project_review is ONLY populated by analyze_gap_with_project
+    # when the user actually provides project content
     project_review = set()
-    final_strict_missing = set()
-    for skill in remaining_missing:
-        if skill in project_skills:
-            project_review.add(skill)
-        else:
-            final_strict_missing.add(skill)
+    final_strict_missing = remaining_missing  # All remaining are missing
 
     matching_soft = cv_soft & job_soft
     missing_soft = job_soft - cv_soft
 
-    score_points = len(matching_hard) + (len(transferable) * 0.5) + (len(project_review) * 0.3)
+    score_points = len(matching_hard) + (len(transferable) * 0.5)
     match_pct = score_points / len(job_hard) * 100 if job_hard else 0
 
     return {
