@@ -190,6 +190,9 @@ def render_home():
                 # Also load project and cover letter demos
                 st.session_state["proj_text"] = styles.get_demo_project()
                 st.session_state["cl_text"] = styles.get_demo_cover_letter()
+                # Enable the toggles so user sees the full demo
+                st.session_state["show_project_toggle"] = True
+                st.session_state["show_cl_toggle"] = True
                 st.rerun()
         with col_demo2:
             if st.session_state.get("demo_mode"):
@@ -200,6 +203,9 @@ def render_home():
                     st.session_state["jd_text"] = ""
                     st.session_state["proj_text"] = ""
                     st.session_state["cl_text"] = ""
+                    # Reset toggles
+                    st.session_state["show_project_toggle"] = False
+                    st.session_state["show_cl_toggle"] = False
                     st.rerun()
         
         if st.session_state.get("demo_mode"):
@@ -234,15 +240,23 @@ def render_home():
         # Optional Features Section
         st.markdown("### Analysis Options")
         
+        # Initialize toggle states if not present
+        if "show_project_toggle" not in st.session_state:
+            st.session_state["show_project_toggle"] = False
+        if "show_cl_toggle" not in st.session_state:
+            st.session_state["show_cl_toggle"] = False
+        
         show_project_eval = st.toggle(
             "Project Evaluation", 
-            value=False, 
+            value=st.session_state["show_project_toggle"],
+            key="show_project_toggle",
             help="Upload project descriptions to verify skills through your portfolio. Increases match score when projects demonstrate missing skills."
         )
         
         show_cover_letter = st.toggle(
             "Cover Letter Analysis", 
-            value=False, 
+            value=st.session_state["show_cl_toggle"],
+            key="show_cl_toggle",
             help="Get AI feedback on keyword coverage, structure, and personalization of your application letter."
         )
         
