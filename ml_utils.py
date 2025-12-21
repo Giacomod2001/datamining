@@ -333,28 +333,28 @@ def _generate_job_summary(keywords: List[str]) -> str:
     # Detect main domain
     if {'data', 'analytics', 'sql', 'database'} & kw_lower:
         if {'aws', 'cloud', 'azure'} & kw_lower:
-            return "🎯 This position seeks a data professional with cloud expertise to manage scalable data pipelines and infrastructure."
+            return "This position seeks a data professional with cloud expertise to manage scalable data pipelines and infrastructure."
         elif {'power', 'bi', 'tableau', 'visualization'} & kw_lower:
-            return "🎯 This position seeks an analyst/engineer focused on Business Intelligence and data visualization."
+            return "This position seeks an analyst/engineer focused on Business Intelligence and data visualization."
         else:
-            return "🎯 This position seeks a professional with data management and analytics skills."
+            return "This position seeks a professional with data management and analytics skills."
     
     elif {'engineer', 'software', 'developer', 'programming'} & kw_lower:
         if {'cloud', 'aws', 'azure', 'kubernetes'} & kw_lower:
-            return "🎯 This position seeks a software engineer with focus on cloud and distributed architectures."
+            return "This position seeks a software engineer with focus on cloud and distributed architectures."
         else:
-            return "🎯 This position seeks a software engineer for application development."
+            return "This position seeks a software engineer for application development."
     
     elif {'design', 'architecture', 'system'} & kw_lower:
-        return "🎯 This position seeks an architect to design complex and scalable systems."
+        return "This position seeks an architect to design complex and scalable systems."
     
     elif {'ml', 'machine', 'learning', 'ai', 'model'} & kw_lower:
-        return "🎯 This position seeks a Machine Learning and AI specialist."
+        return "This position seeks a Machine Learning and AI specialist."
     
     else:
         # Generic
         top3 = ', '.join(keywords[:3])
-        return f"🎯 This position primarily seeks expertise in: {top3}."
+        return f"This position primarily seeks expertise in: {top3}."
 
 # --- NEW: NAMED ENTITY RECOGNITION (NER) ---
 try:
@@ -512,7 +512,7 @@ def generate_cluster_insight(clusters: Dict[str, int], matching_skills: Set[str]
         if cid not in cluster_groups: cluster_groups[cid] = []
         cluster_groups[cid].append(skill)
 
-    insight = "### 💡 AI Analysis of your Profile Structure\n\n"
+    insight = "### AI Analysis of your Profile Structure\n\n"
 
     # Identify strongest and weakest clusters
     for cid, skills in cluster_groups.items():
@@ -528,11 +528,11 @@ def generate_cluster_insight(clusters: Dict[str, int], matching_skills: Set[str]
         insight += f"- **Coverage**: {coverage:.0f}% of these skills are in your CV.\n"
 
         if coverage > 75:
-            insight += "- 🚀 **Assessment**: You are very strong in this area.\n"
+            insight += "- **Assessment**: You are very strong in this area.\n"
         elif coverage < 30:
-            insight += "- ⚠️ **Assessment**: This seems to be a significant gap area for you.\n"
+            insight += "- **Assessment**: This seems to be a significant gap area for you.\n"
         else:
-            insight += "- ℹ️ **Assessment**: You have some foundation here, but room to improve.\n"
+            insight += "- **Assessment**: You have some foundation here, but room to improve.\n"
 
         insight += "\n"
 
@@ -1101,32 +1101,32 @@ def generate_project_talking_points(project_skills: Set[str], job_skills: Set[st
     if verified_skills:
         top_verified = list(verified_skills)[:3]
         talking_points.append(
-            f"✅ Highlight practical experience with: {', '.join(top_verified)}"
+            f"Highlight practical experience with: {', '.join(top_verified)}"
         )
     
     # 2. Skill diversity
     if len(project_skills) >= 5:
         talking_points.append(
-            f"🎯 Emphasize your versatile skill set across {len(project_skills)} technologies"
+            f"Emphasize your versatile skill set across {len(project_skills)} technologies"
         )
     
     # 3. Gap acknowledgment strategy
     missing = job_skills - project_skills
     if missing and len(missing) <= 3:
         talking_points.append(
-            f"📚 Show willingness to learn: Mention plans to develop {', '.join(list(missing)[:2])}"
+            f"Show willingness to learn: Mention plans to develop {', '.join(list(missing)[:2])}"
         )
     
     # 4. Project complexity
     if len(project_skills) >= 8:
         talking_points.append(
-            "🏆 Showcase project complexity - demonstrate how multiple technologies integrate"
+            "Showcase project complexity - demonstrate how multiple technologies integrate"
         )
     
     # Default fallback
     if not talking_points:
         talking_points.append(
-            "💼 Prepare to discuss specific challenges solved in your projects"
+            "Prepare to discuss specific challenges solved in your projects"
         )
     
     return talking_points
@@ -1645,74 +1645,74 @@ def analyze_cover_letter(cover_letter_text: str, jd_text: str, cv_text: str = ""
     if cl_lang == "Italian":
         # Strengths (Italian)
         if hard_coverage >= 60:
-            strengths.append(f"✅ Ottima menzione delle competenze tecniche ({len(hard_mentioned)}/{len(jd_hard)})")
+            strengths.append(f"Ottima menzione delle competenze tecniche ({len(hard_mentioned)}/{len(jd_hard)})")
         elif hard_coverage >= 30:
-            strengths.append(f"👍 Discrete menzioni delle competenze tecniche ({len(hard_mentioned)}/{len(jd_hard)})")
+            strengths.append(f"Discrete menzioni delle competenze tecniche ({len(hard_mentioned)}/{len(jd_hard)})")
         
         if soft_coverage >= 50:
-            strengths.append(f"✅ Buona enfasi sulle soft skills")
+            strengths.append(f"Buona enfasi sulle soft skills")
         
         if structure_score >= 80:
-            strengths.append("✅ Struttura professionale ben formattata")
+            strengths.append("Struttura professionale ben formattata")
         
         if personalization_score >= 60:
-            strengths.append("✅ Lettera personalizzata con esempi specifici")
+            strengths.append("Lettera personalizzata con esempi specifici")
         
         # Improvements (Italian)
         if hard_coverage < 40:
             missing_sample = list(hard_missing)[:3]
-            improvements.append(f"⚠️ Menziona più competenze chiave richieste: {', '.join(missing_sample)}")
+            improvements.append(f"Menziona più competenze chiave richieste: {', '.join(missing_sample)}")
         
         if soft_coverage < 30 and jd_soft:
-            improvements.append(f"💡 Enfatizza soft skills come: {', '.join(list(jd_soft)[:2])}")
+            improvements.append(f"Enfatizza soft skills come: {', '.join(list(jd_soft)[:2])}")
         
         if not has_greeting:
-            improvements.append("📝 Aggiungi un saluto formale (es: 'Gentile...')")
+            improvements.append("Aggiungi un saluto formale (es: 'Gentile...')")
         
         if not has_closing:
-            improvements.append("📝 Concludi con una chiusura formale (es: 'Cordiali saluti')")
+            improvements.append("Concludi con una chiusura formale (es: 'Cordiali saluti')")
         
         if length_score < 80:
-            improvements.append(f"📏 {length_feedback}")
+            improvements.append(f"{length_feedback}")
         
         if personalization_score < 50:
-            improvements.append("💡 Aggiungi esempi concreti e risultati quantificabili")
+            improvements.append("Aggiungi esempi concreti e risultati quantificabili")
     
     else:
         # Strengths (English)
         if hard_coverage >= 60:
-            strengths.append(f"✅ Strong technical keyword coverage ({len(hard_mentioned)}/{len(jd_hard)})")
+            strengths.append(f"Strong technical keyword coverage ({len(hard_mentioned)}/{len(jd_hard)})")
         elif hard_coverage >= 30:
-            strengths.append(f"👍 Decent technical keyword mentions ({len(hard_mentioned)}/{len(jd_hard)})")
+            strengths.append(f"Decent technical keyword mentions ({len(hard_mentioned)}/{len(jd_hard)})")
         
         if soft_coverage >= 50:
-            strengths.append(f"✅ Good emphasis on soft skills")
+            strengths.append(f"Good emphasis on soft skills")
         
         if structure_score >= 80:
-            strengths.append("✅ Well-structured professional format")
+            strengths.append("Well-structured professional format")
         
         if personalization_score >= 60:
-            strengths.append("✅ Personalized with specific examples")
+            strengths.append("Personalized with specific examples")
         
         # Improvements (English)
         if hard_coverage < 40:
             missing_sample = list(hard_missing)[:3]
-            improvements.append(f"⚠️ Mention more required skills: {', '.join(missing_sample)}")
+            improvements.append(f"Mention more required skills: {', '.join(missing_sample)}")
         
         if soft_coverage < 30 and jd_soft:
-            improvements.append(f"💡 Emphasize soft skills like: {', '.join(list(jd_soft)[:2])}")
+            improvements.append(f"Emphasize soft skills like: {', '.join(list(jd_soft)[:2])}")
         
         if not has_greeting:
-            improvements.append("📝 Add a formal greeting (e.g., 'Dear Hiring Manager')")
+            improvements.append("Add a formal greeting (e.g., 'Dear Hiring Manager')")
         
         if not has_closing:
-            improvements.append("📝 End with a formal closing (e.g., 'Sincerely')")
+            improvements.append("End with a formal closing (e.g., 'Sincerely')")
         
         if length_score < 80:
-            improvements.append(f"📏 {length_feedback}")
+            improvements.append(f"{length_feedback}")
         
         if personalization_score < 50:
-            improvements.append("💡 Add concrete examples and quantifiable results")
+            improvements.append("Add concrete examples and quantifiable results")
     
     return {
         'overall_score': overall_score,
