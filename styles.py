@@ -438,85 +438,104 @@ hr {
 
 
 def get_demo_cv():
-    """Returns sample CV text for demo mode."""
+    """Returns sample CV text for demo mode - optimized for ~73% match."""
     return """
-GIACOMO ROSSI
-Data Engineer & ML Specialist
-Milan, Italy | giacomo.rossi@email.com
+MARCO BIANCHI
+Digital Marketing & Data Analyst
+Milan, Italy | marco.bianchi@email.com | +39 333 1234567
 
-SUMMARY
-Experienced Data Engineer with 5+ years building scalable data pipelines and ML systems.
-Expert in Python, SQL, and cloud technologies (GCP, AWS). Strong background in analytics
-and business intelligence.
+PROFESSIONAL SUMMARY
+Results-driven Marketing Analyst with 4 years of experience in data-driven marketing 
+and business intelligence. Expert in Google Analytics, campaign optimization, and 
+dashboard creation. Currently pursuing certifications in cloud technologies.
 
-SKILLS
-Technical: Python, SQL, BigQuery, GCP, AWS, Docker, Kubernetes, Airflow, Spark
-Analytics: Power BI, Tableau, Looker Studio, Google Analytics, Data Visualization
-Languages: Italian (Native), English (Fluent), Spanish (Intermediate)
+TECHNICAL SKILLS
+Programming: Python, SQL, BigQuery
+Analytics & BI: Google Analytics 4, Google Tag Manager, Looker Studio, Data Visualization
+Marketing: Campaign Management, A/B Testing, Performance Marketing, Social Media, Email Marketing
+Tools: CRM Platforms, Microsoft Office, Excel, Google Workspace
+Languages: Italian (Native), English (B2 Professional)
 
-EXPERIENCE
+PROFESSIONAL EXPERIENCE
 
-Senior Data Engineer | Tech Company XYZ | 2021 - Present
-- Designed and implemented ETL pipelines processing 10TB+ daily using Airflow and Spark
-- Built real-time data streaming infrastructure with Kafka and Dataflow
-- Led migration of on-premise data warehouse to BigQuery, reducing costs by 40%
-- Developed Python libraries for automated data quality monitoring
+Marketing Data Analyst | Digital Agency Milano | 2022 - Present
+- Designed interactive dashboards in Looker Studio tracking campaign KPIs and ROI
+- Implemented tracking ecosystems using Google Tag Manager across 50+ client websites
+- Analyzed performance data using Google Analytics 4 to optimize conversion rates by 25%
+- Managed A/B testing programs for landing pages and email campaigns
+- Collaborated with creative teams on data-driven marketing strategies
 
-Data Analyst | StartUp ABC | 2019 - 2021
-- Created executive dashboards in Power BI tracking business KPIs
-- Performed advanced analytics using Python (Pandas, Scikit-learn)
-- Collaborated with product teams to define metrics and A/B testing
+Junior Digital Marketing Specialist | StartUp Italia | 2020 - 2022
+- Executed multi-platform social media campaigns increasing engagement by 40%
+- Managed email marketing automation and CRM database of 100K+ contacts
+- Created campaign performance reports and presented insights to stakeholders
+- Supported paid advertising campaigns on Google Ads and Facebook
 
 EDUCATION
-Master in Data Science | Politecnico di Milano | 2019
-Bachelor in Computer Engineering | Università di Milano | 2017
+Bachelor in Marketing & Communication | Università Bocconi | 2020
+Relevant Coursework: Statistics, Consumer Behavior, Digital Marketing, Market Research
 
 CERTIFICATIONS
-- Google Cloud Professional Data Engineer
-- AWS Solutions Architect Associate
+- Google Analytics Individual Qualification (GAIQ)
+- Google Ads Search Certification
+- HubSpot Inbound Marketing
+
+KEY PROJECT
+E-commerce Analytics Dashboard | Personal Project | 2023
+Built end-to-end analytics solution using Python, BigQuery, and Looker Studio
+to track customer journey and revenue attribution across marketing channels.
 """
 
 
 def get_demo_jd():
-    """Returns sample Job Description for demo mode."""
+    """Returns sample Job Description for demo mode - designed for ~73% match."""
     return """
-SENIOR DATA ENGINEER
-TechCorp International | Milan, Italy
+SENIOR MARKETING ANALYST
+DataDriven Corp | Milan, Italy (Hybrid)
 
-About the Role:
-We are looking for a Senior Data Engineer to join our growing data team. You will be
-responsible for designing and building scalable data infrastructure to support our
-analytics and machine learning initiatives.
+About Us:
+DataDriven Corp is a leading marketing technology company seeking a Senior Marketing 
+Analyst to join our Analytics team. You will drive data-informed decision making 
+across our marketing organization.
 
 Requirements:
 
-Technical Skills:
-- 5+ years experience with Python and SQL
-- Strong experience with cloud platforms (GCP, AWS, or Azure)
-- Experience with data orchestration tools (Airflow, Luigi)
-- Proficiency in big data technologies (Spark, Kafka)
-- Experience with containerization (Docker, Kubernetes)
-- Knowledge of data warehousing concepts and solutions (BigQuery, Snowflake, Redshift)
+Required Technical Skills:
+- 4+ years experience in marketing analytics or data analysis
+- Expert proficiency in Google Analytics 4 and Google Tag Manager
+- Strong SQL skills for data extraction and analysis
+- Experience with BI tools (Looker Studio, Tableau, or Power BI)
+- Proficiency in Python for data analysis and automation
+- Experience with A/B testing and statistical analysis
+
+Required Marketing Skills:
+- Deep understanding of digital marketing channels (SEO, SEM, Social Media)
+- Experience with campaign tracking and attribution modeling
+- Knowledge of CRM platforms and email marketing
+- Strong stakeholder communication and presentation skills
 
 Nice to Have:
-- Experience with Terraform or Infrastructure as Code
-- Machine Learning engineering experience
-- Streaming data processing (Pub/Sub, Kinesis)
-- Experience with BI tools (Tableau, Power BI, Looker)
+- Experience with cloud platforms (GCP, AWS)
+- Machine Learning knowledge for predictive analytics
+- Tableau or Power BI certification
+- Experience with dbt or data transformation tools
+- Knowledge of Snowflake or data warehousing concepts
 
 Soft Skills:
-- Excellent communication and stakeholder management
-- Problem-solving mindset
-- Ability to work in cross-functional teams
-- Leadership experience mentoring junior engineers
+- Excellent analytical and problem-solving abilities
+- Strong communication skills for technical and non-technical audiences
+- Ability to work independently and in cross-functional teams
+- Detail-oriented with strong project management skills
 
 What We Offer:
-- Competitive salary and benefits
-- Remote/Hybrid work options
-- Learning and development budget
+- Competitive salary: EUR 45,000 - 55,000
+- Hybrid work arrangement (3 days office, 2 days remote)
+- Learning budget for certifications and courses
+- Health insurance and wellness benefits
 - International team environment
 
 Languages:
-- English (Required)
-- Italian (Preferred)
+- English (Required - working language)
+- Italian (Required for client communication)
 """
+
