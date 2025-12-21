@@ -732,9 +732,9 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                         st.markdown(f"**Area {idx+1}**")
                         st.write(topic)
                 
-                # Show keywords as tags
+                # Show keywords as tags (rounded like other skill tags)
                 st.markdown("#### Main Keywords:")
-                keyword_html = " ".join([f"<span style='background-color: #e1f5ff; color: #1a1a1a; font-weight: 500; padding: 5px 10px; border-radius: 5px; margin: 2px; display: inline-block;'>{kw}</span>" for kw in result['keywords']])
+                keyword_html = " ".join([f"<span class='skill-tag-bonus'>{kw}</span>" for kw in result['keywords']])
                 st.markdown(keyword_html, unsafe_allow_html=True)
         else:
             st.info("Job Description too brief for contextual analysis.")
