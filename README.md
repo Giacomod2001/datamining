@@ -1,6 +1,6 @@
 # Job Seeker Helper
 
-**🚀 AI-Powered Career Analytics for Smarter Job Applications**
+> AI-Powered Career Analytics for Smarter Job Applications
 
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
@@ -9,14 +9,14 @@
 
 ---
 
-## 🎉 What's New in v2.0 Premium Edition
+## What's New in v2.0 Premium Edition
 
-- **✨ Demo Mode** - Try the app instantly with sample CV & job description
-- **📊 Radar Chart** - Visual skill coverage visualization
-- **🎨 Premium UI** - LinkedIn-inspired dark theme with glassmorphism effects
-- **⚡ Progress Tracking** - Animated progress bar during analysis
-- **🔄 Enhanced UX** - Tooltips, how-it-works guide, better error messages
-- **🏷️ Animated Skill Tags** - Hover effects and gradient backgrounds
+- **Demo Mode** - Try the app instantly with sample CV and job description
+- **Premium UI** - LinkedIn-inspired dark theme with glassmorphism effects
+- **Progress Tracking** - Animated progress bar during analysis
+- **Enhanced UX** - Tooltips, how-it-works guide, better error messages
+- **Animated Skill Tags** - Hover effects and gradient backgrounds
+- **Formal Presentation** - Professional, clean interface
 
 ---
 
@@ -36,11 +36,11 @@ Unlike traditional ATS systems that rely on simple keyword matching, our tool un
 
 ## Key Features
 
-### 🧠 Intelligent Skill Analysis
+### Intelligent Skill Analysis
 
 **Semantic Inference Engine**
-- Automatically deduces implicit skills (e.g., *BigQuery* → *SQL*, *Cloud Computing*, *Data Science*)
-- Recognizes tool equivalencies (*Looker Studio* ≈ *Power BI*, *GA4* ≈ *Google Analytics*)
+- Automatically deduces implicit skills (e.g., *BigQuery* infers *SQL*, *Cloud Computing*, *Data Science*)
+- Recognizes tool equivalencies (*Looker Studio* = *Power BI*, *GA4* = *Google Analytics*)
 - Marks similar tools as "Transferable" rather than "Missing"
 
 **Comprehensive Gap Analysis**
@@ -49,7 +49,7 @@ Unlike traditional ATS systems that rely on simple keyword matching, our tool un
 - Bilingual support (English/Italian) with automatic skill mapping
 - Smart language detection for native proficiency
 
-### 💡 Job Intelligence
+### Job Intelligence
 
 **AI-Powered Context Analysis (LDA Topic Modeling)**
 - Identifies key themes and focus areas from job descriptions
@@ -57,7 +57,7 @@ Unlike traditional ATS systems that rely on simple keyword matching, our tool un
 - Provides visual summaries with color-coded skill tags
 - Supports both English and Italian with localized insights
 
-### ✉️ Cover Letter Evaluation
+### Cover Letter Evaluation
 
 **Multi-Dimensional Scoring System**
 - **Keyword Coverage** (35%) - Technical skills mentioned vs. required
@@ -72,20 +72,19 @@ Unlike traditional ATS systems that rely on simple keyword matching, our tool un
 - Missing keywords highlighting for strategic additions
 - Automatic language detection (English/Italian)
 
-### 📊 Visual Analytics
+### Visual Analytics
 
 **Interactive Dashboards**
 - Real-time match score visualization with color-coded gauges
 - Skill clustering using K-Means and Hierarchical methods
 - Knowledge graph showing skill hierarchies and relationships
-- Word clouds for topic modeling results
 
 **Compact Tag-Based Display**
 - Color-coded skill badges (Matched, Transferable, Project-verified, Missing, Bonus)
 - Inline keyword tags for space-efficient display
 - Visual legend in sidebar for quick reference
 
-### 🔮 AI Career Compass
+### AI Career Compass
 
 **Intelligent Role Recommendations**
 - Uses Cosine Similarity on TF-IDF vectors for role matching
@@ -98,7 +97,7 @@ Unlike traditional ATS systems that rely on simple keyword matching, our tool un
 - Pre-filled search queries for immediate application
 - Targeted to Italian job market where relevant
 
-### 📂 Project Evaluation
+### Project Evaluation
 
 **Portfolio Triangulation**
 - Upload project descriptions to validate missing skills
@@ -106,7 +105,7 @@ Unlike traditional ATS systems that rely on simple keyword matching, our tool un
 - Dynamic 2-4 column layout adapts to enabled features
 - Strategic interview preparation suggestions
 
-### 📚 Learning Pathways
+### Learning Pathways
 
 **Personalized Skill Development**
 - Google Search links for tutorials and guides
@@ -114,7 +113,7 @@ Unlike traditional ATS systems that rely on simple keyword matching, our tool un
 - MOOC platform searches (Coursera, Udemy, LinkedIn Learning)
 - Curated resources for specific technologies
 
-### 📄 Professional Reports
+### Professional Reports
 
 **Comprehensive Export Options**
 - PDF reports with executive summary and detailed breakdowns
@@ -122,7 +121,7 @@ Unlike traditional ATS systems that rely on simple keyword matching, our tool un
 - Includes CV match, cover letter analysis, and career recommendations
 - Professional formatting for sharing with mentors or coaches
 
-### 🔐 Developer Mode
+### Developer Mode
 
 **Transparent AI Decision-Making**
 - Password-protected debugger interface (default: `1234`)
@@ -134,31 +133,15 @@ Unlike traditional ATS systems that rely on simple keyword matching, our tool un
 
 ## Tech Stack
 
-**Core Framework**
-- **Streamlit** - Interactive web interface
-- **Python 3.8+** - Backend logic
-
-**Machine Learning & NLP**
-- **scikit-learn** - TF-IDF, LDA, Clustering, Cosine Similarity
-- **NLTK** - Named Entity Recognition, tokenization
-- **WordCloud** - Topic visualization
-
-**Data Processing**
-- **Pandas** - Data manipulation
-- **NumPy** - Numerical operations
-
-**Visualization**
-- **Plotly** - Interactive charts and gauges
-- **Matplotlib** - Static visualizations
-- **Graphviz** - Knowledge graph rendering
-
-**Document Handling**
-- **PyPDF2** - PDF text extraction
-- **FPDF** - PDF report generation
-
-**Utilities**
-- **thefuzz** - Fuzzy string matching for typo handling
-- **urllib** - URL encoding for job search links
+| Component | Technology |
+|-----------|------------|
+| Core Framework | Streamlit, Python 3.8+ |
+| Machine Learning | scikit-learn (TF-IDF, LDA, Clustering, Cosine Similarity) |
+| NLP | NLTK (Named Entity Recognition, tokenization) |
+| Data Processing | Pandas, NumPy |
+| Visualization | Plotly, Matplotlib |
+| Document Handling | PyPDF2, FPDF |
+| Utilities | thefuzz (fuzzy matching), urllib |
 
 ---
 
@@ -172,8 +155,8 @@ Unlike traditional ATS systems that rely on simple keyword matching, our tool un
 
 1. **Clone or Download**
    ```bash
-   git clone https://github.com/yourusername/job-seeker-helper.git
-   cd job-seeker-helper
+   git clone https://github.com/Giacomod2001/datamining.git
+   cd datamining
    ```
 
 2. **Install Dependencies**
@@ -207,11 +190,11 @@ Enable optional features via sidebar toggles:
 - **Project Evaluation** - Validate skills through portfolio
 - **Cover Letter Analysis** - Get AI feedback on application letter
 
-**Step 3: Upload & Analyze**
+**Step 3: Upload and Analyze**
 1. Upload CV in column 1
 2. Upload optional Project/Cover Letter (if toggles enabled)
 3. Upload Job Description in last column
-4. Click "🔍 Analyze" button
+4. Click "Analyze" button
 
 **Step 4: Review Results**
 
@@ -219,16 +202,16 @@ The analysis provides:
 - **Match Score** - Overall CV-JD alignment percentage
 - **Cover Letter Score** - Application quality assessment (if enabled)
 - **Skill Breakdown** - Color-coded tags showing:
-  - 🟢 Green = Matched skills
-  - 🟡 Yellow = Transferable skills (with source)
-  - 🔵 Blue = Project-verified skills
-  - 🔴 Red = Missing skills (to learn)
-  - ⚪ Gray = Bonus skills (competitive advantage)
+  - Green = Matched skills
+  - Yellow = Transferable skills (with source)
+  - Blue = Project-verified skills
+  - Red = Missing skills (to learn)
+  - Gray = Bonus skills (competitive advantage)
 - **Job Context** - What the position really seeks
 - **Career Compass** - Alternative role suggestions
 - **Learning Plans** - Resources for skill gaps
 
-**Step 5: Export & Apply**
+**Step 5: Export and Apply**
 - Download PDF or Text report
 - Use learning pathways to close skill gaps
 - Improve cover letter based on suggestions
@@ -237,9 +220,9 @@ The analysis provides:
 ### Advanced Features
 
 **Developer Mode Access**
-1. Enable "🔧 Developer Mode" in sidebar
+1. Enable "Developer Mode" in sidebar
 2. Enter password: `1234`
-3. Click "🔍 Open Debugger"
+3. Click "Open Debugger"
 4. Explore inference rules, clusters, and analysis internals
 
 ---
@@ -248,20 +231,20 @@ The analysis provides:
 
 ### CV Match Score
 ```
-Score = (Direct Matches × 1.0) + (Transferable × 0.5) + (Projects × 0.3)
-        ───────────────────────────────────────────────────────────
+Score = (Direct Matches x 1.0) + (Transferable x 0.5) + (Projects x 0.3)
+        ───────────────────────────────────────────────────────────────
                         Total Required Skills
 
-Final Percentage = (Score / Total Required) × 100
+Final Percentage = (Score / Total Required) x 100
 ```
 
 ### Cover Letter Score
 ```
-Overall Score = (Keyword Coverage × 35%)
-              + (Soft Skills × 15%)
-              + (Length × 15%)
-              + (Structure × 20%)
-              + (Personalization × 15%)
+Overall Score = (Keyword Coverage x 35%)
+              + (Soft Skills x 15%)
+              + (Length x 15%)
+              + (Structure x 20%)
+              + (Personalization x 15%)
 ```
 
 **Grading Scale:**
@@ -282,13 +265,13 @@ Overall Score = (Keyword Coverage × 35%)
 
 ---
 
-## Privacy & Security
+## Privacy and Security
 
-- ✅ **100% Local Processing** - All analysis runs on your machine
-- ✅ **No Data Collection** - Documents never leave your computer
-- ✅ **No External APIs** - Fully offline operation (except job search links)
-- ✅ **Open Source** - Transparent code, auditable algorithms
-- ✅ **No Tracking** - Zero analytics or user monitoring
+- **100% Local Processing** - All analysis runs on your machine
+- **No Data Collection** - Documents never leave your computer
+- **No External APIs** - Fully offline operation (except job search links)
+- **Open Source** - Transparent code, auditable algorithms
+- **No Tracking** - Zero analytics or user monitoring
 
 ---
 
@@ -307,15 +290,15 @@ Overall Score = (Keyword Coverage × 35%)
 ## Contributing
 
 Contributions are welcome! Please feel free to submit:
-- 🐛 Bug reports via Issues
-- 💡 Feature requests via Discussions
-- 🔧 Pull requests for improvements
+- Bug reports via Issues
+- Feature requests via Discussions
+- Pull requests for improvements
 
 **Development Setup:**
 ```bash
 # Fork and clone
-git clone https://github.com/yourusername/job-seeker-helper.git
-cd job-seeker-helper
+git clone https://github.com/Giacomod2001/datamining.git
+cd datamining
 
 # Create branch
 git checkout -b feature/your-feature-name
@@ -343,17 +326,17 @@ Built with powerful open-source tools:
 - **NLTK Contributors** - Comprehensive NLP capabilities
 - **Open Source Community** - Continuous innovation and support
 
+The authors would like to acknowledge the assistance of the AI tool Gemini 3 Pro High and the agentic system Antigravity for coding suggestions and debugging support during the development phase.
+
 ---
 
 ## Support
 
 **Questions or Issues?**
-- 📖 Check the [Wiki](https://github.com/yourusername/job-seeker-helper/wiki) for detailed guides
-- 💬 Open an [Issue](https://github.com/yourusername/job-seeker-helper/issues) for bugs
-- 🌟 Star the repo if you find it helpful!
+- Check the Wiki for detailed guides
+- Open an Issue for bugs
+- Star the repo if you find it helpful!
 
 ---
 
-**Made with ❤️ for job seekers worldwide**
-
-*Empower your career journey with AI-driven insights*
+**Empower your career journey with AI-driven insights**
