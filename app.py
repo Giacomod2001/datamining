@@ -383,14 +383,10 @@ def render_home():
         st.markdown("### Job Description")
         input_type_jd = st.radio("Input Type", ["Text", "PDF"], key="jd_input", horizontal=True, label_visibility="collapsed")
         
-        # Demo mode: pre-fill with sample JD
-        demo_jd = styles.get_demo_jd() if st.session_state.get("demo_mode") else ""
-        
         jd = ""
         if input_type_jd == "Text":
             jd = st.text_area(
                 "Paste Job text", 
-                value=demo_jd,
                 height=250, 
                 key="jd_text",
                 placeholder="Paste job description here or click 'Try Demo' in sidebar...",
