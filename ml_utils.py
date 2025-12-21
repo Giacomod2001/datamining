@@ -1274,35 +1274,36 @@ def generate_detailed_report_text(res: Dict, jd_text: str = "", cl_analysis: Dic
     report.append("")
     
     # Matched Skills
-    report.append("✓ MATCHED SKILLS")
+    report.append("[+] MATCHED SKILLS")
     if res["matching_hard"]:
         for s in sorted(res["matching_hard"]): 
-            report.append(f"  • {s}")
+            report.append(f"    - {s}")
     else:
         report.append("  (No direct matches)")
     report.append("")
     
     # Transferable Skills
     if res.get("transferable"):
-        report.append("≈ TRANSFERABLE SKILLS")
+        report.append("[~] TRANSFERABLE SKILLS")
         for missing, present in res["transferable"].items():
-            report.append(f"  • {missing} → covered by {present}")
+            report.append(f"    - {missing} (covered by {present})")
         report.append("")
         
-    # Project-Verified Skills
-    if res.get("project_review"):
-        report.append("★ PROJECT-VERIFIED SKILLS")
-        for s in res["project_review"]: 
-            report.append(f"  • {s}")
+    # Project-Verified Skills - ONLY show if there are any
+    project_skills = res.get("project_review", set())
+    if project_skills:
+        report.append("[*] PROJECT-VERIFIED SKILLS")
+        for s in sorted(project_skills): 
+            report.append(f"    - {s}")
         report.append("")
 
     # Missing Skills
-    report.append("✗ MISSING SKILLS")
+    report.append("[!] MISSING SKILLS")
     if res["missing_hard"]:
         for s in sorted(res["missing_hard"]):
-            report.append(f"  • {s}")
+            report.append(f"    - {s}")
     else:
-        report.append("  (No critical gaps)")
+        report.append("    (No critical gaps - Excellent match!)")
     
     report.append("")
     report.append("")
@@ -1326,16 +1327,14 @@ def generate_detailed_report_text(res: Dict, jd_text: str = "", cl_analysis: Dic
         
         if cl_analysis.get('strengths'):
             report.append("STRENGTHS:")
-            for strength in cl_analysis['strengths'][:5]:  # Limit to top 5
-                clean = strength.replace("✅ ", "").replace("👍 ", "")
-                report.append(f"  ✓ {clean}")
+            for strength in cl_analysis['strengths'][:5]:
+                report.append(f"    + {strength}")
             report.append("")
         
         if cl_analysis.get('improvements'):
             report.append("IMPROVEMENT SUGGESTIONS:")
-            for improvement in cl_analysis['improvements'][:5]:  # Limit to top 5
-                clean = improvement.replace("⚠️ ", "").replace("💡 ", "").replace("📝 ", "").replace("📏 ", "")
-                report.append(f"  → {clean}")
+            for improvement in cl_analysis['improvements'][:5]:
+                report.append(f"    > {improvement}")
             report.append("")
         
         if cl_analysis.get('hard_missing'):
@@ -1365,8 +1364,8 @@ def generate_detailed_report_text(res: Dict, jd_text: str = "", cl_analysis: Dic
             report.append("  4. Improve cover letter based on suggestions")
     else:
         report.append("Your profile is well-aligned!")
-        report.append("  • Prepare for in-depth technical questions")
-        report.append("  • Focus on demonstrating soft skills and leadership")
+        report.append("    - Prepare for in-depth technical questions")
+        report.append("    - Focus on demonstrating soft skills and leadership")
     
     report.append("")
     report.append("")
