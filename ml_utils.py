@@ -1528,6 +1528,24 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
     arch_vectors_final = tfidf_matrix[len(corpus)-len(archetype_names):]
     similarities = cosine_similarity(cv_vector, arch_vectors_final).flatten()
     
+    # Build expanded CV skills set (including cluster equivalents)
+    cv_norm = {s.lower() for s in cv_skills}
+    
+    # Add all equivalent skills from clusters
+    skill_clusters = getattr(constants, "SKILL_CLUSTERS", {})
+    cv_expanded = set(cv_norm)
+    for cluster_name, cluster_skills in skill_clusters.items():
+        cluster_lower = {s.lower() for s in cluster_skills}
+        if cv_norm & cluster_lower:  # If CV has any skill from this cluster
+            cv_expanded.update(cluster_lower)  # Add all equivalent skills
+    
+    # Also apply inference rules to expand CV skills
+    inference_rules = getattr(constants, "INFERENCE_RULES", {})
+    for skill in list(cv_norm):
+        for rule_skill, inferred in inference_rules.items():
+            if skill == rule_skill.lower():
+                cv_expanded.update(s.lower() for s in inferred)
+    
     # 6. Rank and Format
     recommendations = []
     for i, score in enumerate(similarities):
@@ -1538,9 +1556,10 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
             continue
             
         role_skills = constants.JOB_ARCHETYPES[role_name]
-        cv_norm = {s.lower() for s in cv_skills}
         role_norm = {s.lower() for s in role_skills}
-        missing_norm = role_norm - cv_norm
+        
+        # Use expanded CV skills for comparison
+        missing_norm = role_norm - cv_expanded
         missing_display = [s for s in role_skills if s.lower() in missing_norm]
         
         # 7. Quality Filter (v1.33 -> v1.34 Junior Friendly)
