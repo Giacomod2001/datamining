@@ -161,53 +161,53 @@ def render_debug_page():
 # =============================================================================
 def render_home():
     with st.sidebar:
-        # Premium Header
+        # Header
         st.markdown("""
         <div style='text-align: center; padding: 1rem 0;'>
-            <h1 style='font-size: 1.8rem; margin-bottom: 0.2rem;'>🎯 Job Seeker</h1>
+            <h1 style='font-size: 1.8rem; margin-bottom: 0.2rem;'>Job Seeker Helper</h1>
             <p style='color: #00A0DC; font-size: 0.9rem; font-weight: 600;'>AI-Powered Career Analytics</p>
-            <p style='color: #8b949e; font-size: 0.75rem;'>v2.0 Premium Edition</p>
+            <p style='color: #8b949e; font-size: 0.75rem;'>Version 2.0</p>
         </div>
         """, unsafe_allow_html=True)
         
         st.divider()
         
         # Demo Mode - Quick Start
-        st.markdown("### 🚀 Quick Start")
+        st.markdown("### Quick Start")
         
         col_demo1, col_demo2 = st.columns(2)
         with col_demo1:
-            if st.button("✨ Try Demo", use_container_width=True, help="Load sample CV & JD to see the app in action"):
+            if st.button("Try Demo", use_container_width=True, help="Load sample CV and Job Description to see the app in action"):
                 st.session_state["demo_mode"] = True
                 st.rerun()
         with col_demo2:
             if st.session_state.get("demo_mode"):
-                if st.button("🔄 Reset", use_container_width=True):
+                if st.button("Reset", use_container_width=True):
                     st.session_state["demo_mode"] = False
                     st.rerun()
         
         if st.session_state.get("demo_mode"):
-            st.success("✅ Demo mode active! Sample data loaded below.")
+            st.success("Demo mode active. Sample data loaded below.")
         
         st.divider()
         
         # How It Works
-        with st.expander("📖 How It Works", expanded=False):
+        with st.expander("How It Works", expanded=False):
             st.markdown("""
-            **1. 📄 Upload Your CV**
+            **1. Upload Your CV**
             - PDF or paste text directly
             - Our AI extracts 100+ skill types
             
-            **2. 💼 Add Job Description**  
+            **2. Add Job Description**  
             - Paste from any job board
             - We decode what they really need
             
-            **3. 🔍 Click Analyze**
+            **3. Click Analyze**
             - Get instant skill matching
             - See transferable skills identified
             - Discover your career fit score
             
-            **4. 📊 Review Insights**
+            **4. Review Insights**
             - Personalized learning path
             - Alternative role suggestions
             - Interview talking points
@@ -216,16 +216,16 @@ def render_home():
         st.divider()
         
         # Optional Features Section
-        st.markdown("### ⚙️ Analysis Options")
+        st.markdown("### Analysis Options")
         
         show_project_eval = st.toggle(
-            "📂 Project Evaluation", 
+            "Project Evaluation", 
             value=False, 
             help="Upload project descriptions to verify skills through your portfolio. Increases match score when projects demonstrate missing skills."
         )
         
         show_cover_letter = st.toggle(
-            "✉️ Cover Letter Analysis", 
+            "Cover Letter Analysis", 
             value=False, 
             help="Get AI feedback on keyword coverage, structure, and personalization of your application letter."
         )
@@ -233,7 +233,7 @@ def render_home():
         st.divider()
         
         # Skills Legend - Compact & Visual
-        with st.expander("📊 Skills Legend", expanded=True):
+        with st.expander("Skills Legend", expanded=True):
             st.markdown("""
             <div style='line-height: 2;'>
                 <span class='skill-tag-matched' style='font-size: 0.8em;'>Matched</span> Direct skill match<br>
@@ -247,22 +247,21 @@ def render_home():
         st.divider()
         
         # Developer Mode - Hidden by Default
-        if st.toggle("🔧 Developer Mode", help="Access debugging tools and analytics internals"):
+        if st.toggle("Developer Mode", help="Access debugging tools and analytics internals"):
             pwd = st.text_input("Password", type="password", key="dev_pwd", placeholder="Enter dev password")
             if pwd == "1234":
-                if st.button("🔍 Open Debugger", use_container_width=True):
+                if st.button("Open Debugger", use_container_width=True):
                     st.session_state["page"] = "Debugger"
                     st.rerun()
             elif pwd:
-                st.error("❌ Wrong password")
+                st.error("Wrong password")
         
         # Footer
         st.divider()
         st.markdown("""
         <div style='text-align: center; color: #8b949e; font-size: 0.75rem;'>
-            Made with ❤️ for job seekers<br>
-            <a href='https://github.com' style='color: #00A0DC;'>GitHub</a> · 
-            <a href='#' style='color: #00A0DC;'>Docs</a>
+            Job Seeker Helper<br>
+            <a href='https://github.com/Giacomod2001/datamining' style='color: #00A0DC;'>GitHub</a>
         </div>
         """, unsafe_allow_html=True)
 
@@ -397,43 +396,38 @@ def render_home():
                 except Exception as e: st.error(f"⚠️ PDF Error: {e}")
 
     # =============================================================================
-    # ANALYZE BUTTON: Trigger for processing with enhanced UX
+    # ANALYZE BUTTON: Trigger for processing
     # =============================================================================
     st.markdown("")  # Spacing
     
     # Action buttons row
-    col_btn1, col_btn2, col_btn3 = st.columns([2, 1, 1])
+    col_btn1, col_btn2 = st.columns([3, 1])
     
     with col_btn1:
-        analyze_clicked = st.button("🔍 Analyze My Profile", type="primary", use_container_width=True)
+        analyze_clicked = st.button("Analyze Profile", type="primary", use_container_width=True)
     
     with col_btn2:
-        if st.button("📋 Copy Results", use_container_width=True, disabled=not st.session_state.get("last_results")):
-            # This will be handled after analysis
-            pass
-    
-    with col_btn3:
-        if st.button("🔄 Clear All", use_container_width=True):
+        if st.button("Clear All", use_container_width=True):
             st.session_state["demo_mode"] = False
             st.session_state["last_results"] = None
             st.rerun()
     
     if analyze_clicked:
-        # Input validation with friendly message
+        # Input validation
         if not cv or not jd:
-            st.error("⚠️ **Missing Input!** Please provide both your CV and the Job Description to continue.")
-            st.info("💡 **Tip:** Click 'Try Demo' in the sidebar to see the app in action with sample data!")
+            st.error("Please provide both your CV and the Job Description to continue.")
+            st.info("Tip: Click 'Try Demo' in the sidebar to see the app in action with sample data.")
             return
 
         # Progress bar with stages
-        progress_bar = st.progress(0, text="🔄 Initializing analysis...")
+        progress_bar = st.progress(0, text="Initializing analysis...")
         
         # Stage 1: Skill Extraction
-        progress_bar.progress(20, text="📊 Extracting skills from documents...")
+        progress_bar.progress(20, text="Extracting skills from documents...")
         
         # CV vs JD Analysis (with or without projects)
         if show_project_eval and project_text:
-            progress_bar.progress(40, text="📂 Analyzing project portfolio...")
+            progress_bar.progress(40, text="Analyzing project portfolio...")
             res = ml_utils.analyze_gap_with_project(cv, jd, project_text)
         else:
             res = ml_utils.analyze_gap(cv, jd)
@@ -441,11 +435,11 @@ def render_home():
         # Stage 2: Cover Letter (if enabled)
         cl_analysis = None
         if show_cover_letter and cover_letter_text:
-            progress_bar.progress(60, text="✉️ Evaluating cover letter...")
+            progress_bar.progress(60, text="Evaluating cover letter...")
             cl_analysis = ml_utils.analyze_cover_letter(cover_letter_text, jd, cv)
         
         # Stage 3: Generating insights
-        progress_bar.progress(80, text="🧠 Generating career insights...")
+        progress_bar.progress(80, text="Generating career insights...")
         
         # Save results in session state for debugger
         st.session_state["last_results"] = res
@@ -454,7 +448,7 @@ def render_home():
         st.session_state["last_cl_analysis"] = cl_analysis
         
         # Complete!
-        progress_bar.progress(100, text="✅ Analysis complete!")
+        progress_bar.progress(100, text="Analysis complete.")
         
         # Small delay to show completion, then display
         import time
@@ -462,7 +456,7 @@ def render_home():
         progress_bar.empty()
         
         # Success message
-        st.success("🎉 **Analysis Complete!** Scroll down to see your personalized career insights.")
+        st.success("Analysis complete. Scroll down to see your personalized career insights.")
              
         # Display results
         render_results(res, jd, cv, cl_analysis)
