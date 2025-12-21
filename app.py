@@ -34,132 +34,300 @@ if "demo_mode" not in st.session_state:
 # DEBUGGER
 # =============================================================================
 def render_debug_page():
-    if st.button("← Back"):
-        st.session_state["page"] = "Home"
-        st.rerun()
-    st.title("Debugger & Experimental Analytics")
-    st.info("This panel provides advanced insights into your profile data.")
+    """Developer/Debug mode with advanced analytics and system insights."""
     
-    # Check if we have analysis results in session
+    # Header with back button
+    col_back, col_title = st.columns([1, 6])
+    with col_back:
+        if st.button("← Back to App"):
+            st.session_state["page"] = "Home"
+            st.rerun()
+    with col_title:
+        st.title("Developer Console")
+        st.caption("Advanced analytics and system diagnostics")
+    
+    st.divider()
+    
+    # Get analysis results if available
     res = st.session_state.get("last_results", None)
+    cv_text = st.session_state.get("last_cv_text", "")
+    jd_text = st.session_state.get("last_jd_text", "")
     
-    tabs = ["Inference", "Clusters (Rules)", "Deep Clustering", "Topic Modeling", "PER/LOC/ORG", "Knowledge DB"]
-    t1, t2, t3, t4, t5, t6 = st.tabs(tabs)
+    # Main tabs
+    tabs = ["System Overview", "Analysis Data", "Skill Intelligence", "NLP Insights", "Knowledge Base"]
+    t1, t2, t3, t4, t5 = st.tabs(tabs)
     
+    # =========================================================================
+    # TAB 1: SYSTEM OVERVIEW
+    # =========================================================================
     with t1:
-        st.subheader("Hierarchical Rules (Knowledge Graph)")
-        st.markdown("If **Child Skill** is found → **Parent Skill** is added.")
+        st.subheader("System Status")
         
-        # Internal Graph Logic
-        import graphviz
-        graph = graphviz.Digraph()
-        for child, parents in constants.INFERENCE_RULES.items():
-            for parent in parents:
-                graph.edge(child, parent)
+        # System metrics
+        m1, m2, m3, m4 = st.columns(4)
+        with m1:
+            st.metric("Skills in Database", len(constants.SKILL_LIST) if hasattr(constants, 'SKILL_LIST') else "N/A")
+        with m2:
+            st.metric("Inference Rules", len(constants.INFERENCE_RULES) if hasattr(constants, 'INFERENCE_RULES') else "N/A")
+        with m3:
+            st.metric("Skill Clusters", len(constants.SKILL_CLUSTERS) if hasattr(constants, 'SKILL_CLUSTERS') else "N/A")
+        with m4:
+            has_analysis = "Yes" if res else "No"
+            st.metric("Analysis Cached", has_analysis)
         
-        st.graphviz_chart(graph)
+        st.markdown("")
         
-        with st.expander("Show Tabular Data"):
-            inf_data = [{"Child Skill": k, "Inferred Parent(s)": ", ".join(v)} for k, v in constants.INFERENCE_RULES.items()]
-            st.dataframe(pd.DataFrame(inf_data), use_container_width=True, hide_index=True)
-
+        # Session state info
+        with st.expander("Session State Contents", expanded=False):
+            session_keys = list(st.session_state.keys())
+            st.markdown(f"**Active Keys:** {len(session_keys)}")
+            for key in session_keys:
+                value = st.session_state[key]
+                if isinstance(value, str) and len(value) > 100:
+                    st.write(f"- `{key}`: *[text, {len(value)} chars]*")
+                elif isinstance(value, (set, list)):
+                    st.write(f"- `{key}`: *[collection, {len(value)} items]*")
+                elif isinstance(value, dict):
+                    st.write(f"- `{key}`: *[dict, {len(value)} keys]*")
+                else:
+                    st.write(f"- `{key}`: {value}")
+        
+        # Quick actions
+        st.markdown("### Quick Actions")
+        act1, act2, act3 = st.columns(3)
+        with act1:
+            if st.button("Clear All Cache", use_container_width=True):
+                st.cache_data.clear()
+                st.cache_resource.clear()
+                st.success("Cache cleared!")
+        with act2:
+            if st.button("Clear Analysis", use_container_width=True):
+                for key in ["last_results", "last_cv_text", "last_jd_text", "last_cl_analysis"]:
+                    if key in st.session_state:
+                        del st.session_state[key]
+                st.success("Analysis data cleared!")
+                st.rerun()
+        with act3:
+            if st.button("Reset Demo Mode", use_container_width=True):
+                st.session_state["demo_mode"] = False
+                st.success("Demo mode reset!")
+    
+    # =========================================================================
+    # TAB 2: ANALYSIS DATA
+    # =========================================================================
     with t2:
-        st.subheader("Interchangeable Groups")
-        st.markdown("Skills in the same cluster are considered **Transferable**.")
-        # Flatten clusters for display
-        cluster_data = [{"Cluster Name": k, "Members": ", ".join(sorted(v))} for k, v in constants.SKILL_CLUSTERS.items()]
-        st.dataframe(pd.DataFrame(cluster_data), use_container_width=True, hide_index=True)
-
-    with t3:
-        st.subheader("Advanced Data Mining (Skill Clans)")
-        st.caption("Using unsupervised learning (K-Means & Ward's Method) to group your specific skills.")
+        st.subheader("Last Analysis Results")
         
         if res:
-             # 1. Prepare Data
+            # Summary metrics
+            col1, col2 = st.columns([1, 2])
+            
+            with col1:
+                st.metric("Match Score", f"{res['match_percentage']:.1f}%")
+                st.metric("Matched Skills", len(res["matching_hard"]))
+                st.metric("Missing Skills", len(res["missing_hard"]))
+                st.metric("Bonus Skills", len(res["extra_hard"]))
+                if "transferable" in res:
+                    st.metric("Transferable", len(res["transferable"]))
+            
+            with col2:
+                # Raw data expanders
+                with st.expander("Matched Skills (Raw)", expanded=False):
+                    st.write(sorted(res["matching_hard"]))
+                
+                with st.expander("Missing Skills (Raw)", expanded=False):
+                    st.write(sorted(res["missing_hard"]))
+                
+                with st.expander("Extra/Bonus Skills (Raw)", expanded=False):
+                    st.write(sorted(res["extra_hard"]))
+                
+                if "transferable" in res and res["transferable"]:
+                    with st.expander("Transferable Mappings", expanded=False):
+                        for missing, present in res["transferable"].items():
+                            st.write(f"- {missing} ← {present}")
+            
+            # Full JSON export
+            st.markdown("### Export Analysis")
+            import json
+            export_data = {
+                "match_percentage": res["match_percentage"],
+                "matching_hard": list(res["matching_hard"]),
+                "missing_hard": list(res["missing_hard"]),
+                "extra_hard": list(res["extra_hard"]),
+                "transferable": res.get("transferable", {})
+            }
+            st.download_button(
+                "Download JSON",
+                json.dumps(export_data, indent=2),
+                file_name="analysis_export.json",
+                mime="application/json"
+            )
+        else:
+            st.info("No analysis data available. Run an analysis from the Home page first.")
+    
+    # =========================================================================
+    # TAB 3: SKILL INTELLIGENCE
+    # =========================================================================
+    with t3:
+        st.subheader("Skill Clustering Analysis")
+        
+        if res and len(res["matching_hard"] | res["missing_hard"] | res["extra_hard"]) > 3:
             all_skills = list(res["matching_hard"] | res["missing_hard"] | res["extra_hard"])
             
-            if len(all_skills) > 3:
-                # Run Clustering
-                df_viz, dendro_path, clusters = ml_utils.perform_skill_clustering(all_skills)
+            # Run clustering
+            df_viz, dendro_path, clusters = ml_utils.perform_skill_clustering(all_skills)
+            
+            if df_viz is not None:
+                # Scatter plot with skill status
+                def get_status(s):
+                    if s in res["matching_hard"]: return "Matched"
+                    if s in res["missing_hard"]: return "Missing"
+                    return "Bonus"
                 
-                if df_viz is not None:
-                    c_t1, c_t2 = st.tabs(["Scatter Plot", "Dendrogram"])
-                    
-                    with c_t1:
-                        # Enrich with Status
-                        def get_status(s):
-                            if s in res["matching_hard"]: return "Matched"
-                            if s in res["missing_hard"]: return "Missing"
-                            return "Extra"
-                        
-                        df_viz["Status"] = df_viz["skill"].apply(get_status)
-                        
-                        fig_cls = px.scatter(df_viz, x="x", y="y", color="cluster", symbol="Status",
-                                            hover_data=["skill"], title="Skill Semantic Map (PCA + K-Means)")
-                        st.plotly_chart(fig_cls, use_container_width=True)
-                        
-                    with c_t2:
-                        if dendro_path:
-                            st.image(dendro_path, caption="Skill Hierarchy (Ward's Method)")
+                df_viz["Status"] = df_viz["skill"].apply(get_status)
                 
-                # GENEARTE INSIGHT
-                st.markdown("---")
-                insight_text = ml_utils.generate_cluster_insight(clusters, res["matching_hard"], res["missing_hard"])
-                st.info(insight_text)
-            else:
-                st.warning("Not enough skills detected (<3) to perform clustering.")
+                fig = px.scatter(
+                    df_viz, x="x", y="y", 
+                    color="Status",
+                    symbol="cluster",
+                    hover_data=["skill"],
+                    color_discrete_map={"Matched": "#00cc96", "Missing": "#ef553b", "Bonus": "#636efa"},
+                    title="Skill Semantic Space (PCA Visualization)"
+                )
+                fig.update_layout(
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    font={'color': '#ffffff'}
+                )
+                st.plotly_chart(fig, use_container_width=True)
+                
+                # Cluster breakdown
+                st.markdown("### Cluster Breakdown")
+                if clusters:
+                    for cluster_name, skills in clusters.items():
+                        matched_in_cluster = [s for s in skills if s in res["matching_hard"]]
+                        missing_in_cluster = [s for s in skills if s in res["missing_hard"]]
+                        
+                        with st.expander(f"{cluster_name} ({len(skills)} skills)"):
+                            if matched_in_cluster:
+                                st.markdown(f"**Matched:** {', '.join(matched_in_cluster)}")
+                            if missing_in_cluster:
+                                st.markdown(f"**Missing:** {', '.join(missing_in_cluster)}")
+                
+                # Dendrogram
+                if dendro_path:
+                    with st.expander("Hierarchical Dendrogram"):
+                        st.image(dendro_path, caption="Ward's Linkage Clustering")
         else:
-            st.warning("Please run an analysis on the Home page first to see data here.")
-
+            st.info("Run an analysis first to see skill clustering.")
+    
+    # =========================================================================
+    # TAB 4: NLP INSIGHTS
+    # =========================================================================
     with t4:
-        st.subheader("Job Context Analysis (LDA)")
-        if st.session_state.get("last_jd_text"):
-            jd_text = st.session_state["last_jd_text"]
-            jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
-            
-            if len(jd_corpus) > 5:
-                result = ml_utils.perform_topic_modeling(jd_corpus)
+        st.subheader("Natural Language Processing")
+        
+        nlp_tab1, nlp_tab2 = st.tabs(["Named Entities (CV)", "Topic Analysis (JD)"])
+        
+        with nlp_tab1:
+            if cv_text:
+                entities = ml_utils.extract_entities_ner(cv_text)
                 
-                if result:
-                    c1, c2 = st.columns([1, 2])
-                    with c1:
-                        st.markdown("**Aree Tematiche Identificate:**")
-                        for topic in result['topics']:
-                            st.success(topic)
-                    with c2:
-                        if result['wordcloud_path']:
-                            st.image(result['wordcloud_path'], caption="Topic Keywords Word Cloud")
+                if entities:
+                    e1, e2, e3 = st.columns(3)
+                    
+                    with e1:
+                        st.markdown("#### Organizations")
+                        orgs = entities.get("Organizations", [])
+                        if orgs:
+                            for org in orgs[:10]:
+                                st.markdown(f"<span class='skill-tag-bonus'>{org}</span>", unsafe_allow_html=True)
+                        else:
+                            st.caption("None detected")
+                    
+                    with e2:
+                        st.markdown("#### Locations")
+                        locs = entities.get("Locations", [])
+                        if locs:
+                            for loc in locs[:10]:
+                                st.markdown(f"<span class='skill-tag-bonus'>{loc}</span>", unsafe_allow_html=True)
+                        else:
+                            st.caption("None detected")
+                    
+                    with e3:
+                        st.markdown("#### People")
+                        pers = entities.get("Persons", [])
+                        if pers:
+                            for per in pers[:10]:
+                                st.markdown(f"<span class='skill-tag-bonus'>{per}</span>", unsafe_allow_html=True)
+                        else:
+                            st.caption("None detected")
+                else:
+                    st.info("No named entities extracted.")
             else:
-                st.info("Job Description too short for Topic Modeling.")
-        else:
-            st.warning("Please analyse a job description first.")
-
+                st.info("Upload a CV first to extract named entities.")
+        
+        with nlp_tab2:
+            if jd_text:
+                jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
+                
+                if len(jd_corpus) > 5:
+                    result = ml_utils.perform_topic_modeling(jd_corpus)
+                    
+                    if result:
+                        st.markdown("#### Identified Topics")
+                        for idx, topic in enumerate(result['topics'], 1):
+                            st.success(f"**Topic {idx}:** {topic}")
+                        
+                        st.markdown("#### Top Keywords")
+                        keywords_html = " ".join([f"<span class='skill-tag-bonus'>{kw}</span>" for kw in result['keywords']])
+                        st.markdown(keywords_html, unsafe_allow_html=True)
+                else:
+                    st.info("Job description too short for topic analysis.")
+            else:
+                st.info("Add a job description first to analyze topics.")
+    
+    # =========================================================================
+    # TAB 5: KNOWLEDGE BASE
+    # =========================================================================
     with t5:
-        st.subheader("Resume Entity Extraction (NER)")
-        if st.session_state.get("last_cv_text"):
-            cv_text = st.session_state["last_cv_text"]
-            entities = ml_utils.extract_entities_ner(cv_text)
+        st.subheader("System Knowledge Base")
+        
+        kb_tab1, kb_tab2, kb_tab3 = st.tabs(["Inference Rules", "Skill Clusters", "Training Data"])
+        
+        with kb_tab1:
+            st.markdown("**How inference works:** When a specific skill is found, related parent skills are automatically inferred.")
             
-            if entities:
-                ec1, ec2, ec3 = st.columns(3)
-                with ec1:
-                    st.markdown("#### Organizations")
-                    for org in entities.get("Organizations", [])[:10]: st.write(f"- {org}")
-                with ec2:
-                    st.markdown("#### Locations")
-                    for loc in entities.get("Locations", [])[:10]: st.write(f"- {loc}")
-                with ec3:
-                    st.markdown("#### People")
-                    for per in entities.get("Persons", [])[:10]: st.write(f"- {per}")
-            else:
-                st.info("No named entities found.")
-        else:
-            st.warning("Please analyse a CV first.")
-
-    with t6:
-        st.subheader("Training Data (Sample)")
-        _, df = ml_utils.train_rf_model()
-        st.dataframe(df, use_container_width=True)
+            # Visualize as graph
+            import graphviz
+            graph = graphviz.Digraph()
+            graph.attr(bgcolor='transparent')
+            graph.attr('node', style='filled', fillcolor='#21262d', fontcolor='white')
+            graph.attr('edge', color='#0077B5')
+            
+            for child, parents in constants.INFERENCE_RULES.items():
+                for parent in parents:
+                    graph.edge(child, parent)
+            
+            st.graphviz_chart(graph)
+            
+            # Table view
+            with st.expander("View as Table"):
+                inf_data = [{"Skill": k, "Infers": ", ".join(v)} for k, v in constants.INFERENCE_RULES.items()]
+                st.dataframe(pd.DataFrame(inf_data), use_container_width=True, hide_index=True)
+        
+        with kb_tab2:
+            st.markdown("**Skill clusters:** Skills in the same cluster are considered transferable/equivalent.")
+            
+            for cluster_name, skills in constants.SKILL_CLUSTERS.items():
+                with st.expander(f"{cluster_name} ({len(skills)} skills)"):
+                    skills_html = " ".join([f"<span class='skill-tag-transferable'>{s}</span>" for s in sorted(skills)])
+                    st.markdown(skills_html, unsafe_allow_html=True)
+        
+        with kb_tab3:
+            st.markdown("**ML Training Data:** Sample data used to train the Random Forest classifier.")
+            _, df = ml_utils.train_rf_model()
+            st.dataframe(df, use_container_width=True, hide_index=True)
 
 # =============================================================================
 # MAIN UI
