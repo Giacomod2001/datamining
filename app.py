@@ -203,16 +203,18 @@ def render_debug_page():
                 
                 # Cluster breakdown
                 st.markdown("### Cluster Breakdown")
-                if clusters:
+                if clusters and isinstance(clusters, dict):
                     for cluster_name, skills in clusters.items():
-                        matched_in_cluster = [s for s in skills if s in res["matching_hard"]]
-                        missing_in_cluster = [s for s in skills if s in res["missing_hard"]]
-                        
-                        with st.expander(f"{cluster_name} ({len(skills)} skills)"):
-                            if matched_in_cluster:
-                                st.markdown(f"**Matched:** {', '.join(matched_in_cluster)}")
-                            if missing_in_cluster:
-                                st.markdown(f"**Missing:** {', '.join(missing_in_cluster)}")
+                        if skills and hasattr(skills, '__iter__'):
+                            skills_list = list(skills) if not isinstance(skills, list) else skills
+                            matched_in_cluster = [s for s in skills_list if s in res["matching_hard"]]
+                            missing_in_cluster = [s for s in skills_list if s in res["missing_hard"]]
+                            
+                            with st.expander(f"{cluster_name} ({len(skills_list)} skills)"):
+                                if matched_in_cluster:
+                                    st.markdown(f"**Matched:** {', '.join(matched_in_cluster)}")
+                                if missing_in_cluster:
+                                    st.markdown(f"**Missing:** {', '.join(missing_in_cluster)}")
                 
                 # Dendrogram
                 if dendro_path:
