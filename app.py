@@ -248,14 +248,12 @@ def render_home():
         
         show_project_eval = st.toggle(
             "Project Evaluation", 
-            value=st.session_state["show_project_toggle"],
             key="show_project_toggle",
             help="Upload project descriptions to verify skills through your portfolio. Increases match score when projects demonstrate missing skills."
         )
         
         show_cover_letter = st.toggle(
             "Cover Letter Analysis", 
-            value=st.session_state["show_cl_toggle"],
             key="show_cl_toggle",
             help="Get AI feedback on keyword coverage, structure, and personalization of your application letter."
         )
@@ -487,23 +485,18 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     st.divider()
     pct = res["match_percentage"]
 
-    # --- METRICS SECTION ---
-    # Determine number of metrics columns based on what we have
-    metrics_cols_count = 2  # Base: CV match + assessment
-    if "project_verified" in res and res["project_verified"]:
-        metrics_cols_count += 1
-    if cl_analysis:
-        metrics_cols_count += 1
+    # --- MAIN SCORE SECTION ---
+    st.header("Analysis Results")
     
-    cols = st.columns(metrics_cols_count)
-    col_idx = 0
-
-    with cols[col_idx]:
-        # Clean Gauge Indicator with transparent background
+    # Row 1: Main Match Score (larger, more prominent)
+    score_col1, score_col2 = st.columns([1, 2])
+    
+    with score_col1:
+        # Clean Gauge Indicator
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
             value=pct,
-            number={'suffix': '%', 'font': {'size': 36, 'color': '#ffffff'}},
+            number={'suffix': '%', 'font': {'size': 48, 'color': '#ffffff'}},
             gauge={
                 'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "#8b949e", 'tickfont': {'color': '#8b949e'}},
                 'bar': {'color': "#00A0DC"},
@@ -515,7 +508,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                     {'range': [70, 100], 'color': 'rgba(0, 204, 150, 0.3)'}
                 ],
                 'threshold': {
-                    'line': {'color': "#00cc96", 'width': 3},
+                    'line': {'color': "#00cc96", 'width': 4},
                     'thickness': 0.8,
                     'value': pct
                 }
@@ -524,47 +517,57 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         fig.update_layout(
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
-            margin=dict(t=30, b=10, l=30, r=30),
-            height=160,
+            margin=dict(t=40, b=20, l=40, r=40),
+            height=200,
             font={'color': '#ffffff'}
         )
         st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
     
-    col_idx += 1
-
-    with cols[col_idx]:
-        st.subheader("Match Score")
-        if pct >= 80: 
-            st.success("Excellent Match!")
-            st.markdown("Your profile is very aligned with this role.")
-        elif pct >= 60: 
-            st.warning("Good Potential")
-            st.markdown("Some gaps exist, but many skills are transferable.")
-        else: 
-            st.error("High Gap")
-            st.markdown("Significant learning required for this specific role.")
-    
-    col_idx += 1
+    with score_col2:
+        st.subheader("Profile Match Assessment")
+        st.markdown("")
+        if pct >= 80:
+            st.success("**Excellent Match!** Your profile is highly aligned with this role.")
+            st.markdown("You have most required skills. Focus on highlighting your experience.")
+        elif pct >= 60:
+            st.warning("**Good Potential.** You have a solid foundation for this role.")
+            st.markdown("Some gaps exist, but your transferable skills can bridge them.")
+        else:
+            st.error("**Significant Gap.** This role requires skills you're still developing.")
+            st.markdown("Consider the learning path below to build missing competencies.")
         
-    if "project_verified" in res and res["project_verified"]:
-        with cols[col_idx]:
-            st.subheader("Project Boost")
-            st.metric("Verified Skills", len(res["project_verified"]))
-            st.caption(f"Validating: {', '.join(list(res['project_verified'])[:3])}...")
-        col_idx += 1
+        # Quick stats
+        st.markdown("")
+        stat1, stat2, stat3 = st.columns(3)
+        stat1.metric("Matched", len(res["matching_hard"]))
+        stat2.metric("Missing", len(res["missing_hard"]))
+        stat3.metric("Bonus", len(res["extra_hard"]))
     
-    # Cover Letter Analysis Section
-    if cl_analysis:
-        with cols[col_idx]:
-            st.subheader("Cover Letter Score")
-            cl_score = cl_analysis['overall_score']
-            
-            # Color-coded gauge
-            if cl_score >= 80:
-                st.success(f"**{cl_score:.0f}%** - Excellent!")
-            elif cl_score >= 60:
-                st.warning(f"**{cl_score:.0f}%** - Good")
-            else:
+    # Row 2: Additional metrics (if present)
+    if ("project_verified" in res and res["project_verified"]) or cl_analysis:
+        st.markdown("")
+        add_cols = st.columns(2)
+        add_idx = 0
+        
+        if "project_verified" in res and res["project_verified"]:
+            with add_cols[add_idx]:
+                st.subheader("Project Portfolio Verification")
+                st.metric("Skills Verified", len(res["project_verified"]), 
+                         help="Skills demonstrated through your projects")
+                verified_list = list(res['project_verified'])[:5]
+                st.markdown("**Top verified:** " + ", ".join(verified_list))
+            add_idx += 1
+        
+        if cl_analysis:
+            with add_cols[add_idx] if add_idx < 2 else st.container():
+                st.subheader("Cover Letter Assessment")
+                cl_score = cl_analysis['overall_score']
+                
+                if cl_score >= 80:
+                    st.success(f"**{cl_score:.0f}%** - Excellent cover letter!")
+                elif cl_score >= 60:
+                    st.warning(f"**{cl_score:.0f}%** - Good, with room for improvement")
+                else:
                 st.error(f"**{cl_score:.0f}%** - Needs Work")
             
             st.caption(f"{cl_analysis['word_count']} words | {cl_analysis['language'] or 'EN'}")
@@ -666,18 +669,18 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         if cl_analysis['hard_mentioned'] or cl_analysis['hard_missing']:
             st.markdown("#### Technical Keywords Status")
             
-            # Mentioned keywords as tags
+            # Mentioned keywords as rounded tags (matching skill tag style)
             if cl_analysis['hard_mentioned']:
-                st.markdown("**Mentioned:**")
-                mentioned_html = " ".join([f"<span style='background-color: #d4edda; color: #155724; font-weight: 500; padding: 4px 8px; border-radius: 4px; margin: 2px; display: inline-block; font-size: 0.9em;'>{skill}</span>" for skill in sorted(cl_analysis['hard_mentioned'])])
+                st.markdown("**Mentioned in Cover Letter:**")
+                mentioned_html = " ".join([f"<span class='skill-tag-matched'>{skill}</span>" for skill in sorted(cl_analysis['hard_mentioned'])])
                 st.markdown(mentioned_html, unsafe_allow_html=True)
-                st.markdown("")  # Spacing
+                st.markdown("")
             
-            # Missing keywords as tags
+            # Missing keywords as rounded tags
             if cl_analysis['hard_missing']:
-                st.markdown("**Missing (consider adding):**")
-                missing_list = sorted(list(cl_analysis['hard_missing'])[:15])  # Limit to 15 for readability
-                missing_html = " ".join([f"<span style='background-color: #fff3cd; color: #856404; font-weight: 500; padding: 4px 8px; border-radius: 4px; margin: 2px; display: inline-block; font-size: 0.9em;'>{skill}</span>" for skill in missing_list])
+                st.markdown("**Consider Adding:**")
+                missing_list = sorted(list(cl_analysis['hard_missing'])[:15])
+                missing_html = " ".join([f"<span class='skill-tag-transferable'>{skill}</span>" for skill in missing_list])
                 st.markdown(missing_html, unsafe_allow_html=True)
                 if len(cl_analysis['hard_missing']) > 15:
                     st.caption(f"... and {len(cl_analysis['hard_missing']) - 15} more")
