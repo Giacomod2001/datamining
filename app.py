@@ -184,11 +184,17 @@ def render_home():
         with col_demo1:
             if st.button("Try Demo", use_container_width=True, help="Load sample CV and Job Description to see the app in action"):
                 st.session_state["demo_mode"] = True
+                # Force update the text area values in session state
+                st.session_state["cv_text"] = styles.get_demo_cv()
+                st.session_state["jd_text"] = styles.get_demo_jd()
                 st.rerun()
         with col_demo2:
             if st.session_state.get("demo_mode"):
                 if st.button("Reset", use_container_width=True):
                     st.session_state["demo_mode"] = False
+                    # Clear the text areas
+                    st.session_state["cv_text"] = ""
+                    st.session_state["jd_text"] = ""
                     st.rerun()
         
         if st.session_state.get("demo_mode"):
@@ -316,14 +322,10 @@ def render_home():
         st.markdown("### Your CV")
         input_type_cv = st.radio("Input Type", ["Text", "PDF"], key="cv_input", horizontal=True, label_visibility="collapsed")
         
-        # Demo mode: pre-fill with sample CV
-        demo_cv = styles.get_demo_cv() if st.session_state.get("demo_mode") else ""
-        
         cv = ""
         if input_type_cv == "Text":
             cv = st.text_area(
                 "Paste CV text", 
-                value=demo_cv,
                 height=250, 
                 key="cv_text", 
                 placeholder="Paste your CV here or click 'Try Demo' in sidebar...",
