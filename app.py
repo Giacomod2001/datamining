@@ -477,20 +477,36 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     col_idx = 0
 
     with cols[col_idx]:
-        # Plotly Pie Chart (go.Pie for absolute control)
-        fig = go.Figure(data=[go.Pie(
-            labels=['Match', 'Gap'],
-            values=[pct, 100-pct],
-            hole=0.7,
-            marker_colors=['#00cc96', '#EF553B'],
-            sort=False, # CRITICAL to keep colors aligned
-            textinfo='none'
-        )])
-        fig.update_layout(showlegend=False, margin=dict(t=0, b=0, l=0, r=0), height=150)
-        
-        # Center Annotation
-        fig.add_annotation(text=f"{pct:.0f}%", showarrow=False, font_size=20, x=0.5, y=0.5)
-        st.plotly_chart(fig, use_container_width=True)
+        # Clean Gauge Indicator with transparent background
+        fig = go.Figure(go.Indicator(
+            mode="gauge+number",
+            value=pct,
+            number={'suffix': '%', 'font': {'size': 36, 'color': '#ffffff'}},
+            gauge={
+                'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "#8b949e", 'tickfont': {'color': '#8b949e'}},
+                'bar': {'color': "#00A0DC"},
+                'bgcolor': "rgba(0,0,0,0)",
+                'borderwidth': 0,
+                'steps': [
+                    {'range': [0, 40], 'color': 'rgba(239, 85, 59, 0.3)'},
+                    {'range': [40, 70], 'color': 'rgba(255, 193, 7, 0.3)'},
+                    {'range': [70, 100], 'color': 'rgba(0, 204, 150, 0.3)'}
+                ],
+                'threshold': {
+                    'line': {'color': "#00cc96", 'width': 3},
+                    'thickness': 0.8,
+                    'value': pct
+                }
+            }
+        ))
+        fig.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            margin=dict(t=30, b=10, l=30, r=30),
+            height=160,
+            font={'color': '#ffffff'}
+        )
+        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
     
     col_idx += 1
 

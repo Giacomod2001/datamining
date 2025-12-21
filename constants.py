@@ -35,10 +35,45 @@ INFERENCE_RULES = {
     "Google Analytics": ["Web Analytics", "Analytics"],
     "Adobe Analytics": ["Web Analytics", "Analytics"],
     
-    # ML & AI
+    # ML & AI - General
     "TensorFlow": ["Machine Learning", "Deep Learning", "Python"],
     "PyTorch": ["Machine Learning", "Deep Learning", "Python"],
     "Scikit-learn": ["Machine Learning", "Python"],
+    "Keras": ["Machine Learning", "Deep Learning", "Python"],
+    "XGBoost": ["Machine Learning", "Python"],
+    "LightGBM": ["Machine Learning", "Python"],
+    
+    # Computer Vision - NEW: Projects with these tools imply CV skills
+    "OpenCV": ["Computer Vision", "Image Processing", "Python"],
+    "YOLO": ["Computer Vision", "Object Detection", "Deep Learning"],
+    "YOLOv5": ["Computer Vision", "Object Detection", "Deep Learning", "Python"],
+    "YOLOv8": ["Computer Vision", "Object Detection", "Deep Learning", "Python"],
+    "Detectron2": ["Computer Vision", "Object Detection", "Deep Learning"],
+    "MediaPipe": ["Computer Vision", "Image Processing", "Python"],
+    "PIL": ["Image Processing", "Python"],
+    "Pillow": ["Image Processing", "Python"],
+    "ImageNet": ["Computer Vision", "Deep Learning"],
+    "ResNet": ["Computer Vision", "Deep Learning", "Image Classification"],
+    "VGG": ["Computer Vision", "Deep Learning", "Image Classification"],
+    "CNN": ["Computer Vision", "Deep Learning", "Neural Networks"],
+    "Convolutional Neural Network": ["Computer Vision", "Deep Learning"],
+    "Image Segmentation": ["Computer Vision", "Deep Learning"],
+    "Object Detection": ["Computer Vision", "Deep Learning"],
+    "Face Recognition": ["Computer Vision", "Deep Learning", "Biometrics"],
+    "OCR": ["Computer Vision", "Image Processing", "Text Extraction"],
+    "Tesseract": ["Computer Vision", "OCR", "Text Extraction"],
+    
+    # NLP - Natural Language Processing
+    "NLTK": ["NLP", "Natural Language Processing", "Python"],
+    "spaCy": ["NLP", "Natural Language Processing", "Python"],
+    "Hugging Face": ["NLP", "Deep Learning", "Transformers"],
+    "BERT": ["NLP", "Deep Learning", "Transformers"],
+    "GPT": ["NLP", "Deep Learning", "Transformers", "LLM"],
+    "LLM": ["NLP", "AI", "Machine Learning"],
+    "Transformers": ["NLP", "Deep Learning", "Python"],
+    "Word2Vec": ["NLP", "Machine Learning"],
+    "Sentiment Analysis": ["NLP", "Text Analytics"],
+    "Text Classification": ["NLP", "Machine Learning"],
     
     # Programming Languages (implicit skills)
     "Pandas": ["Python", "Data Analysis"],
