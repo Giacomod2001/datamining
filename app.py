@@ -12,7 +12,7 @@ import styles
 # =============================================================================
 st.set_page_config(
     page_title="Job Seeker Helper v2.0 - AI Career Analytics",
-    page_icon="🎯",
+    page_icon="briefcase",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -32,13 +32,13 @@ def render_debug_page():
     if st.button("← Back"):
         st.session_state["page"] = "Home"
         st.rerun()
-    st.title("🛠️ Debugger & Experimental Analytics")
+    st.title("Debugger & Experimental Analytics")
     st.info("This panel provides advanced insights into your profile data.")
     
     # Check if we have analysis results in session
     res = st.session_state.get("last_results", None)
     
-    tabs = ["🧠 Inference", "🔗 Clusters (Rules)", "📊 Deep Clustering", "🧩 Topic Modeling", "🏷️ PER/LOC/ORG", "📚 Knowledge DB"]
+    tabs = ["Inference", "Clusters (Rules)", "Deep Clustering", "Topic Modeling", "PER/LOC/ORG", "Knowledge DB"]
     t1, t2, t3, t4, t5, t6 = st.tabs(tabs)
     
     with t1:
@@ -66,7 +66,7 @@ def render_debug_page():
         st.dataframe(pd.DataFrame(cluster_data), use_container_width=True, hide_index=True)
 
     with t3:
-        st.subheader("🧠 Advanced Data Mining (Skill Clans)")
+        st.subheader("Advanced Data Mining (Skill Clans)")
         st.caption("Using unsupervised learning (K-Means & Ward's Method) to group your specific skills.")
         
         if res:
@@ -78,7 +78,7 @@ def render_debug_page():
                 df_viz, dendro_path, clusters = ml_utils.perform_skill_clustering(all_skills)
                 
                 if df_viz is not None:
-                    c_t1, c_t2 = st.tabs(["📊 Scatter Plot", "🌳 Dendrogram"])
+                    c_t1, c_t2 = st.tabs(["Scatter Plot", "Dendrogram"])
                     
                     with c_t1:
                         # Enrich with Status
@@ -107,7 +107,7 @@ def render_debug_page():
             st.warning("Please run an analysis on the Home page first to see data here.")
 
     with t4:
-        st.subheader("🧩 Job Context Analysis (LDA)")
+        st.subheader("Job Context Analysis (LDA)")
         if st.session_state.get("last_jd_text"):
             jd_text = st.session_state["last_jd_text"]
             jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
@@ -130,7 +130,7 @@ def render_debug_page():
             st.warning("Please analyse a job description first.")
 
     with t5:
-        st.subheader("🏷️ Resume Entity Extraction (NER)")
+        st.subheader("Resume Entity Extraction (NER)")
         if st.session_state.get("last_cv_text"):
             cv_text = st.session_state["last_cv_text"]
             entities = ml_utils.extract_entities_ner(cv_text)
@@ -138,13 +138,13 @@ def render_debug_page():
             if entities:
                 ec1, ec2, ec3 = st.columns(3)
                 with ec1:
-                    st.markdown("#### 🏛️ Organizations")
+                    st.markdown("#### Organizations")
                     for org in entities.get("Organizations", [])[:10]: st.write(f"- {org}")
                 with ec2:
-                    st.markdown("#### 📍 Locations")
+                    st.markdown("#### Locations")
                     for loc in entities.get("Locations", [])[:10]: st.write(f"- {loc}")
                 with ec3:
-                    st.markdown("#### 👤 People")
+                    st.markdown("#### People")
                     for per in entities.get("Persons", [])[:10]: st.write(f"- {per}")
             else:
                 st.info("No named entities found.")
@@ -308,7 +308,7 @@ def render_home():
     # COLUMN 1: CV (always present)
     # =============================================================================
     with c1:
-        st.markdown("### 📄 Your CV")
+        st.markdown("### Your CV")
         input_type_cv = st.radio("Input Type", ["Text", "PDF"], key="cv_input", horizontal=True, label_visibility="collapsed")
         
         # Demo mode: pre-fill with sample CV
@@ -328,7 +328,7 @@ def render_home():
             uploaded_cv = st.file_uploader("Upload CV (PDF)", type=["pdf"], key="cv_pdf", label_visibility="visible")
             if uploaded_cv:
                 try: cv = ml_utils.extract_text_from_pdf(uploaded_cv)
-                except Exception as e: st.error(f"⚠️ PDF Error: {e}")
+                except Exception as e: st.error(f"PDF Error: {e}")
     
     # =============================================================================
     # OPTIONAL COLUMNS MANAGEMENT: Dynamically assign Project, Cover Letter, JD
@@ -373,7 +373,7 @@ def render_home():
     # =============================================================================
     jd_col = c2 if current_col == 2 else (c3 if current_col == 3 else c4)
     with jd_col:
-        st.markdown("### 💼 Job Description")
+        st.markdown("### Job Description")
         input_type_jd = st.radio("Input Type", ["Text", "PDF"], key="jd_input", horizontal=True, label_visibility="collapsed")
         
         # Demo mode: pre-fill with sample JD
@@ -393,7 +393,7 @@ def render_home():
             uploaded_jd = st.file_uploader("Upload JD (PDF)", type=["pdf"], key="jd_pdf", label_visibility="visible")
             if uploaded_jd:
                 try: jd = ml_utils.extract_text_from_pdf(uploaded_jd)
-                except Exception as e: st.error(f"⚠️ PDF Error: {e}")
+                except Exception as e: st.error(f"PDF Error: {e}")
 
     # =============================================================================
     # ANALYZE BUTTON: Trigger for processing
@@ -497,20 +497,20 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     with cols[col_idx]:
         st.subheader("Match Score")
         if pct >= 80: 
-            st.success("🚀 Excellent Match!")
+            st.success("Excellent Match!")
             st.markdown("Your profile is very aligned with this role.")
         elif pct >= 60: 
-            st.warning("⚠️ Good Potential")
+            st.warning("Good Potential")
             st.markdown("Some gaps exist, but many skills are transferable.")
         else: 
-            st.error("❌ High Gap")
+            st.error("High Gap")
             st.markdown("Significant learning required for this specific role.")
     
     col_idx += 1
         
     if "project_verified" in res and res["project_verified"]:
         with cols[col_idx]:
-            st.subheader("🏆 Project Boost")
+            st.subheader("Project Boost")
             st.metric("Verified Skills", len(res["project_verified"]))
             st.caption(f"Validating: {', '.join(list(res['project_verified'])[:3])}...")
         col_idx += 1
@@ -518,7 +518,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     # Cover Letter Analysis Section
     if cl_analysis:
         with cols[col_idx]:
-            st.subheader("✉️ Cover Letter Score")
+            st.subheader("Cover Letter Score")
             cl_score = cl_analysis['overall_score']
             
             # Color-coded gauge
@@ -588,7 +588,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     
     # --- COVER LETTER DETAILED ANALYSIS ---
     if cl_analysis:
-        st.subheader("✉️ Cover Letter Analysis")
+        st.subheader("Cover Letter Analysis")
         
         # Metrics Row
         m1, m2, m3, m4 = st.columns(4)
@@ -609,7 +609,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         fc1, fc2 = st.columns(2)
         
         with fc1:
-            st.markdown("#### ✅ Strengths")
+            st.markdown("#### Strengths")
             if cl_analysis['strengths']:
                 for strength in cl_analysis['strengths']:
                     st.markdown(strength)
@@ -617,7 +617,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                 st.info("No specific strengths identified yet")
         
         with fc2:
-            st.markdown("#### 💡 Improvements")
+            st.markdown("#### Improvements")
             if cl_analysis['improvements']:
                 for improvement in cl_analysis['improvements']:
                     st.markdown(improvement)
@@ -626,18 +626,18 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         
         # Keywords Coverage Detail
         if cl_analysis['hard_mentioned'] or cl_analysis['hard_missing']:
-            st.markdown("#### 🏷️ Technical Keywords Status")
+            st.markdown("#### Technical Keywords Status")
             
             # Mentioned keywords as tags
             if cl_analysis['hard_mentioned']:
-                st.markdown("**✅ Mentioned:**")
+                st.markdown("**Mentioned:**")
                 mentioned_html = " ".join([f"<span style='background-color: #d4edda; color: #155724; font-weight: 500; padding: 4px 8px; border-radius: 4px; margin: 2px; display: inline-block; font-size: 0.9em;'>{skill}</span>" for skill in sorted(cl_analysis['hard_mentioned'])])
                 st.markdown(mentioned_html, unsafe_allow_html=True)
                 st.markdown("")  # Spacing
             
             # Missing keywords as tags
             if cl_analysis['hard_missing']:
-                st.markdown("**⚠️ Missing (consider adding):**")
+                st.markdown("**Missing (consider adding):**")
                 missing_list = sorted(list(cl_analysis['hard_missing'])[:15])  # Limit to 15 for readability
                 missing_html = " ".join([f"<span style='background-color: #fff3cd; color: #856404; font-weight: 500; padding: 4px 8px; border-radius: 4px; margin: 2px; display: inline-block; font-size: 0.9em;'>{skill}</span>" for skill in missing_list])
                 st.markdown(missing_html, unsafe_allow_html=True)
@@ -648,7 +648,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
 
     # LEARNING PLAN
     if res["missing_hard"]:
-        st.subheader("📚 Learning Actions")
+        st.subheader("Learning Actions")
         
         for skill in res["missing_hard"]:
             with st.expander(f"Action Plan: **{skill}**", expanded=len(res["missing_hard"]) == 1):
@@ -656,13 +656,13 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                 
                 lc1, lc2, lc3 = st.columns(3)
                 with lc1:
-                    st.markdown(f"**[🔍 Google Search](https://www.google.com/search?q=learn+{q_skill}+tutorial)**")
+                    st.markdown(f"**[Google Search](https://www.google.com/search?q=learn+{q_skill}+tutorial)**")
                     st.caption("General guides")
                 with lc2:
-                    st.markdown(f"**[📺 YouTube](https://www.youtube.com/results?search_query=learn+{q_skill})**")
+                    st.markdown(f"**[YouTube](https://www.youtube.com/results?search_query=learn+{q_skill})**")
                     st.caption("Video tutorials")
                 with lc3:
-                    st.markdown(f"**[🎓 Courses](https://www.google.com/search?q=site:coursera.org+OR+site:udemy.com+OR+site:linkedin.com/learning+{q_skill})**")
+                    st.markdown(f"**[Courses](https://www.google.com/search?q=site:coursera.org+OR+site:udemy.com+OR+site:linkedin.com/learning+{q_skill})**")
                     st.caption("Platform specific")
 
     # --- ADVANCED MINING MOVED TO DEBUGGER ---
@@ -672,7 +672,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     # --- JOB CONTEXT ANALYSIS ---
     if jd_text:
         st.divider()
-        st.subheader("💡 What Does This Position Really Need?")
+        st.subheader("What Does This Position Really Need?")
         
         jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
         
@@ -684,7 +684,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                 st.info(result['summary'])
                 
                 # Show interpretations in columns
-                st.markdown("#### 📋 Key Areas Required:")
+                st.markdown("#### Key Areas Required:")
                 cols_topic = st.columns(len(result['topics']))
                 for idx, (col, topic) in enumerate(zip(cols_topic, result['topics'])):
                     with col:
@@ -692,7 +692,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                         st.write(topic)
                 
                 # Show keywords as tags
-                st.markdown("#### 🏷️ Main Keywords:")
+                st.markdown("#### Main Keywords:")
                 keyword_html = " ".join([f"<span style='background-color: #e1f5ff; color: #1a1a1a; font-weight: 500; padding: 5px 10px; border-radius: 5px; margin: 2px; display: inline-block;'>{kw}</span>" for kw in result['keywords']])
                 st.markdown(keyword_html, unsafe_allow_html=True)
         else:
@@ -700,7 +700,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     
     # --- JOB RECOMMENDER (AI Career Compass) ---
     st.divider()
-    st.subheader("🔮 AI Career Compass (Alternative Paths)")
+    st.subheader("AI Career Compass (Alternative Paths)")
     st.info("Based on your skill vector, here are the market roles that fit you best.")
     
     # Use all skills found in CV (Matched, Missing, Extra) to define the candidate vector
@@ -722,19 +722,19 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                  role_query = urllib.parse.quote(rec['role'])
                  italy_query = urllib.parse.quote(f"{rec['role']} Italia")
                  
-                 st.markdown(f"🌐 [Google Jobs](https://www.google.com/search?q={role_query}+jobs)")
-                 st.markdown(f"💼 [LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query})")
-                 st.markdown(f"🔍 [Indeed Italia](https://it.indeed.com/jobs?q={italy_query})")
+                 st.markdown(f"[Google Jobs](https://www.google.com/search?q={role_query}+jobs)")
+                 st.markdown(f"[LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query})")
+                 st.markdown(f"[Indeed Italia](https://it.indeed.com/jobs?q={italy_query})")
                  
                  with st.expander("Missing Skills"):
                      for s in rec['missing'][:5]:
                          st.markdown(f"- {s}")
     else:
-        st.info("ℹ️ **Quality Mode**: No alternative roles met the confidence threshold (>30%). Your profile is uniquely specialized.")
+        st.info("**Quality Mode**: No alternative roles met the confidence threshold (>30%). Your profile is uniquely specialized.")
 
     # --- EXPORT REPORT ---
     st.divider()
-    st.subheader("📥 Export Comprehensive Report")
+    st.subheader("Export Comprehensive Report")
     st.caption("Download your complete analysis including CV match, skills, and cover letter evaluation")
     
     # Generate Detailed Content
@@ -743,10 +743,10 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     
     col_dl1, col_dl2 = st.columns(2)
     with col_dl1:
-        st.download_button("📄 Download Text Report", report_text, file_name="Job_Seeker_Report.txt", mime="text/plain", use_container_width=True)
+        st.download_button("Download Text Report", report_text, file_name="Job_Seeker_Report.txt", mime="text/plain", use_container_width=True)
     with col_dl2:
         if report_pdf:
-            st.download_button("📕 Download PDF Report", report_pdf, file_name="Job_Seeker_Report.pdf", mime="application/pdf", use_container_width=True)
+            st.download_button("Download PDF Report", report_pdf, file_name="Job_Seeker_Report.pdf", mime="application/pdf", use_container_width=True)
         else:
             st.warning("PDF Generation unavailable (fpdf missing).")
 
