@@ -539,3 +539,98 @@ Languages:
 - Italian (Required for client communication)
 """
 
+
+def get_demo_project():
+    """Returns sample project description for demo mode."""
+    return """
+E-COMMERCE ANALYTICS DASHBOARD
+Personal Project | 2023
+
+OBJECTIVE
+Developed a comprehensive analytics solution to track customer journey and revenue 
+attribution across marketing channels for an e-commerce platform.
+
+TECHNICAL IMPLEMENTATION
+- Built data pipeline using Python and BigQuery to process 1M+ daily events
+- Created interactive dashboards in Looker Studio with 15+ KPIs
+- Implemented Google Tag Manager tracking for enhanced e-commerce events
+- Used SQL for complex attribution modeling and cohort analysis
+- Applied A/B testing framework for landing page optimization
+
+TECHNOLOGIES USED
+- Languages: Python, SQL
+- Data: BigQuery, Google Cloud Platform
+- Visualization: Looker Studio, Data Visualization
+- Analytics: Google Analytics 4, Google Tag Manager
+- Marketing: Attribution Modeling, Campaign Tracking
+
+RESULTS
+- Reduced data processing time by 60% with optimized queries
+- Increased conversion rate by 25% through data-driven optimization
+- Automated weekly reporting saving 10+ hours of manual work
+
+---
+
+SOCIAL MEDIA SENTIMENT ANALYZER
+University Project | 2022
+
+OBJECTIVE
+Built a machine learning pipeline to analyze brand sentiment from Twitter data.
+
+TECHNICAL IMPLEMENTATION
+- Collected tweets using Twitter API with Python
+- Preprocessed text data with NLP techniques
+- Trained sentiment classification model with scikit-learn
+- Created visualization dashboard with Plotly
+
+TECHNOLOGIES USED
+- Python, SQL, NLP, Machine Learning
+- Data Visualization, Statistical Analysis
+
+RESULTS
+- Achieved 85% accuracy in sentiment classification
+- Processed 50,000+ tweets for brand analysis
+"""
+
+
+def get_demo_cover_letter():
+    """Returns sample cover letter for demo mode."""
+    return """
+Dear Hiring Manager,
+
+I am writing to express my strong interest in the Senior Marketing Analyst position 
+at DataDriven Corp. With 4 years of experience in data-driven marketing and business 
+intelligence, I am confident that my skills align perfectly with your requirements.
+
+In my current role at Digital Agency Milano, I have developed expertise in the exact 
+tools you require. I use Google Analytics 4 and Google Tag Manager daily to implement 
+tracking systems across 50+ client websites. My proficiency in SQL and BigQuery enables 
+me to extract actionable insights from large datasets, while my experience with Looker 
+Studio has allowed me to create dashboards that increased client ROI by 25%.
+
+What excites me most about this opportunity is your focus on data-informed decision 
+making. At Digital Agency Milano, I led the implementation of attribution modeling 
+that helped clients understand their marketing channel effectiveness. This directly 
+aligns with your need for campaign tracking and statistical analysis expertise.
+
+I have hands-on experience with A/B testing programs, having designed and analyzed 
+tests for landing pages and email campaigns. My background in Python for data analysis 
+and automation complements my marketing analytics skills, enabling me to build 
+efficient reporting pipelines.
+
+While I am still developing my Tableau and Power BI skills, my strong foundation in 
+Looker Studio and data visualization principles means I can quickly adapt to new 
+BI tools. I am particularly interested in expanding my knowledge of cloud platforms, 
+which aligns with your GCP requirements.
+
+The hybrid work arrangement and learning budget you offer are valuable benefits that 
+would support my professional development goals. I am excited about the opportunity 
+to contribute to DataDriven Corp's analytics team.
+
+Thank you for considering my application. I would welcome the opportunity to discuss 
+how my experience in marketing analytics can contribute to your team's success.
+
+Best regards,
+Marco Bianchi
+"""
+

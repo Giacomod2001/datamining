@@ -187,14 +187,19 @@ def render_home():
                 # Force update the text area values in session state
                 st.session_state["cv_text"] = styles.get_demo_cv()
                 st.session_state["jd_text"] = styles.get_demo_jd()
+                # Also load project and cover letter demos
+                st.session_state["proj_text"] = styles.get_demo_project()
+                st.session_state["cl_text"] = styles.get_demo_cover_letter()
                 st.rerun()
         with col_demo2:
             if st.session_state.get("demo_mode"):
                 if st.button("Reset", use_container_width=True):
                     st.session_state["demo_mode"] = False
-                    # Clear the text areas
+                    # Clear all text areas
                     st.session_state["cv_text"] = ""
                     st.session_state["jd_text"] = ""
+                    st.session_state["proj_text"] = ""
+                    st.session_state["cl_text"] = ""
                     st.rerun()
         
         if st.session_state.get("demo_mode"):
