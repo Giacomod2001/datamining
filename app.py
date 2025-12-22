@@ -63,32 +63,27 @@ def render_debug_page():
     with t1:
         # ML Models Used - Professional Header
         st.subheader("Machine Learning Models")
-        st.caption("Algorithms powering the Job Seeker Helper analysis engine")
+        st.caption("Algorithms used in this application")
         
         st.markdown("""
         <div style='background: linear-gradient(135deg, rgba(0, 119, 181, 0.15) 0%, rgba(0, 68, 113, 0.1) 100%); 
                     border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(0, 119, 181, 0.3); margin-bottom: 1rem;'>
-            <h4 style='color: #00A0DC; margin-top: 0;'>🤖 Models in Use</h4>
             <table style='width: 100%; color: #e0e6ed;'>
                 <tr>
-                    <td style='padding: 8px 0;'><strong>Skill Classification</strong></td>
-                    <td><code>Random Forest Classifier</code> (50 trees, TF-IDF vectorization)</td>
+                    <td style='padding: 10px 0; width: 35%;'><strong>Skill Matching</strong></td>
+                    <td>Random Forest Classifier - identifies skills from text</td>
                 </tr>
                 <tr>
-                    <td style='padding: 8px 0;'><strong>Named Entity Recognition</strong></td>
-                    <td><code>NLTK MaxEnt NE Chunker</code> (Penn Treebank POS tagging)</td>
+                    <td style='padding: 10px 0;'><strong>Entity Extraction</strong></td>
+                    <td>NLTK NER - finds people, organizations, locations</td>
                 </tr>
                 <tr>
-                    <td style='padding: 8px 0;'><strong>Topic Modeling</strong></td>
-                    <td><code>Latent Dirichlet Allocation (LDA)</code> (3 topics, online learning)</td>
+                    <td style='padding: 10px 0;'><strong>Topic Discovery</strong></td>
+                    <td>LDA (Latent Dirichlet Allocation) - extracts main themes</td>
                 </tr>
                 <tr>
-                    <td style='padding: 8px 0;'><strong>Skill Clustering</strong></td>
-                    <td><code>K-Means + Hierarchical (Ward)</code> (PCA visualization)</td>
-                </tr>
-                <tr>
-                    <td style='padding: 8px 0;'><strong>Text Similarity</strong></td>
-                    <td><code>TF-IDF Vectorizer</code> + Fuzzy Matching (thefuzz library)</td>
+                    <td style='padding: 10px 0;'><strong>Skill Grouping</strong></td>
+                    <td>K-Means Clustering - groups related skills together</td>
                 </tr>
             </table>
         </div>
@@ -152,6 +147,10 @@ def render_debug_page():
     # =========================================================================
     with t2:
         st.subheader("Last Analysis Results")
+        st.markdown("""
+        **What is this?** This shows the raw data from your CV vs Job Description comparison.
+        Use this to understand exactly how your match score was calculated.
+        """)
         
         if res:
             # Summary metrics
@@ -205,6 +204,11 @@ def render_debug_page():
     # =========================================================================
     with t3:
         st.subheader("Skill Clustering Analysis")
+        st.markdown("""
+        **What is this?** Clustering groups similar skills together based on their meaning.
+        This helps identify which skill areas you're strong in and where there are gaps.
+        Skills that appear close on the chart are semantically related.
+        """)
         
         if res and len(res["matching_hard"] | res["missing_hard"] | res["extra_hard"]) > 3:
             all_skills = list(res["matching_hard"] | res["missing_hard"] | res["extra_hard"])
@@ -263,6 +267,10 @@ def render_debug_page():
     # =========================================================================
     with t4:
         st.subheader("Natural Language Processing")
+        st.markdown("""
+        **What is this?** NLP (Natural Language Processing) allows computers to understand human text.
+        Here we extract key information automatically from your CV and job description.
+        """)
         
         nlp_tab1, nlp_tab2 = st.tabs(["Named Entities (CV)", "Topic Analysis (JD)"])
         
