@@ -9,7 +9,7 @@
 
 ---
 
-## What's New in v2.0 Premium Edition
+## What's New in v2.0 
 
 ### Core Features
 - **Demo Mode** - Try the app instantly with sample CV, JD, Project, and Cover Letter
