@@ -153,13 +153,32 @@ Unlike traditional ATS systems that rely on simple keyword matching, our tool un
 
 ---
 
-## Installation
+## Quick Start (3 Commands)
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/Giacomod2001/datamining.git && cd datamining
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Run the app
+streamlit run app.py
+```
+
+The app opens automatically at `http://localhost:8501`. Click **"Try Demo"** to see it in action!
+
+> **First Run Note:** The first launch may take 30-60 seconds as NLTK downloads required language data. Subsequent launches are instant.
+
+---
+
+## Installation (Detailed)
 
 ### Prerequisites
 - Python 3.8 or higher
-- Git (optional, for cloning)
+- pip (comes with Python)
 
-### Quick Setup
+### Step-by-Step
 
 1. **Clone or Download**
    ```bash
@@ -167,17 +186,26 @@ Unlike traditional ATS systems that rely on simple keyword matching, our tool un
    cd datamining
    ```
 
-2. **Install Dependencies**
+2. **Create Virtual Environment (Recommended)**
+   ```bash
+   python -m venv venv
+   # Windows:
+   venv\Scripts\activate
+   # macOS/Linux:
+   source venv/bin/activate
+   ```
+
+3. **Install Dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Launch Application**
+4. **Launch Application**
    ```bash
    streamlit run app.py
    ```
 
-4. **Access Interface**
+5. **Access Interface**
    - Open browser to `http://localhost:8501`
    - Application will auto-launch in default browser
 

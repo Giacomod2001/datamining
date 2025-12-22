@@ -153,10 +153,22 @@ def perform_skill_clustering(skills: List[str]):
         # 3. K-Means Clustering
         # Determine K (simple heuristic: sqrt(N/2) or max 3-5 for small skill sets)
         n_clusters = max(2, min(len(skills) // 3, 5))
-        kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
+        kmeans = KMeans(
+            n_clusters=n_clusters, 
+            random_state=42, 
+            n_init=20,          # More initializations for better clustering
+            max_iter=500,       # More iterations for convergence
+            algorithm='elkan'   # Faster algorithm
+        )
         labels = kmeans.fit_predict(X)
 
-        skill_clusters = {skill: int(label) for skill, label in zip(skills, labels)}
+        # Create named clusters based on skill types
+        cluster_names = ["Data & Analytics", "Development", "Cloud & Tools", "Business", "Research"]
+        skill_clusters = {}
+            cluster_name = cluster_names[label % len(cluster_names)]
+            if cluster_name not in skill_clusters:
+                skill_clusters[cluster_name] = []
+            skill_clusters[cluster_name].append(skill)
 
         # 4. Visualization (PCA to 2D)
         pca = PCA(n_components=2)
@@ -166,7 +178,7 @@ def perform_skill_clustering(skills: List[str]):
             'x': coords[:, 0],
             'y': coords[:, 1],
             'skill': skills,
-            'cluster': [f"Cluster {l}" for l in labels]
+            'cluster': [cluster_names[l % len(cluster_names)] for l in labels]
         })
 
         return df_viz, dendro_path, skill_clusters
