@@ -438,35 +438,15 @@ hr {
    MOBILE SIDEBAR FIX
    ============================================================================= */
 @media (max-width: 768px) {
-    /* Force sidebar container to be accessible */
+    /* Ensure sidebar container is accessible */
     section[data-testid="stSidebar"] {
         padding-top: 0rem !important;
-        top: 0rem !important;
-        z-index: 999990 !important;
-    }
-
-    /* Force Header to be on top but transparent so we see the button */
-    header[data-testid="stHeader"] {
-        z-index: 999999 !important;
-        background-color: transparent !important;
-        height: auto !important;
-        pointer-events: none !important; /* Let clicks pass through if it covers */
-    }
-
-    /* Make sure the toolbar (hamburger) itself grabs clicks */
-    header[data-testid="stHeader"] > div {
-        pointer-events: auto !important;
     }
     
-    /* Ensure the hamburger button specifically is visible */
+    /* Ensure the collapse/expand control is always visible */
     [data-testid="collapsedControl"] {
         z-index: 1000000 !important;
-        display: block !important;
         visibility: visible !important;
-        color: white !important; /* Ensure high contrast */
-        background: rgba(0, 75, 120, 0.8) !important; /* Semi-transparent blue backing */
-        border-radius: 4px;
-        margin: 4px;
     }
 }
 </style>
