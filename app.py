@@ -78,8 +78,8 @@ def render_debug_page():
                         <span style='font-size: 0.75rem; color: #6e7681;'>Classifies text into skill categories</span>
                     </td>
                     <td style='padding: 12px 0; vertical-align: top;'>
-                        Random Forest (200 trees, depth 30) + TF-IDF (5000 features, trigrams)<br>
-                        <span style='font-size: 0.75rem; color: #6e7681;'>Trained on 500+ skill variations for accurate detection</span>
+                        Random Forest (150 trees, depth 15, OOB) + TF-IDF (3000 features, trigrams)<br>
+                        <span style='font-size: 0.75rem; color: #6e7681;'>Regularized to prevent overfitting (min_samples_leaf=3, max_features=sqrt)</span>
                     </td>
                 </tr>
                 <tr>
@@ -123,6 +123,16 @@ def render_debug_page():
                     </td>
                 </tr>
             </table>
+        </div>
+        
+        <div style='background: rgba(0, 68, 113, 0.15); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 3px solid #00A0DC;'>
+            <strong>Why these parameters?</strong><br><br>
+            <strong>Overfitting</strong> happens when a model learns the training data too well, including noise and outliers, 
+            making it perform poorly on new data. We prevent this by:<br><br>
+            • <strong>Limiting tree depth</strong> (15 instead of 30) — prevents overly complex decision paths<br>
+            • <strong>Requiring more samples per leaf</strong> (3 instead of 1) — ensures predictions are based on multiple examples<br>
+            • <strong>Using sqrt(features)</strong> — each tree sees different features, improving diversity<br>
+            • <strong>Filtering rare/common words</strong> (min_df=2, max_df=0.95) — removes noise from vocabulary
         </div>
         """, unsafe_allow_html=True)
         

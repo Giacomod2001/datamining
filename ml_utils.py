@@ -86,20 +86,23 @@ def train_rf_model():
         pipe = Pipeline([
             ('tfidf', TfidfVectorizer(
                 ngram_range=(1, 3),       # Capture up to 3-word phrases
-                max_features=5000,         # 5x vocabulary for better coverage
+                max_features=3000,         # Reduced from 5000 to prevent overfitting
+                max_df=0.95,               # Ignore terms in >95% of docs (too common)
+                min_df=2,                  # Ignore terms in <2 docs (too rare)
                 sublinear_tf=True,         # Log normalization for term frequency
                 analyzer='word',
-                min_df=1,
                 lowercase=True
             )),
             ('rf', RandomForestClassifier(
-                n_estimators=200,          # 4x more trees for robustness
-                max_depth=30,              # Deeper trees for complex patterns
-                min_samples_split=2,
-                min_samples_leaf=1,
+                n_estimators=150,          # Reduced from 200 - still robust but less overfit
+                max_depth=15,              # Reduced from 30 - prevents overly complex trees
+                min_samples_split=5,       # Increased from 2 - requires more samples to split
+                min_samples_leaf=3,        # Increased from 1 - leaves must have 3+ samples
+                max_features='sqrt',       # Use sqrt(features) at each split for regularization
                 class_weight='balanced',   # Handle imbalanced skill frequencies
                 n_jobs=-1,                 # Parallel processing
-                random_state=42
+                random_state=42,
+                oob_score=True             # Out-of-bag error estimation
             ))
         ])
         pipe.fit(df['text'], df['label'])

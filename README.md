@@ -16,13 +16,15 @@
 - **Premium UI** - LinkedIn-inspired dark theme with glassmorphism effects
 - **Full Analysis Suite** - CV Match + Cover Letter + Project Evaluation + Career Compass
 
-### ML Enhancements (v2.0)
-- **Enhanced Random Forest** - 200 trees (up from 50), depth 30 for robust skill matching
-- **Advanced TF-IDF** - 5000 features, trigrams support for compound skills like "Machine Learning"
+### ML Enhancements (v2.0) - Optimized to Prevent Overfitting
+- **Regularized Random Forest** - 150 trees, depth 15, min_samples_leaf=3 (balanced accuracy vs generalization)
+- **Optimized TF-IDF** - 3000 features, trigrams, max_df=0.95 (filters noise from vocabulary)
 - **N-gram Skill Extraction** - Bigrams/trigrams matching + FuzzyWuzzy (85% threshold)
-- **LDA Topic Modeling** - 50 iterations (5x more), batch mode for precise topic detection
+- **LDA Topic Modeling** - 50 iterations, batch mode for precise topic detection
 - **Multilingual Support** - Stop words for EN, IT, ES, FR, DE languages
 - **620+ Skill Keywords** - Comprehensive vocabulary covering tech, marketing, and business
+
+> **Why prevent overfitting?** A model that memorizes training data performs poorly on new CVs. Our regularization ensures the model generalizes well to any input.
 
 ---
 
