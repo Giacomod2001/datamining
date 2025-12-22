@@ -165,6 +165,7 @@ def perform_skill_clustering(skills: List[str]):
         # Create named clusters based on skill types
         cluster_names = ["Data & Analytics", "Development", "Cloud & Tools", "Business", "Research"]
         skill_clusters = {}
+        for skill, label in zip(skills, labels):
             cluster_name = cluster_names[label % len(cluster_names)]
             if cluster_name not in skill_clusters:
                 skill_clusters[cluster_name] = []
