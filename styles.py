@@ -7,9 +7,6 @@ def get_premium_css():
     """Returns comprehensive CSS for premium Job Seeker Helper UI."""
     return """
 <style>
-/* Import Professional Font - Inter */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
 /* =============================================================================
    CSS VARIABLES - Design Tokens
    ============================================================================= */
@@ -21,9 +18,6 @@ def get_premium_css():
     --accent-green: #00C853;
     --accent-amber: #FFB300;
     --accent-red: #E53935;
-    
-    /* Typography */
-    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     
     /* Neutral Colors */
     --bg-dark: #0d1117;
@@ -59,18 +53,12 @@ footer {visibility: hidden;}
 /* header {visibility: hidden;} */ /* REMOVED: This hides the mobile sidebar toggle! */
 
 /* =============================================================================
-   TYPOGRAPHY - Inter Font Family
+   TYPOGRAPHY
    ============================================================================= */
-
-/* Apply Inter to all text elements */
-body, p, span, div, label, input, textarea, button, select {
-    font-family: var(--font-family) !important;
-}
-
 h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-family) !important;
     font-weight: 600 !important;
-    letter-spacing: -0.02em; /* Tighter letter spacing for headings */
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
 }
 
 h1 {
