@@ -433,20 +433,34 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
     }
     exclusion_set.update(tech_jargon)
 
-    # Add Common CV Headers & Noise
+    # Add Common CV Headers & Noise + Business Terms + Acronyms
     noise_words = {
+        # CV Headers
         "curriculum", "vitae", "resume", "cv", "profile", "summary", 
         "experience", "education", "skills", "projects", "languages",
         "certifications", "interests", "references", "contacts",
         "email", "phone", "address", "date", "present", "current",
+        # Months
         "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec",
         "january", "february", "march", "april", "june", "july", "august", "september", "october", "november", "december",
+        # Job levels
         "page", "of", "senior", "junior", "mid", "level", "lead", "manager", "support",
+        # Italian CV headers
         "competenze", "esperienze", "formazione", "istruzione", "lingue", "progetti",
         "certificazioni", "interessi", "contatti", "profilo", "sommario",
+        # Education
         "university", "università", "school", "scuola", "college", "institute", "politecnico", "degree", "bachelor", "master", "phd",
-        "dataflow",
-        "migrated", "optimized", "soft", "upper", "intermediate", "computer"
+        # Technical terms
+        "dataflow", "migrated", "optimized", "soft", "upper", "intermediate", "computer",
+        # BUSINESS ACRONYMS & TERMS (often misclassified as Organizations)
+        "kpi", "kpis", "roi", "roas", "ctr", "cpc", "cpm", "cpa", "ltv", "arpu", "mrr", "arr",
+        "gaiq", "seo", "sem", "ppc", "crm", "erp", "b2b", "b2c", "saas", "api",
+        "sql", "html", "css", "etl", "elt", "gdpr",
+        # Course/Subject Topics (not organizations)
+        "consumer", "behavior", "behaviour", "statistics", "market", "research",
+        "digital", "marketing", "analytics", "visualization", "communication",
+        # Certifications (acronyms)
+        "hubspot", "inbound"
     }
     exclusion_set.update(noise_words)
     
@@ -515,11 +529,23 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "Alessia", "Martina", "Giorgia", "Federica", "Elisa", "Silvia", "Paola"
     }
     
-    # Known organization patterns (suffixes and keywords)
+    # Known organization patterns (suffixes and keywords) - CALIBRATED FOR DEMO
     org_suffixes = {"s.p.a.", "spa", "s.r.l.", "srl", "ltd", "inc", "gmbh", "ag", "sa", "llc", "corp", "corporation"}
-    org_keywords = {"university", "università", "politecnico", "istituto", "institute", "academy", "accademia",
-                    "corporation", "company", "azienda", "group", "gruppo", "consulting", "solutions", "technologies",
-                    "bank", "banca", "hospital", "ospedale", "foundation", "fondazione"}
+    org_keywords = {
+        # Universities
+        "university", "università", "politecnico", "istituto", "institute", "academy", "accademia", "bocconi", "sapienza", "luiss",
+        # Companies
+        "corporation", "company", "azienda", "group", "gruppo", "consulting", "solutions", "technologies", "agency", "agenzia",
+        "startup", "start-up", "digital", "tech", "software", "marketing", "analytics", "data",
+        # Institutions
+        "bank", "banca", "hospital", "ospedale", "foundation", "fondazione"
+    }
+    
+    # Known Italian surnames (for better name detection)
+    known_italian_surnames = {
+        "Rossi", "Russo", "Ferrari", "Esposito", "Bianchi", "Romano", "Colombo", "Ricci", "Marino", "Greco",
+        "Bruno", "Gallo", "Conti", "De Luca", "Mancini", "Costa", "Giordano", "Rizzo", "Lombardi", "Moretti"
+    }
     
     # Move misclassified locations from Persons/Orgs to Locations
     for cat in ["Persons", "Organizations"]:
@@ -533,6 +559,20 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
             entities[cat].remove(item)
             if item not in entities["Locations"]:
                 entities["Locations"].append(item)
+    
+    # Move Italian names misclassified as Organizations to Persons (e.g., "MARCO")
+    to_move_to_person = []
+    for item in entities["Organizations"]:
+        item_title = item.title()  # Normalize "MARCO" -> "Marco"
+        # Check if it's a known Italian first name or surname
+        if item_title in known_italian_names or item_title in known_italian_surnames:
+            to_move_to_person.append(item)
+    
+    for item in to_move_to_person:
+        entities["Organizations"].remove(item)
+        # Add as title case (proper name format)
+        if item.title() not in entities["Persons"]:
+            entities["Persons"].append(item.title())
     
     # Move misclassified organizations from Persons to Organizations
     to_move_to_org = []
@@ -557,15 +597,20 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         # Skip if single word and potentially a location/org
         words = person.split()
         if len(words) == 1:
-            # Accept if it's a known Italian name
+            # Accept if it's a known Italian name or surname
             if person in known_italian_names or person.title() in known_italian_names:
+                filtered_persons.append(person)
+            elif person in known_italian_surnames or person.title() in known_italian_surnames:
                 filtered_persons.append(person)
             # Skip single words that might be misclassified
             continue
         # Accept multi-word names (likely "First Last" format)
         if 2 <= len(words) <= 4:
-            # Check if any word is a known Italian first name
-            if any(w in known_italian_names or w.title() in known_italian_names for w in words):
+            # Check if any word is a known Italian first name OR surname (e.g., "Marco Bianchi")
+            has_known_first_name = any(w in known_italian_names or w.title() in known_italian_names for w in words)
+            has_known_surname = any(w in known_italian_surnames or w.title() in known_italian_surnames for w in words)
+            
+            if has_known_first_name or has_known_surname:
                 filtered_persons.append(person)
             # Or if it looks like a proper name pattern (Title Case, not all keywords)
             elif all(w[0].isupper() for w in words if w) and not any(w.lower() in exclusion_set for w in words):
