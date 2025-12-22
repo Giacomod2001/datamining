@@ -468,6 +468,38 @@ hr {
 }
 
 /* =============================================================================
+   SIDEBAR OPEN - Compact Layout for 4 Columns
+   ============================================================================= */
+
+/* When sidebar is open, content area shrinks - make columns more compact */
+[data-testid="stAppViewContainer"][data-layout="wide"] [data-testid="column"] {
+    padding: 0 0.25rem !important;
+}
+
+/* Smaller headers when space is limited */
+[data-testid="column"] h3 {
+    font-size: 1rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* Compact radio buttons */
+[data-testid="column"] [data-testid="stRadio"] > div {
+    gap: 0.5rem !important;
+}
+
+[data-testid="column"] [data-testid="stRadio"] label {
+    font-size: 0.85rem !important;
+    padding: 0.25rem 0.5rem !important;
+}
+
+/* Reduce text area height when sidebar is open */
+[data-testid="column"] [data-testid="stTextArea"] textarea {
+    font-size: 0.85rem !important;
+}
+
+/* =============================================================================
    MOBILE SIDEBAR FIX
    ============================================================================= */
 @media (max-width: 768px) {
