@@ -560,20 +560,20 @@ def render_home():
     # COLUMN 1: CV (always present)
     # =============================================================================
     with c1:
-        st.markdown("### Your CV")
-        input_type_cv = st.radio("Input Type", ["Text", "PDF"], key="cv_input", horizontal=True, label_visibility="collapsed")
+        st.markdown("### Your CV ↗")
+        input_type_cv = st.radio("Format", ["Text", "PDF"], key="cv_input", horizontal=True, label_visibility="collapsed")
         
         cv = ""
         if input_type_cv == "Text":
             cv = st.text_area(
-                "Paste CV text", 
+                "CV Content", 
                 height=250, 
                 key="cv_text", 
-                placeholder="Paste your CV here or click 'Try Demo' in sidebar...",
+                placeholder="Paste your CV here...",
                 label_visibility="collapsed"
             )
         else:
-            uploaded_cv = st.file_uploader("Upload CV (PDF)", type=["pdf"], key="cv_pdf", label_visibility="visible")
+            uploaded_cv = st.file_uploader("Upload PDF", type=["pdf"], key="cv_pdf", label_visibility="collapsed")
             if uploaded_cv:
                 try: cv = ml_utils.extract_text_from_pdf(uploaded_cv)
                 except Exception as e: st.error(f"PDF Error: {e}")
@@ -587,33 +587,44 @@ def render_home():
     
     # Project Column (if enabled via toggle)
     if show_project_eval:
-        # Assign the correct column based on how many are already used
         proj_col = c2 if current_col == 2 else (c3 if current_col == 3 else c4)
         with proj_col:
-            st.subheader("Project Context")
-            input_type_proj = st.radio("Input Type", ["Text", "PDF"], key="proj_input", horizontal=True, label_visibility="collapsed")
+            st.markdown("### Project Context")
+            input_type_proj = st.radio("Format", ["Text", "PDF"], key="proj_input", horizontal=True, label_visibility="collapsed")
             if input_type_proj == "Text":
-                project_text = st.text_area("Paste Project Desc", height=250, key="proj_text", label_visibility="visible")
+                project_text = st.text_area(
+                    "Project Content", 
+                    height=250, 
+                    key="proj_text", 
+                    placeholder="Describe your projects here...",
+                    label_visibility="collapsed"
+                )
             else:
-                uploaded_proj = st.file_uploader("Upload Project (PDF)", type=["pdf"], key="proj_pdf", label_visibility="visible")
+                uploaded_proj = st.file_uploader("Upload PDF", type=["pdf"], key="proj_pdf", label_visibility="collapsed")
                 if uploaded_proj:
                     try: project_text = ml_utils.extract_text_from_pdf(uploaded_proj)
-                    except Exception as e: st.error(f"Error: {e}")
-        current_col += 1  # Move to next column
+                    except Exception as e: st.error(f"PDF Error: {e}")
+        current_col += 1
     
     # Cover Letter Column (if enabled via toggle)
     if show_cover_letter:
         cl_col = c2 if current_col == 2 else (c3 if current_col == 3 else c4)
         with cl_col:
-            st.subheader("Cover Letter")
-            input_type_cl = st.radio("Input Type", ["Text", "PDF"], key="cl_input", horizontal=True, label_visibility="collapsed")
+            st.markdown("### Cover Letter")
+            input_type_cl = st.radio("Format", ["Text", "PDF"], key="cl_input", horizontal=True, label_visibility="collapsed")
             if input_type_cl == "Text":
-                cover_letter_text = st.text_area("Paste Cover Letter", height=250, key="cl_text", label_visibility="visible")
+                cover_letter_text = st.text_area(
+                    "Cover Letter Content", 
+                    height=250, 
+                    key="cl_text", 
+                    placeholder="Paste your cover letter here...",
+                    label_visibility="collapsed"
+                )
             else:
-                uploaded_cl = st.file_uploader("Upload Cover Letter (PDF)", type=["pdf"], key="cl_pdf", label_visibility="visible")
+                uploaded_cl = st.file_uploader("Upload PDF", type=["pdf"], key="cl_pdf", label_visibility="collapsed")
                 if uploaded_cl:
                     try: cover_letter_text = ml_utils.extract_text_from_pdf(uploaded_cl)
-                    except Exception as e: st.error(f"Error: {e}")
+                    except Exception as e: st.error(f"PDF Error: {e}")
         current_col += 1
     
     # =============================================================================
@@ -622,19 +633,19 @@ def render_home():
     jd_col = c2 if current_col == 2 else (c3 if current_col == 3 else c4)
     with jd_col:
         st.markdown("### Job Description")
-        input_type_jd = st.radio("Input Type", ["Text", "PDF"], key="jd_input", horizontal=True, label_visibility="collapsed")
+        input_type_jd = st.radio("Format", ["Text", "PDF"], key="jd_input", horizontal=True, label_visibility="collapsed")
         
         jd = ""
         if input_type_jd == "Text":
             jd = st.text_area(
-                "Paste Job text", 
+                "Job Description Content", 
                 height=250, 
                 key="jd_text",
-                placeholder="Paste job description here or click 'Try Demo' in sidebar...",
+                placeholder="Paste job description here...",
                 label_visibility="collapsed"
             )
         else:
-            uploaded_jd = st.file_uploader("Upload JD (PDF)", type=["pdf"], key="jd_pdf", label_visibility="visible")
+            uploaded_jd = st.file_uploader("Upload PDF", type=["pdf"], key="jd_pdf", label_visibility="collapsed")
             if uploaded_jd:
                 try: jd = ml_utils.extract_text_from_pdf(uploaded_jd)
                 except Exception as e: st.error(f"PDF Error: {e}")
