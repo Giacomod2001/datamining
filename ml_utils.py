@@ -389,13 +389,13 @@ except ImportError:
 def extract_entities_ner(text: str) -> Dict[str, List[str]]:
     """
     Extracts named entities (Organizations, GPE, Date) using NLTK with advanced filtering.
+    Optimized for Italian and European CVs.
     """
     if not nltk:
         return {}
 
     entities = {"Organizations": [], "Locations": [], "Persons": []}
 
-    # 1. Build Exclusion Set (Skills + Headers + Common Noise)
     # 1. Build Exclusion Set (Skills + Headers + Common Noise)
     exclusion_set = set()
     
@@ -479,19 +479,99 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         pass # Fallback to empty if NLTK fails
 
     # 3. Post-Processing Fixes (Known Misclassifications)
-    known_locations = {"Milano", "Torino", "Roma", "Napoli", "Italy", "Italia", "Florence", "Firenze", "Venice", "Venezia", "Milan", "Turin", "Rome", "Naples"}
+    # EXPANDED: Italian cities, European capitals, major world cities
+    known_locations = {
+        # Italian cities
+        "Milano", "Milan", "Torino", "Turin", "Roma", "Rome", "Napoli", "Naples",
+        "Firenze", "Florence", "Venezia", "Venice", "Bologna", "Genova", "Genoa",
+        "Palermo", "Catania", "Bari", "Verona", "Padova", "Padua", "Trieste",
+        "Brescia", "Parma", "Modena", "Reggio", "Perugia", "Livorno", "Cagliari",
+        "Foggia", "Salerno", "Ferrara", "Rimini", "Ravenna", "Siena", "Pisa",
+        "Bergamo", "Monza", "Lecce", "Pescara", "Trento", "Bolzano", "Udine",
+        "Ancona", "Arezzo", "Vicenza", "Treviso", "Como", "Varese", "Pavia",
+        # Regions
+        "Lombardia", "Lombardy", "Piemonte", "Piedmont", "Veneto", "Toscana", "Tuscany",
+        "Lazio", "Campania", "Sicilia", "Sicily", "Sardegna", "Sardinia", "Puglia", "Apulia",
+        "Emilia-Romagna", "Liguria", "Calabria", "Abruzzo", "Umbria", "Marche",
+        # Countries
+        "Italia", "Italy", "France", "Francia", "Germany", "Germania", "Spain", "Spagna",
+        "UK", "England", "Inghilterra", "Switzerland", "Svizzera", "Austria", "Belgium",
+        "Netherlands", "Poland", "Portugal", "Greece", "Sweden", "Norway", "Denmark",
+        "USA", "Stati Uniti", "China", "Japan", "India", "Brazil", "Canada", "Australia",
+        # European capitals and major cities
+        "Paris", "Parigi", "London", "Londra", "Berlin", "Berlino", "Madrid",
+        "Barcelona", "Barcellona", "Amsterdam", "Brussels", "Bruxelles", "Vienna",
+        "Zurich", "Zurigo", "Geneva", "Ginevra", "Munich", "Monaco", "Frankfurt",
+        "Dublin", "Dublino", "Lisbon", "Lisbona", "Prague", "Praga", "Warsaw", "Varsavia",
+        "Budapest", "Athens", "Atene", "Stockholm", "Stoccolma", "Copenhagen", "Copenaghen",
+        "Oslo", "Helsinki", "Luxembourg", "Lussemburgo"
+    }
+    
+    # Known Italian first names (commonly misclassified as something else)
+    known_italian_names = {
+        "Marco", "Luca", "Alessandro", "Andrea", "Francesco", "Giuseppe", "Giovanni",
+        "Antonio", "Matteo", "Lorenzo", "Stefano", "Roberto", "Paolo", "Davide", "Simone",
+        "Maria", "Anna", "Giulia", "Francesca", "Chiara", "Sara", "Laura", "Valentina",
+        "Alessia", "Martina", "Giorgia", "Federica", "Elisa", "Silvia", "Paola"
+    }
+    
+    # Known organization patterns (suffixes and keywords)
+    org_suffixes = {"s.p.a.", "spa", "s.r.l.", "srl", "ltd", "inc", "gmbh", "ag", "sa", "llc", "corp", "corporation"}
+    org_keywords = {"university", "università", "politecnico", "istituto", "institute", "academy", "accademia",
+                    "corporation", "company", "azienda", "group", "gruppo", "consulting", "solutions", "technologies",
+                    "bank", "banca", "hospital", "ospedale", "foundation", "fondazione"}
     
     # Move misclassified locations from Persons/Orgs to Locations
     for cat in ["Persons", "Organizations"]:
         to_move = []
         for item in entities[cat]:
-            # Check if item is a known location (case insensitive check, but sensitive restore)
-            if item in known_locations: 
+            # Check if item is a known location (case insensitive check)
+            if item in known_locations or item.title() in known_locations:
                 to_move.append(item)
         
         for item in to_move:
             entities[cat].remove(item)
-            entities["Locations"].append(item)
+            if item not in entities["Locations"]:
+                entities["Locations"].append(item)
+    
+    # Move misclassified organizations from Persons to Organizations
+    to_move_to_org = []
+    for item in entities["Persons"]:
+        item_lower = item.lower()
+        # Check for org suffixes
+        if any(item_lower.endswith(suffix) for suffix in org_suffixes):
+            to_move_to_org.append(item)
+        # Check for org keywords
+        elif any(kw in item_lower for kw in org_keywords):
+            to_move_to_org.append(item)
+    
+    for item in to_move_to_org:
+        entities["Persons"].remove(item)
+        if item not in entities["Organizations"]:
+            entities["Organizations"].append(item)
+    
+    # Filter Persons: keep only those that look like actual names
+    # A name typically: starts with capital, 1-3 words, not all caps, not a single common word
+    filtered_persons = []
+    for person in entities["Persons"]:
+        # Skip if single word and potentially a location/org
+        words = person.split()
+        if len(words) == 1:
+            # Accept if it's a known Italian name
+            if person in known_italian_names or person.title() in known_italian_names:
+                filtered_persons.append(person)
+            # Skip single words that might be misclassified
+            continue
+        # Accept multi-word names (likely "First Last" format)
+        if 2 <= len(words) <= 4:
+            # Check if any word is a known Italian first name
+            if any(w in known_italian_names or w.title() in known_italian_names for w in words):
+                filtered_persons.append(person)
+            # Or if it looks like a proper name pattern (Title Case, not all keywords)
+            elif all(w[0].isupper() for w in words if w) and not any(w.lower() in exclusion_set for w in words):
+                filtered_persons.append(person)
+    
+    entities["Persons"] = filtered_persons
         
     # Deduplicate and sort
     for k in entities:
