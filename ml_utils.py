@@ -41,7 +41,15 @@ import constants
 @st.cache_resource
 def train_rf_model():
     """
-    Trains a Random Forest model on Hard Skills from constants.py.
+    Trains an enhanced Random Forest model on Hard Skills from constants.py.
+    
+    Improvements in v2.0:
+    - 200 estimators (up from 50) for more robust predictions
+    - Trigrams support for compound skills like "Machine Learning Engineer"
+    - 5000 features for richer vocabulary
+    - Balanced class weights for rare skills
+    - Deeper trees (max_depth=30) for complex patterns
+    
     Returns (pipeline, dataframe).
     """
     # Prepare Data
@@ -53,8 +61,13 @@ def train_rf_model():
 
     for skill_name, keywords in hard_skills.items():
         for kw in keywords:
+            # Original keyword
             data.append({"text": kw, "label": skill_name})
+            # Common CV patterns
             data.append({"text": f"used {kw}", "label": skill_name})
+            data.append({"text": f"experience with {kw}", "label": skill_name})
+            data.append({"text": f"proficient in {kw}", "label": skill_name})
+            data.append({"text": f"expert in {kw}", "label": skill_name})
 
     for skill_name, keywords in soft_skills.items():
         for kw in keywords:
@@ -71,8 +84,23 @@ def train_rf_model():
 
     try:
         pipe = Pipeline([
-            ('tfidf', TfidfVectorizer(ngram_range=(1,2), max_features=1000)),
-            ('rf', RandomForestClassifier(n_estimators=50, random_state=42))
+            ('tfidf', TfidfVectorizer(
+                ngram_range=(1, 3),       # Capture up to 3-word phrases
+                max_features=5000,         # 5x vocabulary for better coverage
+                sublinear_tf=True,         # Log normalization for term frequency
+                analyzer='word',
+                min_df=1,
+                lowercase=True
+            )),
+            ('rf', RandomForestClassifier(
+                n_estimators=200,          # 4x more trees for robustness
+                max_depth=30,              # Deeper trees for complex patterns
+                min_samples_split=2,
+                min_samples_leaf=1,
+                class_weight='balanced',   # Handle imbalanced skill frequencies
+                n_jobs=-1,                 # Parallel processing
+                random_state=42
+            ))
         ])
         pipe.fit(df['text'], df['label'])
         return pipe, df
@@ -686,6 +714,14 @@ except ImportError:
 
 # =============================================================================
 def extract_skills_from_text(text: str) -> Tuple[Set[str], Set[str]]:
+    """
+    Enhanced skill extraction with n-gram matching for compound skills.
+    
+    Improvements in v2.0:
+    - Bigram and trigram matching for phrases like "machine learning", "data visualization"
+    - Lowered fuzzy threshold to 85% for better recall
+    - Direct phrase matching in addition to word-by-word
+    """
     hard_found = set()
     soft_found = set()
     text_lower = text.lower()
@@ -694,45 +730,76 @@ def extract_skills_from_text(text: str) -> Tuple[Set[str], Set[str]]:
     soft_skills = getattr(constants, "SOFT_SKILLS", {})
     inference_rules = getattr(constants, "INFERENCE_RULES", {})
 
-    # Pre-process text for fuzzy matching (split into words)
-    text_words = set(text_lower.split())
+    # Pre-process text: split into words and generate n-grams
+    words = text_lower.split()
+    text_words = set(words)
+    
+    # Generate bigrams and trigrams for compound skill matching
+    bigrams = set(' '.join(words[i:i+2]) for i in range(len(words)-1))
+    trigrams = set(' '.join(words[i:i+3]) for i in range(len(words)-2))
+    all_phrases = text_words | bigrams | trigrams
 
-    # 1. Regex Match Hard Skills (Exact + Fuzzy)
+    # 1. Regex Match Hard Skills (Exact + N-gram + Fuzzy)
     for skill, variations in hard_skills.items():
         matched = False
+        
+        # First try: direct phrase match in n-grams (fastest)
         for var in variations:
-            pattern = r'\b' + re.escape(var.lower()) + r'(?:s|es|ing|ed)?\b'
-            if re.search(pattern, text_lower):
+            if var.lower() in all_phrases:
                 hard_found.add(skill)
                 matched = True
                 break
+        
+        # Second try: regex match with morphological variants
+        if not matched:
+            for var in variations:
+                pattern = r'\b' + re.escape(var.lower()) + r'(?:s|es|ing|ed|tion|ment)?\b'
+                if re.search(pattern, text_lower):
+                    hard_found.add(skill)
+                    matched = True
+                    break
 
-        # FUZZY FALLBACK (Robustness)
+        # Third try: fuzzy matching (lower threshold for better recall)
         if not matched and fuzz:
-            # Check if any word in text is > 90% similar to the skill name
             for word in text_words:
-                if fuzz.ratio(word, skill.lower()) > 90:
+                if len(word) > 3 and fuzz.ratio(word, skill.lower()) > 85:
                     hard_found.add(skill)
                     break
+            # Also check bigrams for compound skills
+            if not matched:
+                for bigram in bigrams:
+                    if fuzz.ratio(bigram, skill.lower()) > 85:
+                        hard_found.add(skill)
+                        break
 
     # 2. Regex Match Soft Skills (Exact + Fuzzy)
     for skill, variations in soft_skills.items():
         matched = False
+        
+        # Direct phrase match
         for var in variations:
-            pattern = r'\b' + re.escape(var.lower()) + r'(?:s|es|ing|ed)?\b'
-            if re.search(pattern, text_lower):
+            if var.lower() in all_phrases:
                 soft_found.add(skill)
                 matched = True
                 break
+        
+        # Regex fallback
+        if not matched:
+            for var in variations:
+                pattern = r'\b' + re.escape(var.lower()) + r'(?:s|es|ing|ed)?\b'
+                if re.search(pattern, text_lower):
+                    soft_found.add(skill)
+                    matched = True
+                    break
 
-        # FUZZY FALLBACK
+        # Fuzzy fallback
         if not matched and fuzz:
-             for word in text_words:
-                if fuzz.ratio(word, skill.lower()) > 90:
+            for word in text_words:
+                if len(word) > 3 and fuzz.ratio(word, skill.lower()) > 85:
                     soft_found.add(skill)
                     break
 
-    # 3. Hierarchical Inference
+    # 3. Hierarchical Inference (expand found skills to parent categories)
     inferred_skills = set()
     for child_skill in hard_found:
         if child_skill in inference_rules:
@@ -740,7 +807,7 @@ def extract_skills_from_text(text: str) -> Tuple[Set[str], Set[str]]:
             inferred_skills.update(parents)
     hard_found.update(inferred_skills)
 
-    # 4. Generic Fallback
+    # 4. Generic Fallback (only if very few skills found)
     if len(hard_found) < 2:
         generic_keywords = extract_generic_keywords(text, top_n=5)
         for kw in generic_keywords:
