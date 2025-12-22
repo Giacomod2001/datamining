@@ -96,20 +96,36 @@ def render_debug_page():
         st.divider()
         
         st.subheader("System Status")
+        st.caption("Overview of the skill database and system configuration")
         
-        # System metrics
+        # Count total skills
+        hard_skills_count = len(constants.HARD_SKILLS) if hasattr(constants, 'HARD_SKILLS') else 0
+        soft_skills_count = len(constants.SOFT_SKILLS) if hasattr(constants, 'SOFT_SKILLS') else 0
+        total_skills = hard_skills_count + soft_skills_count
+        
+        # System metrics with explanations
         m1, m2, m3, m4 = st.columns(4)
         with m1:
-            st.metric("Skills in Database", len(constants.SKILL_LIST) if hasattr(constants, 'SKILL_LIST') else "N/A")
+            st.metric("Skills in Database", total_skills, help="Total unique skills the system can recognize (Hard + Soft)")
         with m2:
-            st.metric("Inference Rules", len(constants.INFERENCE_RULES) if hasattr(constants, 'INFERENCE_RULES') else "N/A")
+            inference_count = len(constants.INFERENCE_RULES) if hasattr(constants, 'INFERENCE_RULES') else 0
+            st.metric("Inference Rules", inference_count, help="Rules that infer parent skills from child skills (e.g., Python → Pandas)")
         with m3:
-            st.metric("Skill Clusters", len(constants.SKILL_CLUSTERS) if hasattr(constants, 'SKILL_CLUSTERS') else "N/A")
+            cluster_count = len(constants.SKILL_CLUSTERS) if hasattr(constants, 'SKILL_CLUSTERS') else 0
+            st.metric("Skill Clusters", cluster_count, help="Groups of equivalent/transferable skills")
         with m4:
             has_analysis = "Yes" if res else "No"
-            st.metric("Analysis Cached", has_analysis)
+            st.metric("Analysis Cached", has_analysis, help="Whether a previous analysis is stored in session")
         
-        st.markdown("")
+        # Show breakdown
+        st.markdown(f"""
+        <div style='background: rgba(0, 119, 181, 0.1); padding: 1rem; border-radius: 8px; margin-top: 1rem;'>
+            <strong>Database Breakdown:</strong><br>
+            • Hard Skills (Technical): {hard_skills_count}<br>
+            • Soft Skills (Interpersonal): {soft_skills_count}<br>
+            • Total Skill Variations: ~{sum(len(v) for v in constants.HARD_SKILLS.values()) + sum(len(v) for v in constants.SOFT_SKILLS.values())} keywords
+        </div>
+        """, unsafe_allow_html=True)
         
         # Session state info
         with st.expander("Session State Contents", expanded=False):
