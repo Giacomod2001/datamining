@@ -433,6 +433,20 @@ hr {
         padding: 1rem;
     }
 }
+
+/* =============================================================================
+   MOBILE SIDEBAR FIX
+   ============================================================================= */
+@media (max-width: 768px) {
+    section[data-testid="stSidebar"] {
+        padding-top: 0rem !important;
+    }
+    
+    header[data-testid="stHeader"] {
+        z-index: 999999 !important;
+        background-color: transparent !important;
+    }
+}
 </style>
 """
 
