@@ -68,8 +68,22 @@ h1 {
 }
 
 /* =============================================================================
-   INPUT COLUMNS - Uniform Layout Fix
+   INPUT COLUMNS - Responsive Grid Layout
    ============================================================================= */
+
+/* Make the horizontal block (columns container) use CSS grid for responsive wrap */
+[data-testid="stHorizontalBlock"] {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+    gap: 1rem !important;
+}
+
+/* When 4 columns and limited space, force 2x2 grid */
+@media (max-width: 1400px) {
+    [data-testid="stHorizontalBlock"]:has([data-testid="column"]:nth-child(4)) {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
 
 /* Force all column headers to have consistent height */
 [data-testid="stVerticalBlock"] > [data-testid="stVerticalBlockBorderWrapper"] h3,
