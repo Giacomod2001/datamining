@@ -899,16 +899,19 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
             with st.expander(f"Action Plan: **{skill}**", expanded=len(res["missing_hard"]) == 1):
                 q_skill = urllib.parse.quote(skill)
                 
-                lc1, lc2, lc3 = st.columns(3)
+                lc1, lc2, lc3, lc4 = st.columns(4)
                 with lc1:
-                    st.markdown(f"**[Google Search](https://www.google.com/search?q=learn+{q_skill}+tutorial)**")
-                    st.caption("General guides")
+                    st.markdown(f"<a href='https://www.coursera.org/search?query={q_skill}' target='_blank'><b>Coursera</b></a>", unsafe_allow_html=True)
+                    st.caption("Free courses")
                 with lc2:
-                    st.markdown(f"**[YouTube](https://www.youtube.com/results?search_query=learn+{q_skill})**")
-                    st.caption("Video tutorials")
+                    st.markdown(f"<a href='https://www.udemy.com/courses/search/?q={q_skill}' target='_blank'><b>Udemy</b></a>", unsafe_allow_html=True)
+                    st.caption("Paid courses")
                 with lc3:
-                    st.markdown(f"**[Courses](https://www.google.com/search?q=site:coursera.org+OR+site:udemy.com+OR+site:linkedin.com/learning+{q_skill})**")
-                    st.caption("Platform specific")
+                    st.markdown(f"<a href='https://www.youtube.com/results?search_query=learn+{q_skill}+tutorial' target='_blank'><b>YouTube</b></a>", unsafe_allow_html=True)
+                    st.caption("Free tutorials")
+                with lc4:
+                    st.markdown(f"<a href='https://www.linkedin.com/learning/search?keywords={q_skill}' target='_blank'><b>LinkedIn Learning</b></a>", unsafe_allow_html=True)
+                    st.caption("Professional")
 
     # --- ADVANCED MINING MOVED TO DEBUGGER ---
     # The 'Advanced Data Mining', 'Topic Modeling', and 'NER' sections have been moved 
@@ -967,9 +970,9 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                  role_query = urllib.parse.quote(rec['role'])
                  italy_query = urllib.parse.quote(f"{rec['role']} Italia")
                  
-                 st.markdown(f"[Google Jobs](https://www.google.com/search?q={role_query}+jobs)")
-                 st.markdown(f"[LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query})")
-                 st.markdown(f"[Indeed Italia](https://it.indeed.com/jobs?q={italy_query})")
+                 st.markdown(f"<a href='https://www.google.com/search?q={role_query}+jobs' target='_blank'>Google Jobs</a>", unsafe_allow_html=True)
+                 st.markdown(f"<a href='https://www.linkedin.com/jobs/search/?keywords={role_query}' target='_blank'>LinkedIn Jobs</a>", unsafe_allow_html=True)
+                 st.markdown(f"<a href='https://it.indeed.com/jobs?q={italy_query}' target='_blank'>Indeed Italia</a>", unsafe_allow_html=True)
                  
                  with st.expander("Missing Skills"):
                      for s in rec['missing'][:5]:
