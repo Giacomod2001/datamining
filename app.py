@@ -560,7 +560,7 @@ def render_home():
     # COLUMN 1: CV (always present)
     # =============================================================================
     with c1:
-        st.markdown("### Your CV ↗")
+        st.markdown("### Your CV")
         input_type_cv = st.radio("Format", ["Text", "PDF"], key="cv_input", horizontal=True, label_visibility="collapsed")
         
         cv = ""
