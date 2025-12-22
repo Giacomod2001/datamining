@@ -136,8 +136,9 @@ Unlike traditional ATS systems that rely on simple keyword matching, our tool un
 | Component | Technology |
 |-----------|------------|
 | Core Framework | Streamlit, Python 3.8+ |
-| Machine Learning | scikit-learn (TF-IDF, LDA, Clustering, Cosine Similarity) |
-| NLP | NLTK (Named Entity Recognition, tokenization) |
+| Machine Learning | scikit-learn v2.0 Enhanced:<br>• Random Forest (200 trees, depth 30)<br>• TF-IDF (5000 features, trigrams)<br>• LDA Topic Modeling<br>• K-Means Clustering |
+| NLP | NLTK (NER, tokenization), FuzzyWuzzy (85% threshold) |
+| Skill Extraction | N-gram matching (uni/bi/trigrams), multilingual (EN/IT/ES/FR/DE) |
 | Data Processing | Pandas, NumPy |
 | Visualization | Plotly, Matplotlib |
 | Document Handling | PyPDF2, FPDF |

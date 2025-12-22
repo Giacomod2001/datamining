@@ -96,34 +96,50 @@ def render_debug_page():
         st.divider()
         
         st.subheader("System Status")
-        st.caption("Overview of the skill database and system configuration")
         
-        # Count total skills
-        hard_skills_count = len(constants.HARD_SKILLS) if hasattr(constants, 'HARD_SKILLS') else 0
-        soft_skills_count = len(constants.SOFT_SKILLS) if hasattr(constants, 'SOFT_SKILLS') else 0
+        # Direct counts (no conditional checks that might fail)
+        try:
+            hard_skills_count = len(constants.HARD_SKILLS)
+            soft_skills_count = len(constants.SOFT_SKILLS)
+            inference_count = len(constants.INFERENCE_RULES)
+            cluster_count = len(constants.SKILL_CLUSTERS)
+            total_variations = sum(len(v) for v in constants.HARD_SKILLS.values()) + sum(len(v) for v in constants.SOFT_SKILLS.values())
+        except:
+            hard_skills_count = soft_skills_count = inference_count = cluster_count = total_variations = 0
+        
         total_skills = hard_skills_count + soft_skills_count
         
-        # System metrics with explanations
-        m1, m2, m3, m4 = st.columns(4)
-        with m1:
-            st.metric("Skills in Database", total_skills, help="Total unique skills the system can recognize (Hard + Soft)")
-        with m2:
-            inference_count = len(constants.INFERENCE_RULES) if hasattr(constants, 'INFERENCE_RULES') else 0
-            st.metric("Inference Rules", inference_count, help="Rules that infer parent skills from child skills (e.g., Python → Pandas)")
-        with m3:
-            cluster_count = len(constants.SKILL_CLUSTERS) if hasattr(constants, 'SKILL_CLUSTERS') else 0
-            st.metric("Skill Clusters", cluster_count, help="Groups of equivalent/transferable skills")
-        with m4:
-            has_analysis = "Yes" if res else "No"
-            st.metric("Analysis Cached", has_analysis, help="Whether a previous analysis is stored in session")
-        
-        # Show breakdown
+        # Metrics in styled cards
         st.markdown(f"""
-        <div style='background: rgba(0, 119, 181, 0.1); padding: 1rem; border-radius: 8px; margin-top: 1rem;'>
-            <strong>Database Breakdown:</strong><br>
-            • Hard Skills (Technical): {hard_skills_count}<br>
-            • Soft Skills (Interpersonal): {soft_skills_count}<br>
-            • Total Skill Variations: ~{sum(len(v) for v in constants.HARD_SKILLS.values()) + sum(len(v) for v in constants.SOFT_SKILLS.values())} keywords
+        <div style='display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 1rem 0;'>
+            <div style='background: rgba(0, 119, 181, 0.15); padding: 1rem; border-radius: 10px; text-align: center;'>
+                <div style='font-size: 2rem; font-weight: bold; color: #00A0DC;'>{total_skills}</div>
+                <div style='font-size: 0.9rem; color: #8b949e;'>Skills Recognized</div>
+                <div style='font-size: 0.75rem; color: #6e7681; margin-top: 0.5rem;'>Unique skills the system can match</div>
+            </div>
+            <div style='background: rgba(0, 119, 181, 0.15); padding: 1rem; border-radius: 10px; text-align: center;'>
+                <div style='font-size: 2rem; font-weight: bold; color: #00A0DC;'>{inference_count}</div>
+                <div style='font-size: 0.9rem; color: #8b949e;'>Inference Rules</div>
+                <div style='font-size: 0.75rem; color: #6e7681; margin-top: 0.5rem;'>Parent→Child skill mappings</div>
+            </div>
+            <div style='background: rgba(0, 119, 181, 0.15); padding: 1rem; border-radius: 10px; text-align: center;'>
+                <div style='font-size: 2rem; font-weight: bold; color: #00A0DC;'>{cluster_count}</div>
+                <div style='font-size: 0.9rem; color: #8b949e;'>Skill Clusters</div>
+                <div style='font-size: 0.75rem; color: #6e7681; margin-top: 0.5rem;'>Groups of equivalent tools</div>
+            </div>
+            <div style='background: rgba(0, 119, 181, 0.15); padding: 1rem; border-radius: 10px; text-align: center;'>
+                <div style='font-size: 2rem; font-weight: bold; color: #00A0DC;'>{total_variations}</div>
+                <div style='font-size: 0.9rem; color: #8b949e;'>Keywords</div>
+                <div style='font-size: 0.75rem; color: #6e7681; margin-top: 0.5rem;'>Total search variations</div>
+            </div>
+        </div>
+        
+        <div style='background: rgba(0, 68, 113, 0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem;'>
+            <strong style='color: #00A0DC;'>📊 Database Breakdown</strong><br><br>
+            • <strong>Hard Skills</strong> (Technical): {hard_skills_count} — Programming, tools, certifications<br>
+            • <strong>Soft Skills</strong> (Interpersonal): {soft_skills_count} — Communication, leadership, teamwork<br>
+            • <strong>Inference Rules</strong>: When you have "BigQuery", we also infer "SQL" and "Cloud Computing"<br>
+            • <strong>Skill Clusters</strong>: Power BI ≈ Tableau ≈ Looker Studio (interchangeable BI tools)
         </div>
         """, unsafe_allow_html=True)
         
