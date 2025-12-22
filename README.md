@@ -159,7 +159,7 @@ Unlike traditional ATS systems that rely on simple keyword matching, our tool un
 
 ### Option 1: Use Online (No Installation)
 
-**Try it now:** [github.com/Giacomod2001/datamining](https://github.com/Giacomod2001/datamining/tree/main)
+**Try it now:** [dataminingiulm.streamlit.app](https://dataminingiulm.streamlit.app/)
 
 The app is available online - just click the link and start using it!
 
