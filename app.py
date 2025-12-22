@@ -61,6 +61,41 @@ def render_debug_page():
     # TAB 1: SYSTEM OVERVIEW
     # =========================================================================
     with t1:
+        # ML Models Used - Professional Header
+        st.subheader("Machine Learning Models")
+        st.caption("Algorithms powering the Job Seeker Helper analysis engine")
+        
+        st.markdown("""
+        <div style='background: linear-gradient(135deg, rgba(0, 119, 181, 0.15) 0%, rgba(0, 68, 113, 0.1) 100%); 
+                    border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(0, 119, 181, 0.3); margin-bottom: 1rem;'>
+            <h4 style='color: #00A0DC; margin-top: 0;'>🤖 Models in Use</h4>
+            <table style='width: 100%; color: #e0e6ed;'>
+                <tr>
+                    <td style='padding: 8px 0;'><strong>Skill Classification</strong></td>
+                    <td><code>Random Forest Classifier</code> (50 trees, TF-IDF vectorization)</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px 0;'><strong>Named Entity Recognition</strong></td>
+                    <td><code>NLTK MaxEnt NE Chunker</code> (Penn Treebank POS tagging)</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px 0;'><strong>Topic Modeling</strong></td>
+                    <td><code>Latent Dirichlet Allocation (LDA)</code> (3 topics, online learning)</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px 0;'><strong>Skill Clustering</strong></td>
+                    <td><code>K-Means + Hierarchical (Ward)</code> (PCA visualization)</td>
+                </tr>
+                <tr>
+                    <td style='padding: 8px 0;'><strong>Text Similarity</strong></td>
+                    <td><code>TF-IDF Vectorizer</code> + Fuzzy Matching (thefuzz library)</td>
+                </tr>
+            </table>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.divider()
+        
         st.subheader("System Status")
         
         # System metrics
