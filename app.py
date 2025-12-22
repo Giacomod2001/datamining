@@ -337,6 +337,10 @@ def render_debug_page():
     # =========================================================================
     with t5:
         st.subheader("System Knowledge Base")
+        st.markdown("""
+        **What is this?** The knowledge base contains the rules and data that power the analysis.
+        It includes skill relationships, equivalences, and training data for the ML models.
+        """)
         
         kb_tab1, kb_tab2, kb_tab3 = st.tabs(["Inference Rules", "Skill Clusters", "Training Data"])
         
