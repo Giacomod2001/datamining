@@ -155,7 +155,17 @@ Unlike traditional ATS systems that rely on simple keyword matching, our tool un
 
 ---
 
-## Quick Start (3 Commands)
+## Quick Start
+
+### Option 1: Use Online (No Installation)
+
+**Try it now:** [github.com/Giacomod2001/datamining](https://github.com/Giacomod2001/datamining/tree/main)
+
+The app is available online - just click the link and start using it!
+
+---
+
+### Option 2: Run Locally (3 Commands)
 
 ```bash
 # 1. Clone the repository
