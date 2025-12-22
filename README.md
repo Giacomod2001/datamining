@@ -11,12 +11,18 @@
 
 ## What's New in v2.0 Premium Edition
 
-- **Demo Mode** - Try the app instantly with sample CV and job description
+### Core Features
+- **Demo Mode** - Try the app instantly with sample CV, JD, Project, and Cover Letter
 - **Premium UI** - LinkedIn-inspired dark theme with glassmorphism effects
-- **Progress Tracking** - Animated progress bar during analysis
-- **Enhanced UX** - Tooltips, how-it-works guide, better error messages
-- **Animated Skill Tags** - Hover effects and gradient backgrounds
-- **Formal Presentation** - Professional, clean interface
+- **Full Analysis Suite** - CV Match + Cover Letter + Project Evaluation + Career Compass
+
+### ML Enhancements (v2.0)
+- **Enhanced Random Forest** - 200 trees (up from 50), depth 30 for robust skill matching
+- **Advanced TF-IDF** - 5000 features, trigrams support for compound skills like "Machine Learning"
+- **N-gram Skill Extraction** - Bigrams/trigrams matching + FuzzyWuzzy (85% threshold)
+- **LDA Topic Modeling** - 50 iterations (5x more), batch mode for precise topic detection
+- **Multilingual Support** - Stop words for EN, IT, ES, FR, DE languages
+- **620+ Skill Keywords** - Comprehensive vocabulary covering tech, marketing, and business
 
 ---
 
@@ -123,11 +129,12 @@ Unlike traditional ATS systems that rely on simple keyword matching, our tool un
 
 ### Developer Mode
 
-**Transparent AI Decision-Making**
-- Password-protected debugger interface (default: `1234`)
-- View inference rules and skill clusters
-- Access to training data and knowledge base
-- Topic modeling and NER analysis tools
+**5-Tab Debugger Console** (Password: `1234`)
+- **System Overview** - ML model specs, database stats, session state
+- **Analysis Data** - Raw skill matches, JSON export, score breakdown
+- **Skill Intelligence** - Clustering visualization, PCA scatter plot, dendrogram
+- **NLP Insights** - Named Entity Recognition, Topic Analysis with LDA
+- **Knowledge Base** - Inference rules, skill clusters, training data browser
 
 ---
 

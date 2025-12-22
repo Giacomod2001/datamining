@@ -280,10 +280,17 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
         from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
         all_stop_words = list(ENGLISH_STOP_WORDS) + hr_stop_words + it_stop_words + es_stop_words + fr_stop_words + de_stop_words
 
-        tf_vectorizer = CountVectorizer(max_df=0.95, min_df=2, stop_words=all_stop_words)
+        tf_vectorizer = CountVectorizer(max_df=0.90, min_df=1, stop_words=all_stop_words, ngram_range=(1, 2))
         tf = tf_vectorizer.fit_transform(text_corpus)
 
-        lda = LatentDirichletAllocation(n_components=n_topics, max_iter=10, learning_method='online', random_state=42)
+        # LDA with more iterations for better topic convergence
+        lda = LatentDirichletAllocation(
+            n_components=n_topics, 
+            max_iter=50,              # 5x more iterations for better topics
+            learning_method='batch',  # More accurate than 'online' for small datasets
+            learning_decay=0.7,       # Standard decay
+            random_state=42
+        )
         lda.fit(tf)
 
         feature_names = tf_vectorizer.get_feature_names_out()

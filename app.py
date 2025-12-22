@@ -105,8 +105,8 @@ def render_debug_page():
                         <span style='font-size: 0.75rem; color: #6e7681;'>Finds main themes</span>
                     </td>
                     <td style='padding: 12px 0; vertical-align: top;'>
-                        LDA + multilingual stop words (EN/IT/ES/FR/DE)<br>
-                        <span style='font-size: 0.75rem; color: #6e7681;'>Reveals what the job really needs beyond keywords</span>
+                        LDA (50 iterations, batch mode) + bigrams + multilingual stop words<br>
+                        <span style='font-size: 0.75rem; color: #6e7681;'>5x more iterations for precise topic detection (EN/IT/ES/FR/DE)</span>
                     </td>
                 </tr>
                 <tr>
@@ -165,7 +165,7 @@ def render_debug_page():
         </div>
         
         <div style='background: rgba(0, 68, 113, 0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem; margin-bottom: 2rem;'>
-            <strong style='color: #00A0DC;'>📊 Database Breakdown</strong><br><br>
+            <strong style='color: #00A0DC;'>Database Breakdown</strong><br><br>
             • <strong>Hard Skills</strong> (Technical): {hard_skills_count} — Programming, tools, certifications<br>
             • <strong>Soft Skills</strong> (Interpersonal): {soft_skills_count} — Communication, leadership, teamwork<br>
             • <strong>Inference Rules</strong>: When you have "BigQuery", we also infer "SQL" and "Cloud Computing"<br>

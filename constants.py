@@ -198,21 +198,21 @@ PROJECT_BASED_SKILLS = {
 # HARD SKILLS (Technical, quantifiable) - EXPANDED FOR BETTER MATCHING
 HARD_SKILLS = {
     # --- PROGRAMMING & DATA ---
-    "Python": ["python", "py", "python3", "django", "flask", "fastapi", "pandas", "numpy", "scipy", "matplotlib", "seaborn", "jupyter"],
-    "Pandas": ["pandas", "dataframe", "data manipulation"],
-    "Java": ["java", "spring", "spring boot", "maven", "gradle", "jvm"],
-    "JavaScript": ["javascript", "js", "node", "nodejs", "typescript", "ts", "es6", "react", "vue", "angular"],
-    "SQL": ["sql", "mysql", "postgresql", "bigquery", "structured query language", "database query", "query", "relational database"],
-    "R": ["r programming", "r language", "rstudio", "r studio"],
+    "Python": ["python", "py", "python3", "django", "flask", "fastapi", "pandas", "numpy", "scipy", "matplotlib", "seaborn", "jupyter", "anaconda", "pycharm", "scripting", "automation script"],
+    "Pandas": ["pandas", "dataframe", "data manipulation", "data wrangling", "data cleaning", "data preprocessing"],
+    "Java": ["java", "spring", "spring boot", "maven", "gradle", "jvm", "java ee", "hibernate"],
+    "JavaScript": ["javascript", "js", "node", "nodejs", "typescript", "ts", "es6", "react", "vue", "angular", "next.js", "express"],
+    "SQL": ["sql", "mysql", "postgresql", "bigquery", "structured query language", "database query", "query", "relational database", "sql server", "oracle", "query optimization", "data query"],
+    "R": ["r programming", "r language", "rstudio", "r studio", "tidyverse", "ggplot", "shiny"],
     
     # --- ML / AI / DATA SCIENCE ---
-    "Machine Learning": ["machine learning", "ml", "supervised learning", "unsupervised learning", "scikit-learn", "sklearn", "random forest", "k-means", "kmeans", "regression", "classification", "clustering", "modelli predittivi", "apprendimento automatico"],
-    "Deep Learning": ["deep learning", "neural network", "neural networks", "cnn", "rnn", "lstm", "transformer", "rete neurale", "reti neurali"],
-    "AI": ["artificial intelligence", "ai", "intelligenza artificiale", "ai-powered", "ai powered", "intelligent", "cognitive"],
-    "Data Science": ["data science", "data scientist", "data analysis", "analytics", "big data", "scienza dei dati", "analisi dati"],
-    "Modeling": ["modeling", "modelling", "statistical modeling", "statistical modelling", "predictive modeling", "predictive modelling", "model", "models", "modello", "modelli", "modellazione"],
-    "Statistics": ["statistics", "statistical", "statistica", "statistiche", "statistical analysis", "analisi statistica", "hypothesis testing", "regression analysis", "stat"],
-    "Predictive Analytics": ["predictive analytics", "predictive modelling", "predictive modeling", "forecasting", "previsione", "analitica predittiva"],
+    "Machine Learning": ["machine learning", "ml", "supervised learning", "unsupervised learning", "scikit-learn", "sklearn", "random forest", "k-means", "kmeans", "regression", "classification", "clustering", "modelli predittivi", "apprendimento automatico", "gradient boosting", "xgboost", "lightgbm", "decision tree", "ensemble", "feature engineering", "model training", "hyperparameter tuning"],
+    "Deep Learning": ["deep learning", "neural network", "neural networks", "cnn", "rnn", "lstm", "transformer", "rete neurale", "reti neurali", "tensorflow", "pytorch", "keras", "convolutional", "recurrent"],
+    "AI": ["artificial intelligence", "ai", "intelligenza artificiale", "ai-powered", "ai powered", "intelligent", "cognitive", "chatbot", "nlp", "natural language processing", "computer vision", "generative ai", "gen ai"],
+    "Data Science": ["data science", "data scientist", "data analysis", "analytics", "big data", "scienza dei dati", "analisi dati", "data-driven", "data driven", "data insights", "exploratory data analysis", "eda"],
+    "Modeling": ["modeling", "modelling", "statistical modeling", "statistical modelling", "predictive modeling", "predictive modelling", "model", "models", "modello", "modelli", "modellazione", "model deployment", "model validation"],
+    "Statistics": ["statistics", "statistical", "statistica", "statistiche", "statistical analysis", "analisi statistica", "hypothesis testing", "regression analysis", "stat", "a/b testing", "statistical significance", "confidence interval", "probability"],
+    "Predictive Analytics": ["predictive analytics", "predictive modelling", "predictive modeling", "forecasting", "previsione", "analitica predittiva", "time series", "demand forecasting", "churn prediction"],
     
     # --- CLOUD & PLATFORMS ---
     "Cloud Computing": ["cloud", "azure", "gcp", "cloud computing", "cloud platform", "cloud native", "cloud-native"],
