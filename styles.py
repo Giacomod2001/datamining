@@ -68,6 +68,39 @@ h1 {
 }
 
 /* =============================================================================
+   INPUT COLUMNS - Uniform Layout Fix
+   ============================================================================= */
+
+/* Force all column headers to have consistent height */
+[data-testid="stVerticalBlock"] > [data-testid="stVerticalBlockBorderWrapper"] h3,
+[data-testid="column"] h3 {
+    min-height: 32px !important;
+    margin-bottom: 0.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Uniform radio button row spacing */
+[data-testid="stRadio"] {
+    margin-top: 0 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Consistent text area height in all columns */
+[data-testid="stTextArea"] textarea {
+    min-height: 250px !important;
+    max-height: 250px !important;
+}
+
+/* Uniform file uploader height to match text areas */
+[data-testid="stFileUploader"] {
+    min-height: 250px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+
+/* =============================================================================
    BUTTONS
    ============================================================================= */
    
