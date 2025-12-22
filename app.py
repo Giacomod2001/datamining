@@ -36,15 +36,18 @@ if "demo_mode" not in st.session_state:
 def render_debug_page():
     """Developer/Debug mode with advanced analytics and system insights."""
     
-    # Header with back button
-    col_back, col_title = st.columns([1, 6])
+    # Header with back button aligned with title
+    col_back, col_title = st.columns([1, 5])
     with col_back:
+        st.markdown("<div style='padding-top: 0.5rem;'></div>", unsafe_allow_html=True)
         if st.button("← Back to App"):
             st.session_state["page"] = "Home"
             st.rerun()
     with col_title:
-        st.title("Developer Console")
-        st.caption("Advanced analytics and system diagnostics")
+        st.markdown("""
+        <h1 style='margin: 0; padding: 0;'>Developer Console</h1>
+        <p style='color: #8b949e; margin: 0.25rem 0 0 0;'>Advanced analytics and system diagnostics</p>
+        """, unsafe_allow_html=True)
     
     st.divider()
     
