@@ -70,24 +70,54 @@ def render_debug_page():
                     border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(0, 119, 181, 0.3); margin-bottom: 1rem;'>
             <table style='width: 100%; color: #e0e6ed;'>
                 <tr>
-                    <td style='padding: 10px 0; width: 35%;'><strong>Skill Matching</strong></td>
-                    <td>Random Forest (200 trees, depth 30) + TF-IDF (5000 features, trigrams)</td>
+                    <td style='padding: 12px 0; width: 30%; vertical-align: top;'>
+                        <strong>Skill Matching</strong><br>
+                        <span style='font-size: 0.75rem; color: #6e7681;'>Classifies text into skill categories</span>
+                    </td>
+                    <td style='padding: 12px 0; vertical-align: top;'>
+                        Random Forest (200 trees, depth 30) + TF-IDF (5000 features, trigrams)<br>
+                        <span style='font-size: 0.75rem; color: #6e7681;'>Trained on 500+ skill variations for accurate detection</span>
+                    </td>
                 </tr>
                 <tr>
-                    <td style='padding: 10px 0;'><strong>Skill Extraction</strong></td>
-                    <td>N-gram matching (uni/bi/trigrams) + FuzzyWuzzy (85% threshold)</td>
+                    <td style='padding: 12px 0; vertical-align: top;'>
+                        <strong>Skill Extraction</strong><br>
+                        <span style='font-size: 0.75rem; color: #6e7681;'>Finds skills in CV/JD text</span>
+                    </td>
+                    <td style='padding: 12px 0; vertical-align: top;'>
+                        N-gram matching (uni/bi/trigrams) + FuzzyWuzzy (85% threshold)<br>
+                        <span style='font-size: 0.75rem; color: #6e7681;'>Catches compound skills like "machine learning" and typos</span>
+                    </td>
                 </tr>
                 <tr>
-                    <td style='padding: 10px 0;'><strong>Entity Extraction</strong></td>
-                    <td>NLTK NER - finds people, organizations, locations</td>
+                    <td style='padding: 12px 0; vertical-align: top;'>
+                        <strong>Entity Extraction</strong><br>
+                        <span style='font-size: 0.75rem; color: #6e7681;'>Identifies named entities</span>
+                    </td>
+                    <td style='padding: 12px 0; vertical-align: top;'>
+                        NLTK NER - finds people, organizations, locations<br>
+                        <span style='font-size: 0.75rem; color: #6e7681;'>Detects companies, universities, cities from text</span>
+                    </td>
                 </tr>
                 <tr>
-                    <td style='padding: 10px 0;'><strong>Topic Discovery</strong></td>
-                    <td>LDA + multilingual stop words (EN/IT/ES/FR/DE)</td>
+                    <td style='padding: 12px 0; vertical-align: top;'>
+                        <strong>Topic Discovery</strong><br>
+                        <span style='font-size: 0.75rem; color: #6e7681;'>Finds main themes</span>
+                    </td>
+                    <td style='padding: 12px 0; vertical-align: top;'>
+                        LDA + multilingual stop words (EN/IT/ES/FR/DE)<br>
+                        <span style='font-size: 0.75rem; color: #6e7681;'>Reveals what the job really needs beyond keywords</span>
+                    </td>
                 </tr>
                 <tr>
-                    <td style='padding: 10px 0;'><strong>Skill Grouping</strong></td>
-                    <td>K-Means Clustering - groups related skills together</td>
+                    <td style='padding: 12px 0; vertical-align: top;'>
+                        <strong>Skill Grouping</strong><br>
+                        <span style='font-size: 0.75rem; color: #6e7681;'>Clusters related skills</span>
+                    </td>
+                    <td style='padding: 12px 0; vertical-align: top;'>
+                        K-Means Clustering - groups related skills together<br>
+                        <span style='font-size: 0.75rem; color: #6e7681;'>Shows which skill areas you're strong/weak in</span>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -134,7 +164,7 @@ def render_debug_page():
             </div>
         </div>
         
-        <div style='background: rgba(0, 68, 113, 0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem;'>
+        <div style='background: rgba(0, 68, 113, 0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem; margin-bottom: 2rem;'>
             <strong style='color: #00A0DC;'>📊 Database Breakdown</strong><br><br>
             • <strong>Hard Skills</strong> (Technical): {hard_skills_count} — Programming, tools, certifications<br>
             • <strong>Soft Skills</strong> (Interpersonal): {soft_skills_count} — Communication, leadership, teamwork<br>
