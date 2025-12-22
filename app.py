@@ -535,31 +535,32 @@ def render_home():
     """, unsafe_allow_html=True)
 
     # =============================================================================
-    # DYNAMIC LAYOUT: Calculate how many columns are needed based on active toggles
+    # ROW 1: Job Description + CV (always present)
     # =============================================================================
-    # Base: 2 columns (CV + JD)
-    # +1 if Project Evaluation is active
-    # +1 if Cover Letter Evaluation is active
-    # Maximum: 4 columns (CV + Project + Cover Letter + JD)
+    col_jd, col_cv = st.columns(2)
     
-    num_cols = 2  # CV + JD (base)
-    if show_project_eval: num_cols += 1
-    if show_cover_letter: num_cols += 1
+    # Job Description (first column)
+    with col_jd:
+        st.markdown("### Job Description")
+        input_type_jd = st.radio("Format", ["Text", "PDF"], key="jd_input", horizontal=True, label_visibility="collapsed")
+        
+        jd = ""
+        if input_type_jd == "Text":
+            jd = st.text_area(
+                "Job Description Content", 
+                height=250, 
+                key="jd_text",
+                placeholder="Paste job description here...",
+                label_visibility="collapsed"
+            )
+        else:
+            uploaded_jd = st.file_uploader("Upload PDF", type=["pdf"], key="jd_pdf", label_visibility="collapsed")
+            if uploaded_jd:
+                try: jd = ml_utils.extract_text_from_pdf(uploaded_jd)
+                except Exception as e: st.error(f"PDF Error: {e}")
     
-    # Create columns based on calculated number
-    if num_cols == 2:
-        c1, c2 = st.columns(2)
-        c3, c4 = None, None
-    elif num_cols == 3:
-        c1, c2, c3 = st.columns(3)
-        c4 = None
-    else:  # 4 columns
-        c1, c2, c3, c4 = st.columns(4)
-
-    # =============================================================================
-    # COLUMN 1: CV (always present)
-    # =============================================================================
-    with c1:
+    # CV (second column)
+    with col_cv:
         st.markdown("### Your CV")
         input_type_cv = st.radio("Format", ["Text", "PDF"], key="cv_input", horizontal=True, label_visibility="collapsed")
         
@@ -579,76 +580,51 @@ def render_home():
                 except Exception as e: st.error(f"PDF Error: {e}")
     
     # =============================================================================
-    # OPTIONAL COLUMNS MANAGEMENT: Dynamically assign Project, Cover Letter, JD
+    # ROW 2: Project Context + Cover Letter (optional, shown if enabled)
     # =============================================================================
     project_text = ""
     cover_letter_text = ""
-    current_col = 2  # Start from column 2 (first is CV)
     
-    # Project Column (if enabled via toggle)
-    if show_project_eval:
-        proj_col = c2 if current_col == 2 else (c3 if current_col == 3 else c4)
-        with proj_col:
-            st.markdown("### Project Context")
-            input_type_proj = st.radio("Format", ["Text", "PDF"], key="proj_input", horizontal=True, label_visibility="collapsed")
-            if input_type_proj == "Text":
-                project_text = st.text_area(
-                    "Project Content", 
-                    height=250, 
-                    key="proj_text", 
-                    placeholder="Describe your projects here...",
-                    label_visibility="collapsed"
-                )
-            else:
-                uploaded_proj = st.file_uploader("Upload PDF", type=["pdf"], key="proj_pdf", label_visibility="collapsed")
-                if uploaded_proj:
-                    try: project_text = ml_utils.extract_text_from_pdf(uploaded_proj)
-                    except Exception as e: st.error(f"PDF Error: {e}")
-        current_col += 1
-    
-    # Cover Letter Column (if enabled via toggle)
-    if show_cover_letter:
-        cl_col = c2 if current_col == 2 else (c3 if current_col == 3 else c4)
-        with cl_col:
-            st.markdown("### Cover Letter")
-            input_type_cl = st.radio("Format", ["Text", "PDF"], key="cl_input", horizontal=True, label_visibility="collapsed")
-            if input_type_cl == "Text":
-                cover_letter_text = st.text_area(
-                    "Cover Letter Content", 
-                    height=250, 
-                    key="cl_text", 
-                    placeholder="Paste your cover letter here...",
-                    label_visibility="collapsed"
-                )
-            else:
-                uploaded_cl = st.file_uploader("Upload PDF", type=["pdf"], key="cl_pdf", label_visibility="collapsed")
-                if uploaded_cl:
-                    try: cover_letter_text = ml_utils.extract_text_from_pdf(uploaded_cl)
-                    except Exception as e: st.error(f"PDF Error: {e}")
-        current_col += 1
-    
-    # =============================================================================
-    # COLUMN JD: Job Description (always present, last column)
-    # =============================================================================
-    jd_col = c2 if current_col == 2 else (c3 if current_col == 3 else c4)
-    with jd_col:
-        st.markdown("### Job Description")
-        input_type_jd = st.radio("Format", ["Text", "PDF"], key="jd_input", horizontal=True, label_visibility="collapsed")
+    if show_project_eval or show_cover_letter:
+        col_proj, col_cl = st.columns(2)
         
-        jd = ""
-        if input_type_jd == "Text":
-            jd = st.text_area(
-                "Job Description Content", 
-                height=250, 
-                key="jd_text",
-                placeholder="Paste job description here...",
-                label_visibility="collapsed"
-            )
-        else:
-            uploaded_jd = st.file_uploader("Upload PDF", type=["pdf"], key="jd_pdf", label_visibility="collapsed")
-            if uploaded_jd:
-                try: jd = ml_utils.extract_text_from_pdf(uploaded_jd)
-                except Exception as e: st.error(f"PDF Error: {e}")
+        # Project Context (first column of row 2)
+        if show_project_eval:
+            with col_proj:
+                st.markdown("### Project Context")
+                input_type_proj = st.radio("Format", ["Text", "PDF"], key="proj_input", horizontal=True, label_visibility="collapsed")
+                if input_type_proj == "Text":
+                    project_text = st.text_area(
+                        "Project Content", 
+                        height=250, 
+                        key="proj_text", 
+                        placeholder="Describe your projects here...",
+                        label_visibility="collapsed"
+                    )
+                else:
+                    uploaded_proj = st.file_uploader("Upload PDF", type=["pdf"], key="proj_pdf", label_visibility="collapsed")
+                    if uploaded_proj:
+                        try: project_text = ml_utils.extract_text_from_pdf(uploaded_proj)
+                        except Exception as e: st.error(f"PDF Error: {e}")
+        
+        # Cover Letter (second column of row 2)
+        if show_cover_letter:
+            with col_cl:
+                st.markdown("### Cover Letter")
+                input_type_cl = st.radio("Format", ["Text", "PDF"], key="cl_input", horizontal=True, label_visibility="collapsed")
+                if input_type_cl == "Text":
+                    cover_letter_text = st.text_area(
+                        "Cover Letter Content", 
+                        height=250, 
+                        key="cl_text", 
+                        placeholder="Paste your cover letter here...",
+                        label_visibility="collapsed"
+                    )
+                else:
+                    uploaded_cl = st.file_uploader("Upload PDF", type=["pdf"], key="cl_pdf", label_visibility="collapsed")
+                    if uploaded_cl:
+                        try: cover_letter_text = ml_utils.extract_text_from_pdf(uploaded_cl)
+                        except Exception as e: st.error(f"PDF Error: {e}")
 
     # =============================================================================
     # ANALYZE BUTTON: Trigger for processing
