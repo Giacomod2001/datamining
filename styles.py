@@ -50,7 +50,7 @@ def get_premium_css():
 /* Hide Streamlit Branding */
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
-header {visibility: hidden;}
+/* header {visibility: hidden;} */ /* REMOVED: This hides the mobile sidebar toggle! */
 
 /* =============================================================================
    TYPOGRAPHY
