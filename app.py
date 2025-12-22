@@ -63,7 +63,7 @@ def render_debug_page():
     with t1:
         # ML Models Used - Professional Header
         st.subheader("Machine Learning Models")
-        st.caption("Algorithms used in this application")
+        st.caption("Algorithms used in this application (v2.0 Enhanced)")
         
         st.markdown("""
         <div style='background: linear-gradient(135deg, rgba(0, 119, 181, 0.15) 0%, rgba(0, 68, 113, 0.1) 100%); 
@@ -71,7 +71,11 @@ def render_debug_page():
             <table style='width: 100%; color: #e0e6ed;'>
                 <tr>
                     <td style='padding: 10px 0; width: 35%;'><strong>Skill Matching</strong></td>
-                    <td>Random Forest Classifier - identifies skills from text</td>
+                    <td>Random Forest (200 trees, depth 30) + TF-IDF (5000 features, trigrams)</td>
+                </tr>
+                <tr>
+                    <td style='padding: 10px 0;'><strong>Skill Extraction</strong></td>
+                    <td>N-gram matching (uni/bi/trigrams) + FuzzyWuzzy (85% threshold)</td>
                 </tr>
                 <tr>
                     <td style='padding: 10px 0;'><strong>Entity Extraction</strong></td>
@@ -79,7 +83,7 @@ def render_debug_page():
                 </tr>
                 <tr>
                     <td style='padding: 10px 0;'><strong>Topic Discovery</strong></td>
-                    <td>LDA (Latent Dirichlet Allocation) - extracts main themes</td>
+                    <td>LDA + multilingual stop words (EN/IT/ES/FR/DE)</td>
                 </tr>
                 <tr>
                     <td style='padding: 10px 0;'><strong>Skill Grouping</strong></td>

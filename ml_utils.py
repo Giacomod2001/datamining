@@ -242,15 +242,43 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
             'tutto', 'tutti', 'tutta', 'tut te', 'ogni', 'altro', 'altra', 'altri', 'altre',
             'molto', 'poco', 'abbastanza', 'proprio', 'già', 'ancora', 
             'ecc', 'eccetera', 'via', 'poi', 'solo', 'soltanto',
-            # Apostrophe handling (tokenizers often split 'dell', 'all')
             'dell', 'all', 'sull', 'dall', 'nell', 'quest', 'quant', 'tant'
         ]
 
-        # Manually filter stop words from vocabulary if CountVectorizer didn't catch them
-        # (Alternatively, pass list to stop_words, but 'english' + list is tricky in sklearn < 0.24)
-        # Better approach: extend the built-in english list
+        # Spanish Stop Words
+        es_stop_words = [
+            'de', 'la', 'que', 'el', 'en', 'y', 'a', 'los', 'del', 'se', 'las', 'por', 'un', 'para', 'con', 'no',
+            'una', 'su', 'al', 'es', 'lo', 'como', 'más', 'pero', 'sus', 'le', 'ya', 'o', 'fue', 'este', 'ha',
+            'si', 'porque', 'esta', 'son', 'entre', 'está', 'cuando', 'muy', 'sin', 'sobre', 'ser', 'tiene',
+            'también', 'me', 'hasta', 'hay', 'donde', 'han', 'quien', 'están', 'estado', 'desde', 'todos',
+            'durante', 'años', 'año', 'empresa', 'trabajo', 'experiencia', 'puesto', 'conocimientos'
+        ]
+
+        # French Stop Words
+        fr_stop_words = [
+            'le', 'la', 'les', 'de', 'du', 'des', 'un', 'une', 'et', 'en', 'à', 'au', 'aux', 'ce', 'cette',
+            'ces', 'que', 'qui', 'quoi', 'dont', 'où', 'pour', 'par', 'sur', 'avec', 'sans', 'sous', 'dans',
+            'entre', 'vers', 'chez', 'il', 'elle', 'on', 'nous', 'vous', 'ils', 'elles', 'leur', 'leurs',
+            'mon', 'ma', 'mes', 'ton', 'ta', 'tes', 'son', 'sa', 'ses', 'notre', 'nos', 'votre', 'vos',
+            'est', 'sont', 'été', 'être', 'avoir', 'fait', 'faire', 'dit', 'dire', 'peut', 'pouvoir',
+            'plus', 'moins', 'très', 'bien', 'aussi', 'même', 'tout', 'tous', 'toute', 'toutes',
+            'entreprise', 'poste', 'expérience', 'années', 'année', 'travail', 'compétences'
+        ]
+
+        # German Stop Words
+        de_stop_words = [
+            'der', 'die', 'das', 'den', 'dem', 'des', 'ein', 'eine', 'einer', 'einem', 'einen', 'eines',
+            'und', 'in', 'zu', 'von', 'mit', 'ist', 'nicht', 'für', 'auf', 'sich', 'als', 'auch', 'an',
+            'es', 'bei', 'nach', 'aus', 'wenn', 'oder', 'aber', 'wie', 'noch', 'nur', 'durch', 'über',
+            'so', 'um', 'am', 'im', 'zum', 'zur', 'bis', 'seit', 'wir', 'sie', 'ihr', 'er', 'ich',
+            'werden', 'wurde', 'worden', 'wird', 'haben', 'hat', 'hatte', 'sein', 'seine', 'seiner',
+            'können', 'kann', 'sollen', 'soll', 'müssen', 'muss', 'dürfen', 'darf',
+            'jahre', 'jahr', 'unternehmen', 'erfahrung', 'stelle', 'position', 'kenntnisse'
+        ]
+
+        # Combine all stop words
         from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
-        all_stop_words = list(ENGLISH_STOP_WORDS) + hr_stop_words + it_stop_words
+        all_stop_words = list(ENGLISH_STOP_WORDS) + hr_stop_words + it_stop_words + es_stop_words + fr_stop_words + de_stop_words
 
         tf_vectorizer = CountVectorizer(max_df=0.95, min_df=2, stop_words=all_stop_words)
         tf = tf_vectorizer.fit_transform(text_corpus)
