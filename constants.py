@@ -638,7 +638,8 @@ HARD_SKILLS = {
     "Large Animals": ["large animals", "grandi animali", "equine", "equino", "bovine", "bovino", "livestock", "bestiame"],
 
     # --- CONSULENZA & MANAGEMENT ---
-    "Management Consulting": ["management consulting", "consulenza gestionale", "strategy", "strategia", "business transformation", "organizational change"],
+    "Management Consulting": ["management consulting", "consulenza gestionale", "consulente aziendale", "business transformation", "organizational change", "mckinsey", "bcg", "bain", "strategy consulting", "consulenza strategica"],
+
     "IT Consulting": ["it consulting", "consulenza it", "digital transformation", "trasformazione digitale", "system integration", "integrazione sistemi"],
     "HR Consulting": ["hr consulting", "consulenza hr", "talent management", "organizational design", "compensation", "retribuzione"],
     "Tax Consulting": ["tax consulting", "consulenza fiscale", "tax planning", "pianificazione fiscale", "transfer pricing", "tax audit"],
