@@ -1,4 +1,4 @@
-# Script per forzare il push della versione locale
+mi srrve # Script per forzare il push della versione locale
 # Questo script risolve i conflitti dando priorità alla versione locale
 
 Write-Host "=== Risoluzione conflitti di merge ===" -ForegroundColor Cyan
