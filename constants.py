@@ -371,17 +371,18 @@ HARD_SKILLS = {
     "Concierge": ["concierge", "portineria", "guest relations", "vip service"],
 
     # --- SANITÀ & MEDICINA ---
-    "Nursing": ["nursing", "infermieristica", "infermiere", "infermiera", "nurse", "patient care", "assistenza paziente"],
-    "First Aid": ["first aid", "primo soccorso", "bls", "cpr", "rianimazione", "emergency care"],
-    "Medical Devices": ["medical devices", "dispositivi medici", "ecg", "ekg", "defibrillatore", "monitoring"],
-    "Pharmacy": ["pharmacy", "farmacia", "farmacista", "pharmacist", "dispensing", "pharmaceutical"],
-    "Physiotherapy": ["physiotherapy", "fisioterapia", "physical therapy", "rehabilitation", "riabilitazione", "fisioterapista"],
-    "Elderly Care": ["elderly care", "assistenza anziani", "oss", "operatore socio sanitario", "geriatric", "geriatria"],
-    "Pediatric Care": ["pediatric", "pediatria", "child care", "assistenza bambini", "neonatology"],
-    "Medical Records": ["medical records", "cartelle cliniche", "emr", "ehr", "electronic health records"],
-    "Laboratory": ["laboratory", "laboratorio", "lab technician", "tecnico laboratorio", "analisi cliniche", "blood tests"],
-    "Radiology": ["radiology", "radiologia", "x-ray", "mri", "tac", "ct scan", "imaging"],
-    "Surgery Assistance": ["surgery", "chirurgia", "surgical assistant", "sala operatoria", "strumentista"],
+    "Nursing": ["nursing", "infermieristica", "infermiere", "infermiera", "nurse", "patient care", "assistenza paziente", "registered nurse", "rn", "licensed practical nurse", "lpn", "nursing assistant", "oss", "medication administration", "somministrazione farmaci", "vital signs", "parametri vitali", "wound care", "medicazioni", "catheter", "catetere", "iv therapy", "flebo", "triage", "patient assessment", "valutazione paziente", "nursing diagnosis"],
+    "First Aid": ["first aid", "primo soccorso", "bls", "blsd", "cpr", "rianimazione", "emergency care", "aed", "defibrillatore", "heimlich", "emergency response", "pronto soccorso", "trauma care", "basic life support", "advanced life support", "als", "phtls", "acls", "first responder", "soccorritore"],
+    "Medical Devices": ["medical devices", "dispositivi medici", "ecg", "ekg", "elettrocardiogramma", "defibrillatore", "monitoring", "monitoraggio", "ventilator", "ventilatore", "infusion pump", "pompa infusione", "pulse oximeter", "saturimetro", "blood pressure", "sfigmomanometro", "glucometer", "glucometro", "nebulizer", "aerosol"],
+    "Pharmacy": ["pharmacy", "farmacia", "farmacista", "pharmacist", "dispensing", "pharmaceutical", "prescription", "ricetta", "drug interaction", "interazione farmaci", "compounding", "preparazioni galeniche", "pharmacology", "farmacologia", "dosage", "posologia", "generic drugs", "farmaci generici", "otc", "parafarmaco"],
+    "Physiotherapy": ["physiotherapy", "fisioterapia", "physical therapy", "rehabilitation", "riabilitazione", "fisioterapista", "manual therapy", "terapia manuale", "massage therapy", "massoterapia", "electrotherapy", "elettroterapia", "ultrasound therapy", "ultrasuoni", "exercise prescription", "esercizio terapeutico", "kinesio taping", "posture correction", "rieducazione posturale", "mobilization", "mobilizzazione"],
+    "Elderly Care": ["elderly care", "assistenza anziani", "oss", "operatore socio sanitario", "geriatric", "geriatria", "dementia care", "alzheimer", "mobility assistance", "assistenza mobilità", "personal hygiene", "igiene personale", "feeding assistance", "assistenza pasti", "companionship", "compagnia", "fall prevention", "prevenzione cadute", "rsa", "casa di riposo", "hospice"],
+    "Pediatric Care": ["pediatric", "pediatria", "child care", "assistenza bambini", "neonatology", "neonatologia", "pediatric nurse", "pediatra", "vaccination", "vaccinazioni", "child development", "sviluppo bambino", "nicu", "terapia intensiva neonatale", "infant care", "cura neonati", "breastfeeding support", "allattamento"],
+    "Medical Records": ["medical records", "cartelle cliniche", "emr", "ehr", "electronic health records", "patient records", "documentazione sanitaria", "medical coding", "codifica sanitaria", "icd-10", "hipaa", "privacy sanitaria", "health informatics", "informatica sanitaria", "patient database", "archivio pazienti"],
+    "Laboratory": ["laboratory", "laboratorio", "lab technician", "tecnico laboratorio", "analisi cliniche", "blood tests", "esami sangue", "urinalysis", "esame urine", "microbiology", "microbiologia", "hematology", "ematologia", "biochemistry", "biochimica", "specimen collection", "prelievi", "centrifuge", "centrifuga", "microscopy", "microscopia"],
+    "Radiology": ["radiology", "radiologia", "x-ray", "raggi x", "mri", "risonanza magnetica", "tac", "ct scan", "imaging", "diagnostica per immagini", "ultrasound", "ecografia", "mammography", "mammografia", "fluoroscopy", "radiographer", "tecnico radiologo", "pacs", "contrast media", "mezzo di contrasto"],
+    "Surgery Assistance": ["surgery", "chirurgia", "surgical assistant", "sala operatoria", "strumentista", "surgical technician", "operating room", "sterile technique", "tecnica sterile", "surgical instruments", "strumentario chirurgico", "anesthesia", "anestesia", "post-operative care", "assistenza post-operatoria", "wound closure", "suture", "laparoscopy", "laparoscopia"],
+
 
     # --- LEGALE & AMMINISTRATIVO ---
     "Legal Research": ["legal research", "ricerca giuridica", "jurisprudence", "case law", "giurisprudenza"],
@@ -396,36 +397,37 @@ HARD_SKILLS = {
     "Construction": ["construction", "edilizia", "cantiere", "building", "costruzione"],
     "Carpentry": ["carpentry", "falegnameria", "carpenter", "falegname", "woodwork", "legno"],
     "Plumbing": ["plumbing", "idraulica", "plumber", "idraulico", "tubazioni", "impianti idrici"],
-    "Electrical": ["electrical", "elettricista", "electrician", "impianti elettrici", "cablaggio", "wiring"],
-    "Masonry": ["masonry", "muratura", "muratore", "mason", "bricklayer"],
-    "Painting": ["painting", "verniciatura", "imbianchino", "painter", "tinteggiatura"],
-    "HVAC": ["hvac", "climatizzazione", "heating", "riscaldamento", "condizionamento", "air conditioning"],
-    "Welding": ["welding", "saldatura", "welder", "saldatore"],
-    "CAD Design": ["autocad", "cad", "technical drawing", "disegno tecnico", "progettazione"],
-    "Safety Compliance": ["safety", "sicurezza lavoro", "81/08", "rspp", "rls", "dpi", "ppe"],
+    "Electrical": ["electrical", "elettricista", "electrician", "impianti elettrici", "cablaggio", "wiring", "circuit", "circuito", "panel", "quadro elettrico", "conduit", "voltage", "tensione", "amperage", "amperaggio", "220v", "380v", "trifase", "three phase", "outlet", "presa", "switch", "interruttore", "breaker", "fusibile", "grounding", "messa a terra", "electrician license", "patentino elettricista"],
+    "Masonry": ["masonry", "muratura", "muratore", "mason", "bricklayer", "brick", "mattone", "mortar", "malta", "concrete", "cemento", "foundation", "fondamenta", "wall construction", "costruzione muri", "plastering", "intonaco", "tiling", "piastrellatura", "flooring", "pavimentazione", "stone work", "pietra"],
+    "Painting": ["painting", "verniciatura", "imbianchino", "painter", "tinteggiatura", "spray painting", "verniciatura a spruzzo", "brush", "pennello", "roller", "rullo", "primer", "fondo", "lacquer", "lacca", "enamel", "smalto", "wallpaper", "carta da parati", "color matching", "abbinamento colori", "textured finish", "effetti decorativi"],
+    "HVAC": ["hvac", "climatizzazione", "heating", "riscaldamento", "condizionamento", "air conditioning", "ventilation", "ventilazione", "refrigeration", "refrigerazione", "heat pump", "pompa di calore", "furnace", "caldaia", "thermostat", "termostato", "ductwork", "canalizzazione", "r410a", "refrigerant", "refrigerante", "split system", "vrf"],
+    "Welding": ["welding", "saldatura", "welder", "saldatore", "mig welding", "tig welding", "arc welding", "saldatura ad arco", "spot welding", "saldatura a punti", "brazing", "brasatura", "soldering", "stagnatura", "welding torch", "torcia", "electrode", "elettrodo", "flux", "filler metal", "metallo d'apporto", "weld inspection", "controllo saldature"],
+    "CAD Design": ["autocad", "cad", "technical drawing", "disegno tecnico", "progettazione", "drafting", "blueprint", "planimetria", "3d modeling", "modellazione 3d", "revit", "solidworks", "inventor", "catia", "rendering", "bim", "building information modeling"],
+    "Safety Compliance": ["safety", "sicurezza lavoro", "81/08", "d.lgs 81/08", "rspp", "rls", "dpi", "ppe", "personal protective equipment", "osha", "safety training", "formazione sicurezza", "risk assessment", "valutazione rischi", "dvr", "safety audit", "ispezione sicurezza", "work permit", "permesso lavoro", "lockout tagout", "confined space", "spazi confinati", "fall protection", "protezione anticaduta"],
 
     # --- MECCANICA & AUTOMOTIVE ---
-    "Automotive Repair": ["automotive", "meccanico", "mechanic", "car repair", "officina", "riparazione auto"],
-    "Bodywork": ["bodywork", "carrozzeria", "carrozziere", "body repair"],
-    "Tire Service": ["tire", "pneumatici", "gommista", "tire change"],
-    "Diagnostics": ["diagnostics", "diagnostica", "obd", "scanner", "diagnosi auto"],
-    "CNC Machining": ["cnc", "tornio", "fresatrice", "lathe", "milling", "machining"],
+    "Automotive Repair": ["automotive", "meccanico", "mechanic", "car repair", "officina", "riparazione auto", "engine repair", "riparazione motore", "transmission", "cambio", "brakes", "freni", "suspension", "sospensioni", "exhaust", "scarico", "cooling system", "raffreddamento", "oil change", "cambio olio", "tune-up", "tagliando", "car inspection", "revisione", "mot"],
+    "Bodywork": ["bodywork", "carrozzeria", "carrozziere", "body repair", "dent repair", "riparazione ammaccature", "panel beating", "spray booth", "cabina verniciatura", "polishing", "lucidatura", "buffing", "rust repair", "riparazione ruggine", "filler", "stucco", "primer", "clear coat", "trasparente"],
+    "Tire Service": ["tire", "pneumatici", "gommista", "tire change", "cambio gomme", "wheel alignment", "convergenza", "balancing", "equilibratura", "tire rotation", "rotazione pneumatici", "puncture repair", "riparazione foratura", "tpms", "sensori pressione", "winter tires", "gomme invernali", "summer tires", "gomme estive"],
+    "Diagnostics": ["diagnostics", "diagnostica", "obd", "obd2", "scanner", "diagnosi auto", "fault code", "codice errore", "check engine", "spia motore", "oscilloscope", "oscilloscopio", "multimeter", "tester", "live data", "dati in tempo reale", "ecu", "centralina", "scan tool"],
+    "CNC Machining": ["cnc", "tornio", "fresatrice", "lathe", "milling", "machining", "g-code", "cam", "computer aided manufacturing", "turning", "tornitura", "drilling", "foratura", "grinding", "rettifica", "threading", "filettatura", "precision machining", "lavorazione di precisione", "tolerance", "tolleranza", "caliper", "calibro"],
 
     # --- EDUCAZIONE & FORMAZIONE ---
-    "Teaching": ["teaching", "insegnamento", "teacher", "insegnante", "docente", "professor", "professore"],
-    "Tutoring": ["tutoring", "ripetizioni", "tutor", "private lessons", "lezioni private"],
-    "Curriculum Design": ["curriculum", "programmazione didattica", "lesson planning", "syllabus"],
-    "E-Learning": ["e-learning", "online teaching", "formazione online", "lms", "moodle", "didattica a distanza"],
-    "Training": ["training", "formazione", "trainer", "formatore", "corporate training", "workshop"],
-    "Special Education": ["special education", "sostegno", "special needs", "bisogni educativi speciali", "bes", "dsa"],
+    "Teaching": ["teaching", "insegnamento", "teacher", "insegnante", "docente", "professor", "professore", "classroom management", "gestione classe", "student assessment", "valutazione studenti", "differentiated instruction", "didattica differenziata", "interactive teaching", "didattica interattiva", "primary school", "scuola primaria", "secondary school", "scuola secondaria", "substitute teacher", "supplente"],
+    "Tutoring": ["tutoring", "ripetizioni", "tutor", "private lessons", "lezioni private", "homework help", "aiuto compiti", "exam preparation", "preparazione esami", "one-on-one", "individuale", "study skills", "metodo di studio", "subject tutoring", "materie specifiche"],
+    "Curriculum Design": ["curriculum", "programmazione didattica", "lesson planning", "syllabus", "learning objectives", "obiettivi didattici", "course design", "progettazione corso", "assessment design", "progettazione verifiche", "learning outcomes", "competenze", "educational standards", "indicazioni nazionali"],
+    "E-Learning": ["e-learning", "online teaching", "formazione online", "lms", "moodle", "didattica a distanza", "dad", "virtual classroom", "classe virtuale", "webinar", "zoom", "teams", "google meet", "asynchronous learning", "blended learning", "scorm", "video lessons", "videolezioni", "screen sharing", "condivisione schermo"],
+    "Training": ["training", "formazione", "trainer", "formatore", "corporate training", "formazione aziendale", "workshop", "facilitator", "facilitatore", "onboarding", "skill development", "team building", "coaching", "mentoring", "training needs analysis", "train the trainer"],
+    "Special Education": ["special education", "sostegno", "special needs", "bisogni educativi speciali", "bes", "dsa", "learning disabilities", "disturbi apprendimento", "autism", "autismo", "adhd", "iep", "pei", "piano educativo individualizzato", "inclusion", "inclusione", "differentiated learning", "assistive technology", "tecnologie assistive"],
 
     # --- LOGISTICA & SUPPLY CHAIN ---
-    "Warehouse": ["warehouse", "magazzino", "magazziniere", "inventory", "inventario", "stoccaggio", "stock"],
-    "Forklift": ["forklift", "carrello elevatore", "muletto", "patentino muletto"],
-    "Shipping": ["shipping", "spedizioni", "logistics", "logistica", "trasporto", "courier"],
-    "Supply Chain": ["supply chain", "catena di fornitura", "procurement", "approvvigionamento", "vendor management"],
-    "Order Management": ["order management", "gestione ordini", "order processing", "evasione ordini"],
-    "Delivery": ["delivery", "consegne", "driver", "autista", "corriere", "last mile"],
+    "Warehouse": ["warehouse", "magazzino", "magazziniere", "inventory", "inventario", "stoccaggio", "stock", "picking", "packing", "imballaggio", "receiving", "ricezione merce", "put-away", "stoccaggio", "wms", "warehouse management system", "barcode", "codice a barre", "rfid", "fifo", "lifo", "bin location", "ubicazione"],
+    "Forklift": ["forklift", "carrello elevatore", "muletto", "patentino muletto", "pallet jack", "transpallet", "reach truck", "retrattile", "order picker", "commissionatore", "counterbalance", "controbilanciato", "forklift license", "patentino", "load capacity", "portata"],
+    "Shipping": ["shipping", "spedizioni", "logistics", "logistica", "trasporto", "courier", "corriere", "freight", "merci", "incoterms", "customs", "dogana", "bill of lading", "polizza di carico", "tracking", "tracciamento", "carrier", "vettore", "dhl", "ups", "fedex", "tnt", "gls", "brt"],
+    "Supply Chain": ["supply chain", "catena di fornitura", "procurement", "approvvigionamento", "vendor management", "gestione fornitori", "sourcing", "purchasing", "acquisti", "rfq", "request for quotation", "supplier evaluation", "valutazione fornitori", "lead time", "just in time", "jit", "mrp", "erp", "sap"],
+    "Order Management": ["order management", "gestione ordini", "order processing", "evasione ordini", "order fulfillment", "back order", "ordine arretrato", "order tracking", "customer order", "ordine cliente", "sales order", "purchase order", "ordine acquisto", "edi", "order status"],
+    "Delivery": ["delivery", "consegne", "driver", "autista", "corriere", "last mile", "route planning", "pianificazione percorsi", "proof of delivery", "prova di consegna", "cod", "contrassegno", "express delivery", "consegna rapida", "scheduled delivery", "consegna programmata", "doorstep delivery", "home delivery"],
+
 
     # --- MODA & BEAUTY ---
     "Fashion Design": ["fashion design", "moda", "fashion designer", "stilista", "pattern making", "modellistica"],
@@ -459,13 +461,14 @@ HARD_SKILLS = {
     "Pest Control": ["pest control", "disinfestazione", "fumigation", "derattizzazione"],
 
     # --- MEDIA & COMUNICAZIONE ---
-    "Journalism": ["journalism", "giornalismo", "journalist", "giornalista", "reporter", "cronista"],
-    "Video Production": ["video production", "video editing", "montaggio video", "filmmaker", "premiere", "final cut", "davinci"],
-    "Photography": ["photography", "fotografia", "photographer", "fotografo", "lightroom", "camera"],
-    "Audio Production": ["audio production", "audio editing", "sound design", "podcast", "fonico", "pro tools", "audition"],
-    "Broadcasting": ["broadcasting", "radio", "tv", "television", "televisione", "conduttore", "presenter"],
-    "Press Relations": ["press relations", "ufficio stampa", "pr", "public relations", "media relations"],
-    "Social Media Management": ["social media manager", "community manager", "content creator", "influencer", "content planning"],
+    "Journalism": ["journalism", "giornalismo", "journalist", "giornalista", "reporter", "cronista", "investigative journalism", "giornalismo investigativo", "news writing", "scrittura notizie", "press", "stampa", "editorial", "editoriale", "newsroom", "redazione", "breaking news", "cronaca", "interview", "intervista", "source verification", "verifica fonti", "byline", "article", "articolo"],
+    "Video Production": ["video production", "video editing", "montaggio video", "filmmaker", "premiere", "premiere pro", "final cut", "final cut pro", "davinci", "davinci resolve", "after effects", "motion graphics", "animazione", "color grading", "color correction", "colorist", "cinematography", "cinematografia", "videographer", "videomaker", "storyboard", "shot list", "b-roll", "transitions", "transizioni", "export", "render", "codec", "4k", "hd"],
+    "Photography": ["photography", "fotografia", "photographer", "fotografo", "lightroom", "camera", "dslr", "mirrorless", "canon", "nikon", "sony", "lens", "obiettivo", "exposure", "esposizione", "aperture", "diaframma", "shutter speed", "iso", "raw", "post-processing", "post-produzione", "portrait", "ritratto", "landscape", "paesaggio", "product photography", "still life", "flash", "lighting", "illuminazione", "studio", "photoshoot", "servizio fotografico"],
+    "Audio Production": ["audio production", "audio editing", "sound design", "sound designer", "podcast", "podcasting", "fonico", "pro tools", "audition", "adobe audition", "logic pro", "ableton", "cubase", "mixing", "missaggio", "mastering", "recording", "registrazione", "voice over", "doppiaggio", "sound effects", "effetti sonori", "audio engineer", "ingegnere del suono", "microphone", "microfono", "eq", "equalizer", "compressor", "reverb"],
+    "Broadcasting": ["broadcasting", "radio", "tv", "television", "televisione", "conduttore", "presenter", "anchor", "anchorman", "live broadcast", "diretta", "studio tv", "telegiornale", "tg", "show", "programma", "talk show", "news anchor", "weatherman", "meteo", "sports anchor", "telecamera", "teleprompter", "gobbo", "cue", "script", "scaletta", "ratings", "ascolti"],
+    "Press Relations": ["press relations", "ufficio stampa", "pr", "public relations", "media relations", "comunicato stampa", "press release", "media kit", "press conference", "conferenza stampa", "spokesperson", "portavoce", "media outreach", "crisis communication", "comunicazione di crisi", "reputation management", "media training", "press clipping", "rassegna stampa", "embargo", "off the record", "on the record"],
+    "Social Media Management": ["social media manager", "community manager", "content creator", "influencer", "content planning", "content calendar", "calendario editoriale", "engagement", "reach", "impressions", "analytics", "insights", "hashtag", "viral", "virale", "follower", "following", "stories", "reels", "tiktok", "instagram", "linkedin", "facebook", "twitter", "x", "scheduling", "programmazione", "hootsuite", "buffer", "later", "sprout social", "user generated content", "ugc", "brand awareness"],
+
 
     # --- SICUREZZA ---
     "Security Guard": ["security", "sicurezza", "security guard", "vigilante", "guardia giurata", "gpg"],
@@ -590,7 +593,65 @@ HARD_SKILLS = {
     "Archaeology": ["archaeology", "archeologia", "archaeologist", "archeologo", "excavation", "scavo"],
     "Conservation": ["conservation", "restauro", "restoration", "conservazione beni culturali"],
     "Library Science": ["library", "biblioteca", "librarian", "bibliotecario", "cataloging"],
+
+    # --- INGEGNERIA ---
+    "Civil Engineering": ["civil engineering", "ingegneria civile", "structural", "strutturale", "geotechnical", "geotecnica", "surveying", "topografia", "road design", "progettazione stradale", "bridge", "ponte", "dam", "diga"],
+    "Mechanical Engineering": ["mechanical engineering", "ingegneria meccanica", "thermodynamics", "termodinamica", "fluid dynamics", "fluidodinamica", "mechanics", "meccanica", "fea", "finite element analysis"],
+    "Chemical Engineering": ["chemical engineering", "ingegneria chimica", "process design", "reactor", "reattore", "distillation", "distillazione", "petrochemical", "petrolchimico"],
+    "Electronic Engineering": ["electronic engineering", "ingegneria elettronica", "pcb", "printed circuit board", "microcontroller", "microcontrollore", "embedded systems", "sistemi embedded", "arduino", "raspberry pi", "fpga"],
+    "Biomedical Engineering": ["biomedical engineering", "ingegneria biomedica", "prosthetics", "protesi", "medical imaging", "biomaterials", "biomateriali"],
+    "Industrial Engineering": ["industrial engineering", "ingegneria gestionale", "operations research", "ricerca operativa", "lean", "six sigma", "kaizen", "production planning"],
+    "Environmental Engineering": ["environmental engineering", "ingegneria ambientale", "water treatment", "trattamento acque", "wastewater", "acque reflue", "air quality", "qualità aria", "eia", "via"],
+
+    # --- BIOTECH & FARMACEUTICO ---
+    "Biotechnology": ["biotechnology", "biotecnologia", "biotech", "genetic engineering", "ingegneria genetica", "cloning", "clonazione", "bioreactor", "bioreattore"],
+    "Molecular Biology": ["molecular biology", "biologia molecolare", "dna", "rna", "pcr", "gel electrophoresis", "elettroforesi", "sequencing", "sequenziamento"],
+    "Microbiology": ["microbiology", "microbiologia", "bacteria", "batteri", "virus", "culture", "coltura", "sterilization", "sterilizzazione", "aseptic technique"],
+    "Clinical Trials": ["clinical trials", "trial clinici", "gcp", "good clinical practice", "protocol", "protocollo", "cro", "phase i", "phase ii", "phase iii"],
+    "Pharmaceutical Manufacturing": ["pharmaceutical manufacturing", "produzione farmaceutica", "gmp", "good manufacturing practice", "validation", "validazione", "clean room", "camera bianca", "batch record"],
+    "Regulatory Affairs": ["regulatory affairs", "affari regolatori", "fda", "ema", "aifa", "drug approval", "approvazione farmaco", "dossier", "cth"],
+
+    # --- TELECOMUNICAZIONI ---
+    "Telecommunications": ["telecommunications", "telecomunicazioni", "telco", "telecom", "network", "rete", "fiber optic", "fibra ottica", "5g", "4g", "lte"],
+    "Network Engineering": ["network engineering", "ingegneria di rete", "cisco", "juniper", "routing", "switching", "firewall", "vpn", "lan", "wan", "tcp/ip"],
+    "Radio Frequency": ["radio frequency", "rf", "radiofrequenza", "antenna", "microwave", "microonde", "signal processing", "elaborazione segnali"],
+    "Satellite": ["satellite", "satellite communication", "comunicazione satellitare", "gps", "gnss", "earth station", "stazione terrestre"],
+
+    # --- ARCHITETTURA ---
+    "Architecture": ["architecture", "architettura", "architect", "architetto", "building design", "progettazione edilizia", "facade", "facciata", "interior design", "arredamento"],
+    "Landscape Architecture": ["landscape architecture", "architettura del paesaggio", "garden design", "progettazione giardini", "green spaces", "spazi verdi"],
+    "Sustainable Design": ["sustainable design", "progettazione sostenibile", "leed", "green building", "bioedilizia", "passive house", "casa passiva", "nzeb"],
+    "3D Visualization": ["3d visualization", "rendering architettonico", "archviz", "lumion", "vray", "enscape", "twinmotion"],
+
+    # --- ODONTOIATRIA ---
+    "Dentistry": ["dentistry", "odontoiatria", "dentist", "dentista", "dental hygiene", "igiene dentale", "oral surgery", "chirurgia orale"],
+    "Dental Assistance": ["dental assistant", "assistente dentale", "chairside", "sterilization", "dental instruments", "strumentario odontoiatrico", "dental x-ray"],
+    "Orthodontics": ["orthodontics", "ortodonzia", "braces", "apparecchio", "invisalign", "retainer", "bite"],
+    "Prosthodontics": ["prosthodontics", "protesi dentaria", "crown", "corona", "bridge", "ponte dentale", "denture", "dentiera", "implant", "impianto"],
+
+    # --- VETERINARIA AVANZATA ---
+    "Veterinary Surgery": ["veterinary surgery", "chirurgia veterinaria", "spay", "sterilizzazione", "neuter", "castrazione", "orthopedic", "ortopedica"],
+    "Animal Diagnostics": ["animal diagnostics", "diagnostica veterinaria", "blood panel", "esami sangue", "ultrasound", "ecografia", "x-ray", "radiografia"],
+    "Exotic Animals": ["exotic animals", "animali esotici", "reptiles", "rettili", "birds", "uccelli", "small mammals", "piccoli mammiferi"],
+    "Large Animals": ["large animals", "grandi animali", "equine", "equino", "bovine", "bovino", "livestock", "bestiame"],
+
+    # --- CONSULENZA & MANAGEMENT ---
+    "Management Consulting": ["management consulting", "consulenza gestionale", "strategy", "strategia", "business transformation", "organizational change"],
+    "IT Consulting": ["it consulting", "consulenza it", "digital transformation", "trasformazione digitale", "system integration", "integrazione sistemi"],
+    "HR Consulting": ["hr consulting", "consulenza hr", "talent management", "organizational design", "compensation", "retribuzione"],
+    "Tax Consulting": ["tax consulting", "consulenza fiscale", "tax planning", "pianificazione fiscale", "transfer pricing", "tax audit"],
+
+    # --- GIOIELLERIA & OROLOGERIA ---
+    "Jewelry Making": ["jewelry", "gioielleria", "jeweler", "gioielliere", "goldsmith", "orefice", "gemstone", "pietra preziosa", "setting", "incastonatura"],
+    "Watch Repair": ["watch repair", "riparazione orologi", "watchmaker", "orologiaio", "horology", "orologeria", "movement", "movimento", "caliber", "calibro"],
+    "Gemology": ["gemology", "gemmologia", "diamond", "diamante", "certification", "certificazione", "gia", "grading"],
+
+    # --- NAUTICA SPORTIVA ---
+    "Sailing": ["sailing", "vela", "sailor", "velista", "regatta", "regata", "yacht racing", "cruising", "crociera"],
+    "Boat Maintenance": ["boat maintenance", "manutenzione barca", "hull", "scafo", "rigging", "attrezzatura", "antifouling"],
+    "Marine Navigation": ["marine navigation", "navigazione marittima", "chart", "carta nautica", "gps", "radar", "vhf"],
 }
+
 
 # SOFT SKILLS (Expanded for Versatility)
 SOFT_SKILLS = {
@@ -1105,6 +1166,123 @@ JOB_ARCHETYPES = {
     },
     "Librarian": {
         "Library Science", "Organization", "Customer Service", "Attention to Detail"
+    },
+    
+    # --- INGEGNERIA ---
+    "Civil Engineer": {
+        "Civil Engineering", "CAD Design", "Project Management", "Safety Compliance"
+    },
+    "Mechanical Engineer": {
+        "Mechanical Engineering", "CAD Design", "Problem Solving"
+    },
+    "Chemical Engineer": {
+        "Chemical Engineering", "Process Engineering", "Safety Compliance"
+    },
+    "Electronics Engineer": {
+        "Electronic Engineering", "Problem Solving", "CAD Design"
+    },
+    "Biomedical Engineer": {
+        "Biomedical Engineering", "Medical Devices", "Problem Solving"
+    },
+    "Environmental Engineer": {
+        "Environmental Engineering", "Environmental Science", "Communication"
+    },
+    
+    # --- BIOTECH & FARMACEUTICO ---
+    "Biotechnologist": {
+        "Biotechnology", "Molecular Biology", "Laboratory Research"
+    },
+    "Microbiologist": {
+        "Microbiology", "Laboratory", "Attention to Detail"
+    },
+    "Clinical Research Associate": {
+        "Clinical Trials", "Communication", "Organization", "English"
+    },
+    "Regulatory Affairs Specialist": {
+        "Regulatory Affairs", "Communication", "Attention to Detail", "English"
+    },
+    "Pharmaceutical Technician": {
+        "Pharmaceutical Manufacturing", "Quality Control", "Attention to Detail"
+    },
+    
+    # --- TELECOMUNICAZIONI ---
+    "Telecom Engineer": {
+        "Telecommunications", "Network Engineering", "Problem Solving"
+    },
+    "Network Administrator": {
+        "Network Engineering", "Cybersecurity", "Problem Solving"
+    },
+    "RF Engineer": {
+        "Radio Frequency", "Electronic Engineering", "Problem Solving"
+    },
+    
+    # --- ARCHITETTURA ---
+    "Architect": {
+        "Architecture", "CAD Design", "3D Visualization", "Creativity"
+    },
+    "Interior Designer": {
+        "Architecture", "Creativity", "Customer Service", "3D Visualization"
+    },
+    "Landscape Architect": {
+        "Landscape Architecture", "Horticulture", "CAD Design", "Creativity"
+    },
+    "BIM Specialist": {
+        "CAD Design", "3D Visualization", "Architecture", "Attention to Detail"
+    },
+    
+    # --- ODONTOIATRIA ---
+    "Dentist": {
+        "Dentistry", "Communication", "Customer Service", "Attention to Detail"
+    },
+    "Dental Hygienist": {
+        "Dental Assistance", "Customer Service", "Communication"
+    },
+    "Orthodontist": {
+        "Orthodontics", "Dentistry", "Communication", "Attention to Detail"
+    },
+    
+    # --- VETERINARIA ---
+    "Veterinary Surgeon": {
+        "Veterinary Surgery", "Veterinary", "Animal Diagnostics", "Communication"
+    },
+    "Exotic Animal Vet": {
+        "Exotic Animals", "Veterinary", "Communication"
+    },
+    "Equine Veterinarian": {
+        "Large Animals", "Veterinary", "Communication"
+    },
+    
+    # --- CONSULENZA ---
+    "Management Consultant": {
+        "Management Consulting", "Communication", "Problem Solving", "Statistics"
+    },
+    "IT Consultant": {
+        "IT Consulting", "Problem Solving", "Communication", "Project Management"
+    },
+    "Tax Consultant": {
+        "Tax Consulting", "Accounting", "Communication", "Attention to Detail"
+    },
+    
+    # --- GIOIELLERIA ---
+    "Jeweler": {
+        "Jewelry Making", "Creativity", "Attention to Detail", "Customer Service"
+    },
+    "Watchmaker": {
+        "Watch Repair", "Attention to Detail", "Problem Solving"
+    },
+    "Gemologist": {
+        "Gemology", "Attention to Detail", "Customer Service"
+    },
+    
+    # --- NAUTICA ---
+    "Sailing Instructor": {
+        "Sailing", "Teaching", "Communication", "First Aid"
+    },
+    "Boat Captain": {
+        "Marine Navigation", "Navigation", "Leadership", "Safety Compliance"
+    },
+    "Marine Mechanic": {
+        "Boat Maintenance", "Marine Engineering", "Problem Solving"
     }
 }
 
