@@ -275,7 +275,8 @@ HARD_SKILLS = {
     "Machine Learning": ["machine learning", "ml", "supervised learning", "unsupervised learning", "scikit-learn", "sklearn", "random forest", "k-means", "kmeans", "regression", "classification", "clustering", "modelli predittivi", "apprendimento automatico", "gradient boosting", "xgboost", "lightgbm", "decision tree", "ensemble", "feature engineering", "model training", "hyperparameter tuning"],
     "Deep Learning": ["deep learning", "neural network", "neural networks", "cnn", "rnn", "lstm", "transformer", "rete neurale", "reti neurali", "tensorflow", "pytorch", "keras", "convolutional", "recurrent"],
     "AI": ["artificial intelligence", "ai", "intelligenza artificiale", "ai-powered", "ai powered", "intelligent", "cognitive", "chatbot", "nlp", "natural language processing", "computer vision", "generative ai", "gen ai"],
-    "Data Science": ["data science", "data scientist", "data analysis", "analytics", "big data", "scienza dei dati", "analisi dati", "data-driven", "data driven", "data insights", "exploratory data analysis", "eda"],
+    "Data Science": ["data science", "data scientist", "data analysis", "big data", "scienza dei dati", "data-driven", "data driven", "data insights", "exploratory data analysis", "eda", "data mining"],
+
     "Modeling": ["modeling", "modelling", "statistical modeling", "statistical modelling", "predictive modeling", "predictive modelling", "model", "models", "modello", "modelli", "modellazione", "model deployment", "model validation"],
     "Statistics": ["statistics", "statistical", "statistica", "statistiche", "statistical analysis", "analisi statistica", "hypothesis testing", "regression analysis", "stat", "a/b testing", "statistical significance", "confidence interval", "probability"],
     "Predictive Analytics": ["predictive analytics", "predictive modelling", "predictive modeling", "forecasting", "previsione", "analitica predittiva", "time series", "demand forecasting", "churn prediction"],
@@ -344,7 +345,8 @@ HARD_SKILLS = {
     # --- BUSINESS & MANAGEMENT ---
     "Project Management": ["project management", "pmp", "prince2", "scrum master", "project manager", "project coordination", "gestione progetti", "capo progetto", "coordinamento", "program manager", "agile", "scrum"],
     "Customer Service": ["customer service", "client support", "customer success", "assistenza clienti", "servizio clienti", "supporto clienti", "help desk", "customer experience"],
-    "Sales": ["sales", "business development", "cold calling", "negotiation", "vendite", "commerciale", "negoziazione", "account manager"],
+    "Sales": ["sales", "business development", "cold calling", "vendite", "commerciale", "sales manager", "sales representative", "venditore", "account executive"],
+
     "Accounting": ["accounting", "bookkeeping", "quickbooks", "xero", "finance", "contabilità", "amministrazione", "fatturazione", "bilancio"],
     "HR": ["human resources", "recruiting", "talent acquisition", "employee relations", "recruiter", "hr manager", "risorse umane", "selezione del personale", "gestione personale"],
 
