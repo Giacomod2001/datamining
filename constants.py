@@ -428,29 +428,30 @@ HARD_SKILLS = {
     "Order Management": ["order management", "gestione ordini", "order processing", "evasione ordini", "order fulfillment", "back order", "ordine arretrato", "order tracking", "customer order", "ordine cliente", "sales order", "purchase order", "ordine acquisto", "edi", "order status"],
     "Delivery": ["delivery", "consegne", "driver", "autista", "corriere", "last mile", "route planning", "pianificazione percorsi", "proof of delivery", "prova di consegna", "cod", "contrassegno", "express delivery", "consegna rapida", "scheduled delivery", "consegna programmata", "doorstep delivery", "home delivery"],
 
-
     # --- MODA & BEAUTY ---
-    "Fashion Design": ["fashion design", "moda", "fashion designer", "stilista", "pattern making", "modellistica"],
-    "Tailoring": ["tailoring", "sartoria", "sarto", "sarta", "alterations", "cucito", "sewing"],
-    "Hairdressing": ["hairdressing", "parrucchiere", "hairdresser", "hair styling", "acconciature", "taglio capelli"],
-    "Makeup": ["makeup", "trucco", "makeup artist", "truccatrice", "cosmetics", "beauty"],
-    "Aesthetics": ["aesthetics", "estetica", "estetista", "beauty treatments", "trattamenti estetici", "manicure", "pedicure"],
-    "Visual Merchandising": ["visual merchandising", "vetrinista", "window display", "allestimento"],
+    "Fashion Design": ["fashion design", "moda", "fashion designer", "stilista", "pattern making", "modellistica", "fashion sketch", "bozzetto", "fashion illustration", "collection", "collezione", "runway", "passerella", "fashion week", "trend forecasting", "tendenze", "textile design", "design tessile", "cad fashion", "clothing design", "prêt-à-porter", "haute couture", "capsule collection", "sustainable fashion", "moda sostenibile"],
+    "Tailoring": ["tailoring", "sartoria", "sarto", "sarta", "alterations", "modifiche", "cucito", "sewing", "stitching", "cucitura", "hemming", "orlo", "fitting", "prova", "bespoke", "su misura", "made to measure", "pattern cutting", "draping", "modellatura", "lining", "fodera", "button", "bottone", "zipper", "cerniera", "seam", "cucitura"],
+    "Hairdressing": ["hairdressing", "parrucchiere", "hairdresser", "hair styling", "acconciature", "taglio capelli", "haircut", "blow dry", "piega", "hair color", "colore capelli", "highlights", "meches", "colpi di sole", "balayage", "ombre", "keratin", "cheratina", "perm", "permanente", "extensions", "extension", "braids", "trecce", "updo", "acconciatura", "trimming", "spuntatina", "layered cut", "scalatura"],
+    "Makeup": ["makeup", "trucco", "makeup artist", "mua", "truccatrice", "cosmetics", "cosmetici", "beauty", "foundation", "fondotinta", "concealer", "correttore", "eyeshadow", "ombretto", "mascara", "eyeliner", "lipstick", "rossetto", "blush", "fard", "contouring", "highlighting", "bronzer", "setting powder", "cipria", "primer", "bridal makeup", "trucco sposa", "special effects", "effetti speciali", "body painting"],
+    "Aesthetics": ["aesthetics", "estetica", "estetista", "beauty treatments", "trattamenti estetici", "manicure", "pedicure", "nail art", "gel nails", "unghie gel", "acrylic nails", "smalto", "waxing", "ceretta", "depilazione", "facial", "trattamento viso", "massage", "massaggio", "body treatment", "trattamento corpo", "skin care", "cura della pelle", "anti-aging", "exfoliation", "peeling", "microdermabrasion", "laser", "ipl"],
+    "Visual Merchandising": ["visual merchandising", "vetrinista", "window display", "vetrina", "allestimento", "display", "esposizione", "store layout", "layout negozio", "planogram", "signage", "segnaletica", "lighting design", "illuminazione", "mannequin", "manichino", "props", "accessori", "seasonal display", "pop display", "point of purchase", "brand presentation"],
 
     # --- RETAIL & VENDITE ---
-    "Retail Sales": ["retail", "vendita", "shop assistant", "commesso", "sales floor", "punto vendita"],
-    "Inventory Management": ["inventory", "gestione magazzino", "stock control", "scorte", "reorder"],
-    "POS Systems": ["pos", "registratore di cassa", "cash register", "payment terminal", "terminale pagamento"],
-    "Product Knowledge": ["product knowledge", "conoscenza prodotti", "product training", "formazione prodotto"],
+    "Retail Sales": ["retail", "vendita", "shop assistant", "commesso", "commessa", "sales floor", "punto vendita", "store", "negozio", "boutique", "shopping", "customer interaction", "interazione cliente", "upselling", "cross-selling", "vendita consigliata", "sales target", "obiettivo vendite", "conversion rate", "tasso conversione", "footfall", "afflusso", "basket size", "scontrino medio", "mystery shopper", "flagship store"],
+    "Inventory Management": ["inventory", "gestione magazzino", "stock control", "controllo scorte", "scorte", "reorder", "riordino", "stock count", "inventario", "shrinkage", "calo", "deadstock", "invenduto", "sku", "abc analysis", "safety stock", "scorta sicurezza", "turnover", "rotazione", "backroom", "retrobottega"],
+    "POS Systems": ["pos", "point of sale", "registratore di cassa", "cash register", "payment terminal", "terminale pagamento", "credit card", "carta credito", "debit card", "bancomat", "contactless", "nfc", "receipt", "scontrino", "void", "storno", "refund", "rimborso", "end of day", "chiusura cassa", "float", "fondo cassa"],
+    "Product Knowledge": ["product knowledge", "conoscenza prodotti", "product training", "formazione prodotto", "features", "caratteristiche", "benefits", "benefici", "specifications", "specifiche tecniche", "materials", "materiali", "care instructions", "istruzioni cura", "warranty", "garanzia", "comparison", "confronto"],
+
 
     # --- FINANZA & CONTABILITÀ ---
     "Financial Analysis": ["financial analysis", "analisi finanziaria", "financial modeling", "valutazione"],
-    "Budgeting": ["budgeting", "budget", "pianificazione finanziaria", "cost control", "controllo costi"],
-    "Tax Preparation": ["tax", "tasse", "fiscale", "dichiarazione redditi", "730", "unico", "iva", "vat"],
-    "Payroll": ["payroll", "buste paga", "cedolini", "stipendi", "contributi"],
-    "Auditing": ["auditing", "revisione", "audit", "internal audit", "revisore"],
-    "Banking": ["banking", "banca", "bank operations", "operazioni bancarie", "credito", "credit"],
-    "Insurance": ["insurance", "assicurazione", "polizza", "policy", "claims", "sinistri"],
+    "Budgeting": ["budgeting", "budget", "pianificazione finanziaria", "cost control", "controllo costi", "forecast", "previsione", "expense tracking", "tracciamento spese", "variance analysis", "analisi scostamenti", "capex", "opex", "capital expenditure", "operating budget", "budget operativo", "zero-based budgeting", "rolling forecast", "spending limits"],
+    "Tax Preparation": ["tax", "tasse", "fiscale", "dichiarazione redditi", "730", "unico", "iva", "vat", "tax return", "tax filing", "tax deduction", "deduzione fiscale", "tax credit", "credito imposta", "withholding", "ritenuta", "f24", "imu", "tasi", "irpef", "ires", "irap", "capital gains", "plusvalenze", "tax advisor", "commercialista", "caf"],
+    "Payroll": ["payroll", "buste paga", "cedolini", "stipendi", "contributi", "salary calculation", "calcolo stipendio", "overtime", "straordinari", "deductions", "trattenute", "inps", "inail", "tfr", "trattamento fine rapporto", "bonus", "tredicesima", "quattordicesima", "net pay", "netto", "gross pay", "lordo", "payslip", "time attendance", "presenze"],
+    "Auditing": ["auditing", "revisione", "audit", "internal audit", "revisore", "external audit", "revisione esterna", "compliance audit", "financial audit", "revisione contabile", "audit trail", "tracciabilità", "sox", "sarbanes-oxley", "audit report", "relazione revisione", "audit findings", "rilievi", "audit planning", "sampling", "campionamento", "audit evidence"],
+    "Banking": ["banking", "banca", "bank operations", "operazioni bancarie", "credito", "credit", "bank teller", "cassiere", "wire transfer", "bonifico", "sepa", "swift", "current account", "conto corrente", "savings account", "conto risparmio", "overdraft", "scoperto", "credit card", "debit card", "atm", "balance", "saldo", "statement", "estratto conto", "kyc", "aml", "antiriciclaggio"],
+    "Insurance": ["insurance", "assicurazione", "polizza", "policy", "claims", "sinistri", "premium", "premio", "coverage", "copertura", "deductible", "franchigia", "underwriting", "sottoscrizione", "broker", "agent", "agente assicurativo", "life insurance", "vita", "health insurance", "salute", "auto insurance", "rc auto", "property insurance", "home insurance", "liability", "responsabilità civile", "reinsurance"],
+
 
     # --- AGRICOLTURA & AMBIENTE ---
     "Agriculture": ["agriculture", "agricoltura", "farming", "coltivazione", "agronomia", "agronomy"],
@@ -479,19 +480,20 @@ HARD_SKILLS = {
     "Loss Prevention": ["loss prevention", "antitaccheggio", "theft prevention", "asset protection"],
 
     # --- SPORT & FITNESS ---
-    "Personal Training": ["personal trainer", "personal training", "fitness trainer", "allenatore", "preparatore atletico"],
-    "Group Fitness": ["group fitness", "fitness class", "aerobics", "zumba", "spinning", "pilates", "yoga instructor"],
-    "Sports Coaching": ["coaching", "coach sportivo", "allenatore sportivo", "sport coach", "team coaching"],
-    "Nutrition": ["nutrition", "nutrizione", "dietitian", "dietologo", "nutrizionista", "diet planning"],
-    "Physical Education": ["physical education", "educazione fisica", "pe teacher", "motoria"],
-    "Sports Management": ["sports management", "gestione sportiva", "club management", "sport marketing"],
+    "Personal Training": ["personal trainer", "personal training", "fitness trainer", "allenatore", "preparatore atletico", "pt", "one on one training", "allenamento individuale", "workout plan", "scheda allenamento", "fitness assessment", "valutazione fitness", "strength training", "allenamento forza", "cardio", "hiit", "functional training", "allenamento funzionale", "weight loss", "dimagrimento", "muscle building", "ipertrofia", "corrective exercise", "cpt", "nasm", "ace certified"],
+    "Group Fitness": ["group fitness", "fitness class", "aerobics", "aerobica", "zumba", "spinning", "indoor cycling", "pilates", "yoga instructor", "yoga", "crossfit", "bootcamp", "step", "body pump", "total body", "stretching", "mobility", "circuit training", "circuito", "dance fitness", "aqua fitness", "acquagym", "les mills", "class scheduling", "music timing"],
+    "Sports Coaching": ["coaching", "coach sportivo", "allenatore sportivo", "sport coach", "team coaching", "tactics", "tattica", "game plan", "strategia", "player development", "sviluppo atleti", "match analysis", "analisi partita", "training session", "allenamento", "warm up", "riscaldamento", "drills", "esercitazioni", "scouting", "talent identification", "youth development", "settore giovanile"],
+    "Nutrition": ["nutrition", "nutrizione", "dietitian", "dietologo", "nutrizionista", "diet planning", "piano alimentare", "meal plan", "macros", "macronutrienti", "calories", "calorie", "protein", "proteine", "carbs", "carboidrati", "fats", "grassi", "supplements", "integratori", "weight management", "gestione peso", "sports nutrition", "nutrizione sportiva", "clinical nutrition", "food diary", "diario alimentare"],
+    "Physical Education": ["physical education", "educazione fisica", "pe teacher", "insegnante motoria", "motoria", "gym class", "ginnastica", "motor skills", "abilità motorie", "coordination", "coordinazione", "agility", "agilità", "balance", "equilibrio", "flexibility", "flessibilità", "endurance", "resistenza", "physical literacy", "games", "giochi sportivi"],
+    "Sports Management": ["sports management", "gestione sportiva", "club management", "gestione club", "sport marketing", "sponsorship", "sponsorizzazione", "athlete management", "gestione atleti", "event organization", "organizzazione eventi sportivi", "ticketing", "biglietteria", "merchandise", "merchandising", "fan engagement", "broadcasting rights", "diritti tv", "sports economics"],
 
     # --- IMMOBILIARE ---
-    "Real Estate": ["real estate", "immobiliare", "property", "proprietà", "compravendita"],
-    "Property Valuation": ["valuation", "valutazione immobiliare", "appraisal", "perizia", "stima"],
-    "Leasing": ["leasing", "affitto", "rental", "locazione", "property management"],
-    "Mortgage": ["mortgage", "mutuo", "loan", "finanziamento immobiliare"],
-    "Real Estate Marketing": ["real estate marketing", "annunci immobiliari", "property listing", "home staging"],
+    "Real Estate": ["real estate", "immobiliare", "property", "proprietà", "compravendita", "real estate agent", "agente immobiliare", "broker", "intermediario", "listing", "annuncio", "open house", "visita immobile", "closing", "rogito", "escrow", "deposito", "commission", "provvigione", "mls", "property tour", "sopralluogo", "market analysis", "analisi mercato", "comparable sales", "comparabili"],
+    "Property Valuation": ["valuation", "valutazione immobiliare", "appraisal", "perizia", "stima", "appraiser", "perito", "market value", "valore di mercato", "assessment", "accertamento catastale", "comparable analysis", "square footage", "metratura", "land value", "valore terreno", "depreciation", "deprezzamento", "inspection", "ispezione"],
+    "Leasing": ["leasing", "affitto", "rental", "locazione", "property management", "gestione immobiliare", "tenant", "inquilino", "landlord", "proprietario", "lease agreement", "contratto locazione", "rent collection", "riscossione affitti", "eviction", "sfratto", "maintenance", "manutenzione", "vacancy", "sfitto", "renewal", "rinnovo", "deposit", "cauzione"],
+    "Mortgage": ["mortgage", "mutuo", "loan", "finanziamento immobiliare", "interest rate", "tasso interesse", "amortization", "ammortamento", "down payment", "anticipo", "principal", "capitale", "refinance", "rifinanziamento", "pre-approval", "predelibera", "fixed rate", "tasso fisso", "variable rate", "tasso variabile", "ltv", "loan to value"],
+    "Real Estate Marketing": ["real estate marketing", "annunci immobiliari", "property listing", "home staging", "photography", "fotografia immobiliare", "virtual tour", "tour virtuale", "drone footage", "floor plan", "planimetria", "description writing", "descrizione", "portal", "portale immobiliare", "idealista", "immobiliare.it", "subito", "facebook marketplace"],
+
 
     # --- ARTE & SPETTACOLO ---
     "Acting": ["acting", "recitazione", "actor", "attore", "attrice", "theatre", "teatro"],
