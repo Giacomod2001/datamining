@@ -275,9 +275,10 @@ HARD_SKILLS = {
     "Machine Learning": ["machine learning", "ml", "supervised learning", "unsupervised learning", "scikit-learn", "sklearn", "random forest", "k-means", "kmeans", "regression", "classification", "clustering", "modelli predittivi", "apprendimento automatico", "gradient boosting", "xgboost", "lightgbm", "decision tree", "ensemble", "feature engineering", "model training", "hyperparameter tuning"],
     "Deep Learning": ["deep learning", "neural network", "neural networks", "cnn", "rnn", "lstm", "transformer", "rete neurale", "reti neurali", "tensorflow", "pytorch", "keras", "convolutional", "recurrent"],
     "AI": ["artificial intelligence", "ai", "intelligenza artificiale", "ai-powered", "ai powered", "intelligent", "cognitive", "chatbot", "nlp", "natural language processing", "computer vision", "generative ai", "gen ai"],
-    "Data Science": ["data science", "data scientist", "data analysis", "big data", "scienza dei dati", "data-driven", "data driven", "data insights", "exploratory data analysis", "eda", "data mining"],
+    "Data Science": ["data science", "data scientist", "data analysis", "big data", "scienza dei dati", "data insights", "exploratory data analysis", "eda", "data mining", "data pipeline"],
 
-    "Modeling": ["modeling", "modelling", "statistical modeling", "statistical modelling", "predictive modeling", "predictive modelling", "model", "models", "modello", "modelli", "modellazione", "model deployment", "model validation"],
+
+    "Modeling": ["modeling", "modelling", "statistical modeling", "statistical modelling", "predictive modeling", "predictive modelling", "ml model", "data model", "modello predittivo", "modellazione dati", "model deployment", "model validation", "model training"],
     "Statistics": ["statistics", "statistical", "statistica", "statistiche", "statistical analysis", "analisi statistica", "hypothesis testing", "regression analysis", "stat", "a/b testing", "statistical significance", "confidence interval", "probability"],
     "Predictive Analytics": ["predictive analytics", "predictive modelling", "predictive modeling", "forecasting", "previsione", "analitica predittiva", "time series", "demand forecasting", "churn prediction"],
     
@@ -296,13 +297,13 @@ HARD_SKILLS = {
     "Looker Studio": ["looker studio", "google looker studio", "data studio", "google data studio", "datastudio"],
     "Data Visualization": ["data visualization", "data viz", "visualizzazione dati", "charts", "graphs", "visualization", "visualizations"],
     "Dashboards": ["dashboard", "dashboards", "interactive dashboard", "interactive dashboards", "cruscotto", "pannello di controllo", "report dashboard"],
-    "Reporting": ["reporting", "report", "reports", "reportistica", "business reporting", "data reporting", "analisi report"],
-    "Business Intelligence": ["business intelligence", "bi", "intelligence"],
+    "Reporting": ["reporting", "reportistica", "business reporting", "data reporting", "report building", "report creation", "analisi report", "report automation"],
+    "Business Intelligence": ["business intelligence", "bi tools", "bi software", "bi platform"],
     
     # --- ANALYTICS & TRACKING ---
-    "Google Analytics": ["google analytics", "analytics", "ga"],
+    "Google Analytics": ["google analytics", "ga4", "google analytics 4", "ga 4"],
     "GA4": ["ga4", "google analytics 4", "analytics 4"],
-    "Web Analytics": ["web analytics", "analytics", "digital analytics", "analisi web", "website analytics", "site analytics"],
+    "Web Analytics": ["web analytics", "digital analytics", "website analytics", "site analytics", "web tracking"],
     "Google Tag Manager": ["google tag manager", "gtm", "tag manager", "tagging", "tracking implementation"],
     "A/B Testing": ["a/b testing", "ab testing", "split testing", "test a/b", "conversion optimization", "cro"],
     
@@ -334,11 +335,11 @@ HARD_SKILLS = {
     "JMP": ["jmp", "jmp statistical"],
     
     # --- LANGUAGES ---
-    "English": ["english", "eng", "en", "inglese", "professional proficiency", "fluent english", "b2", "c1", "c2"],
-    "Spanish": ["spanish", "espanol", "esp", "spagnolo"],
-    "French": ["french", "francais", "fr", "francese"],
-    "German": ["german", "deutsch", "de", "tedesco"],
-    "Italian": ["italian", "italiano", "it", "native", "madrelingua"],
+    "English": ["english", "inglese", "professional proficiency", "fluent english", "english language", "mother tongue english"],
+    "Spanish": ["spanish", "espanol", "spagnolo", "spanish language"],
+    "French": ["french", "francais", "francese", "french language"],
+    "German": ["german", "deutsch", "tedesco", "german language"],
+    "Italian": ["italian", "italiano", "madrelingua", "italian language", "lingua italiana"],
     "Chinese": ["chinese", "mandarin", "cantonese"],
     "Japanese": ["japanese"],
 
@@ -418,7 +419,8 @@ HARD_SKILLS = {
     # --- EDUCAZIONE & FORMAZIONE ---
     "Teaching": ["teaching", "insegnamento", "teacher", "insegnante", "docente", "professor", "professore", "classroom management", "gestione classe", "student assessment", "valutazione studenti", "differentiated instruction", "didattica differenziata", "interactive teaching", "didattica interattiva", "primary school", "scuola primaria", "secondary school", "scuola secondaria", "substitute teacher", "supplente"],
     "Tutoring": ["tutoring", "ripetizioni", "tutor", "private lessons", "lezioni private", "homework help", "aiuto compiti", "exam preparation", "preparazione esami", "one-on-one", "individuale", "study skills", "metodo di studio", "subject tutoring", "materie specifiche"],
-    "Curriculum Design": ["curriculum", "programmazione didattica", "lesson planning", "syllabus", "learning objectives", "obiettivi didattici", "course design", "progettazione corso", "assessment design", "progettazione verifiche", "learning outcomes", "competenze", "educational standards", "indicazioni nazionali"],
+    "Curriculum Design": ["curriculum design", "curriculum development", "programmazione didattica", "lesson planning", "syllabus", "learning objectives", "obiettivi didattici", "course design", "progettazione corso", "assessment design", "progettazione verifiche", "learning outcomes", "educational standards", "indicazioni nazionali"],
+
     "E-Learning": ["e-learning", "online teaching", "formazione online", "lms", "moodle", "didattica a distanza", "dad", "virtual classroom", "classe virtuale", "webinar", "zoom", "teams", "google meet", "asynchronous learning", "blended learning", "scorm", "video lessons", "videolezioni", "screen sharing", "condivisione schermo"],
     "Training": ["training", "formazione", "trainer", "formatore", "corporate training", "formazione aziendale", "workshop", "facilitator", "facilitatore", "onboarding", "skill development", "team building", "coaching", "mentoring", "training needs analysis", "train the trainer"],
     "Special Education": ["special education", "sostegno", "special needs", "bisogni educativi speciali", "bes", "dsa", "learning disabilities", "disturbi apprendimento", "autism", "autismo", "adhd", "iep", "pei", "piano educativo individualizzato", "inclusion", "inclusione", "differentiated learning", "assistive technology", "tecnologie assistive"],
@@ -468,7 +470,8 @@ HARD_SKILLS = {
     "Video Production": ["video production", "video editing", "montaggio video", "filmmaker", "premiere", "final cut", "davinci"],
     "Photography": ["photography", "fotografia", "photographer", "fotografo", "lightroom", "camera"],
     "Audio Production": ["audio production", "audio editing", "sound design", "podcast", "fonico", "pro tools", "audition"],
-    "Broadcasting": ["broadcasting", "radio", "tv", "television", "televisione", "conduttore", "presenter"],
+    "Broadcasting": ["broadcasting", "television broadcasting", "radio broadcasting", "tv station", "radio station", "televisione", "conduttore", "presenter", "on-air", "live broadcast", "studio televisivo"],
+
     "Press Relations": ["press relations", "ufficio stampa", "pr", "public relations", "media relations"],
     "Social Media Management": ["social media manager", "community manager", "content creator", "influencer", "content planning"],
 
