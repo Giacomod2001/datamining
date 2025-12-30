@@ -13,4 +13,4 @@ matplotlib
 nltk
 wordcloud
 requests
-# JOB_SEEKER_HELPER_V2.0_PREMIUM
+# CareerMatch AI v2.0
