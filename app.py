@@ -61,80 +61,132 @@ def render_debug_page():
     t1, t2, t3, t4, t5 = st.tabs(tabs)
     
     # =========================================================================
-    # TAB 1: SYSTEM OVERVIEW
+    # TAB 1: SYSTEM OVERVIEW - Collapsible Sections with Index
     # =========================================================================
     with t1:
-        # ML Models Used - Professional Header
         st.subheader("Machine Learning Models")
-        st.caption("Algorithms used in this application (v2.0 Enhanced)")
+        st.caption("Click each section to expand/collapse. All algorithms used in this application.")
         
+        # Quick Index
         st.markdown("""
-        <div style='background: linear-gradient(135deg, rgba(0, 119, 181, 0.15) 0%, rgba(0, 68, 113, 0.1) 100%); 
-                    border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(0, 119, 181, 0.3); margin-bottom: 1rem;'>
-            <table style='width: 100%; color: #e0e6ed;'>
-                <tr>
-                    <td style='padding: 12px 0; width: 30%; vertical-align: top;'>
-                        <strong>Skill Matching</strong><br>
-                        <span style='font-size: 0.75rem; color: #6e7681;'>Classifies text into skill categories</span>
-                    </td>
-                    <td style='padding: 12px 0; vertical-align: top;'>
-                        Random Forest (150 trees, depth 15, OOB) + TF-IDF (3000 features, trigrams)<br>
-                        <span style='font-size: 0.75rem; color: #6e7681;'>Regularized to prevent overfitting (min_samples_leaf=3, max_features=sqrt)</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td style='padding: 12px 0; vertical-align: top;'>
-                        <strong>Skill Extraction</strong><br>
-                        <span style='font-size: 0.75rem; color: #6e7681;'>Finds skills in CV/JD text</span>
-                    </td>
-                    <td style='padding: 12px 0; vertical-align: top;'>
-                        N-gram matching (uni/bi/trigrams) + FuzzyWuzzy (85% threshold)<br>
-                        <span style='font-size: 0.75rem; color: #6e7681;'>Catches compound skills like "machine learning" and typos</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td style='padding: 12px 0; vertical-align: top;'>
-                        <strong>Entity Extraction</strong><br>
-                        <span style='font-size: 0.75rem; color: #6e7681;'>Identifies named entities</span>
-                    </td>
-                    <td style='padding: 12px 0; vertical-align: top;'>
-                        NLTK NER - finds people, organizations, locations<br>
-                        <span style='font-size: 0.75rem; color: #6e7681;'>Detects companies, universities, cities from text</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td style='padding: 12px 0; vertical-align: top;'>
-                        <strong>Topic Discovery</strong><br>
-                        <span style='font-size: 0.75rem; color: #6e7681;'>Finds main themes</span>
-                    </td>
-                    <td style='padding: 12px 0; vertical-align: top;'>
-                        LDA (50 iterations, batch mode) + bigrams + multilingual stop words<br>
-                        <span style='font-size: 0.75rem; color: #6e7681;'>5x more iterations for precise topic detection (EN/IT/ES/FR/DE)</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td style='padding: 12px 0; vertical-align: top;'>
-                        <strong>Skill Grouping</strong><br>
-                        <span style='font-size: 0.75rem; color: #6e7681;'>Clusters related skills</span>
-                    </td>
-                    <td style='padding: 12px 0; vertical-align: top;'>
-                        K-Means Clustering - groups related skills together<br>
-                        <span style='font-size: 0.75rem; color: #6e7681;'>Shows which skill areas you're strong/weak in</span>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        
-        <div style='background: rgba(0, 68, 113, 0.15); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 3px solid #00A0DC;'>
-            <strong>Why these parameters?</strong><br><br>
-            <strong>Overfitting</strong> happens when a model learns the training data too well, including noise and outliers, 
-            making it perform poorly on new data. We prevent this by:<br><br>
-            • <strong>Limiting tree depth</strong> (15 instead of 30) — prevents overly complex decision paths<br>
-            • <strong>Requiring more samples per leaf</strong> (3 instead of 1) — ensures predictions are based on multiple examples<br>
-            • <strong>Using sqrt(features)</strong> — each tree sees different features, improving diversity<br>
-            • <strong>Filtering rare/common words</strong> (min_df=2, max_df=0.95) — removes noise from vocabulary
+        <div style='background: rgba(0, 119, 181, 0.1); padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem;'>
+            <strong>Quick Index:</strong> 
+            Skill Matching | 
+            Skill Extraction | 
+            Entity Extraction |
+            Topic Discovery | 
+            Skill Grouping |
+            Why These Parameters
         </div>
         """, unsafe_allow_html=True)
+        
+        # 1. Skill Matching
+        with st.expander("1. Skill Matching - Random Forest Classifier", expanded=False):
+            st.markdown("""
+            **Purpose:** Classifies text snippets into skill categories.
+            
+            **Algorithm:** Random Forest with TF-IDF vectorization
+            
+            | Parameter | Value | Why |
+            |-----------|-------|-----|
+            | Trees | 150 | Balance between accuracy and speed |
+            | Max Depth | 15 | Prevents overfitting |
+            | Min Samples Leaf | 3 | Ensures robust predictions |
+            | TF-IDF Features | 3000 | Captures vocabulary without noise |
+            | N-grams | 1-3 | Matches single words and phrases |
+            
+            **How it works:** Each "tree" votes on which skill a text belongs to. 
+            The final prediction is the majority vote across all 150 trees.
+            """)
+        
+        # 2. Skill Extraction
+        with st.expander("2. Skill Extraction - N-gram + Fuzzy Matching", expanded=False):
+            st.markdown("""
+            **Purpose:** Finds skills mentioned in CV and Job Description text.
+            
+            **Algorithm:** Multi-pass extraction with fuzzy matching
+            
+            **Steps:**
+            1. **Exact Match:** Searches for exact skill keywords
+            2. **N-gram Match:** Checks 2-3 word combinations (e.g., "machine learning")
+            3. **Fuzzy Match:** Uses FuzzyWuzzy at 85% threshold to catch typos
+            
+            **Example:** "mashine lerning" → matches "Machine Learning" at 87% similarity
+            
+            **Database:** 620+ unique skills with 5000+ keyword variations
+            """)
+        
+        # 3. Entity Extraction
+        with st.expander("3. Entity Extraction - NLTK Named Entity Recognition", expanded=False):
+            st.markdown("""
+            **Purpose:** Identifies organizations, locations, and people in CV text.
+            
+            **Algorithm:** NLTK NER with custom post-processing
+            
+            **Categories:**
+            - **Organizations:** Companies, universities, institutions
+            - **Locations:** Cities, countries, regions  
+            - **Persons:** Names mentioned in the CV
+            
+            **Post-processing:** Filters out common false positives like skill names 
+            and technical jargon that can be mistaken for entities.
+            """)
+        
+        # 4. Topic Discovery
+        with st.expander("4. Topic Discovery - LDA Topic Modeling", expanded=False):
+            st.markdown("""
+            **Purpose:** Identifies main themes in job descriptions.
+            
+            **Algorithm:** Latent Dirichlet Allocation (LDA)
+            
+            | Parameter | Value | Why |
+            |-----------|-------|-----|
+            | Iterations | 50 | 5x standard for better convergence |
+            | Mode | Batch | More accurate than online |
+            | N-grams | 1-2 | Captures phrases like "data analysis" |
+            
+            **Multilingual:** Filters stop words in EN, IT, ES, FR, DE
+            
+            **Output:** 3-5 key topics with associated keywords
+            """)
+        
+        # 5. Skill Grouping  
+        with st.expander("5. Skill Grouping - K-Means Clustering", expanded=False):
+            st.markdown("""
+            **Purpose:** Groups related skills to show strength/weakness areas.
+            
+            **Algorithm:** K-Means with character n-gram TF-IDF
+            
+            **Process:**
+            1. Convert skills to vectors using character patterns
+            2. K-Means finds natural groupings (2-5 clusters)
+            3. PCA reduces to 2D for visualization
+            
+            **Why character n-grams?** "Python" and "PyTorch" share patterns, 
+            making them cluster together in "Data Science" tools.
+            
+            **Visualization:** Scatter plot with matched (green), missing (red), bonus (blue)
+            """)
+        
+        # 6. Why These Parameters
+        with st.expander("6. Why These Parameters? - Overfitting Prevention", expanded=False):
+            st.markdown("""
+            **What is overfitting?**
+            
+            When a model learns training data *too well*, including noise and outliers,
+            it performs poorly on new, unseen data.
+            
+            **How we prevent it:**
+            
+            | Technique | Setting | Effect |
+            |-----------|---------|--------|
+            | Tree Depth Limit | 15 (not 30) | Simpler decision paths |
+            | Min Samples per Leaf | 3 (not 1) | Predictions based on multiple examples |
+            | Feature Selection | sqrt(features) | Each tree sees different features |
+            | TF-IDF Filtering | min_df=2, max_df=0.95 | Removes rare/common noise words |
+            
+            **Result:** Model generalizes well to new CVs and job descriptions.
+            """)
         
         st.divider()
         
