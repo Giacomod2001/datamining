@@ -832,11 +832,23 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         
         if "project_verified" in res and res["project_verified"]:
             with add_cols[add_idx]:
-                st.subheader("Project Portfolio Verification")
-                st.metric("Skills Verified", len(res["project_verified"]), 
-                         help="Skills demonstrated through your projects")
-                verified_list = list(res['project_verified'])[:5]
-                st.markdown("**Top verified:** " + ", ".join(verified_list))
+                st.subheader("Portfolio Intelligence")
+                
+                # Portfolio Quality Score
+                quality = res.get('portfolio_quality', 0)
+                st.metric("Portfolio Score", f"{quality:.0f}%", 
+                         help="Based on skill coverage, project complexity, and job relevance")
+                
+                # Verified Skills Count
+                verified_list = list(res['project_verified'])
+                st.caption(f"**{len(verified_list)} skills verified** through your projects")
+                
+                # Talking Points (most useful for interviews)
+                talking_points = res.get('talking_points', [])
+                if talking_points:
+                    st.markdown("**Interview Talking Points:**")
+                    for tp in talking_points[:3]:
+                        st.markdown(f"- {tp}")
             add_idx += 1
         
         if cl_analysis:
@@ -880,12 +892,12 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         st.markdown(" ".join(transfer_tags), unsafe_allow_html=True)
         st.markdown("")
     
-    # Project-Verified Skills - Blue tags
-    projects = res.get("project_review", set())
-    if projects:
+    # Project-Verified Skills - Blue tags (FIXED: was using wrong key 'project_review')
+    project_verified = res.get("project_verified", set())
+    if project_verified:
         st.markdown("**Project-Verified Skills:**")
-        st.caption("Highlight these in your interview")
-        project_html = " ".join([f"<span class='skill-tag-project'>{skill}</span>" for skill in sorted(projects)])
+        st.caption("Skills demonstrated in your portfolio - highlight these in interviews")
+        project_html = " ".join([f"<span class='skill-tag-project'>{skill}</span>" for skill in sorted(project_verified)])
         st.markdown(project_html, unsafe_allow_html=True)
         st.markdown("")
     
