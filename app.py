@@ -746,6 +746,48 @@ def render_home():
         if st.session_state.get("demo_mode"):
             st.success("Demo mode active. Sample data loaded below.")
         
+        # --- RESULTS NAVIGATOR (appears after analysis) ---
+        if st.session_state.get("last_results"):
+            st.divider()
+            st.markdown("### Results Navigator")
+            st.caption("Click to jump to section")
+            
+            res = st.session_state["last_results"]
+            cl_analysis = st.session_state.get("last_cl_analysis")
+            
+            # Navigation buttons with anchor links
+            st.markdown("""
+            <style>
+            .nav-link {
+                display: block;
+                padding: 0.5rem 0.75rem;
+                margin: 0.25rem 0;
+                background: rgba(0, 119, 181, 0.1);
+                border-radius: 6px;
+                color: #00A0DC !important;
+                text-decoration: none;
+                font-size: 0.9rem;
+                transition: all 0.2s;
+            }
+            .nav-link:hover {
+                background: rgba(0, 119, 181, 0.25);
+            }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("<a class='nav-link' href='#section-score'>Match Score</a>", unsafe_allow_html=True)
+            st.markdown("<a class='nav-link' href='#section-skills'>Skills Analysis</a>", unsafe_allow_html=True)
+            
+            if cl_analysis:
+                st.markdown("<a class='nav-link' href='#section-cover'>Cover Letter</a>", unsafe_allow_html=True)
+            
+            if res.get("missing_hard"):
+                st.markdown("<a class='nav-link' href='#section-learning'>Learning Path</a>", unsafe_allow_html=True)
+            
+            st.markdown("<a class='nav-link' href='#section-context'>Job Context</a>", unsafe_allow_html=True)
+            st.markdown("<a class='nav-link' href='#section-compass'>AI Compass</a>", unsafe_allow_html=True)
+            st.markdown("<a class='nav-link' href='#section-export'>Export Report</a>", unsafe_allow_html=True)
+        
         st.divider()
         
         # How It Works
