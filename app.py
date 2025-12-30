@@ -833,17 +833,31 @@ def render_home():
     # MAIN CONTENT AREA - Hero Section
     # ==========================================================================
     
-    # Hero Header with Gradient
+    # Hero Header with Gradient - Centered and Enhanced
     st.markdown("""
     <div class='hero-gradient'>
-        <h1 style='margin: 0; font-size: 2.5rem;'>CareerMatch AI</h1>
-        <p style='font-size: 1.2rem; color: #00A0DC; margin: 0.5rem 0;'>
+        <h1 style='margin: 0; font-size: 2.5rem; font-weight: 700;'>CareerMatch AI</h1>
+        <p style='font-size: 1.2rem; color: #00A0DC; margin: 0.5rem 0; font-weight: 600;'>
             AI-Powered CV-to-Job Matching
         </p>
-        <p style='color: #8b949e; font-size: 0.95rem;'>
-            Upload your CV and job description to discover your compatibility level,<br>
+        <p style='color: #8b949e; font-size: 0.95rem; max-width: 600px; margin: 0.5rem auto 1rem auto;'>
+            Upload your CV and job description to discover your compatibility level,
             transferable skills, and a personalized action plan
         </p>
+        <div style='display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; flex-wrap: wrap;'>
+            <div style='text-align: center;'>
+                <div style='font-size: 1.5rem; font-weight: bold; color: #00A0DC;'>620+</div>
+                <div style='font-size: 0.75rem; color: #6e7681;'>Skills Analyzed</div>
+            </div>
+            <div style='text-align: center;'>
+                <div style='font-size: 1.5rem; font-weight: bold; color: #00C853;'>85%</div>
+                <div style='font-size: 0.75rem; color: #6e7681;'>Match Accuracy</div>
+            </div>
+            <div style='text-align: center;'>
+                <div style='font-size: 1.5rem; font-weight: bold; color: #FFB300;'>5 sec</div>
+                <div style='font-size: 0.75rem; color: #6e7681;'>Analysis Time</div>
+            </div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -997,8 +1011,36 @@ def render_home():
 def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     st.divider()
     pct = res["match_percentage"]
+    
+    # --- CLICKABLE INDEX NAVIGATION ---
+    # Build navigation links based on what sections are available
+    nav_items = [
+        ("Match Score", "section-score"),
+        ("Skills Analysis", "section-skills"),
+    ]
+    
+    # Conditional sections
+    if cl_analysis:
+        nav_items.append(("Cover Letter", "section-cover"))
+    if res["missing_hard"]:
+        nav_items.append(("Learning Path", "section-learning"))
+    if jd_text:
+        nav_items.append(("Job Context", "section-context"))
+    
+    nav_items.append(("AI Compass", "section-compass"))
+    nav_items.append(("Export", "section-export"))
+    
+    # Build navigation HTML
+    nav_links = " | ".join([f"<a href='#{anchor}' style='color: #00A0DC; text-decoration: none;'>{name}</a>" for name, anchor in nav_items])
+    
+    st.markdown(f"""
+    <div style='background: rgba(0, 119, 181, 0.1); padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: center;'>
+        <strong>Quick Navigation:</strong> {nav_links}
+    </div>
+    """, unsafe_allow_html=True)
 
     # --- MAIN SCORE SECTION ---
+    st.markdown("<div id='section-score'></div>", unsafe_allow_html=True)
     st.header("Analysis Results")
     
     # Row 1: Main Match Score (larger, more prominent)
@@ -1098,6 +1140,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                 st.caption(f"{cl_analysis['word_count']} words | {cl_analysis['language'] or 'EN'}")
 
     st.divider()
+    st.markdown("<div id='section-skills'></div>", unsafe_allow_html=True)
     st.subheader("Technical Skills Analysis")
     st.caption("Breakdown of your skill alignment with this position")
     st.markdown("")  # Spacing
@@ -1154,6 +1197,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     
     # --- COVER LETTER DETAILED ANALYSIS ---
     if cl_analysis:
+        st.markdown("<div id='section-cover'></div>", unsafe_allow_html=True)
         st.subheader("Cover Letter Analysis")
         
         # Metrics Row
@@ -1214,6 +1258,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
 
     # LEARNING PLAN
     if res["missing_hard"]:
+        st.markdown("<div id='section-learning'></div>", unsafe_allow_html=True)
         st.subheader("Learning Actions")
         
         for skill in res["missing_hard"]:
@@ -1241,6 +1286,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     # --- JOB CONTEXT ANALYSIS ---
     if jd_text:
         st.divider()
+        st.markdown("<div id='section-context'></div>", unsafe_allow_html=True)
         st.subheader("What Does This Position Really Need?")
         
         jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
@@ -1269,6 +1315,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     
     # --- JOB RECOMMENDER (AI Career Compass) ---
     st.divider()
+    st.markdown("<div id='section-compass'></div>", unsafe_allow_html=True)
     st.subheader("AI Career Compass (Alternative Paths)")
     st.info("Based on your skill vector, here are the market roles that fit you best.")
     
@@ -1303,6 +1350,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
 
     # --- EXPORT REPORT ---
     st.divider()
+    st.markdown("<div id='section-export'></div>", unsafe_allow_html=True)
     st.subheader("Export Comprehensive Report")
     st.caption("Download your complete analysis including CV match, skills, and cover letter evaluation")
     

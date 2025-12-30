@@ -438,9 +438,10 @@ hr {
         rgba(0, 160, 220, 0.1) 100%
     );
     border-radius: 16px;
-    padding: 1.25rem 1.5rem;
+    padding: 2rem 2rem;
     margin-bottom: 1.5rem;
     border: 1px solid rgba(0, 119, 181, 0.3);
+    text-align: center;
 }
 
 /* =============================================================================
