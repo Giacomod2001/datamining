@@ -222,45 +222,114 @@ def render_debug_page():
                 st.success("Demo mode reset!")
     
     # =========================================================================
-    # TAB 2: ANALYSIS DATA
+    # TAB 2: ANALYSIS DATA - Enhanced with Score Breakdown
     # =========================================================================
     with t2:
-        st.subheader("Last Analysis Results")
+        st.subheader("Analysis Results Breakdown")
         st.markdown("""
-        **What is this?** This shows the raw data from your CV vs Job Description comparison.
-        Use this to understand exactly how your match score was calculated.
+        **What is this?** The detailed breakdown of your CV vs Job Description match.
+        See exactly which skills contributed to your score and how to improve it.
         """)
         
         if res:
-            # Summary metrics
-            col1, col2 = st.columns([1, 2])
+            # Score Formula Explanation
+            st.markdown("""
+            <div style='background: rgba(0, 119, 181, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 3px solid #00A0DC;'>
+                <strong>How is your score calculated?</strong><br><br>
+                <code style='background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 4px;'>
+                Score = (Matched + Transferable×0.5 + Project×0.3) / Required Skills × 100
+                </code><br><br>
+                • <strong>Matched Skills</strong> (100%): Skills found directly in your CV<br>
+                • <strong>Transferable</strong> (50%): Equivalent skills (e.g., Power BI → Tableau)<br>
+                • <strong>Project-Verified</strong> (30%): Skills proven through your portfolio
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Key Metrics with Context
+            st.markdown("### Score Components")
+            
+            matched_count = len(res["matching_hard"])
+            missing_count = len(res["missing_hard"])
+            extra_count = len(res["extra_hard"])
+            transfer_count = len(res.get("transferable", {}))
+            total_required = matched_count + missing_count
+            
+            m1, m2, m3, m4, m5 = st.columns(5)
+            with m1:
+                st.metric("Match Score", f"{res['match_percentage']:.1f}%")
+            with m2:
+                st.metric("Matched", matched_count, 
+                         help="Skills in your CV that match job requirements")
+            with m3:
+                st.metric("Transferable", transfer_count,
+                         help="Equivalent skills that count as partial matches")
+            with m4:
+                st.metric("Missing", missing_count,
+                         help="Required skills not found in your CV")
+            with m5:
+                st.metric("Bonus", extra_count,
+                         help="Extra skills that give competitive advantage")
+            
+            # Interpretation
+            score = res['match_percentage']
+            if score >= 80:
+                interpretation = "Excellent Match - Strong candidate for this role"
+                color = "#00C853"
+            elif score >= 60:
+                interpretation = "Good Match - Minor gaps to address"
+                color = "#FFB300"
+            elif score >= 40:
+                interpretation = "Moderate Match - Consider upskilling or alternative roles"
+                color = "#FF8F00"
+            else:
+                interpretation = "Low Match - Significant skill development needed"
+                color = "#E53935"
+            
+            st.markdown(f"""
+            <div style='background: rgba({int(color[1:3], 16)}, {int(color[3:5], 16)}, {int(color[5:7], 16)}, 0.15); 
+                        padding: 0.75rem 1rem; border-radius: 8px; margin: 1rem 0; border-left: 3px solid {color};'>
+                <strong style='color: {color};'>{interpretation}</strong>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.divider()
+            
+            # Skill Lists
+            st.markdown("### Skill Details")
+            col1, col2 = st.columns(2)
             
             with col1:
-                st.metric("Match Score", f"{res['match_percentage']:.1f}%")
-                st.metric("Matched Skills", len(res["matching_hard"]))
-                st.metric("Missing Skills", len(res["missing_hard"]))
-                st.metric("Bonus Skills", len(res["extra_hard"]))
-                if "transferable" in res:
-                    st.metric("Transferable", len(res["transferable"]))
+                with st.expander(f"Matched Skills ({matched_count})", expanded=True):
+                    if res["matching_hard"]:
+                        st.caption("These skills directly match job requirements")
+                        st.write(sorted(res["matching_hard"]))
+                    else:
+                        st.caption("No direct matches found")
+                
+                with st.expander(f"Missing Skills ({missing_count})", expanded=False):
+                    if res["missing_hard"]:
+                        st.caption("Priority skills to develop")
+                        st.write(sorted(res["missing_hard"]))
+                    else:
+                        st.caption("No missing skills - perfect match!")
             
             with col2:
-                # Raw data expanders
-                with st.expander("Matched Skills (Raw)", expanded=False):
-                    st.write(sorted(res["matching_hard"]))
+                with st.expander(f"Bonus Skills ({extra_count})", expanded=False):
+                    if res["extra_hard"]:
+                        st.caption("These give you competitive advantage")
+                        st.write(sorted(res["extra_hard"]))
+                    else:
+                        st.caption("No extra skills detected")
                 
-                with st.expander("Missing Skills (Raw)", expanded=False):
-                    st.write(sorted(res["missing_hard"]))
-                
-                with st.expander("Extra/Bonus Skills (Raw)", expanded=False):
-                    st.write(sorted(res["extra_hard"]))
-                
-                if "transferable" in res and res["transferable"]:
-                    with st.expander("Transferable Mappings", expanded=False):
+                if res.get("transferable"):
+                    with st.expander(f"Transferable Mappings ({transfer_count})", expanded=False):
+                        st.caption("Equivalent skills that count as partial matches")
                         for missing, present in res["transferable"].items():
-                            st.write(f"- {missing} ← {present}")
+                            st.markdown(f"**{missing}** ← *{present}*")
             
-            # Full JSON export
-            st.markdown("### Export Analysis")
+            # JSON Export
+            st.divider()
+            st.markdown("### Export Data")
             import json
             export_data = {
                 "match_percentage": res["match_percentage"],
@@ -279,15 +348,27 @@ def render_debug_page():
             st.info("No analysis data available. Run an analysis from the Home page first.")
     
     # =========================================================================
-    # TAB 3: SKILL INTELLIGENCE
+    # TAB 3: SKILL INTELLIGENCE - Enhanced with ML Explanations
     # =========================================================================
     with t3:
         st.subheader("Skill Clustering Analysis")
         st.markdown("""
-        **What is this?** Clustering groups similar skills together based on their meaning.
-        This helps identify which skill areas you're strong in and where there are gaps.
-        Skills that appear close on the chart are semantically related.
+        **What is this?** Machine learning groups your skills into semantic clusters,
+        revealing which areas you're strong in and where gaps exist.
         """)
+        
+        # Technical explanation
+        st.markdown("""
+        <div style='background: rgba(0, 119, 181, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 3px solid #00A0DC;'>
+            <strong>How does this work?</strong><br><br>
+            <strong>1. TF-IDF Vectorization:</strong> Each skill is converted to a numerical vector based on character patterns (n-grams).
+            Skills like "Python" and "Programming" share similar patterns.<br><br>
+            <strong>2. K-Means Clustering:</strong> Skills are grouped by similarity. The algorithm finds natural groupings 
+            (e.g., "Data Science", "Cloud Tools") without being told categories in advance.<br><br>
+            <strong>3. PCA Visualization:</strong> High-dimensional vectors are reduced to 2D for display. 
+            Distance on the chart = similarity between skills.
+        </div>
+        """, unsafe_allow_html=True)
         
         if res and len(res["matching_hard"] | res["missing_hard"] | res["extra_hard"]) > 3:
             all_skills = list(res["matching_hard"] | res["missing_hard"] | res["extra_hard"])
@@ -304,6 +385,9 @@ def render_debug_page():
                 
                 df_viz["Status"] = df_viz["skill"].apply(get_status)
                 
+                st.markdown("### Skill Map")
+                st.caption("Skills close together are semantically related. Colors show match status.")
+                
                 fig = px.scatter(
                     df_viz, x="x", y="y", 
                     color="Status",
@@ -319,8 +403,23 @@ def render_debug_page():
                 )
                 st.plotly_chart(fig, use_container_width=True)
                 
-                # Cluster breakdown
+                # How to read explanation
+                st.markdown("""
+                <div style='background: rgba(100, 100, 100, 0.1); padding: 0.75rem; border-radius: 8px; margin: 0.5rem 0;'>
+                    <strong>How to interpret:</strong><br>
+                    • <span style='color: #00cc96;'>Green dots</span> = Skills you have that the job needs<br>
+                    • <span style='color: #ef553b;'>Red dots</span> = Skills the job needs that you're missing<br>
+                    • <span style='color: #636efa;'>Blue dots</span> = Extra skills you have (competitive advantage)<br>
+                    • <strong>Cluster of red dots</strong> = Skill area to focus learning on
+                </div>
+                """, unsafe_allow_html=True)
+                
+                st.divider()
+                
+                # Cluster breakdown with insights
                 st.markdown("### Cluster Breakdown")
+                st.caption("Skills grouped by semantic similarity")
+                
                 if clusters and isinstance(clusters, dict):
                     for cluster_name, skills in clusters.items():
                         if skills and hasattr(skills, '__iter__'):
@@ -328,15 +427,24 @@ def render_debug_page():
                             matched_in_cluster = [s for s in skills_list if s in res["matching_hard"]]
                             missing_in_cluster = [s for s in skills_list if s in res["missing_hard"]]
                             
-                            with st.expander(f"{cluster_name} ({len(skills_list)} skills)"):
+                            # Calculate cluster coverage
+                            coverage = len(matched_in_cluster) / len(skills_list) * 100 if skills_list else 0
+                            
+                            with st.expander(f"{cluster_name} ({len(skills_list)} skills) - {coverage:.0f}% coverage"):
                                 if matched_in_cluster:
                                     st.markdown(f"**Matched:** {', '.join(matched_in_cluster)}")
                                 if missing_in_cluster:
                                     st.markdown(f"**Missing:** {', '.join(missing_in_cluster)}")
+                                
+                                if coverage < 50:
+                                    st.caption("Low coverage - prioritize learning skills in this area")
+                                elif coverage >= 80:
+                                    st.caption("Strong coverage in this skill area")
                 
-                # Dendrogram
+                # Dendrogram with explanation
                 if dendro_path:
                     with st.expander("Hierarchical Dendrogram"):
+                        st.caption("Tree structure showing how skills relate. Skills that branch together are similar.")
                         st.image(dendro_path, caption="Ward's Linkage Clustering")
         else:
             st.info("Run an analysis first to see skill clustering.")
