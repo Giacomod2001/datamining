@@ -778,6 +778,9 @@ def render_home():
             st.markdown("<a class='nav-link' href='#section-score'>Match Score</a>", unsafe_allow_html=True)
             st.markdown("<a class='nav-link' href='#section-skills'>Skills Analysis</a>", unsafe_allow_html=True)
             
+            if res.get("project_verified"):
+                st.markdown("<a class='nav-link' href='#section-projects'>Project Coaching</a>", unsafe_allow_html=True)
+            
             if cl_analysis:
                 st.markdown("<a class='nav-link' href='#section-cover'>Cover Letter</a>", unsafe_allow_html=True)
             
@@ -1075,8 +1078,28 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     # Build navigation HTML
     nav_links = " | ".join([f"<a href='#{anchor}' style='color: #00A0DC; text-decoration: none;'>{name}</a>" for name, anchor in nav_items])
     
+    # Quick Navigation - Only shows when sidebar is collapsed
+    # Uses CSS to detect sidebar state
     st.markdown(f"""
-    <div style='background: rgba(0, 119, 181, 0.1); padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: center;'>
+    <style>
+    /* Hide in-content nav when sidebar is expanded */
+    section[data-testid="stSidebar"][aria-expanded="true"] ~ section .quick-nav-inline {{
+        display: none !important;
+    }}
+    /* Also hide when sidebar is in default expanded state */
+    @media (min-width: 768px) {{
+        .quick-nav-inline {{
+            display: none !important;
+        }}
+    }}
+    /* Show only on mobile or when sidebar collapsed */
+    @media (max-width: 767px) {{
+        .quick-nav-inline {{
+            display: block !important;
+        }}
+    }}
+    </style>
+    <div class='quick-nav-inline' style='background: rgba(0, 119, 181, 0.1); padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: center;'>
         <strong>Quick Navigation:</strong> {nav_links}
     </div>
     """, unsafe_allow_html=True)
@@ -1166,6 +1189,89 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                     for tp in talking_points[:3]:
                         st.markdown(f"- {tp}")
             add_idx += 1
+    
+    # --- DEDICATED PROJECT COACHING SECTION ---
+    if "project_verified" in res and res["project_verified"]:
+        st.divider()
+        st.markdown("<div id='section-projects'></div>", unsafe_allow_html=True)
+        st.subheader("Project Interview Coaching")
+        st.caption("How to present your portfolio in interviews for this role")
+        
+        verified_skills = res.get('project_verified', set())
+        missing_skills = res.get('missing_hard', set())
+        matching_skills = res.get('matching_hard', set())
+        
+        pc1, pc2, pc3 = st.columns(3)
+        
+        # Column 1: FOCUS ON
+        with pc1:
+            st.markdown("""
+            <div style='background: rgba(0, 200, 83, 0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid #00C853; min-height: 200px;'>
+                <strong style='color: #00C853;'>FOCUS ON</strong>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            focus_points = []
+            if verified_skills:
+                focus_points.append(f"Highlight projects demonstrating: **{', '.join(list(verified_skills)[:3])}**")
+            if matching_skills:
+                overlap = verified_skills & matching_skills
+                if overlap:
+                    focus_points.append(f"Emphasize overlap between your projects and job needs: **{', '.join(list(overlap)[:2])}**")
+            focus_points.append("Quantify impact: metrics, percentages, before/after")
+            focus_points.append("Explain your role and decisions made")
+            focus_points.append("Discuss challenges overcome and lessons learned")
+            
+            for point in focus_points[:5]:
+                st.markdown(f"• {point}")
+        
+        # Column 2: AVOID
+        with pc2:
+            st.markdown("""
+            <div style='background: rgba(229, 57, 53, 0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid #E53935; min-height: 200px;'>
+                <strong style='color: #E53935;'>AVOID</strong>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            avoid_points = [
+                "Generic descriptions without specifics",
+                "Claiming skills you can't demonstrate",
+                "Over-explaining basic implementations",
+                "Ignoring failures or challenges",
+                "Talking only about personal projects if professional ones exist"
+            ]
+            for point in avoid_points:
+                st.markdown(f"• {point}")
+        
+        # Column 3: CONSIDER IMPLEMENTING
+        with pc3:
+            st.markdown("""
+            <div style='background: rgba(255, 179, 0, 0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid #FFB300; min-height: 200px;'>
+                <strong style='color: #FFB300;'>CONSIDER ADDING</strong>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Suggest mini-projects based on missing skills
+            if missing_skills:
+                implement_suggestions = []
+                for skill in list(missing_skills)[:4]:
+                    if skill in ["Machine Learning", "Data Science"]:
+                        implement_suggestions.append(f"Build a predictive model using **{skill}**")
+                    elif skill in ["Python", "SQL", "R"]:
+                        implement_suggestions.append(f"Create a data analysis script in **{skill}**")
+                    elif skill in ["Power BI", "Tableau", "Looker Studio"]:
+                        implement_suggestions.append(f"Design an interactive dashboard in **{skill}**")
+                    elif skill in ["AWS", "GCP", "Azure"]:
+                        implement_suggestions.append(f"Deploy a small app on **{skill}**")
+                    else:
+                        implement_suggestions.append(f"Add a portfolio piece showing **{skill}**")
+                
+                for sugg in implement_suggestions[:4]:
+                    st.markdown(f"• {sugg}")
+            else:
+                st.markdown("• Your portfolio covers the requirements well!")
+                st.markdown("• Consider adding case studies with metrics")
+                st.markdown("• Document your best project in detail")
         
         if cl_analysis:
             with add_cols[add_idx] if add_idx < 2 else st.container():
