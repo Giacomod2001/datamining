@@ -1,6 +1,6 @@
-# Job Seeker Helper
+# CareerMatch AI
 
-> AI-Powered Career Analytics for Smarter Job Applications
+> AI-Powered CV-to-Job Matching Platform
 
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
@@ -9,163 +9,38 @@
 
 ---
 
-## What's New in v2.0 
+## Live Demo
 
-### Core Features
-- **Demo Mode** - Try the app instantly with sample CV, JD, Project, and Cover Letter
-- **Premium UI** - LinkedIn-inspired dark theme with glassmorphism effects
-- **Full Analysis Suite** - CV Match + Cover Letter + Project Evaluation + Career Compass
+**[Try CareerMatch AI Now](https://dataminingiulm.streamlit.app/)**
 
-### ML Enhancements (v2.0) - Optimized to Prevent Overfitting
-- **Regularized Random Forest** - 150 trees, depth 15, min_samples_leaf=3 (balanced accuracy vs generalization)
-- **Optimized TF-IDF** - 3000 features, trigrams, max_df=0.95 (filters noise from vocabulary)
-- **N-gram Skill Extraction** - Bigrams/trigrams matching + FuzzyWuzzy (85% threshold)
-- **LDA Topic Modeling** - 50 iterations, batch mode for precise topic detection
-- **Multilingual Support** - Stop words for EN, IT, ES, FR, DE languages
-- **620+ Skill Keywords** - Comprehensive vocabulary covering tech, marketing, and business
-
-> **Why prevent overfitting?** A model that memorizes training data performs poorly on new CVs. Our regularization ensures the model generalizes well to any input.
+Click "Try Demo" to see the app in action with sample data.
 
 ---
 
-## Overview
+## What is CareerMatch AI?
 
-**Job Seeker Helper** is an advanced AI-powered analytics platform that transforms how you approach job applications. By leveraging Natural Language Processing, Machine Learning, and Semantic Analysis, it provides intelligent insights into:
+**CareerMatch AI** is an intelligent analytics platform that uses **Machine Learning** and **NLP** to analyze the compatibility between your CV and job postings.
 
-- **CV-Job Description Alignment** - Understand your fit percentage with precision
-- **Skills Gap Analysis** - Identify missing competencies with learning pathways
-- **Cover Letter Optimization** - Get actionable feedback on application quality
-- **Career Path Discovery** - Explore alternative roles based on your skillset
-- **Job Context Intelligence** - Decode what positions really need
+### Key Features
 
-Unlike traditional ATS systems that rely on simple keyword matching, our tool understands **semantic relationships**, recognizes **transferable skills**, and provides **personalized recommendations** for career growth.
-
----
-
-## Key Features
-
-### Intelligent Skill Analysis
-
-**Semantic Inference Engine**
-- Automatically deduces implicit skills (e.g., *BigQuery* infers *SQL*, *Cloud Computing*, *Data Science*)
-- Recognizes tool equivalencies (*Looker Studio* = *Power BI*, *GA4* = *Google Analytics*)
-- Marks similar tools as "Transferable" rather than "Missing"
-
-**Comprehensive Gap Analysis**
-- Separates technical and soft skills evaluation
-- Portfolio-based verification for complex competencies
-- Bilingual support (English/Italian) with automatic skill mapping
-- Smart language detection for native proficiency
-
-### Job Intelligence
-
-**AI-Powered Context Analysis (LDA Topic Modeling)**
-- Identifies key themes and focus areas from job descriptions
-- Translates technical keywords into human-readable interpretations
-- Provides visual summaries with color-coded skill tags
-- Supports both English and Italian with localized insights
-
-### Cover Letter Evaluation
-
-**Multi-Dimensional Scoring System**
-- **Keyword Coverage** (35%) - Technical skills mentioned vs. required
-- **Soft Skills** (15%) - Behavioral competencies alignment
-- **Length** (15%) - Optimal word count analysis (250-400 words)
-- **Structure** (20%) - Professional formatting validation
-- **Personalization** (15%) - Specific examples and customization
-
-**Actionable Feedback**
-- Strengths identification with evidence-based insights
-- Improvement suggestions with specific recommendations
-- Missing keywords highlighting for strategic additions
-- Automatic language detection (English/Italian)
-
-### Visual Analytics
-
-**Interactive Dashboards**
-- Real-time match score visualization with color-coded gauges
-- Skill clustering using K-Means and Hierarchical methods
-- Knowledge graph showing skill hierarchies and relationships
-
-**Compact Tag-Based Display**
-- Color-coded skill badges (Matched, Transferable, Project-verified, Missing, Bonus)
-- Inline keyword tags for space-efficient display
-- Visual legend in sidebar for quick reference
-
-### AI Career Compass
-
-**Intelligent Role Recommendations**
-- Uses Cosine Similarity on TF-IDF vectors for role matching
-- Suggests top 3 alternative career paths based on your skills
-- Filters out redundant suggestions (current and target roles)
-- Quality threshold (>30%) ensures relevant recommendations only
-
-**Direct Job Search Integration**
-- One-click access to Google Jobs, LinkedIn, Indeed Italia
-- Pre-filled search queries for immediate application
-- Targeted to Italian job market where relevant
-
-### Project Evaluation
-
-**Portfolio Triangulation**
-- Upload project descriptions to validate missing skills
-- Project-verified skills get highlighted and contribute to match score
-- Dynamic 2-4 column layout adapts to enabled features
-- Strategic interview preparation suggestions
-
-### Learning Pathways
-
-**Personalized Skill Development**
-- Google Search links for tutorials and guides
-- YouTube educational content for video learners
-- MOOC platform searches (Coursera, Udemy, LinkedIn Learning)
-- Curated resources for specific technologies
-
-### Professional Reports
-
-**Comprehensive Export Options**
-- PDF reports with executive summary and detailed breakdowns
-- Text reports in clean markdown format
-- Includes CV match, cover letter analysis, and career recommendations
-- Professional formatting for sharing with mentors or coaches
-
-### Developer Mode
-
-**5-Tab Debugger Console** (Password: `1234`)
-- **System Overview** - ML model specs, database stats, session state
-- **Analysis Data** - Raw skill matches, JSON export, score breakdown
-- **Skill Intelligence** - Clustering visualization, PCA scatter plot, dendrogram
-- **NLP Insights** - Named Entity Recognition, Topic Analysis with LDA
-- **Knowledge Base** - Inference rules, skill clusters, training data browser
-
----
-
-## Tech Stack
-
-| Component | Technology |
-|-----------|------------|
-| Core Framework | Streamlit, Python 3.8+ |
-| Machine Learning | scikit-learn v2.0 Enhanced:<br>• Random Forest (200 trees, depth 30)<br>• TF-IDF (5000 features, trigrams)<br>• LDA Topic Modeling<br>• K-Means Clustering |
-| NLP | NLTK (NER, tokenization), FuzzyWuzzy (85% threshold) |
-| Skill Extraction | N-gram matching (uni/bi/trigrams), multilingual (EN/IT/ES/FR/DE) |
-| Data Processing | Pandas, NumPy |
-| Visualization | Plotly, Matplotlib |
-| Document Handling | PyPDF2, FPDF |
-| Utilities | thefuzz (fuzzy matching), urllib |
+| Feature | Description |
+|---------|-------------|
+| **Match Score** | AI-based CV-Job compatibility score |
+| **Transferable Skills** | Automatic recognition of equivalent skills |
+| **Gap Analysis** | Identifies missing skills to develop |
+| **Cover Letter AI** | Intelligent cover letter evaluation |
+| **Career Compass** | Alternative role suggestions based on your profile |
+| **Learning Path** | Action plan with learning resources |
 
 ---
 
 ## Quick Start
 
-### Option 1: Use Online (No Installation)
+### Option 1: Online Demo (Zero Installation)
 
-**Try it now:** [dataminingiulm.streamlit.app](https://dataminingiulm.streamlit.app/)
+Try directly: **[dataminingiulm.streamlit.app](https://dataminingiulm.streamlit.app/)**
 
-The app is available online - just click the link and start using it!
-
----
-
-### Option 2: Run Locally (3 Commands)
+### Option 2: Local Installation
 
 ```bash
 # 1. Clone the repository
@@ -178,201 +53,77 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-The app opens automatically at `http://localhost:8501`. Click **"Try Demo"** to see it in action!
-
-> **First Run Note:** The first launch may take 30-60 seconds as NLTK downloads required language data. Subsequent launches are instant.
+The app opens automatically at `http://localhost:8501`.
 
 ---
 
-## Installation (Detailed)
+## Machine Learning Stack
 
-### Prerequisites
-- Python 3.8 or higher
-- pip (comes with Python)
+CareerMatch AI uses ML models optimized to prevent overfitting:
 
-### Step-by-Step
-
-1. **Clone or Download**
-   ```bash
-   git clone https://github.com/Giacomod2001/datamining.git
-   cd datamining
-   ```
-
-2. **Create Virtual Environment (Recommended)**
-   ```bash
-   python -m venv venv
-   # Windows:
-   venv\Scripts\activate
-   # macOS/Linux:
-   source venv/bin/activate
-   ```
-
-3. **Install Dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Launch Application**
-   ```bash
-   streamlit run app.py
-   ```
-
-5. **Access Interface**
-   - Open browser to `http://localhost:8501`
-   - Application will auto-launch in default browser
+| Component | Technology |
+|-----------|------------|
+| **Skill Matching** | Random Forest (150 trees, depth 15, regularized) |
+| **Text Processing** | TF-IDF (3000 features, trigrams, multilingual) |
+| **Topic Discovery** | LDA Topic Modeling (50 iterations) |
+| **Skill Extraction** | N-gram + FuzzyWuzzy (85% threshold) |
+| **Entity Recognition** | NLTK NER (optimized for IT/EU CVs) |
 
 ---
 
-## Usage Guide
+## How It Works
 
-### Basic Workflow
+1. **Upload CV** - PDF or text
+2. **Add Job Description** - From any job board
+3. **Analyze** - AI processes the documents
+4. **Explore Results** - Match score, gap analysis, suggestions
 
-**Step 1: Prepare Documents**
-- Format your CV (PDF or text)
-- Obtain target job description (PDF or text)
-- Optional: Prepare cover letter and project descriptions
+### Skill Legend
 
-**Step 2: Configure Analysis**
-
-Enable optional features via sidebar toggles:
-- **Project Evaluation** - Validate skills through portfolio
-- **Cover Letter Analysis** - Get AI feedback on application letter
-
-**Step 3: Upload and Analyze**
-1. Upload CV in column 1
-2. Upload optional Project/Cover Letter (if toggles enabled)
-3. Upload Job Description in last column
-4. Click "Analyze" button
-
-**Step 4: Review Results**
-
-The analysis provides:
-- **Match Score** - Overall CV-JD alignment percentage
-- **Cover Letter Score** - Application quality assessment (if enabled)
-- **Skill Breakdown** - Color-coded tags showing:
-  - Green = Matched skills
-  - Yellow = Transferable skills (with source)
-  - Blue = Project-verified skills
-  - Red = Missing skills (to learn)
-  - Gray = Bonus skills (competitive advantage)
-- **Job Context** - What the position really seeks
-- **Career Compass** - Alternative role suggestions
-- **Learning Plans** - Resources for skill gaps
-
-**Step 5: Export and Apply**
-- Download PDF or Text report
-- Use learning pathways to close skill gaps
-- Improve cover letter based on suggestions
-- Apply via integrated job board links
-
-### Advanced Features
-
-**Developer Mode Access**
-1. Enable "Developer Mode" in sidebar
-2. Enter password: `1234`
-3. Click "Open Debugger"
-4. Explore inference rules, clusters, and analysis internals
+| Tag | Meaning |
+|-----|---------|
+| Matched | Skill present in CV |
+| Transferable | Equivalent skill recognized |
+| Project | Verified through portfolio |
+| Missing | Gap to fill |
+| Bonus | Extra competitive advantage |
 
 ---
 
-## Scoring Methodology
+## Privacy
 
-### CV Match Score
-```
-Score = (Direct Matches x 1.0) + (Transferable x 0.5) + (Projects x 0.3)
-        ───────────────────────────────────────────────────────────────
-                        Total Required Skills
-
-Final Percentage = (Score / Total Required) x 100
-```
-
-### Cover Letter Score
-```
-Overall Score = (Keyword Coverage x 35%)
-              + (Soft Skills x 15%)
-              + (Length x 15%)
-              + (Structure x 20%)
-              + (Personalization x 15%)
-```
-
-**Grading Scale:**
-- 80-100% = Excellent
-- 60-79% = Good
-- 0-59% = Needs Improvement
-
----
-
-## Use Cases
-
-- **Job Seekers** - Optimize applications for specific roles
-- **Career Switchers** - Discover transferable skills and viable pivots
-- **Students/Graduates** - Identify skill gaps before entering job market
-- **HR Professionals** - Reverse-engineer ATS requirements
-- **Career Coaches** - Provide data-driven guidance to clients
-- **Recruiters** - Quickly assess candidate-role fit
-
----
-
-## Privacy and Security
-
-- **100% Local Processing** - All analysis runs on your machine
-- **No Data Collection** - Documents never leave your computer
-- **No External APIs** - Fully offline operation (except job search links)
-- **Open Source** - Transparent code, auditable algorithms
-- **No Tracking** - Zero analytics or user monitoring
+- **100% Local Processing** - No data leaves your computer
+- **Zero Data Collection** - We don't collect any information
+- **Open Source** - Transparent and verifiable code
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit:
-- Bug reports via Issues
-- Feature requests via Discussions
-- Pull requests for improvements
-
-**Development Setup:**
-```bash
-# Fork and clone
-git clone https://github.com/Giacomod2001/datamining.git
-cd datamining
-
-# Create branch
-git checkout -b feature/your-feature-name
-
-# Make changes and test
-streamlit run app.py
-
-# Submit PR
-git push origin feature/your-feature-name
-```
+Contributions welcome! Open an Issue or Pull Request.
 
 ---
 
 ## License
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
 ## Acknowledgments
 
-Built with powerful open-source tools:
-- **Streamlit Team** - Exceptional rapid development framework
-- **Scikit-Learn Community** - World-class ML algorithms
-- **NLTK Contributors** - Comprehensive NLP capabilities
-- **Open Source Community** - Continuous innovation and support
-
-The authors would like to acknowledge the assistance of the AI tool Gemini 3 Pro High and the agentic system Antigravity for coding suggestions and debugging support during the development phase.
+- **Streamlit Team** - Rapid development framework
+- **Scikit-Learn** - ML algorithms
+- **NLTK** - Natural Language Processing
+- **Claude Opus 4 (thinking)** - Primary AI assistant for development and implementation
+- **Gemini 3 Pro High** - Additional AI support for debugging
 
 ---
 
-## Support
+<div align="center">
 
-**Questions or Issues?**
-- Check the Wiki for detailed guides
-- Open an Issue for bugs
-- Star the repo if you find it helpful!
+**CareerMatch AI**
 
----
+[Live Demo](https://dataminingiulm.streamlit.app/) | [GitHub](https://github.com/Giacomod2001/datamining)
 
-**Empower your career journey with AI-driven insights**
+</div>

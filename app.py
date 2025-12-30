@@ -17,7 +17,7 @@ st.cache_resource.clear()
 # =============================================================================
 st.set_page_config(
     page_title="CareerMatch AI - Smart Career Analytics",
-    page_icon="🎯",
+    page_icon="briefcase",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -472,9 +472,9 @@ def render_home():
         # Header
         st.markdown("""
         <div style='text-align: center; padding: 1rem 0;'>
-            <h1 style='font-size: 1.8rem; margin-bottom: 0.2rem;'>🎯 CareerMatch AI</h1>
+            <h1 style='font-size: 1.8rem; margin-bottom: 0.2rem;'>CareerMatch AI</h1>
             <p style='color: #00A0DC; font-size: 0.9rem; font-weight: 600;'>Smart Career Analytics Platform</p>
-            <p style='color: #8b949e; font-size: 0.75rem;'>v2.0 • Powered by Machine Learning</p>
+            <p style='color: #8b949e; font-size: 0.75rem;'>v2.0 - Powered by Machine Learning</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -485,7 +485,7 @@ def render_home():
         
         col_demo1, col_demo2 = st.columns(2)
         with col_demo1:
-            if st.button("🚀 Prova Demo", use_container_width=True, help="Carica CV e Job Description di esempio per vedere l'app in azione"):
+            if st.button("Try Demo", use_container_width=True, help="Load sample CV and Job Description to see the app in action"):
                 st.session_state["demo_mode"] = True
                 # Force update the text area values in session state
                 st.session_state["cv_text"] = styles.get_demo_cv()
@@ -517,25 +517,25 @@ def render_home():
         st.divider()
         
         # How It Works
-        with st.expander("ℹ️ Come Funziona", expanded=False):
+        with st.expander("How It Works", expanded=False):
             st.markdown("""
-            **1. 📄 Carica il tuo CV**
-            - Formato PDF o testo diretto
-            - L'AI estrae automaticamente 620+ competenze
+            **1. Upload Your CV**
+            - PDF or paste text directly
+            - AI extracts 620+ skill types automatically
             
-            **2. 💼 Aggiungi l'Annuncio**  
-            - Copia da qualsiasi sito di lavoro
-            - Analizziamo cosa cerca davvero l'azienda
+            **2. Add the Job Description**  
+            - Copy from any job board
+            - We analyze what the company really needs
             
-            **3. 🔍 Clicca Analizza**
-            - Match istantaneo delle competenze
-            - Riconoscimento skill trasferibili
-            - Punteggio di compatibilità
+            **3. Click Analyze**
+            - Instant skill matching
+            - Transferable skills recognition
+            - Compatibility score
             
-            **4. 📊 Esplora i Risultati**
-            - Piano di apprendimento personalizzato
-            - Ruoli alternativi suggeriti
-            - Punti da evidenziare al colloquio
+            **4. Explore Results**
+            - Personalized learning path
+            - Alternative role suggestions
+            - Interview talking points
             """)
         
         st.divider()
@@ -591,8 +591,8 @@ def render_home():
         st.divider()
         st.markdown("""
         <div style='text-align: center; color: #8b949e; font-size: 0.75rem;'>
-            CareerMatch AI • Made with ❤️ in Italy<br>
-            <a href='https://github.com/Giacomod2001/datamining' style='color: #00A0DC;'>GitHub</a> • 
+            CareerMatch AI<br>
+            <a href='https://github.com/Giacomod2001/datamining' style='color: #00A0DC;'>GitHub</a> | 
             <a href='https://dataminingiulm.streamlit.app/' style='color: #00A0DC;'>Live Demo</a>
         </div>
         """, unsafe_allow_html=True)
@@ -604,13 +604,13 @@ def render_home():
     # Hero Header with Gradient
     st.markdown("""
     <div class='hero-gradient'>
-        <h1 style='margin: 0; font-size: 2.5rem;'>🎯 CareerMatch AI</h1>
+        <h1 style='margin: 0; font-size: 2.5rem;'>CareerMatch AI</h1>
         <p style='font-size: 1.2rem; color: #00A0DC; margin: 0.5rem 0;'>
-            La tua intelligenza artificiale per il matching CV-Lavoro
+            AI-Powered CV-to-Job Matching
         </p>
         <p style='color: #8b949e; font-size: 0.95rem;'>
-            Carica il tuo CV e l'annuncio di lavoro per scoprire il tuo livello di compatibilità,<br>
-            le competenze trasferibili, e un piano d'azione personalizzato
+            Upload your CV and job description to discover your compatibility level,<br>
+            transferable skills, and a personalized action plan
         </p>
     </div>
     """, unsafe_allow_html=True)
