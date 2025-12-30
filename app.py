@@ -768,28 +768,37 @@ def render_home():
                 text-decoration: none;
                 font-size: 0.9rem;
                 transition: all 0.2s;
+                cursor: pointer;
             }
             .nav-link:hover {
                 background: rgba(0, 119, 181, 0.25);
             }
             </style>
+            <script>
+            function scrollToSection(id) {
+                const el = parent.document.querySelector('#' + id);
+                if (el) {
+                    el.scrollIntoView({behavior: 'smooth', block: 'start'});
+                }
+            }
+            </script>
             """, unsafe_allow_html=True)
             
-            st.markdown("<a class='nav-link' href='#section-score'>Match Score</a>", unsafe_allow_html=True)
-            st.markdown("<a class='nav-link' href='#section-skills'>Skills Analysis</a>", unsafe_allow_html=True)
+            st.markdown("<a class='nav-link' onclick=\"scrollToSection('section-score')\" href='javascript:void(0)'>Match Score</a>", unsafe_allow_html=True)
+            st.markdown("<a class='nav-link' onclick=\"scrollToSection('section-skills')\" href='javascript:void(0)'>Skills Analysis</a>", unsafe_allow_html=True)
             
             if res.get("project_verified"):
-                st.markdown("<a class='nav-link' href='#section-projects'>Project Coaching</a>", unsafe_allow_html=True)
+                st.markdown("<a class='nav-link' onclick=\"scrollToSection('section-projects')\" href='javascript:void(0)'>Project Coaching</a>", unsafe_allow_html=True)
             
             if cl_analysis:
-                st.markdown("<a class='nav-link' href='#section-cover'>Cover Letter</a>", unsafe_allow_html=True)
+                st.markdown("<a class='nav-link' onclick=\"scrollToSection('section-cover')\" href='javascript:void(0)'>Cover Letter</a>", unsafe_allow_html=True)
             
             if res.get("missing_hard"):
-                st.markdown("<a class='nav-link' href='#section-learning'>Learning Path</a>", unsafe_allow_html=True)
+                st.markdown("<a class='nav-link' onclick=\"scrollToSection('section-learning')\" href='javascript:void(0)'>Learning Path</a>", unsafe_allow_html=True)
             
-            st.markdown("<a class='nav-link' href='#section-context'>Job Context</a>", unsafe_allow_html=True)
-            st.markdown("<a class='nav-link' href='#section-compass'>AI Compass</a>", unsafe_allow_html=True)
-            st.markdown("<a class='nav-link' href='#section-export'>Export Report</a>", unsafe_allow_html=True)
+            st.markdown("<a class='nav-link' onclick=\"scrollToSection('section-context')\" href='javascript:void(0)'>Job Context</a>", unsafe_allow_html=True)
+            st.markdown("<a class='nav-link' onclick=\"scrollToSection('section-compass')\" href='javascript:void(0)'>AI Compass</a>", unsafe_allow_html=True)
+            st.markdown("<a class='nav-link' onclick=\"scrollToSection('section-export')\" href='javascript:void(0)'>Export Report</a>", unsafe_allow_html=True)
         
         st.divider()
         
@@ -1203,75 +1212,108 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         
         pc1, pc2, pc3 = st.columns(3)
         
-        # Column 1: FOCUS ON
+        # Build focus points
+        focus_points = []
+        if verified_skills:
+            focus_points.append(f"Highlight: **{', '.join(list(verified_skills)[:3])}**")
+        if matching_skills:
+            overlap = verified_skills & matching_skills
+            if overlap:
+                focus_points.append(f"Emphasize overlap: **{', '.join(list(overlap)[:2])}**")
+        focus_points.append("Quantify impact with metrics")
+        focus_points.append("Explain your role & decisions")
+        focus_points.append("Discuss challenges overcome")
+        
+        # Column 1: FOCUS ON - Personalized based on analysis
         with pc1:
-            st.markdown("""
-            <div style='background: rgba(0, 200, 83, 0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid #00C853; min-height: 200px;'>
-                <strong style='color: #00C853;'>FOCUS ON</strong>
-            </div>
-            """, unsafe_allow_html=True)
-            
+            st.markdown("**FOCUS ON**", help="Specific strengths to highlight")
             focus_points = []
+            
+            # Highlight verified skills that match job requirements (most valuable!)
+            overlap = verified_skills & matching_skills
+            if overlap:
+                focus_points.append(f"**Star projects**: {', '.join(list(overlap)[:2])} (verified + required)")
+            
+            # Skills verified by projects
             if verified_skills:
-                focus_points.append(f"Highlight projects demonstrating: **{', '.join(list(verified_skills)[:3])}**")
-            if matching_skills:
-                overlap = verified_skills & matching_skills
-                if overlap:
-                    focus_points.append(f"Emphasize overlap between your projects and job needs: **{', '.join(list(overlap)[:2])}**")
-            focus_points.append("Quantify impact: metrics, percentages, before/after")
-            focus_points.append("Explain your role and decisions made")
-            focus_points.append("Discuss challenges overcome and lessons learned")
+                other_verified = verified_skills - overlap if overlap else verified_skills
+                if other_verified:
+                    focus_points.append(f"Demonstrate: **{', '.join(list(other_verified)[:2])}**")
             
-            for point in focus_points[:5]:
-                st.markdown(f"• {point}")
-        
-        # Column 2: AVOID
-        with pc2:
-            st.markdown("""
-            <div style='background: rgba(229, 57, 53, 0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid #E53935; min-height: 200px;'>
-                <strong style='color: #E53935;'>AVOID</strong>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            avoid_points = [
-                "Generic descriptions without specifics",
-                "Claiming skills you can't demonstrate",
-                "Over-explaining basic implementations",
-                "Ignoring failures or challenges",
-                "Talking only about personal projects if professional ones exist"
-            ]
-            for point in avoid_points:
-                st.markdown(f"• {point}")
-        
-        # Column 3: CONSIDER IMPLEMENTING
-        with pc3:
-            st.markdown("""
-            <div style='background: rgba(255, 179, 0, 0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid #FFB300; min-height: 200px;'>
-                <strong style='color: #FFB300;'>CONSIDER ADDING</strong>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # Suggest mini-projects based on missing skills
-            if missing_skills:
-                implement_suggestions = []
-                for skill in list(missing_skills)[:4]:
-                    if skill in ["Machine Learning", "Data Science"]:
-                        implement_suggestions.append(f"Build a predictive model using **{skill}**")
-                    elif skill in ["Python", "SQL", "R"]:
-                        implement_suggestions.append(f"Create a data analysis script in **{skill}**")
-                    elif skill in ["Power BI", "Tableau", "Looker Studio"]:
-                        implement_suggestions.append(f"Design an interactive dashboard in **{skill}**")
-                    elif skill in ["AWS", "GCP", "Azure"]:
-                        implement_suggestions.append(f"Deploy a small app on **{skill}**")
-                    else:
-                        implement_suggestions.append(f"Add a portfolio piece showing **{skill}**")
-                
-                for sugg in implement_suggestions[:4]:
-                    st.markdown(f"• {sugg}")
+            # Specific advice based on match quality
+            if res.get('match_percentage', 0) >= 70:
+                focus_points.append("Lead with your strongest matching project")
             else:
-                st.markdown("• Your portfolio covers the requirements well!")
-                st.markdown("• Consider adding case studies with metrics")
-                st.markdown("• Document your best project in detail")
+                focus_points.append("Show learning trajectory and growth")
+            
+            # Add transferable skills angle
+            transferable = res.get('transferable', {})
+            if transferable:
+                focus_points.append(f"Leverage transferable: **{list(transferable.keys())[0]}**")
+            
+            for point in focus_points[:4]:
+                st.markdown(f"<span style='color: #00C853;'>•</span> {point}", unsafe_allow_html=True)
+        
+        # Column 2: AVOID - Personalized based on analysis
+        with pc2:
+            st.markdown("**AVOID**", help="Specific pitfalls for your situation")
+            avoid_points = []
+            
+            # Personalized warnings based on analysis
+            if missing_skills:
+                top_missing = list(missing_skills)[:2]
+                avoid_points.append(f"Don't claim **{', '.join(top_missing)}** without proof")
+            
+            # Check for skills in CV but not verified by projects
+            unverified = matching_skills - verified_skills
+            if unverified:
+                avoid_points.append(f"Be ready to demo: **{', '.join(list(unverified)[:2])}**")
+            
+            # If match is low, warn about overselling
+            if res.get('match_percentage', 0) < 50:
+                avoid_points.append("Don't oversell - focus on learning ability")
+            
+            # Generic but useful if no specific issues
+            if len(avoid_points) < 3:
+                avoid_points.append("Vague descriptions without metrics")
+            if len(avoid_points) < 4:
+                avoid_points.append("Ignoring skill gaps - address them proactively")
+            
+            for point in avoid_points[:4]:
+                st.markdown(f"<span style='color: #E53935;'>•</span> {point}", unsafe_allow_html=True)
+        
+        # Column 3: CONSIDER ADDING - Personalized project suggestions
+        with pc3:
+            st.markdown("**CONSIDER ADDING**", help="Specific projects to build")
+            add_suggestions = []
+            
+            if missing_skills:
+                for skill in list(missing_skills)[:3]:
+                    # Specific project ideas per skill type
+                    if skill in ["Machine Learning", "Deep Learning"]:
+                        add_suggestions.append(f"Kaggle competition using **{skill}**")
+                    elif skill in ["Data Science", "Statistics"]:
+                        add_suggestions.append(f"End-to-end analysis project (**{skill}**)")
+                    elif skill in ["Power BI", "Tableau", "Looker Studio"]:
+                        add_suggestions.append(f"Public dashboard on **{skill}**")
+                    elif skill in ["Python", "SQL", "R"]:
+                        add_suggestions.append(f"GitHub repo with **{skill}** scripts")
+                    elif skill in ["AWS", "GCP", "Azure"]:
+                        add_suggestions.append(f"Deploy an app on **{skill}**")
+                    elif skill in ["Docker", "Kubernetes"]:
+                        add_suggestions.append(f"Containerize existing project (**{skill}**)")
+                    else:
+                        add_suggestions.append(f"Mini-project: **{skill}**")
+            
+            if not add_suggestions:
+                # No missing skills - suggest enhancement
+                add_suggestions.append("Add quantified case studies")
+                add_suggestions.append("Document architecture decisions")
+                if verified_skills:
+                    add_suggestions.append(f"Deep-dive on **{list(verified_skills)[0]}**")
+            
+            for sugg in add_suggestions[:4]:
+                st.markdown(f"<span style='color: #FFB300;'>•</span> {sugg}", unsafe_allow_html=True)
         
         if cl_analysis:
             with add_cols[add_idx] if add_idx < 2 else st.container():
