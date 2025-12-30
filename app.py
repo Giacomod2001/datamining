@@ -342,74 +342,146 @@ def render_debug_page():
             st.info("Run an analysis first to see skill clustering.")
     
     # =========================================================================
-    # TAB 4: NLP INSIGHTS
+    # TAB 4: NLP INSIGHTS - Enhanced with Text Analytics
     # =========================================================================
     with t4:
-        st.subheader("Natural Language Processing")
+        st.subheader("Text Analytics & NLP")
         st.markdown("""
-        **What is this?** NLP (Natural Language Processing) allows computers to understand human text.
-        Here we extract key information automatically from your CV and job description.
+        **What is this?** Advanced text analysis using Natural Language Processing.
+        We analyze document structure, extract entities, and identify key patterns.
         """)
         
-        nlp_tab1, nlp_tab2 = st.tabs(["Named Entities (CV)", "Topic Analysis (JD)"])
-        
-        with nlp_tab1:
-            if cv_text:
+        if cv_text and jd_text:
+            # =============================================
+            # Row 1: Document Statistics Comparison
+            # =============================================
+            st.markdown("### Document Statistics")
+            
+            cv_words = len(cv_text.split())
+            jd_words = len(jd_text.split())
+            cv_sentences = cv_text.count('.') + cv_text.count('!') + cv_text.count('?')
+            jd_sentences = jd_text.count('.') + jd_text.count('!') + jd_text.count('?')
+            
+            stat1, stat2, stat3, stat4 = st.columns(4)
+            with stat1:
+                st.metric("CV Words", cv_words)
+            with stat2:
+                st.metric("JD Words", jd_words)
+            with stat3:
+                st.metric("CV Sentences", cv_sentences)
+            with stat4:
+                st.metric("JD Sentences", jd_sentences)
+            
+            st.markdown("")
+            
+            # =============================================
+            # Row 2: Skill Extraction Breakdown
+            # =============================================
+            st.markdown("### Skill Extraction Analysis")
+            
+            cv_hard, cv_soft = ml_utils.extract_skills_from_text(cv_text)
+            jd_hard, jd_soft = ml_utils.extract_skills_from_text(jd_text)
+            
+            sk1, sk2 = st.columns(2)
+            
+            with sk1:
+                st.markdown("**CV Skills Detected**")
+                st.markdown(f"""
+                <div style='background: rgba(0, 119, 181, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem;'>
+                    <strong>Technical Skills:</strong> {len(cv_hard)}<br>
+                    <strong>Soft Skills:</strong> {len(cv_soft)}<br>
+                    <strong>Total:</strong> {len(cv_hard) + len(cv_soft)}
+                </div>
+                """, unsafe_allow_html=True)
+                
+                if cv_hard:
+                    hard_preview = ", ".join(sorted(cv_hard)[:8])
+                    if len(cv_hard) > 8:
+                        hard_preview += f"... (+{len(cv_hard)-8} more)"
+                    st.caption(f"Technical: {hard_preview}")
+            
+            with sk2:
+                st.markdown("**JD Requirements Detected**")
+                st.markdown(f"""
+                <div style='background: rgba(229, 57, 53, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem;'>
+                    <strong>Technical Skills:</strong> {len(jd_hard)}<br>
+                    <strong>Soft Skills:</strong> {len(jd_soft)}<br>
+                    <strong>Total:</strong> {len(jd_hard) + len(jd_soft)}
+                </div>
+                """, unsafe_allow_html=True)
+                
+                if jd_hard:
+                    hard_preview = ", ".join(sorted(jd_hard)[:8])
+                    if len(jd_hard) > 8:
+                        hard_preview += f"... (+{len(jd_hard)-8} more)"
+                    st.caption(f"Required: {hard_preview}")
+            
+            st.markdown("")
+            
+            # =============================================
+            # Row 3: Match Quality Metrics
+            # =============================================
+            st.markdown("### Match Quality Breakdown")
+            
+            exact_matches = cv_hard.intersection(jd_hard)
+            cv_only = cv_hard - jd_hard
+            jd_only = jd_hard - cv_hard
+            
+            mq1, mq2, mq3 = st.columns(3)
+            with mq1:
+                st.metric("Exact Matches", len(exact_matches), 
+                         help="Skills that appear in both CV and JD")
+            with mq2:
+                st.metric("CV-Only Skills", len(cv_only), 
+                         help="Your extra skills not required by this job")
+            with mq3:
+                st.metric("JD-Only Skills", len(jd_only), 
+                         help="Required skills not found in your CV")
+            
+            # Coverage calculation
+            if jd_hard:
+                coverage = len(exact_matches) / len(jd_hard) * 100
+                st.progress(int(coverage), text=f"Skill Coverage: {coverage:.1f}%")
+            
+            st.divider()
+            
+            # =============================================
+            # Row 4: Named Entities & Topics
+            # =============================================
+            nlp_col1, nlp_col2 = st.columns(2)
+            
+            with nlp_col1:
+                st.markdown("### Named Entities (CV)")
                 entities = ml_utils.extract_entities_ner(cv_text)
                 
                 if entities:
-                    e1, e2, e3 = st.columns(3)
-                    
-                    with e1:
-                        st.markdown("#### Organizations")
-                        orgs = entities.get("Organizations", [])
-                        if orgs:
-                            for org in orgs[:10]:
-                                st.markdown(f"<span class='skill-tag-bonus'>{org}</span>", unsafe_allow_html=True)
-                        else:
-                            st.caption("None detected")
-                    
-                    with e2:
-                        st.markdown("#### Locations")
-                        locs = entities.get("Locations", [])
-                        if locs:
-                            for loc in locs[:10]:
-                                st.markdown(f"<span class='skill-tag-bonus'>{loc}</span>", unsafe_allow_html=True)
-                        else:
-                            st.caption("None detected")
-                    
-                    with e3:
-                        st.markdown("#### People")
-                        pers = entities.get("Persons", [])
-                        if pers:
-                            for per in pers[:10]:
-                                st.markdown(f"<span class='skill-tag-bonus'>{per}</span>", unsafe_allow_html=True)
-                        else:
-                            st.caption("None detected")
+                    for cat, items in entities.items():
+                        if items:
+                            with st.expander(f"{cat} ({len(items)} found)", expanded=len(items) > 0):
+                                tags_html = " ".join([f"<span class='skill-tag-bonus'>{item}</span>" for item in items[:10]])
+                                st.markdown(tags_html, unsafe_allow_html=True)
                 else:
-                    st.info("No named entities extracted.")
-            else:
-                st.info("Upload a CV first to extract named entities.")
-        
-        with nlp_tab2:
-            if jd_text:
+                    st.caption("No entities detected")
+            
+            with nlp_col2:
+                st.markdown("### Topic Analysis (JD)")
                 jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
                 
                 if len(jd_corpus) > 5:
                     result = ml_utils.perform_topic_modeling(jd_corpus)
                     
                     if result:
-                        st.markdown("#### Identified Topics")
                         for idx, topic in enumerate(result['topics'], 1):
                             st.success(f"**Topic {idx}:** {topic}")
                         
-                        st.markdown("#### Top Keywords")
-                        keywords_html = " ".join([f"<span class='skill-tag-bonus'>{kw}</span>" for kw in result['keywords']])
-                        st.markdown(keywords_html, unsafe_allow_html=True)
+                        if result.get('keywords'):
+                            st.markdown("**Key Terms:**")
+                            keywords_html = " ".join([f"<span class='skill-tag-bonus'>{kw}</span>" for kw in result['keywords'][:8]])
+                            st.markdown(keywords_html, unsafe_allow_html=True)
                 else:
-                    st.info("Job description too short for topic analysis.")
-            else:
-                st.info("Add a job description first to analyze topics.")
+                    st.caption("JD too short for analysis")
+        else:
+            st.info("Run an analysis first to see NLP insights.")
     
     # =========================================================================
     # TAB 5: KNOWLEDGE BASE
