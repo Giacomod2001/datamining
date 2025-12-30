@@ -322,16 +322,18 @@ section[data-testid="stSidebar"] .stMarkdown h3 {
    ============================================================================= */
 
 .stTabs [data-baseweb="tab-list"] {
-    gap: 8px;
+    gap: 4px;
     background: var(--bg-elevated);
-    padding: 8px;
+    padding: 6px;
     border-radius: 12px;
+    flex-wrap: wrap;  /* Allow tabs to wrap instead of hiding */
 }
 
 .stTabs [data-baseweb="tab"] {
     border-radius: 8px !important;
-    padding: 10px 20px !important;
+    padding: 8px 12px !important;  /* Smaller padding */
     transition: all var(--transition-fast) !important;
+    font-size: 0.85rem !important;
 }
 
 .stTabs [data-baseweb="tab"]:hover {

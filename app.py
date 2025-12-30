@@ -56,8 +56,8 @@ def render_debug_page():
     cv_text = st.session_state.get("last_cv_text", "")
     jd_text = st.session_state.get("last_jd_text", "")
     
-    # Main tabs
-    tabs = ["System Overview", "Analysis Data", "Skill Intelligence", "NLP Insights", "Knowledge Base"]
+    # Main tabs - short names to prevent "... and 1 more" truncation
+    tabs = ["System", "Analysis", "Clusters", "NLP", "Knowledge"]
     t1, t2, t3, t4, t5 = st.tabs(tabs)
     
     # =========================================================================
@@ -755,50 +755,46 @@ def render_home():
             res = st.session_state["last_results"]
             cl_analysis = st.session_state.get("last_cl_analysis")
             
-            # Navigation buttons with anchor links
+            # Navigation using direct anchor links (simpler, more reliable)
             st.markdown("""
             <style>
-            .nav-link {
+            .sidebar-nav a {
                 display: block;
-                padding: 0.5rem 0.75rem;
-                margin: 0.25rem 0;
-                background: rgba(0, 119, 181, 0.1);
+                padding: 0.4rem 0.6rem;
+                margin: 0.2rem 0;
+                background: rgba(0, 119, 181, 0.15);
                 border-radius: 6px;
                 color: #00A0DC !important;
                 text-decoration: none;
-                font-size: 0.9rem;
-                transition: all 0.2s;
-                cursor: pointer;
+                font-size: 0.85rem;
             }
-            .nav-link:hover {
-                background: rgba(0, 119, 181, 0.25);
+            .sidebar-nav a:hover {
+                background: rgba(0, 119, 181, 0.3);
             }
             </style>
-            <script>
-            function scrollToSection(id) {
-                const el = parent.document.querySelector('#' + id);
-                if (el) {
-                    el.scrollIntoView({behavior: 'smooth', block: 'start'});
-                }
-            }
-            </script>
+            <div class="sidebar-nav">
             """, unsafe_allow_html=True)
             
-            st.markdown("<a class='nav-link' onclick=\"scrollToSection('section-score')\" href='javascript:void(0)'>Match Score</a>", unsafe_allow_html=True)
-            st.markdown("<a class='nav-link' onclick=\"scrollToSection('section-skills')\" href='javascript:void(0)'>Skills Analysis</a>", unsafe_allow_html=True)
-            
+            # Build navigation items
+            nav_sections = [
+                ("Match Score", "section-score"),
+                ("Skills Analysis", "section-skills"),
+            ]
             if res.get("project_verified"):
-                st.markdown("<a class='nav-link' onclick=\"scrollToSection('section-projects')\" href='javascript:void(0)'>Project Coaching</a>", unsafe_allow_html=True)
-            
+                nav_sections.append(("Project Coaching", "section-projects"))
             if cl_analysis:
-                st.markdown("<a class='nav-link' onclick=\"scrollToSection('section-cover')\" href='javascript:void(0)'>Cover Letter</a>", unsafe_allow_html=True)
-            
+                nav_sections.append(("Cover Letter", "section-cover"))
             if res.get("missing_hard"):
-                st.markdown("<a class='nav-link' onclick=\"scrollToSection('section-learning')\" href='javascript:void(0)'>Learning Path</a>", unsafe_allow_html=True)
+                nav_sections.append(("Learning Path", "section-learning"))
+            nav_sections.extend([
+                ("Job Context", "section-context"),
+                ("AI Compass", "section-compass"),
+                ("Export", "section-export"),
+            ])
             
-            st.markdown("<a class='nav-link' onclick=\"scrollToSection('section-context')\" href='javascript:void(0)'>Job Context</a>", unsafe_allow_html=True)
-            st.markdown("<a class='nav-link' onclick=\"scrollToSection('section-compass')\" href='javascript:void(0)'>AI Compass</a>", unsafe_allow_html=True)
-            st.markdown("<a class='nav-link' onclick=\"scrollToSection('section-export')\" href='javascript:void(0)'>Export Report</a>", unsafe_allow_html=True)
+            # Render all links
+            links_html = "".join([f"<a href='#{anchor}'>{name}</a>" for name, anchor in nav_sections])
+            st.markdown(links_html + "</div>", unsafe_allow_html=True)
         
         st.divider()
         
