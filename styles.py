@@ -1,10 +1,10 @@
 # =============================================================================
-# STYLES.PY - Premium Visual Design System for Job Seeker Helper
+# STYLES.PY - Premium Visual Design System for CareerMatch AI
 # Version 2.0 - LinkedIn-Inspired Theme with Glassmorphism
 # =============================================================================
 
 def get_premium_css():
-    """Returns comprehensive CSS for premium Job Seeker Helper UI."""
+    """Returns comprehensive CSS for premium CareerMatch AI UI."""
     return """
 <style>
 /* =============================================================================
