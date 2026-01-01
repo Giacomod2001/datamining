@@ -112,7 +112,7 @@ Key techniques:
 ### Skill Legend
 
 | Tag | Meaning |
-|-----|---------|
+|-----|---------| 
 | Matched | Skill present in CV |
 | Transferable | Equivalent skill recognized |
 | Project | Verified through portfolio |
@@ -148,12 +148,17 @@ MIT License - see [LICENSE](LICENSE) for details.
 - **NLTK** - Natural Language Processing
 - **Claude Opus 4 (thinking)** - Primary AI assistant for development and implementation
 - **Gemini 3 Pro High** - Additional AI support for debugging
+- **Antigravity** - Agentic development support
 
 ---
 
 <div align="center">
 
 **CareerMatch AI**
+
+Data Mining & Text Analytics Project
+
+IULM University - A.Y. 2025-2026
 
 [Live Demo](https://dataminingiulm.streamlit.app/) | [GitHub](https://github.com/Giacomod2001/datamining)
 

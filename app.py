@@ -1,3 +1,45 @@
+"""
+================================================================================
+CareerMatch AI - Applicazione Principale
+================================================================================
+
+Progetto per l'esame di Data Mining & Text Analytics
+IULM University - A.A. 2025-2026
+Prof. Alessandro Bruno
+
+================================================================================
+STRUTTURA DELL'APPLICAZIONE:
+================================================================================
+
+1. FRONTEND (Streamlit)
+   - Dashboard interattiva per analisi CV vs Job Description
+   - Visualizzazioni: grafici Plotly, word cloud, dendrogrammi
+
+2. BACKEND (ml_utils.py)
+   - Random Forest per classificazione skill
+   - K-Means e Hierarchical Clustering  
+   - LDA Topic Modeling
+   - Estrazione skill con N-gram e Fuzzy Matching
+
+3. KNOWLEDGE BASE (constants.py)
+   - Database di Hard Skills e Soft Skills
+   - Regole di inferenza per skill trasferibili
+   - Archetipi di lavoro per Career Compass
+
+================================================================================
+PROCESSO KDD IMPLEMENTATO:
+================================================================================
+1. Data Cleaning     → Preprocessing testo (lowercase, rimozione rumore)
+2. Data Integration  → Unione CV + Job Description + Portfolio
+3. Data Selection    → Selezione sezioni rilevanti
+4. Data Transformation → TF-IDF vectorization
+5. Data Mining       → Classification, Clustering, Topic Modeling
+6. Pattern Evaluation → Calcolo match score
+7. Knowledge Presentation → Dashboard e report PDF
+
+================================================================================
+"""
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -7,14 +49,24 @@ import ml_utils
 import urllib.parse
 import styles
 
-# Clear cache on startup to ensure constants are reloaded
-# This is important when constants.py is updated
+# =============================================================================
+# PULIZIA CACHE
+# =============================================================================
+# Puliamo la cache all'avvio per garantire che le costanti siano ricaricate
+# Questo è importante quando constants.py viene aggiornato
+
 st.cache_data.clear()
 st.cache_resource.clear()
 
 # =============================================================================
-# PAGE CONFIG - v2.0 Premium Edition
+# CONFIGURAZIONE PAGINA - CareerMatch AI v2.0
 # =============================================================================
+# Configurazione iniziale della pagina Streamlit:
+# - Titolo visualizzato nel browser
+# - Icona della pagina
+# - Layout wide per sfruttare lo schermo
+# - Sidebar espansa di default
+
 st.set_page_config(
     page_title="CareerMatch AI - Smart Career Analytics",
     page_icon="briefcase",
@@ -22,8 +74,20 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Apply Premium CSS Theme
+# =============================================================================
+# APPLICAZIONE TEMA CSS PREMIUM
+# =============================================================================
+# Carica il CSS personalizzato da styles.py
+# Include: palette LinkedIn, glassmorphism, animazioni
+
 st.markdown(styles.get_premium_css(), unsafe_allow_html=True)
+
+# =============================================================================
+# GESTIONE STATO SESSIONE
+# =============================================================================
+# Streamlit usa session_state per mantenere lo stato tra i refresh
+# - page: pagina corrente (Home o Debug)
+# - demo_mode: se l'utente ha attivato la modalità demo
 
 if "page" not in st.session_state:
     st.session_state["page"] = "Home"
@@ -31,12 +95,30 @@ if "demo_mode" not in st.session_state:
     st.session_state["demo_mode"] = False
 
 # =============================================================================
-# DEBUGGER
+# DEBUGGER / CONSOLE SVILUPPATORE
 # =============================================================================
+# Questa sezione mostra il "dietro le quinte" degli algoritmi ML.
+# Utile per:
+# - Capire come funzionano i modelli
+# - Verificare i risultati dell'analisi
+# - Esplorare la Knowledge Base
+# =============================================================================
+
 def render_debug_page():
-    """Developer/Debug mode with advanced analytics and system insights."""
+    """
+    CONSOLE SVILUPPATORE
+    ====================
+    Mostra analytics avanzate e diagnostica di sistema.
     
-    # Header with back button aligned with title
+    Tab disponibili:
+    1. System - Panoramica modelli ML con spiegazioni
+    2. Analysis - Dati dell'ultima analisi
+    3. Clusters - Visualizzazione clustering skill
+    4. NLP - Statistiche estrazione testo
+    5. Knowledge - Database skill e regole
+    """
+    
+    # Header con pulsante per tornare all'app
     col_back, col_title = st.columns([1, 5])
     with col_back:
         st.markdown("<div style='padding-top: 0.5rem;'></div>", unsafe_allow_html=True)
@@ -51,12 +133,12 @@ def render_debug_page():
     
     st.divider()
     
-    # Get analysis results if available
+    # Recupera risultati analisi se disponibili
     res = st.session_state.get("last_results", None)
     cv_text = st.session_state.get("last_cv_text", "")
     jd_text = st.session_state.get("last_jd_text", "")
     
-    # Main tabs - short names to prevent "... and 1 more" truncation
+    # Tab principali - nomi brevi per evitare troncamento "... and 1 more"
     tabs = ["System", "Analysis", "Clusters", "NLP", "Knowledge"]
     t1, t2, t3, t4, t5 = st.tabs(tabs)
     
