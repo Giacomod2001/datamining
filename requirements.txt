@@ -1,3 +1,43 @@
+# =============================================================================
+# CareerMatch AI - Dipendenze Python (requirements.txt)
+# =============================================================================
+#
+# Questo file elenca tutte le librerie Python necessarie per l'applicazione.
+# Installare con: pip install -r requirements.txt
+#
+# =============================================================================
+# LIBRERIE PRINCIPALI:
+# =============================================================================
+#
+# FRONTEND:
+# - streamlit: Framework per dashboard interattive
+# - plotly: Grafici interattivi (scatter, bar, pie)
+#
+# DATA PROCESSING:
+# - pandas: Manipolazione dati tabulari (DataFrame)
+# - numpy: Calcolo numerico e array
+#
+# MACHINE LEARNING (Riferimento corso):
+# - scikit-learn: Random Forest, K-Means, TF-IDF, LDA, PCA
+# - scipy: Hierarchical Clustering (dendrogrammi)
+#
+# TEXT MINING (Riferimento corso):
+# - nltk: Natural Language Processing, NER
+# - thefuzz: Fuzzy string matching (Levenshtein distance)
+# - python-levenshtein: Ottimizzazione calcolo distanza
+# - wordcloud: Generazione word cloud per Topic Modeling
+#
+# PDF:
+# - PyPDF2: Estrazione testo da PDF (CV upload)
+# - fpdf: Generazione report PDF
+#
+# UTILITIES:
+# - matplotlib: Grafici statici (dendrogrammi)
+# - graphviz: Visualizzazione grafi
+# - requests: HTTP requests
+#
+# =============================================================================
+
 streamlit>=1.43.0
 pandas
 numpy
@@ -13,4 +53,7 @@ matplotlib
 nltk
 wordcloud
 requests
+
 # CareerMatch AI v2.0
+# Data Mining & Text Analytics Project
+# IULM University - A.Y. 2025-2026

@@ -1,10 +1,66 @@
+"""
+================================================================================
+CareerMatch AI - Sistema di Design CSS (styles.py)
+================================================================================
+
+Questo file contiene il sistema di design visuale dell'applicazione.
+Implementa il tema premium ispirato a LinkedIn con effetti glassmorphism.
+
+================================================================================
+RUOLO NEL PROCESSO KDD:
+================================================================================
+Step 7 - Knowledge Presentation:
+- Visualizzazione dei risultati in modo chiaro e professionale
+- Dashboard interattiva per l'utente finale
+- Grafici, metriche, e report visivi
+
+================================================================================
+COMPONENTI CSS:
+================================================================================
+
+1. VARIABILI CSS (:root)
+   - Palette colori LinkedIn (blu #0077B5)
+   - Colori neutrali per dark theme
+   - Ombre e transizioni
+
+2. STILI GLOBALI
+   - Background gradiente
+   - Tipografia (h1-h6)
+   - Nasconde branding Streamlit
+
+3. COMPONENTI UI
+   - Card con glassmorphism
+   - Bottoni con hover effects
+   - Tag colorati per skill (matched, missing, transferable)
+   - Sidebar styling
+   - Progress bar e metriche
+
+4. RESPONSIVE DESIGN
+   - Breakpoint per mobile/desktop
+   - Adattamento sidebar
+
+================================================================================
+"""
+
 # =============================================================================
-# STYLES.PY - Premium Visual Design System for CareerMatch AI
-# Version 2.0 - LinkedIn-Inspired Theme with Glassmorphism
+# SISTEMA DI DESIGN PREMIUM
+# =============================================================================
+# Riferimento corso: "Knowledge Presentation" (KDD Step 7)
+#
+# Il CSS definisce come presentare i risultati del Data Mining all'utente.
+# Un buon design migliora la comprensione dei pattern estratti.
 # =============================================================================
 
 def get_premium_css():
-    """Returns comprehensive CSS for premium CareerMatch AI UI."""
+    """
+    Restituisce il CSS completo per l'interfaccia premium CareerMatch AI.
+    
+    Include:
+    - Palette colori LinkedIn
+    - Effetti glassmorphism sulle card
+    - Animazioni smooth
+    - Design responsive
+    """
     return """
 <style>
 /* =============================================================================

@@ -1,6 +1,63 @@
-# HIERARCHICAL INFERENCE RULES (Parent -> Child implied)
+"""
+================================================================================
+CareerMatch AI - Knowledge Base (constants.py)
+================================================================================
+
+Questo file contiene la KNOWLEDGE BASE dell'applicazione, ovvero il database
+di conoscenza utilizzato per l'analisi CV vs Job Description.
+
+================================================================================
+STRUTTURA DELLA KNOWLEDGE BASE:
+================================================================================
+
+1. INFERENCE_RULES (Regole di Inferenza)
+   - Riferimento corso: "Association Analysis", "Frequent Patterns"
+   - Mappano skill -> skill correlate
+   - Es: "Python" implica conoscenza di "Pandas"
+   - Usate per calcolare Transferable Skills
+
+2. HARD_SKILLS (Competenze Tecniche)
+   - Database di skill tecniche con keyword/sinonimi
+   - Es: "Python" -> ["python", "python3", "py"]
+   - Usate dal classificatore Random Forest
+
+3. SOFT_SKILLS (Competenze Trasversali)
+   - Database di soft skill
+   - Es: "Leadership" -> ["leader", "team lead", "management"]
+
+4. JOB_ARCHETYPES (Archetipi di Lavoro)
+   - Profili tipo per Career Compass
+   - Mappano ruoli -> skill richieste
+
+5. SKILL_CLUSTERS (Cluster di Skill)
+   - Raggruppamenti semantici di skill
+   - Usati per visualizzazione e gap analysis
+
+================================================================================
+RUOLO NEL PROCESSO KDD:
+================================================================================
+La Knowledge Base è fondamentale per:
+- Step 5 (Data Mining): fornisce le etichette per la classificazione
+- Step 6 (Pattern Evaluation): definisce le regole per skill trasferibili
+- Rappresenta la "domain knowledge" del sistema
+
+================================================================================
+"""
+
+# =============================================================================
+# REGOLE DI INFERENZA GERARCHICHE
+# =============================================================================
+# Riferimento corso: "Association Analysis", "Frequent Patterns"
+#
+# Queste regole implementano la logica: "Se conosci X, probabilmente conosci Y"
+# Formato: { "Skill Genitore": ["Skill Figlio 1", "Skill Figlio 2", ...] }
+#
+# Esempio: Se un CV menziona "BigQuery", inferiamo che il candidato ha
+# anche competenze in "Cloud Computing", "SQL", "Data Science"
+# =============================================================================
+
 INFERENCE_RULES = {
-    # Cloud & Data
+    # Cloud & Data - Piattaforme cloud implicano competenze correlate
     "BigQuery": ["Cloud Computing", "SQL", "Data Science", "Data Warehousing"],
     "GCP": ["Cloud Computing"],
     "AWS": ["Cloud Computing"],
@@ -8,6 +65,7 @@ INFERENCE_RULES = {
     "Snowflake": ["Cloud Computing", "SQL", "Data Warehousing"],
     "Redshift": ["Cloud Computing", "SQL", "Data Warehousing", "AWS"],
     
+    # Frontend - Framework JavaScript
     # Frontend
     "React": ["Frontend", "JavaScript"],
     "Vue": ["Frontend", "JavaScript"],
@@ -254,16 +312,41 @@ SKILL_CLUSTERS = {
     "Legal Research": {"Westlaw", "LexisNexis", "DeJure", "ItalgiureWeb"},
 }
 
-# PROJECT BASED SKILLS (Evaluation via Portfolio)
+# =============================================================================
+# SKILL BASATE SU PROGETTO
+# =============================================================================
+# Queste skill richiedono verifica tramite portfolio/progetti
+# Non basta menzionarle nel CV, servono progetti concreti come prova
+# =============================================================================
+
 PROJECT_BASED_SKILLS = {
     "Computer Vision", "Deep Learning", "NLP", "Machine Learning", 
     "Data Science", "System Design", "Cloud Architecture", 
     "Graphic Design", "UX/UI Design", "Copywriting", "Translation"
 }
 
-# HARD SKILLS (Technical, quantifiable) - EXPANDED FOR BETTER MATCHING
+# =============================================================================
+# HARD SKILLS (Competenze Tecniche)
+# =============================================================================
+# Riferimento corso: Dati di training per Random Forest Classifier
+#
+# Struttura: { "Nome Skill": ["keyword1", "keyword2", "sinonimo1", ...] }
+#
+# Ogni skill ha una lista di parole chiave che la identificano.
+# Il classificatore Random Forest usa queste keyword per:
+# 1. Estrarre skill dal testo del CV
+# 2. Estrarre requisiti dalla Job Description
+# 3. Calcolare il match tra CV e JD
+#
+# Le keyword includono:
+# - Nomi tecnici (python, sql, tensorflow)
+# - Sinonimi (py, python3)
+# - Varianti italiane (apprendimento automatico)
+# - Tool correlati (pandas per Python)
+# =============================================================================
+
 HARD_SKILLS = {
-    # --- PROGRAMMING & DATA ---
+    # --- PROGRAMMAZIONE & DATI ---
     "Python": ["python", "py", "python3", "django", "flask", "fastapi", "pandas", "numpy", "scipy", "matplotlib", "seaborn", "jupyter", "anaconda", "pycharm", "scripting", "automation script"],
     "Pandas": ["pandas", "dataframe", "data manipulation", "data wrangling", "data cleaning", "data preprocessing"],
     "Java": ["java", "spring", "spring boot", "maven", "gradle", "jvm", "java ee", "hibernate"],
