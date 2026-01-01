@@ -497,6 +497,16 @@ def perform_skill_clustering(skills: List[str]):
 # - Es: "Data Analysis", "Programming", "Business Communication"
 # =============================================================================
 
+# Import per Topic Modeling
+try:
+    from sklearn.decomposition import LatentDirichletAllocation
+    from sklearn.feature_extraction.text import CountVectorizer
+    from wordcloud import WordCloud
+except ImportError:
+    LatentDirichletAllocation = None
+    CountVectorizer = None
+    WordCloud = None
+
 def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
     """
     TOPIC MODELING CON LDA
