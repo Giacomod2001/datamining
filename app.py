@@ -779,11 +779,39 @@ def render_debug_page():
             st.dataframe(df, use_container_width=True, hide_index=True)
 
 # =============================================================================
-# MAIN UI
+# INTERFACCIA UTENTE PRINCIPALE (UI)
 # =============================================================================
+# Riferimento corso: "Knowledge Presentation" (KDD Step 7)
+#
+# Questa è la pagina principale dell'applicazione dove l'utente:
+# 1. Inserisce il CV (testo o PDF)
+# 2. Inserisce la Job Description
+# 3. Attiva opzioni (Cover Letter, Portfolio)
+# 4. Avvia l'analisi
+# 5. Visualizza i risultati
+#
+# L'UI è costruita con Streamlit, un framework Python per dashboard.
+# =============================================================================
+
 def render_home():
+    """
+    RENDERING PAGINA PRINCIPALE
+    ============================
+    Riferimento corso: "Knowledge Presentation"
+    
+    Gestisce:
+    - Sidebar con branding e controlli
+    - Area input per CV e Job Description
+    - Opzioni aggiuntive (Cover Letter, Portfolio)
+    - Pulsante di analisi
+    - Visualizzazione risultati
+    """
+    
+    # =========================================================================
+    # SIDEBAR - Controlli e Navigazione
+    # =========================================================================
     with st.sidebar:
-        # Header
+        # Header con branding
         st.markdown("""
         <div style='text-align: center; padding: 1rem 0;'>
             <h1 style='font-size: 1.8rem; margin-bottom: 0.2rem;'>CareerMatch AI</h1>
@@ -794,7 +822,7 @@ def render_home():
         
         st.divider()
         
-        # Demo Mode - Quick Start
+        # Modalità Demo - Carica dati di esempio per test rapido
         st.markdown("### Quick Start")
         
         col_demo1, col_demo2 = st.columns(2)
@@ -1111,41 +1139,69 @@ def render_home():
         else:
             res = ml_utils.analyze_gap(cv, jd)
         
-        # Stage 2: Cover Letter (if enabled)
+        # Stage 2: Analisi Cover Letter (se abilitata)
         cl_analysis = None
         if show_cover_letter and cover_letter_text:
             progress_bar.progress(60, text="Evaluating cover letter...")
             cl_analysis = ml_utils.analyze_cover_letter(cover_letter_text, jd, cv)
         
-        # Stage 3: Generating insights
+        # Stage 3: Generazione insights
         progress_bar.progress(80, text="Generating career insights...")
         
-        # Save results in session state for debugger
+        # Salva risultati in session_state per il debugger
         st.session_state["last_results"] = res
         st.session_state["last_cv_text"] = cv
         st.session_state["last_jd_text"] = jd
         st.session_state["last_cl_analysis"] = cl_analysis
         
-        # Complete!
+        # Completato!
         progress_bar.progress(100, text="Analysis complete.")
         
-        # Small delay to show completion, then display
+        # Breve pausa per mostrare completamento
         import time
         time.sleep(0.5)
         progress_bar.empty()
         
-        # Success message
+        # Messaggio di successo
         st.success("Analysis complete. Scroll down to see your personalized career insights.")
              
-        # Display results
+        # Mostra risultati
         render_results(res, jd, cv, cl_analysis)
 
+# =============================================================================
+# VISUALIZZAZIONE RISULTATI ANALISI
+# =============================================================================
+# Riferimento corso: "Knowledge Presentation" (KDD Step 7)
+#
+# Questa funzione presenta i risultati del Data Mining in modo visuale:
+# - Match Score: percentuale di compatibilità CV-JD
+# - Skill Analysis: skill matched, missing, transferable
+# - Cover Letter Analysis: valutazione lettera motivazionale
+# - Learning Path: suggerimenti di apprendimento
+# - Career Compass: ruoli alternativi suggeriti
+# - Export: generazione report PDF
+# =============================================================================
+
 def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
+    """
+    RENDERING RISULTATI ANALISI
+    ============================
+    Riferimento corso: "Knowledge Presentation" (KDD Step 7)
+    
+    Visualizza i pattern estratti dal Data Mining in modo comprensibile:
+    - Grafici interattivi (Plotly)
+    - Tag colorati per skill
+    - Metriche percentuali
+    - Suggerimenti azionabili
+    """
     st.divider()
     pct = res["match_percentage"]
     
-    # --- CLICKABLE INDEX NAVIGATION ---
-    # Build navigation links based on what sections are available
+    # =========================================================================
+    # NAVIGAZIONE SEZIONI
+    # =========================================================================
+    # Indice cliccabile per saltare alle sezioni - UX improvement
+    
     nav_items = [
         ("Match Score", "section-score"),
         ("Skills Analysis", "section-skills"),

@@ -737,11 +737,29 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
         print(f"LDA Error: {e}")
         return None
 
+# =============================================================================
+# FUNZIONI HELPER PER INTERPRETAZIONE TOPIC
+# =============================================================================
+# Queste funzioni trasformano i risultati grezzi di LDA in testo leggibile
+# per l'utente finale (Knowledge Presentation - KDD Step 7)
+# =============================================================================
+
 def _interpret_topic_keywords(keywords: List[str]) -> str:
     """
-    Converts a list of keywords into a human-readable interpretation.
+    INTERPRETAZIONE PAROLE CHIAVE TOPIC
+    ====================================
+    Converte una lista di keyword in un'interpretazione leggibile.
+    
+    Logica:
+    - Identifica il dominio tecnologico dalle keyword
+    - Genera una descrizione human-friendly
+    
+    Esempio:
+    - Input: ["aws", "data", "pipeline"]
+    - Output: "Cloud Data Engineering: Working with cloud platforms..."
     """
-    # Common technology/domain patterns
+    
+    # Pattern di tecnologie per categoria
     cloud_tech = {'aws', 'azure', 'gcp', 'cloud', 'kubernetes', 'docker'}
     data_tech = {'data', 'sql', 'database', 'analytics', 'etl', 'pipeline', 'warehouse', 'bigquery'}
     viz_tech = {'tableau', 'power', 'bi', 'powerbi', 'visualization', 'dashboard', 'looker'}
@@ -752,7 +770,7 @@ def _interpret_topic_keywords(keywords: List[str]) -> str:
     
     kw_lower = {k.lower() for k in keywords}
     
-    # Check which category matches
+    # Determina la categoria principale basandosi sull'intersezione
     if kw_lower & cloud_tech:
         if kw_lower & data_tech:
             return f"Cloud Data Engineering: Working with cloud platforms ({', '.join(kw_lower & cloud_tech)}) to manage and process data"
@@ -780,13 +798,20 @@ def _interpret_topic_keywords(keywords: List[str]) -> str:
         return f"Business Domain: Focus on business aspects like {', '.join(keywords[:3])}"
     
     else:
-        # Generic fallback
+        # Fallback generico
         return f"Key Competencies: {', '.join(keywords[:3])}"
 
 
 def _generate_job_summary(keywords: List[str]) -> str:
     """
-    Generates a summary sentence explaining what the job is really about.
+    GENERAZIONE SINTESI LAVORO
+    ===========================
+    Genera una frase riassuntiva che spiega il focus del lavoro.
+    
+    Analizza le keyword estratte da LDA per determinare:
+    - Dominio principale (Data, Cloud, ML, ecc.)
+    - Tipo di ruolo (Engineer, Analyst, Developer)
+    - Contesto aziendale
     """
     kw_lower = {k.lower() for k in keywords}
     
@@ -829,6 +854,27 @@ try:
     else:
         ssl._create_default_https_context = _create_unverified_https_context
 
+    # =============================================================================
+# NAMED ENTITY RECOGNITION (NER)
+# =============================================================================
+# Riferimento corso: "Information Extraction", "Named Entity Recognition"
+#
+# NER è una tecnica di Information Extraction che identifica e classifica
+# entità nominate nel testo in categorie predefinite:
+# - ORGANIZATION: aziende, università, istituzioni
+# - GPE (Geo-Political Entity): città, paesi, regioni
+# - PERSON: nomi di persone
+#
+# Algoritmo NLTK usato:
+# 1. Tokenizzazione: divide il testo in parole
+# 2. POS Tagging: assegna parti del discorso (noun, verb, ecc.)
+# 3. NE Chunking: raggruppa token in entità nominate
+#
+# Post-processing:
+# - Filtra parole comuni e skill (evita falsi positivi)
+# - Corregge entità note (es: "Milano" come Location, non Organization)
+# =============================================================================
+
     # Download necessary NLTK data (cached)
     try:
         nltk.data.find('tokenizers/punkt')
@@ -848,24 +894,56 @@ except ImportError:
 
 def extract_entities_ner(text: str) -> Dict[str, List[str]]:
     """
-    Extracts named entities (Organizations, GPE, Date) using NLTK with advanced filtering.
-    Optimized for Italian and European CVs.
+    ESTRAZIONE ENTITÀ CON NER (Named Entity Recognition)
+    =====================================================
+    Riferimento corso: "Information Extraction", "NER"
+    
+    Estrae entità nominate dal testo usando NLTK.
+    Ottimizzato per CV italiani ed europei.
+    
+    PIPELINE NER:
+    -------------
+    1. Tokenizzazione (word_tokenize)
+    2. POS Tagging (pos_tag) - assegna parti del discorso
+    3. NE Chunking (ne_chunk) - identifica entità
+    4. Filtraggio - rimuove falsi positivi
+    5. Post-processing - corregge classificazioni note
+    
+    CATEGORIE ESTRATTE:
+    -------------------
+    - Organizations: aziende, università, istituzioni
+    - Locations: città, paesi, regioni
+    - Persons: nomi di candidati, manager, referenti
+    
+    FILTRAGGIO AVANZATO:
+    --------------------
+    Evita di classificare erroneamente:
+    - Skill tecniche come organizzazioni ("Python", "React")
+    - Header CV come entità ("Experience", "Education")
+    - Acronimi business come organizzazioni ("KPI", "ROI")
+    
+    Returns:
+        Dict con liste di Organizations, Locations, Persons
     """
     if not nltk:
         return {}
 
     entities = {"Organizations": [], "Locations": [], "Persons": []}
 
-    # 1. Build Exclusion Set (Skills + Headers + Common Noise)
+    # =========================================================================
+    # STEP 1: COSTRUZIONE SET DI ESCLUSIONE
+    # =========================================================================
+    # Evitiamo falsi positivi escludendo skill, header CV, e parole comuni
+    
     exclusion_set = set()
     
-    # helper to add flattened parts of skills
+    # Helper per aggiungere parti di termini composti
     def add_to_exclusion(term):
         parts = term.lower().split()
         for p in parts:
             exclusion_set.add(p)
             
-    # Add Hard Skills
+    # Aggiungi Hard Skills (evita che "Python" sia un'organizzazione)
     for skill_cat, skill_vars in constants.HARD_SKILLS.items():
         add_to_exclusion(skill_cat)
         for var in skill_vars:
