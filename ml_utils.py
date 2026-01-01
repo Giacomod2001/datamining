@@ -1,11 +1,86 @@
+"""
+================================================================================
+CareerMatch AI - Machine Learning Utilities
+================================================================================
+
+Questo modulo implementa le tecniche di Data Mining e Text Analytics utilizzate
+per l'analisi CV-Job Description. Le tecniche sono allineate al corso di
+"Data Mining & Text Analytics".
+
+================================================================================
+TECNICHE IMPLEMENTATE (Riferimenti al corso):
+================================================================================
+
+1. TEXT MINING & FEATURE EXTRACTION
+   - TF-IDF Vectorization: Trasforma il testo in Vector Space Model (VSM)
+   - N-gram Analysis: Cattura sequenze di parole (unigram, bigram, trigram)
+   - Fuzzy Matching: Gestisce variazioni e errori di battitura
+   
+   Riferimento corso: "Text Mining", "Word Vector Representation"
+
+2. CLASSIFICATION (Supervised Learning)
+   - Random Forest Classifier: Ensemble di Decision Trees
+   - Pipeline sklearn: Preprocessing + Classification
+   
+   Riferimento corso: "Classification and Regression", "Decision Tree"
+
+3. CLUSTERING (Unsupervised Learning)
+   - K-Means: Partitioning clustering per raggruppare skill simili
+   - Hierarchical Clustering (Agglomerative): Crea dendrogramma delle skill
+   - PCA: Riduzione dimensionalità per visualizzazione 2D
+   
+   Riferimento corso: "Clustering Techniques", "K-means", "Hierarchical clustering"
+
+4. TOPIC MODELING
+   - LDA (Latent Dirichlet Allocation): Estrae topic latenti dai testi
+   
+   Riferimento corso: "Topic Model"
+
+5. INFORMATION EXTRACTION
+   - Named Entity Recognition (NER): Estrae entità come ORG, PERSON, LOC
+   - Skill Extraction: Estrae competenze tecniche e soft skills
+   
+   Riferimento corso: "Information Extraction", "Named Entity Recognition"
+
+6. PATTERN DISCOVERY
+   - Association Analysis: Trova correlazioni tra skill (transferable skills)
+   - Inference Rules: Regole per dedurre skill correlate
+   
+   Riferimento corso: "Frequent Patterns and Association Analysis"
+
+================================================================================
+KNOWLEDGE DISCOVERY PROCESS (KDD):
+================================================================================
+L'applicazione segue il processo KDD classico:
+
+1. Data Cleaning     → Preprocessing del testo (lowercase, rimozione rumore)
+2. Data Integration  → Combinazione CV + Job Description + Portfolio
+3. Data Selection    → Estrazione delle parti rilevanti
+4. Data Transformation → TF-IDF vectorization, embedding
+5. Data Mining       → Classification, Clustering, Pattern Discovery
+6. Pattern Evaluation → Calcolo match score, confidence
+7. Knowledge Presentation → Dashboard, grafici, report
+
+================================================================================
+"""
+
 import re
 import pandas as pd
 import streamlit as st
 from typing import Set, Dict, Tuple, List
 import urllib.parse
 
-# Force Streamlit Cloud Update
-# Optional Imports with robust handling
+# =============================================================================
+# LIBRERIE ML (sklearn)
+# =============================================================================
+# Queste librerie implementano gli algoritmi di Machine Learning:
+# - TfidfVectorizer: Term Frequency-Inverse Document Frequency (Text Mining)
+# - RandomForestClassifier: Ensemble di Decision Trees (Classification)
+# - KMeans: Algoritmo di clustering partizionale (Unsupervised Learning)
+# - AgglomerativeClustering: Clustering gerarchico bottom-up
+# - PCA: Principal Component Analysis per riduzione dimensionalità
+# - cosine_similarity: Metrica di similarità per Vector Space Model
+
 try:
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.ensemble import RandomForestClassifier
@@ -13,7 +88,7 @@ try:
     from sklearn.cluster import KMeans, AgglomerativeClustering
     from sklearn.decomposition import PCA
     from sklearn.metrics.pairwise import cosine_similarity
-    import scipy.cluster.hierarchy as sch
+    import scipy.cluster.hierarchy as sch  # Per dendrogrammi (Hierarchical Clustering)
     import matplotlib.pyplot as plt
 except ImportError:
     RandomForestClassifier = None
@@ -26,49 +101,103 @@ except ImportError:
     plt = None
 
 try:
-    from PyPDF2 import PdfReader
+    from PyPDF2 import PdfReader  # Per estrazione testo da PDF
 except ImportError:
     PdfReader = None
 
 try:
-    from fpdf import FPDF
+    from fpdf import FPDF  # Per generazione report PDF
 except ImportError:
     FPDF = None
 
-import constants
+import constants  # Contiene HARD_SKILLS, SOFT_SKILLS, INFERENCE_RULES
 
 # =============================================================================
+# CLASSIFICATION: RANDOM FOREST
+# =============================================================================
+# Riferimento corso: "Classification and Regression", "Decision Tree"
+#
+# Random Forest è un algoritmo di SUPERVISED LEARNING che usa un ensemble
+# di Decision Trees. Ogni albero "vota" per una classe e la classe con
+# più voti vince (majority voting).
+#
+# Vantaggi (dal corso):
+# - Robusto all'overfitting grazie all'ensemble
+# - Gestisce bene feature numeriche e categoriche
+# - Fornisce importanza delle feature
+#
+# Nel nostro caso: classifica frammenti di testo in categorie di skill
+# =============================================================================
+
 @st.cache_resource
 def train_rf_model():
     """
-    Trains an enhanced Random Forest model on Hard Skills from constants.py.
+    CLASSIFICAZIONE CON RANDOM FOREST
+    ==================================
+    Riferimento corso: "Classification and Regression", Section 1
     
-    Improvements in v2.0:
-    - 200 estimators (up from 50) for more robust predictions
-    - Trigrams support for compound skills like "Machine Learning Engineer"
-    - 5000 features for richer vocabulary
-    - Balanced class weights for rare skills
-    - Deeper trees (max_depth=30) for complex patterns
+    Questo metodo implementa un classificatore supervisionato per riconoscere
+    le competenze (skills) a partire da frammenti di testo.
     
-    Returns (pipeline, dataframe).
+    ARCHITETTURA PIPELINE:
+    ----------------------
+    1. TF-IDF Vectorizer (Text Mining)
+       - Trasforma il testo in Vector Space Model (VSM)
+       - TF = Term Frequency: frequenza del termine nel documento
+       - IDF = Inverse Document Frequency: penalizza termini troppo comuni
+       - Formula: TF-IDF(t,d) = TF(t,d) × log(N/DF(t))
+       - N-gram range (1,3): cattura unigram, bigram e trigram
+         Es: "machine", "machine learning", "machine learning engineer"
+    
+    2. Random Forest Classifier
+       - Ensemble di 150 Decision Trees
+       - Ogni albero è addestrato su un subset casuale dei dati (bagging)
+       - La predizione finale è il voto di maggioranza
+    
+    PARAMETRI CHIAVE:
+    -----------------
+    - n_estimators=150: numero di alberi nell'ensemble
+    - max_depth=15: profondità massima di ogni albero (previene overfitting)
+    - min_samples_split=5: minimo campioni per dividere un nodo
+    - class_weight='balanced': bilancia classi rare/frequenti
+    
+    TRAINING DATA:
+    --------------
+    I dati di training sono generati da constants.py:
+    - HARD_SKILLS: competenze tecniche (Python, SQL, Machine Learning...)
+    - SOFT_SKILLS: competenze trasversali (Leadership, Communication...)
+    
+    Per ogni skill, vengono create varianti comuni nei CV:
+    - "python" → "used python", "experience with python", "proficient in python"
+    
+    Returns:
+        Tuple[Pipeline, DataFrame]: (modello addestrato, dati di training)
     """
-    # Prepare Data
+    
+    # =========================================================================
+    # STEP 1: PREPARAZIONE DATI (Data Preparation - KDD Step 1-3)
+    # =========================================================================
+    # Creiamo il dataset di training con coppie (testo, label)
+    # Questo è l'approccio SUPERVISIONATO: abbiamo etichette note
+    
     data = []
 
-    # Check if HARD_SKILLS exists in constants (Backward compatibility)
+    # Carica le skill dal knowledge base
     hard_skills = getattr(constants, "HARD_SKILLS", {})
     soft_skills = getattr(constants, "SOFT_SKILLS", {})
 
+    # Per ogni hard skill, crea varianti contestuali
     for skill_name, keywords in hard_skills.items():
         for kw in keywords:
-            # Original keyword
+            # Keyword originale
             data.append({"text": kw, "label": skill_name})
-            # Common CV patterns
+            # Pattern comuni nei CV (data augmentation)
             data.append({"text": f"used {kw}", "label": skill_name})
             data.append({"text": f"experience with {kw}", "label": skill_name})
             data.append({"text": f"proficient in {kw}", "label": skill_name})
             data.append({"text": f"expert in {kw}", "label": skill_name})
 
+    # Soft skills con meno varianti
     for skill_name, keywords in soft_skills.items():
         for kw in keywords:
             data.append({"text": kw, "label": skill_name})
@@ -78,21 +207,43 @@ def train_rf_model():
     if df.empty:
         return None, df
 
-    # If sklearn is missing or failed to import
+    # Verifica disponibilità sklearn
     if not RandomForestClassifier or not TfidfVectorizer or not Pipeline:
         return None, df
 
+    # =========================================================================
+    # STEP 2: COSTRUZIONE PIPELINE (Data Transformation + Mining - KDD Step 4-5)
+    # =========================================================================
+    
     try:
         pipe = Pipeline([
+            # -----------------------------------------------------------------
+            # TF-IDF VECTORIZER (Text Mining - Feature Extraction)
+            # -----------------------------------------------------------------
+            # Riferimento corso: "Word Vector Representation", "Text Mining"
+            #
+            # Trasforma il testo in vettori numerici (Vector Space Model)
+            # Ogni parola diventa una dimensione del vettore
+            # Il valore è il peso TF-IDF della parola
+            # -----------------------------------------------------------------
             ('tfidf', TfidfVectorizer(
-                ngram_range=(1, 3),       # Capture up to 3-word phrases
-                max_features=3000,         # Reduced from 5000 to prevent overfitting
-                max_df=0.95,               # Ignore terms in >95% of docs (too common)
-                min_df=2,                  # Ignore terms in <2 docs (too rare)
-                sublinear_tf=True,         # Log normalization for term frequency
+                ngram_range=(1, 3),       # Unigram, bigram, trigram
+                max_features=3000,         # Dimensionalità del vocabolario
+                max_df=0.95,               # Ignora termini in >95% dei documenti
+                min_df=2,                  # Ignora termini in <2 documenti
+                sublinear_tf=True,         # Usa log(1 + tf) invece di tf
                 analyzer='word',
                 lowercase=True
             )),
+            
+            # -----------------------------------------------------------------
+            # RANDOM FOREST CLASSIFIER (Classification)
+            # -----------------------------------------------------------------
+            # Riferimento corso: "Classification and Regression"
+            #
+            # Ensemble di Decision Trees con voting a maggioranza
+            # Ogni albero vede un subset casuale di dati e feature
+            # -----------------------------------------------------------------
             ('rf', RandomForestClassifier(
                 n_estimators=150,          # Reduced from 200 - still robust but less overfit
                 max_depth=15,              # Reduced from 30 - prevents overly complex trees
@@ -112,14 +263,88 @@ def train_rf_model():
         return None, df
 
 # =============================================================================
+# CLUSTERING: K-MEANS E HIERARCHICAL
+# =============================================================================
+# Riferimento corso: "Clustering Techniques", Section 2
+#
+# Il CLUSTERING è una tecnica di UNSUPERVISED LEARNING che raggruppa
+# oggetti simili senza bisogno di etichette predefinite.
+#
+# Due tecniche implementate:
+# 1. K-MEANS (Partitioning Clustering)
+#    - Divide i dati in K cluster
+#    - Ogni cluster ha un centroide
+#    - Algoritmo iterativo: assegna punti → ricalcola centroidi → ripeti
+#
+# 2. HIERARCHICAL CLUSTERING (Agglomerative)
+#    - Crea una gerarchia di cluster (dendrogramma)
+#    - Approccio bottom-up: ogni punto inizia come cluster singolo
+#    - I cluster più vicini vengono uniti progressivamente
+# =============================================================================
+
 def perform_skill_clustering(skills: List[str]):
     """
-    Performs K-Means and Hierarchical Clustering on a list of skills.
+    CLUSTERING DELLE COMPETENZE
+    ============================
+    Riferimento corso: "Clustering Techniques", Section 2
+    
+    Questa funzione implementa due tecniche di clustering per raggruppare
+    le competenze estratte da CV e Job Description.
+    
+    PERCHÉ CLUSTERING?
+    ------------------
+    - Visualizzare quali skill sono semanticamente simili
+    - Identificare "famiglie" di competenze (Data, Development, Cloud...)
+    - Apprendimento NON SUPERVISIONATO: non servono etichette
+    
+    STEP 1: TF-IDF VECTORIZATION
+    ----------------------------
+    Prima di clusterizzare, trasformiamo le skill in vettori numerici.
+    Usiamo 'char_wb' (Character N-Grams Within Word Boundaries):
+    - Cattura similarità tra "Python" e "PyTorch"
+    - Cattura "SQL" in "MySQL" e "PostgreSQL"
+    
+    STEP 2: HIERARCHICAL CLUSTERING
+    --------------------------------
+    Riferimento corso: "Hierarchical Clustering", "Dendrogramma"
+    
+    Algoritmo Agglomerativo (bottom-up):
+    1. Ogni skill inizia come cluster singolo
+    2. Trova le due skill più simili e uniscile
+    3. Ripeti fino ad avere un solo cluster
+    4. Il dendrogramma mostra la gerarchia di unione
+    
+    Linkage Method: WARD
+    - Minimizza la varianza intra-cluster
+    - Produce cluster bilanciati e compatti
+    
+    STEP 3: K-MEANS CLUSTERING
+    --------------------------
+    Riferimento corso: "K-means", Section 2
+    
+    Algoritmo:
+    1. Scegli K centroidi iniziali (random)
+    2. Assegna ogni skill al centroide più vicino
+    3. Ricalcola i centroidi come media dei punti
+    4. Ripeti step 2-3 fino a convergenza
+    
+    Parametri:
+    - n_clusters: determinato euristicamente (sqrt(N/2))
+    - n_init=20: prova 20 inizializzazioni diverse
+    - max_iter=500: massimo iterazioni per convergenza
+    
+    STEP 4: PCA PER VISUALIZZAZIONE
+    --------------------------------
+    Riferimento corso: "Dimensionality Reduction"
+    
+    PCA (Principal Component Analysis) riduce lo spazio TF-IDF
+    a 2 dimensioni per visualizzazione 2D dei cluster.
+    
     Returns:
-    - kmeans_fig: Plotly figure for K-Means (PCA 2D)
-    - dendrogram_img_path: Path to saved dendrogram image
-    - clusters: Dict of {skill: cluster_id}
+        Tuple: (DataFrame per plot, path dendrogramma, dict cluster)
     """
+    
+    # Validazione input
     if not skills or len(skills) < 3:
         return None, None, {}
 
@@ -127,46 +352,99 @@ def perform_skill_clustering(skills: List[str]):
         return None, None, {}
 
     try:
-        # 1. Vectorize Skills
-        # ACTION: Use 'char_wb' (Character N-Grams Within Boundaries)
-        # This is CRITICAL for skills. 'char' matches "Java" and "JavaScript" well, but 'char_wb' matches "Data" in "Data Science" better.
-        # ngram_range=(2, 4) captures "SQ" in "SQL", "Py" in "Python".
-        vectorizer = TfidfVectorizer(stop_words='english', analyzer='char_wb', ngram_range=(2, 4), min_df=1)
+        # =====================================================================
+        # STEP 1: VECTORIZATION (Text → Vector Space Model)
+        # =====================================================================
+        # Riferimento corso: "Word Vector Representation"
+        #
+        # Usiamo Character N-Grams per catturare similarità tra:
+        # - "Python" e "PyTorch" (condividono "Py")
+        # - "SQL", "MySQL", "PostgreSQL" (condividono "SQL")
+        # =====================================================================
+        
+        vectorizer = TfidfVectorizer(
+            stop_words='english',
+            analyzer='char_wb',      # Character n-grams within word boundaries
+            ngram_range=(2, 4),      # Bi-gram, tri-gram, 4-gram di caratteri
+            min_df=1
+        )
         X = vectorizer.fit_transform(skills).toarray()
 
-        # 2. Hierarchical Clustering (Dendrogram)
-        # Using Ward's linkage (Minimizes Variances) to create balanced clusters
-        linkage_matrix = sch.linkage(X, method='ward')
+        # =====================================================================
+        # STEP 2: HIERARCHICAL CLUSTERING (Dendrogramma)
+        # =====================================================================
+        # Riferimento corso: "Hierarchical Clustering", "Dendrogramma"
+        #
+        # Algoritmo Agglomerativo:
+        # 1. Calcola matrice delle distanze tra tutti i punti
+        # 2. Unisci iterativamente i cluster più vicini
+        # 3. Ward's linkage: minimizza varianza intra-cluster
+        # =====================================================================
         
-        plt.figure(figsize=(12, 8)) # Taller figure
-        # Thicker lines and explicit color threshold to ensure visual coloring
-        sch.set_link_color_palette(['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'])
+        linkage_matrix = sch.linkage(X, method='ward')  # Ward's linkage
         
-        # Threshold: 0.7 * max (Standard for Ward).
-        dendro = sch.dendrogram(linkage_matrix, labels=skills, leaf_rotation=45, leaf_font_size=12, above_threshold_color='#AAAAAA', color_threshold=0.7*max(linkage_matrix[:,2].max(), 0.1))
+        # Visualizzazione dendrogramma
+        plt.figure(figsize=(12, 8))
+        sch.set_link_color_palette([
+            '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', 
+            '#9467bd', '#8c564b', '#e377c2', '#7f7f7f'
+        ])
         
-        plt.rcParams['lines.linewidth'] = 2.5 # Global setting for line thickness
-        plt.title("Skill Dendrogram (Ward Linkage - v2)") # Explicit title to reassure user
+        # Threshold per colorazione: 70% dell'altezza massima
+        color_threshold = 0.7 * max(linkage_matrix[:, 2].max(), 0.1)
+        
+        dendro = sch.dendrogram(
+            linkage_matrix,
+            labels=skills,
+            leaf_rotation=45,
+            leaf_font_size=12,
+            above_threshold_color='#AAAAAA',
+            color_threshold=color_threshold
+        )
+        
+        plt.rcParams['lines.linewidth'] = 2.5
+        plt.title("Dendrogramma Skill (Ward Linkage)")
+        plt.xlabel("Skills")
+        plt.ylabel("Distanza (Ward)")
         plt.tight_layout()
-        # CACHE BUSTING: Change filename to force browser reload
-        dendro_path = "dendrogram_v2.png" 
+        
+        dendro_path = "dendrogram_v2.png"
         plt.savefig(dendro_path)
         plt.close()
 
-        # 3. K-Means Clustering
-        # Determine K (simple heuristic: sqrt(N/2) or max 3-5 for small skill sets)
+        # =====================================================================
+        # STEP 3: K-MEANS CLUSTERING
+        # =====================================================================
+        # Riferimento corso: "K-means", Section 2
+        #
+        # K-Means è un algoritmo di PARTITIONING CLUSTERING:
+        # - Pro: Veloce, scalabile, semplice
+        # - Contro: Richiede K predefinito, sensibile a inizializzazione
+        #
+        # Euristica per K: max(2, min(N/3, 5))
+        # =====================================================================
+        
+        # Determina numero ottimale di cluster
         n_clusters = max(2, min(len(skills) // 3, 5))
+        
         kmeans = KMeans(
-            n_clusters=n_clusters, 
-            random_state=42, 
-            n_init=20,          # More initializations for better clustering
-            max_iter=500,       # More iterations for convergence
-            algorithm='elkan'   # Faster algorithm
+            n_clusters=n_clusters,
+            random_state=42,        # Riproducibilità
+            n_init=20,              # 20 inizializzazioni per robustezza
+            max_iter=500,           # Max iterazioni per convergenza
+            algorithm='elkan'       # Algoritmo più veloce
         )
         labels = kmeans.fit_predict(X)
 
-        # Create named clusters based on skill types
-        cluster_names = ["Data & Analytics", "Development", "Cloud & Tools", "Business", "Research"]
+        # Assegna nomi semantici ai cluster
+        cluster_names = [
+            "Data & Analytics",
+            "Development",
+            "Cloud & Tools",
+            "Business",
+            "Research"
+        ]
+        
         skill_clusters = {}
         for skill, label in zip(skills, labels):
             cluster_name = cluster_names[label % len(cluster_names)]
@@ -174,10 +452,20 @@ def perform_skill_clustering(skills: List[str]):
                 skill_clusters[cluster_name] = []
             skill_clusters[cluster_name].append(skill)
 
-        # 4. Visualization (PCA to 2D)
+        # =====================================================================
+        # STEP 4: PCA PER VISUALIZZAZIONE 2D
+        # =====================================================================
+        # Riferimento corso: "Dimensionality Reduction"
+        #
+        # Lo spazio TF-IDF ha molte dimensioni (una per ogni n-gram).
+        # PCA proietta tutto in 2D mantenendo la varianza massima.
+        # Questo permette di visualizzare i cluster in un grafico scatter.
+        # =====================================================================
+        
         pca = PCA(n_components=2)
         coords = pca.fit_transform(X)
 
+        # DataFrame per visualizzazione con Plotly
         df_viz = pd.DataFrame({
             'x': coords[:, 0],
             'y': coords[:, 1],
@@ -191,26 +479,81 @@ def perform_skill_clustering(skills: List[str]):
         print(f"Clustering Error: {e}")
         return None, None, {}
 
-# --- NEW: TOPIC MODELING (LDA) ---
-try:
-    from sklearn.decomposition import LatentDirichletAllocation
-    from sklearn.feature_extraction.text import CountVectorizer
-    from wordcloud import WordCloud
-except ImportError:
-    LatentDirichletAllocation = None
-    CountVectorizer = None
-    WordCloud = None
+# =============================================================================
+# TOPIC MODELING: LATENT DIRICHLET ALLOCATION (LDA)
+# =============================================================================
+# Riferimento corso: "Topic Model", Section 4 - Text Mining
+#
+# LDA è un modello generativo probabilistico per scoprire "topic" latenti
+# in una collezione di documenti.
+#
+# Idea chiave:
+# - Ogni documento è una mixture di topic
+# - Ogni topic è una distribuzione di parole
+# - LDA scopre automaticamente questi topic dai dati
+#
+# Applicazione nel nostro caso:
+# - Analizziamo Job Description per estrarre i temi principali
+# - Es: "Data Analysis", "Programming", "Business Communication"
+# =============================================================================
 
 def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
     """
-    Performs Latent Dirichlet Allocation (LDA) to extract topics from text.
-    Returns a list of topics (each topic is a string of keywords) and a WordCloud image path.
+    TOPIC MODELING CON LDA
+    ======================
+    Riferimento corso: "Topic Model", Section 4
+    
+    Latent Dirichlet Allocation (LDA) estrae topic latenti da testi.
+    
+    COME FUNZIONA LDA:
+    ------------------
+    1. Ogni documento è una combinazione di K topic
+    2. Ogni topic è una distribuzione su parole
+    3. LDA impara entrambe le distribuzioni simultaneamente
+    
+    Esempio di output:
+    - Topic 1: ["python", "sql", "data"] → "Data Engineering"
+    - Topic 2: ["team", "communication"] → "Soft Skills"
+    - Topic 3: ["cloud", "aws", "azure"] → "Cloud Infrastructure"
+    
+    PREPROCESSING:
+    --------------
+    - CountVectorizer: crea Bag-of-Words (BOW)
+    - Stop words estese: inglese + italiano + HR-specific
+    - N-gram range (1,2): cattura anche bigrammi
+    
+    PARAMETRI LDA:
+    --------------
+    - n_components: numero di topic da estrarre
+    - max_iter: iterazioni per convergenza
+    - learning_method='batch': più accurato per dataset piccoli
+    
+    OUTPUT:
+    -------
+    - topics: lista di interpretazioni dei topic
+    - summary: descrizione del lavoro
+    - keywords: parole chiave principali
+    - wordcloud_path: visualizzazione word cloud
+    
+    Returns:
+        Dict con topics, summary, keywords, wordcloud_path
     """
+    
     if not LatentDirichletAllocation or not CountVectorizer or not WordCloud:
         return [], None
 
     try:
-        # Custom Stop Words for HR/Recruiting Context (Aggressive)
+        # =================================================================
+        # STEP 1: PREPROCESSING - Stop Words
+        # =================================================================
+        # Riferimento corso: "Data Cleaning" (KDD Step 1)
+        #
+        # Rimuoviamo parole non informative per topic modeling:
+        # - Stop words standard (the, a, is...)
+        # - Parole HR generiche (requirements, qualifications...)
+        # - Stop words multilingue (italiano, spagnolo, francese, tedesco)
+        # =================================================================
+        
         hr_stop_words = [
             # Structural / Sections
             'requirements', 'qualifications', 'responsibilities', 'duties', 'summary', 
@@ -234,14 +577,14 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
             'deliver', 'drive', 'execute', 'perform', 'build', 'using', 'based',
 
             # Time / Measure / Misc
-            'years', 'year', 'level', 'senior', 'junior', 'mid', 'associate', # debatable, but often generic in topic
+            'years', 'year', 'level', 'senior', 'junior', 'mid', 'associate',
             'full-time', 'part-time', 'contract', 'permanent', 'temporary', 'remote', 'hybrid',
             'degree', 'bachelor', 'master', 'phd', 'equivalent', 'related', 'relevant',
             'including', 'include', 'includes', 'various', 'similar', 'etc', 'suite',
             'must', 'will', 'can', 'may', 'should', 'would', 'tools', 'environment'
         ]
 
-        # Italian Stop Words (Manual List to avoid dependency issues)
+        # Italian Stop Words
         it_stop_words = [
             'di', 'a', 'da', 'in', 'con', 'su', 'per', 'tra', 'fra',
             'il', 'lo', 'la', 'i', 'gli', 'le', 'un', 'uno', 'una',
@@ -292,20 +635,48 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
             'jahre', 'jahr', 'unternehmen', 'erfahrung', 'stelle', 'position', 'kenntnisse'
         ]
 
-        # Combine all stop words
+        # =================================================================
+        # Combina tutte le stop words
+        # =================================================================
         from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
         all_stop_words = list(ENGLISH_STOP_WORDS) + hr_stop_words + it_stop_words + es_stop_words + fr_stop_words + de_stop_words
 
-        tf_vectorizer = CountVectorizer(max_df=0.90, min_df=1, stop_words=all_stop_words, ngram_range=(1, 2))
+        # =================================================================
+        # STEP 2: VECTORIZATION - Bag of Words
+        # =================================================================
+        # Riferimento corso: "Word Vector Representation"
+        #
+        # CountVectorizer crea una matrice termine-documento:
+        # - Righe: documenti
+        # - Colonne: termini (words/n-grams)
+        # - Valori: frequenze
+        # =================================================================
+        
+        tf_vectorizer = CountVectorizer(
+            max_df=0.90,              # Ignora termini in >90% dei doc
+            min_df=1,                 # Almeno 1 occorrenza
+            stop_words=all_stop_words,
+            ngram_range=(1, 2)        # Unigram e bigram
+        )
         tf = tf_vectorizer.fit_transform(text_corpus)
 
-        # LDA with more iterations for better topic convergence
+        # =================================================================
+        # STEP 3: LDA - Latent Dirichlet Allocation
+        # =================================================================
+        # Riferimento corso: "Topic Model"
+        #
+        # LDA è un modello generativo bayesiano che:
+        # 1. Assume che ogni documento sia generato da K topic
+        # 2. Ogni topic è una distribuzione multinomiale sulle parole
+        # 3. Usa inferenza variazionale per apprendere le distribuzioni
+        # =================================================================
+        
         lda = LatentDirichletAllocation(
-            n_components=n_topics, 
-            max_iter=50,              # 5x more iterations for better topics
-            learning_method='batch',  # More accurate than 'online' for small datasets
-            learning_decay=0.7,       # Standard decay
-            random_state=42
+            n_components=n_topics,    # Numero di topic da estrarre
+            max_iter=50,              # Iterazioni per convergenza
+            learning_method='batch',  # Più accurato per dataset piccoli
+            learning_decay=0.7,       # Decay rate per learning
+            random_state=42           # Riproducibilità
         )
         lda.fit(tf)
 
@@ -758,36 +1129,106 @@ def extract_generic_keywords(text: str, top_n=5) -> Set[str]:
         return set()
 
 # =============================================================================
+# TEXT MINING: SKILL EXTRACTION
+# =============================================================================
+# Riferimento corso: "Text Mining", "Information Extraction", "Feature Extraction"
+#
+# L'estrazione di skill è un task di INFORMATION EXTRACTION:
+# - Estrae entità specifiche (competenze) da testo non strutturato
+# - Combina multiple tecniche: regex, n-gram matching, fuzzy matching
+#
+# TECNICHE UTILIZZATE:
+# 1. N-gram Analysis: cattura skill composte ("machine learning")
+# 2. Regex Pattern Matching: gestisce varianti morfologiche
+# 3. Fuzzy Matching: tollera errori di battitura (85% threshold)
+# =============================================================================
+
 try:
-    from thefuzz import fuzz
+    from thefuzz import fuzz  # Fuzzy string matching
 except ImportError:
     fuzz = None
 
 # =============================================================================
 def extract_skills_from_text(text: str) -> Tuple[Set[str], Set[str]]:
     """
-    Enhanced skill extraction with n-gram matching for compound skills.
+    ESTRAZIONE COMPETENZE DA TESTO
+    ==============================
+    Riferimento corso: "Information Extraction", "Text Mining"
     
-    Improvements in v2.0:
-    - Bigram and trigram matching for phrases like "machine learning", "data visualization"
-    - Lowered fuzzy threshold to 85% for better recall
-    - Direct phrase matching in addition to word-by-word
+    Estrae hard skills e soft skills da testo non strutturato (CV, Job Description).
+    
+    METODOLOGIA (multi-step):
+    -------------------------
+    
+    STEP 1: PREPROCESSING
+    - Conversione in lowercase
+    - Tokenizzazione in parole
+    - Generazione n-grams (bigram, trigram)
+    
+    STEP 2: N-GRAM MATCHING
+    Riferimento corso: "N-gram Analysis"
+    
+    - Unigram: singole parole ("Python", "SQL")
+    - Bigram: coppie di parole ("machine learning", "data analysis")
+    - Trigram: triple di parole ("natural language processing")
+    
+    Questo permette di catturare skill composte che verrebbero perse
+    con una semplice tokenizzazione.
+    
+    STEP 3: REGEX PATTERN MATCHING
+    - Usa espressioni regolari per gestire varianti morfologiche
+    - Es: "analyz" matcha "analyze", "analyzing", "analyzed"
+    - Pattern: r'\\b{keyword}(?:s|es|ing|ed|tion|ment)?\\b'
+    
+    STEP 4: FUZZY MATCHING
+    Riferimento corso: gestione del "rumore" nei dati
+    
+    - Usa algoritmo di Levenshtein Distance
+    - Threshold 85%: tollera piccoli errori di battitura
+    - Es: "Phyton" → "Python" (typo comune)
+    
+    KNOWLEDGE BASE:
+    ---------------
+    Le skill sono definite in constants.py:
+    - HARD_SKILLS: competenze tecniche (Python, SQL, Machine Learning...)
+    - SOFT_SKILLS: competenze trasversali (Leadership, Communication...)
+    - INFERENCE_RULES: regole per dedurre skill correlate
+    
+    Args:
+        text: Testo da analizzare (CV o Job Description)
+        
+    Returns:
+        Tuple[Set[str], Set[str]]: (hard_skills, soft_skills) estratti
     """
+    
     hard_found = set()
     soft_found = set()
     text_lower = text.lower()
 
+    # Carica knowledge base
     hard_skills = getattr(constants, "HARD_SKILLS", {})
     soft_skills = getattr(constants, "SOFT_SKILLS", {})
     inference_rules = getattr(constants, "INFERENCE_RULES", {})
 
-    # Pre-process text: split into words and generate n-grams
+    # =========================================================================
+    # STEP 1: PREPROCESSING E GENERAZIONE N-GRAMS
+    # =========================================================================
+    # Riferimento corso: "N-gram Analysis"
+    #
+    # Tokenizziamo il testo e generiamo n-grams per catturare
+    # skill composte come "machine learning" o "data visualization"
+    # =========================================================================
+    
     words = text_lower.split()
     text_words = set(words)
     
-    # Generate bigrams and trigrams for compound skill matching
+    # Bigram: coppie di parole consecutive
     bigrams = set(' '.join(words[i:i+2]) for i in range(len(words)-1))
+    
+    # Trigram: triple di parole consecutive
     trigrams = set(' '.join(words[i:i+3]) for i in range(len(words)-2))
+    
+    # Unione di tutti i pattern da cercare
     all_phrases = text_words | bigrams | trigrams
 
     # 1. Regex Match Hard Skills (Exact + N-gram + Fuzzy)

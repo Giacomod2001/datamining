@@ -57,17 +57,48 @@ The app opens automatically at `http://localhost:8501`.
 
 ---
 
-## Machine Learning Stack
+## Data Mining Techniques
 
-CareerMatch AI uses ML models optimized to prevent overfitting:
+This project implements the following Data Mining and Text Analytics techniques from the university course.
 
-| Component | Technology |
-|-----------|------------|
-| **Skill Matching** | Random Forest (150 trees, depth 15, regularized) |
-| **Text Processing** | TF-IDF (3000 features, trigrams, multilingual) |
-| **Topic Discovery** | LDA Topic Modeling (50 iterations) |
-| **Skill Extraction** | N-gram + FuzzyWuzzy (85% threshold) |
-| **Entity Recognition** | NLTK NER (optimized for IT/EU CVs) |
+### Knowledge Discovery Process (KDD)
+
+The application follows the classic KDD pipeline:
+
+| Step | Implementation |
+|------|----------------|
+| **1. Data Cleaning** | Text preprocessing, lowercase, noise removal |
+| **2. Data Integration** | Merge CV + Job Description + Portfolio |
+| **3. Data Selection** | Extract relevant sections |
+| **4. Data Transformation** | TF-IDF vectorization |
+| **5. Data Mining** | Classification, Clustering, Topic Modeling |
+| **6. Pattern Evaluation** | Match scoring, confidence calculation |
+| **7. Knowledge Presentation** | Dashboard, charts, reports |
+
+### Machine Learning Algorithms
+
+| Technique | Algorithm | Course Reference |
+|-----------|-----------|------------------|
+| **Classification** | Random Forest (150 trees) | "Classification and Regression" |
+| **Text Vectorization** | TF-IDF (3000 features, trigrams) | "Word Vector Representation" |
+| **Partitioning Clustering** | K-Means | "Clustering Techniques" |
+| **Hierarchical Clustering** | Agglomerative (Ward linkage) | "Hierarchical Clustering" |
+| **Topic Modeling** | LDA (Latent Dirichlet Allocation) | "Topic Model" |
+| **Dimensionality Reduction** | PCA (2D visualization) | "Dimensionality Reduction" |
+| **Information Extraction** | N-gram matching + Fuzzy | "Information Extraction" |
+
+### Text Mining Pipeline
+
+```
+Input Text --> Tokenization --> N-gram Generation --> TF-IDF --> ML Model --> Output
+                   |                 |
+                Unigrams          Bigrams/Trigrams
+```
+
+Key techniques:
+- **TF-IDF**: Term Frequency-Inverse Document Frequency for text representation
+- **N-grams**: Capture compound skills like "machine learning"
+- **Fuzzy Matching**: Handle typos with 85% Levenshtein threshold
 
 ---
 
