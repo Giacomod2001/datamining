@@ -32,7 +32,7 @@ REPOSITORY: https://github.com/Giacomod2001/datamining
 ================================================================================
 
 datamining_git/
-├── app.py              (82 KB, ~1700 righe)  - Applicazione principale Streamlit
+├── app.py              (80 KB, ~1650 righe)  - Applicazione principale Streamlit
 ├── ml_utils.py         (108 KB, ~2500 righe) - Algoritmi ML e Text Mining
 ├── constants.py        (87 KB, ~1400 righe)  - Knowledge Base (Skills, Rules)
 ├── styles.py           (25 KB, ~735 righe)   - Sistema di design CSS
@@ -373,8 +373,8 @@ RESPONSIVE:
 - Input columns (2-4 dinamico)
 - Skill tags colorati (matched, missing, transferable, project, bonus)
 - Gauge chart per match score
-- Navigation sidebar con anchor links
 - Expander per sezioni collapsibili
+- Developer Console (debugger nascosto)
 
 ================================================================================
                            8. DIPENDENZE TECNICHE
@@ -414,7 +414,7 @@ requests             - HTTP requests
 ================================================================================
 
 ------------------------------------------------------------------------------
-9.1 app.py (~1700 righe)
+9.1 app.py (~1650 righe)
 ------------------------------------------------------------------------------
 
 STRUTTURA:
@@ -546,7 +546,7 @@ RINGRAZIAMENTI:
 ================================================================================
 
 STATISTICHE CODICE:
-- Totale righe codice: ~6500+
+- Totale righe codice: ~6300+
 - File Python: 4
 - File di configurazione: 5
 - Knowledge base: 620+ skills, 5000+ keyword variations
