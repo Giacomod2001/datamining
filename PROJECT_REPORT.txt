@@ -1,0 +1,587 @@
+================================================================================
+                         CAREERMATCH AI - PROJECT REPORT
+                    REPORT DETTAGLIATO DEL PROGETTO DATAMINING
+================================================================================
+
+Progetto: CareerMatch AI
+Versione: 2.0
+Università: IULM University - A.Y. 2025-2026
+Corso: Data Mining & Text Analytics
+Docente: Prof. Alessandro Bruno
+Licenza: MIT License
+
+================================================================================
+                              1. PANORAMICA GENERALE
+================================================================================
+
+CareerMatch AI è una piattaforma di analytics intelligente che utilizza 
+Machine Learning e NLP (Natural Language Processing) per analizzare la 
+compatibilità tra CV e annunci di lavoro.
+
+OBIETTIVO PRINCIPALE:
+- Calcolare uno score di match tra CV e Job Description
+- Identificare skill mancanti e trasferibili
+- Fornire un percorso di apprendimento personalizzato
+- Suggerire ruoli alternativi basati sul profilo del candidato
+
+URL LIVE DEMO: https://dataminingiulm.streamlit.app/
+REPOSITORY: https://github.com/Giacomod2001/datamining
+
+================================================================================
+                           2. STRUTTURA DEL PROGETTO
+================================================================================
+
+datamining_git/
+├── app.py              (82 KB, ~1700 righe)  - Applicazione principale Streamlit
+├── ml_utils.py         (108 KB, ~2500 righe) - Algoritmi ML e Text Mining
+├── constants.py        (87 KB, ~1400 righe)  - Knowledge Base (Skills, Rules)
+├── styles.py           (25 KB, ~735 righe)   - Sistema di design CSS
+├── requirements.txt    (2 KB)                - Dipendenze Python
+├── README.md           (5 KB)                - Documentazione
+├── Acknowledgment      (1 KB)                - Riconoscimenti AI tools
+├── LICENSE             (1 KB)                - Licenza MIT
+├── Demo_Candidate_DS_CV.pdf                  - CV di esempio
+├── .devcontainer/                            - Configurazione Dev Container
+├── .github/                                  - GitHub Actions/Workflows
+└── .gitignore                                - File da ignorare in Git
+
+================================================================================
+                        3. ARCHITETTURA DELL'APPLICAZIONE
+================================================================================
+
+L'applicazione segue un'architettura a 3 livelli:
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           FRONTEND (app.py)                                  │
+│   - Dashboard Streamlit interattiva                                          │
+│   - Visualizzazioni Plotly (gauge, scatter, bar charts)                     │
+│   - CSS premium con glassmorphism (styles.py)                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          BACKEND (ml_utils.py)                               │
+│   - Random Forest Classifier per skill matching                              │
+│   - K-Means & Hierarchical Clustering                                        │
+│   - LDA Topic Modeling                                                       │
+│   - Named Entity Recognition (NER)                                           │
+│   - Fuzzy Matching per estrazione skill                                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      KNOWLEDGE BASE (constants.py)                           │
+│   - 620+ Hard Skills con sinonimi e varianti                                │
+│   - Soft Skills database                                                     │
+│   - Inference Rules (skill → skill correlate)                               │
+│   - Skill Clusters (equivalenze tra tool)                                   │
+│   - Job Archetypes per Career Compass                                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    4. TECNICHE DI DATA MINING IMPLEMENTATE
+================================================================================
+
+Il progetto implementa le seguenti tecniche del corso di Data Mining:
+
+------------------------------------------------------------------------------
+4.1 KNOWLEDGE DISCOVERY PROCESS (KDD)
+------------------------------------------------------------------------------
+
+Step 1: DATA CLEANING
+    - Preprocessing testo: lowercase, rimozione rumore
+    - Tokenizzazione con NLTK
+    - Gestione caratteri speciali e encoding
+
+Step 2: DATA INTEGRATION
+    - Unione CV + Job Description + Portfolio
+    - Merge delle informazioni da più fonti (PDF, text)
+
+Step 3: DATA SELECTION
+    - Estrazione sezioni rilevanti
+    - Filtraggio stop words multilingue (EN, IT, ES, FR, DE)
+
+Step 4: DATA TRANSFORMATION
+    - TF-IDF Vectorization (Term Frequency-Inverse Document Frequency)
+    - N-gram generation (unigram, bigram, trigram)
+    - Character n-grams per clustering
+
+Step 5: DATA MINING
+    - Classification (Random Forest)
+    - Clustering (K-Means, Hierarchical)
+    - Topic Modeling (LDA)
+
+Step 6: PATTERN EVALUATION
+    - Calcolo match score
+    - Confidence calculation
+    - Identificazione skill trasferibili
+
+Step 7: KNOWLEDGE PRESENTATION
+    - Dashboard interattiva
+    - Grafici Plotly
+    - Report PDF generato automaticamente
+
+------------------------------------------------------------------------------
+4.2 ALGORITMI DI MACHINE LEARNING
+------------------------------------------------------------------------------
+
+A) RANDOM FOREST CLASSIFIER
+   Riferimento corso: "Classification and Regression", "Decision Tree"
+   
+   Parametri:
+   - n_estimators: 150 alberi
+   - max_depth: 15 (prevenzione overfitting)
+   - min_samples_split: 5
+   - min_samples_leaf: 3
+   - max_features: sqrt(features)
+   - class_weight: balanced
+   
+   Uso: Classificazione di frammenti di testo in categorie di skill.
+   Pipeline: TF-IDF (3000 features, n-grams 1-3) → Random Forest
+
+B) K-MEANS CLUSTERING
+   Riferimento corso: "Clustering Techniques", "K-means"
+   
+   Parametri:
+   - n_clusters: max(2, min(N/3, 5)) - euristico
+   - n_init: 20 inizializzazioni
+   - max_iter: 500
+   - algorithm: elkan (più veloce)
+   
+   Uso: Raggruppamento semantico delle skill per visualizzazione.
+
+C) HIERARCHICAL CLUSTERING (Agglomerative)
+   Riferimento corso: "Hierarchical Clustering"
+   
+   Parametri:
+   - Method: Ward linkage (minimizza varianza intra-cluster)
+   
+   Output: Dendrogramma delle skill per visualizzare relazioni gerarchiche.
+
+D) LATENT DIRICHLET ALLOCATION (LDA)
+   Riferimento corso: "Topic Model"
+   
+   Parametri:
+   - n_components: 3-5 topic
+   - max_iter: 50 (5x standard per convergenza)
+   - learning_method: batch (più accurato per dataset piccoli)
+   
+   Uso: Estrazione topic latenti dalle Job Description.
+
+E) PRINCIPAL COMPONENT ANALYSIS (PCA)
+   Riferimento corso: "Dimensionality Reduction"
+   
+   Parametri:
+   - n_components: 2 (per visualizzazione 2D)
+   
+   Uso: Riduzione dimensionalità per scatter plot dei cluster.
+
+------------------------------------------------------------------------------
+4.3 TEXT MINING TECHNIQUES
+------------------------------------------------------------------------------
+
+A) TF-IDF VECTORIZATION
+   - Term Frequency: frequenza del termine nel documento
+   - Inverse Document Frequency: penalizza termini troppo comuni
+   - Formula: TF-IDF(t,d) = TF(t,d) × log(N/DF(t))
+   - Sublinear TF: log(1 + tf)
+
+B) N-GRAM ANALYSIS
+   - Unigram: singole parole ("Python", "SQL")
+   - Bigram: coppie ("machine learning", "data analysis")
+   - Trigram: triple ("natural language processing")
+   - Character n-grams: per clustering skill (2-4 caratteri)
+
+C) FUZZY STRING MATCHING
+   - Algoritmo: Levenshtein Distance
+   - Threshold: 85% similarità
+   - Libreria: thefuzz (FuzzyWuzzy)
+   - Uso: Tolleranza typos ("Phyton" → "Python")
+
+D) NAMED ENTITY RECOGNITION (NER)
+   - Libreria: NLTK
+   - Categorie: ORGANIZATION, GPE (Location), PERSON
+   - Post-processing: filtraggio falsi positivi
+   - Support: nomi italiani, città europee
+
+================================================================================
+                           5. KNOWLEDGE BASE DETTAGLIATA
+================================================================================
+
+------------------------------------------------------------------------------
+5.1 HARD SKILLS (constants.py)
+------------------------------------------------------------------------------
+
+Categorie principali (620+ skill totali):
+
+• PROGRAMMAZIONE & DATI
+  Python, Java, JavaScript, SQL, R, Pandas, NumPy
+
+• MACHINE LEARNING & AI
+  Machine Learning, Deep Learning, AI, Data Science, TensorFlow, PyTorch,
+  Scikit-learn, Computer Vision, NLP
+
+• CLOUD & PLATFORMS
+  AWS, Azure, GCP, BigQuery, Snowflake, Docker, Kubernetes
+
+• BI & VISUALIZATION
+  Power BI, Tableau, Looker Studio, Data Visualization, Dashboards
+
+• DIGITAL MARKETING
+  SEO, SEM, Social Media, Campaign Management, Performance Marketing,
+  Google Analytics, Google Tag Manager, A/B Testing
+
+• INDUSTRIE SPECIFICHE
+  - Ristorazione: Cooking, Bartending, Wine Knowledge, Kitchen Management
+  - Sanità: Nursing, First Aid, Pharmacy, Physiotherapy, Elderly Care
+  - Legale: Contract Law, Litigation, Compliance, Corporate Law
+  - Edilizia: Construction, Electrical, Plumbing, HVAC, Safety Compliance
+  - Logistica: Warehouse, Supply Chain, Shipping, Forklift
+  - Hospitality: Reception, Housekeeping, Tour Guide, Event Planning
+  - E molte altre...
+
+------------------------------------------------------------------------------
+5.2 SOFT SKILLS
+------------------------------------------------------------------------------
+
+• PERSONAL: Creativity, Problem Solving, Adaptability, Time Management
+• INTERPERSONAL: Communication, Teamwork, Leadership, Negotiation, Empathy
+• OFFICE: Data Entry, Organization, Attention to Detail
+
+------------------------------------------------------------------------------
+5.3 INFERENCE RULES
+------------------------------------------------------------------------------
+
+Regole di inferenza gerarchica (skill → skill correlate):
+
+Esempi:
+- BigQuery → Cloud Computing, SQL, Data Science, Data Warehousing
+- TensorFlow → Machine Learning, Deep Learning, Python, AI
+- React → Frontend, JavaScript
+- Docker → DevOps, Containerization
+- Looker Studio → Data Visualization, BI, Dashboards, Reporting
+
+------------------------------------------------------------------------------
+5.4 SKILL CLUSTERS (Equivalenze)
+------------------------------------------------------------------------------
+
+Tool considerati equivalenti per match:
+
+• BI Tools: Tableau, Power BI, Looker, Looker Studio, QlikView, Metabase
+• Analytics: Google Analytics, GA4, Adobe Analytics, Mixpanel, Amplitude
+• Cloud Providers: AWS, GCP, Azure, Google Cloud
+• JS Frameworks: React, Vue, Angular, Svelte, Next.js
+• ML Frameworks: TensorFlow, PyTorch, Keras, JAX
+• SQL Databases: MySQL, PostgreSQL, BigQuery, Snowflake, Redshift
+• NoSQL: MongoDB, Cassandra, DynamoDB, Redis, Elasticsearch
+
+================================================================================
+                        6. FUNZIONALITÀ DELL'APPLICAZIONE
+================================================================================
+
+------------------------------------------------------------------------------
+6.1 FUNZIONALITÀ PRINCIPALI
+------------------------------------------------------------------------------
+
+1. MATCH SCORE CALCULATION
+   - Score percentuale di compatibilità CV-JD
+   - Formula: (Matched + Transferable×0.5 + Project×0.3) / Required × 100
+   - Interpretazione: Excellent (≥80%), Good (≥60%), Moderate (≥40%)
+
+2. TRANSFERABLE SKILLS RECOGNITION
+   - Identifica skill equivalenti usando SKILL_CLUSTERS
+   - Es: "Power BI" nel CV soddisfa requisito "Tableau"
+   - Contribuiscono 50% al match score
+
+3. GAP ANALYSIS
+   - Lista delle skill mancanti
+   - Prioritizzazione per importanza
+
+4. COVER LETTER ANALYSIS
+   - Keyword coverage (hard skills)
+   - Soft skills coverage
+   - Structure score (greeting, closing, paragraphs)
+   - Personalization score
+   - Strengths & Improvements feedback
+
+5. PROJECT EVALUATION (Portfolio)
+   - Verifica skill attraverso progetti
+   - Portfolio Quality Score
+   - Interview Talking Points
+   - Project-based skill verification
+
+6. CAREER COMPASS
+   - Suggerimenti ruoli alternativi
+   - Basato su Job Archetypes
+   - Match score per ruoli simili
+
+7. LEARNING PATH
+   - Suggerimenti corsi (Coursera, Udemy, YouTube)
+   - Link diretti per ogni skill mancante
+   - Risorse organizzate per skill
+
+8. EXPORT PDF
+   - Report professionale generato automaticamente
+   - Include skill matrix, learning roadmap
+   - Download diretto
+
+------------------------------------------------------------------------------
+6.2 MODALITÀ DEMO
+------------------------------------------------------------------------------
+
+L'applicazione include dati demo per test rapido:
+- CV di esempio: Marco Bianchi (Marketing Data Analyst)
+- JD di esempio: Senior Marketing Analyst
+- Project demo: E-commerce Analytics Dashboard
+- Cover Letter demo
+
+Ottimizzato per ~73% match score.
+
+================================================================================
+                          7. INTERFACCIA UTENTE (UI/UX)
+================================================================================
+
+------------------------------------------------------------------------------
+7.1 DESIGN SYSTEM (styles.py)
+------------------------------------------------------------------------------
+
+PALETTE COLORI (LinkedIn-inspired):
+- Primary Blue: #0077B5
+- Primary Dark: #004471
+- Primary Light: #00A0DC
+- Accent Green: #00C853 (matched skills)
+- Accent Amber: #FFB300 (transferable)
+- Accent Red: #E53935 (missing)
+- Background: #0d1117 (dark theme)
+
+EFFETTI:
+- Glassmorphism sulle card
+- Transizioni smooth (0.15s - 0.5s)
+- Hover effects con scale e shadow
+- Animazioni fade-in e shimmer
+
+RESPONSIVE:
+- Breakpoint: 768px
+- Sidebar adattiva
+- Layout multi-colonna dinamico
+
+------------------------------------------------------------------------------
+7.2 COMPONENTI UI
+------------------------------------------------------------------------------
+
+- Hero Section con statistiche
+- Input columns (2-4 dinamico)
+- Skill tags colorati (matched, missing, transferable, project, bonus)
+- Gauge chart per match score
+- Navigation sidebar con anchor links
+- Expander per sezioni collapsibili
+
+================================================================================
+                           8. DIPENDENZE TECNICHE
+================================================================================
+
+requirements.txt:
+
+# FRONTEND
+streamlit>=1.43.0    - Framework dashboard
+plotly               - Grafici interattivi
+
+# DATA PROCESSING
+pandas               - Manipolazione dati
+numpy                - Calcolo numerico
+
+# MACHINE LEARNING
+scikit-learn         - RF, K-Means, TF-IDF, LDA, PCA
+scipy                - Hierarchical Clustering
+
+# TEXT MINING
+nltk                 - NER, tokenization
+thefuzz              - Fuzzy matching
+python-levenshtein   - Ottimizzazione Levenshtein
+wordcloud            - Word cloud generation
+
+# PDF
+PyPDF2               - Estrazione testo da PDF
+fpdf                 - Generazione report PDF
+
+# UTILITIES
+matplotlib           - Grafici statici (dendrogrammi)
+graphviz             - Visualizzazione grafi
+requests             - HTTP requests
+
+================================================================================
+                            9. FILE DETTAGLIATI
+================================================================================
+
+------------------------------------------------------------------------------
+9.1 app.py (~1700 righe)
+------------------------------------------------------------------------------
+
+STRUTTURA:
+1. Configurazione pagina Streamlit
+2. Gestione session_state
+3. render_debug_page() - Console sviluppatore con 5 tab:
+   - System: ML models overview
+   - Analysis: Risultati breakdown
+   - Clusters: Skill clustering visualization
+   - NLP: Text analytics insights
+   - Knowledge: Database browser
+4. render_home() - Pagina principale:
+   - Sidebar con controlli
+   - Hero section
+   - Input columns
+   - Analyze button
+5. render_results() - Visualizzazione risultati:
+   - Match score gauge
+   - Skills analysis tags
+   - Cover letter analysis
+   - Learning path
+   - Career compass
+   - Export PDF
+
+------------------------------------------------------------------------------
+9.2 ml_utils.py (~2500 righe)
+------------------------------------------------------------------------------
+
+FUNZIONI PRINCIPALI:
+
+train_rf_model()
+    - Addestra Random Forest con TF-IDF pipeline
+    - Data augmentation per training
+
+perform_skill_clustering(skills)
+    - TF-IDF + K-Means + Hierarchical Clustering
+    - PCA per visualizzazione 2D
+    - Output: DataFrame, dendrogramma, cluster dict
+
+perform_topic_modeling(corpus)
+    - LDA con stop words multilingue
+    - Word cloud generation
+    - Topic interpretation
+
+extract_entities_ner(text)
+    - NLTK NER con post-processing
+    - Filtraggio falsi positivi
+    - Support nomi italiani
+
+extract_skills_from_text(text)
+    - N-gram matching
+    - Regex pattern matching
+    - Fuzzy matching (85% threshold)
+    - Inference rules application
+
+analyze_gap(cv, jd)
+    - Core matching algorithm
+    - Calcola matched, missing, extra skills
+    - Transferable skills via SKILL_CLUSTERS
+
+analyze_gap_with_project(cv, jd, project)
+    - Estende analyze_gap con portfolio verification
+    - Portfolio quality score
+    - Interview talking points
+
+analyze_cover_letter(cl, jd, cv)
+    - Keyword coverage analysis
+    - Structure scoring
+    - Personalization detection
+
+generate_pdf_report(res)
+    - Professional PDF generation
+    - Skill matrix + learning roadmap
+
+------------------------------------------------------------------------------
+9.3 constants.py (~1400 righe)
+------------------------------------------------------------------------------
+
+STRUTTURE DATI:
+
+INFERENCE_RULES: Dict[str, List[str]]
+    - ~200+ regole di inferenza
+    - skill → [skill correlate]
+
+HARD_SKILLS: Dict[str, List[str]]
+    - ~450+ skill tecniche
+    - skill → [keywords, sinonimi]
+
+SOFT_SKILLS: Dict[str, List[str]]
+    - ~15 soft skill categories
+    - skill → [keywords]
+
+SKILL_CLUSTERS: Dict[str, Set[str]]
+    - ~25 cluster di equivalenze
+    - categoria → {skill equivalenti}
+
+PROJECT_BASED_SKILLS: Set[str]
+    - Skill che richiedono verifica portfolio
+
+JOB_ARCHETYPES: Dict[str, Set[str]]
+    - Template ruoli per Career Compass
+    - role → {required skills}
+
+LEARNING_RESOURCES: Dict[str, Dict]
+    - Risorse per ogni skill
+    - skill → {courses, project}
+
+================================================================================
+                              10. TEAM & CREDITS
+================================================================================
+
+AUTORI:
+- G.D. (Giacomo Dellacqua) - Backend development e ML algorithms
+- L.T. (Luca Tallarico) - Frontend e UI/UX design
+- R.S. (Ruben Scoletta) - Testing e documentation
+
+AI TOOLS UTILIZZATI:
+- Claude Opus 4 (thinking) - Primary AI assistant
+- Gemini 3 Pro High - Debugging support
+- Antigravity - Agentic development support
+
+RINGRAZIAMENTI:
+- Streamlit Team - Framework for rapid development
+- Scikit-Learn - ML algorithms
+- NLTK - Natural Language Processing
+
+================================================================================
+                            11. METRICHE PROGETTO
+================================================================================
+
+STATISTICHE CODICE:
+- Totale righe codice: ~6500+
+- File Python: 4
+- File di configurazione: 5
+- Knowledge base: 620+ skills, 5000+ keyword variations
+
+COVERAGE FUNZIONALE:
+- Settori supportati: 50+ industrie
+- Lingue stop words: 5 (EN, IT, ES, FR, DE)
+- Algoritmi ML: 5 (RF, K-Means, Hierarchical, LDA, PCA)
+- Tecniche Text Mining: 4 (TF-IDF, N-gram, Fuzzy, NER)
+
+PERFORMANCE:
+- Tempo analisi: ~5 secondi
+- Accuracy match: ~85%
+- Skills riconosciute: 620+
+
+================================================================================
+                                 12. CONCLUSIONI
+================================================================================
+
+CareerMatch AI rappresenta un'implementazione completa del processo KDD 
+(Knowledge Discovery in Databases) applicato al dominio del job matching.
+
+Il progetto dimostra l'applicazione pratica di:
+- Tecniche di Text Mining per estrazione skill
+- Algoritmi di Classification per categorizzazione
+- Metodi di Clustering per raggruppamento semantico
+- Topic Modeling per analisi tematica
+- Information Extraction con NER
+
+L'architettura modulare e la knowledge base estesa permettono:
+- Facile estensione a nuovi settori
+- Personalizzazione delle regole di inferenza
+- Integrazione di nuovi algoritmi
+
+================================================================================
+                    Report generato il: 04/01/2026
+                    CareerMatch AI v2.0 - IULM University
+================================================================================

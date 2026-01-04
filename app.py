@@ -856,56 +856,6 @@ def render_home():
         if st.session_state.get("demo_mode"):
             st.success("Demo mode active. Sample data loaded below.")
         
-        # --- RESULTS NAVIGATOR (appears after analysis) ---
-        if st.session_state.get("last_results"):
-            st.divider()
-            st.markdown("### Results Navigator")
-            st.caption("Click to jump to section")
-            
-            res = st.session_state["last_results"]
-            cl_analysis = st.session_state.get("last_cl_analysis")
-            
-            # Navigation using direct anchor links (simpler, more reliable)
-            st.markdown("""
-            <style>
-            .sidebar-nav a {
-                display: block;
-                padding: 0.4rem 0.6rem;
-                margin: 0.2rem 0;
-                background: rgba(0, 119, 181, 0.15);
-                border-radius: 6px;
-                color: #00A0DC !important;
-                text-decoration: none;
-                font-size: 0.85rem;
-            }
-            .sidebar-nav a:hover {
-                background: rgba(0, 119, 181, 0.3);
-            }
-            </style>
-            <div class="sidebar-nav">
-            """, unsafe_allow_html=True)
-            
-            # Build navigation items
-            nav_sections = [
-                ("Match Score", "section-score"),
-                ("Skills Analysis", "section-skills"),
-            ]
-            if res.get("project_verified"):
-                nav_sections.append(("Project Coaching", "section-projects"))
-            if cl_analysis:
-                nav_sections.append(("Cover Letter", "section-cover"))
-            if res.get("missing_hard"):
-                nav_sections.append(("Learning Path", "section-learning"))
-            nav_sections.extend([
-                ("Job Context", "section-context"),
-                ("AI Compass", "section-compass"),
-                ("Export", "section-export"),
-            ])
-            
-            # Render all links
-            links_html = "".join([f"<a href='#{anchor}'>{name}</a>" for name, anchor in nav_sections])
-            st.markdown(links_html + "</div>", unsafe_allow_html=True)
-        
         st.divider()
         
         # How It Works
