@@ -141,6 +141,16 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
+## Authors
+
+This project was developed as a collaborative effort with equal contributions from:
+
+- **Giacomo Dellacqua**
+- **Ruben Scoletta**
+- **Luca Tallarico**
+
+---
+
 ## Acknowledgments
 
 - **Streamlit Team** - Rapid development framework
