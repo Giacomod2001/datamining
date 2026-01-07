@@ -747,17 +747,19 @@ def get_demo_cv_builder_data():
         "competencies": ["Machine Learning", "Data Analytics", "Digital Marketing", "Google Cloud Platform", "Business Intelligence", "Predictive Modeling", "Marketing Automation", "Python", "SQL", "BigQuery"],
         "experiences": [
             {
-                "role": "Digital Marketing Data Analyst Intern",
+                "title": "Digital Marketing Data Analyst Intern",
                 "company": "Randstad Group Italia SPA",
-                "duration": "November 2025 – Present",
-                "desc": "Implement and maintain online tracking ecosystems using Google Tag Manager. Analyze website performance using Google Analytics 4. Design interactive dashboards with Google Looker Studio. Support paid performance campaigns and conduct A/B testing.",
+                "dates": "November 2025 – Present",
+                "location": "Milan, Italy (Hybrid)",
+                "bullets": "• Implement and maintain online tracking ecosystems using Google Tag Manager.\n• Analyze website performance using Google Analytics 4.\n• Design interactive dashboards with Google Looker Studio.\n• Support paid performance campaigns and conduct A/B testing.",
                 "tech": "Google Analytics 4, Google Tag Manager, Google Looker Studio, SQL, Python"
             },
             {
-                "role": "Junior Digital Marketing Specialist",
+                "title": "Junior Digital Marketing Specialist",
                 "company": "Otreat",
-                "duration": "January 2024 – March 2024",
-                "desc": "Managed multi-platform social media presence and executed performance-driven marketing strategies. Developed advertising campaigns and email newsletters. Operated CRM systems and e-commerce platforms. Conducted quantitative analysis of campaign metrics.",
+                "dates": "January 2024 – March 2024",
+                "location": "Milan, Italy (Hybrid)",
+                "bullets": "• Managed multi-platform social media presence and executed performance-driven marketing strategies.\n• Developed advertising campaigns and email newsletters.\n• Operated CRM systems and e-commerce platforms.\n• Conducted quantitative analysis of campaign metrics.",
                 "tech": "Social Media Tools, CRM Platforms, E-commerce Systems, Email Marketing"
             }
         ],
@@ -765,13 +767,15 @@ def get_demo_cv_builder_data():
             {
                 "degree": "Master's Degree in Artificial Intelligence for Business and Society",
                 "institution": "Università IULM",
-                "year": "2024 - 2026",
+                "dates": "2024 - 2026",
+                "location": "Milan, Italy",
                 "details": "Specialized curriculum integrating AI, Big Data, Marketing Analytics. Coursework: Machine Learning, Predictive Analytics, Big Data Management."
             },
             {
                 "degree": "Bachelor's Degree in Corporate Communication and Public Relations",
                 "institution": "Università IULM",
-                "year": "2021 - 2024",
+                "dates": "2021 - 2024",
+                "location": "Milan, Italy",
                 "details": "Specialized in strategic communication, stakeholder relations, and business management."
             }
         ],
@@ -784,7 +788,7 @@ def get_demo_cv_builder_data():
         ],
         "languages": [
             {"language": "Italian", "level": "Native"},
-            {"language": "English", "level": "Professional (C1-C2)"} 
+            {"language": "English", "level": "Intermediate (B1-B2)"} 
         ]
     }
 
