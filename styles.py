@@ -790,23 +790,28 @@ def get_demo_cv_builder_data():
 
 
 def get_demo_builder_jd():
-    """Returns sample JD for the CV Builder suggestions."""
+    """Returns sample JD for the CV Builder suggestions (Target ~75% match)."""
     return """
-SENIOR MARKETING ANALYST
-DataDriven Corp | Milan, Italy (Hybrid)
+DATA ANALYST - MARKETING FOCUS
+TechCorp Italia | Milan, Italy (Hybrid)
+
+About the Job:
+We are looking for a Data Analyst to join our Marketing Intelligence team. The ideal candidate has a strong background in data analysis and digital marketing.
+
+Key Responsibilities:
+- Analyze marketing performance using Google Analytics 4 (GA4) and SQL.
+- Build and maintain dashboards in Looker Studio and Tableau.
+- Implement tracking via Google Tag Manager (GTM).
+- Collaborate with the marketing team to optimize ROI and campaign strategies.
+- Use Python for data cleaning and predictive modeling.
 
 Requirements:
-- 4+ years experience in marketing analytics or data analysis
-- Expert proficiency in Google Analytics 4 and Google Tag Manager
-- Strong SQL skills for data extraction and analysis
-- Experience with BI tools (Looker Studio, Tableau, or Power BI)
-- Proficiency in Python for data analysis and automation
-- Experience with A/B testing and statistical analysis
-
-Nice to Have:
-- Experience with cloud platforms (GCP, AWS)
-- Machine Learning knowledge
-- Tableau or Power BI certification
+- 2+ years of experience in Data Analysis or Digital Marketing.
+- Proficiency in SQL and Python (pandas, scikit-learn).
+- Expert knowledge of Google Analytics 4 and GTM.
+- Experience with Data Visualization tools (Looker Studio required, Tableau is a plus).
+- Knowledge of Cloud Platforms (AWS or Azure preferred).
+- Fluent in Italian and English (B2+).
 """
 
 

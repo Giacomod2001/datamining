@@ -923,8 +923,8 @@ def render_cv_builder():
     if st.session_state.get("trigger_demo_load", False):
         demo_jd = styles.get_demo_builder_jd()
         st.session_state["cv_builder"] = styles.get_demo_cv_builder_data()
-        st.session_state["cv_builder_jd"] = demo_jd
-        st.session_state["jd_sidebar_input"] = demo_jd
+        # Direct key update is enough for widget with same key
+        st.session_state["cv_builder_jd"] = demo_jd 
         st.session_state["trigger_demo_load"] = False  # Reset flag
 
     # TITLE (Centered)
@@ -983,18 +983,17 @@ def render_cv_builder():
         # JD Input for Smart Suggestions (Always visible)
         with st.expander("Target Job Description", expanded=True):
             st.caption("Paste JD for smart suggestions")
-            jd_input = st.text_area(
+            # Simplify: Direct binding to 'cv_builder_jd'
+            if "cv_builder_jd" not in st.session_state:
+                st.session_state["cv_builder_jd"] = ""
+                
+            st.text_area(
                 "Job Description",
-                value=st.session_state.get("cv_builder_jd", ""),
                 height=150,
                 placeholder="Paste JD here...",
                 label_visibility="collapsed",
-                key="jd_sidebar_input"
+                key="cv_builder_jd" 
             )
-            # Sync key
-            if jd_input != st.session_state.get("cv_builder_jd", ""):
-                st.session_state["cv_builder_jd"] = jd_input
-                st.rerun()
                 
         # Smart Score (Mini)
         jd_text = st.session_state.get("cv_builder_jd", "")
