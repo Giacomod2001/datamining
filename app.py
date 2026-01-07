@@ -919,6 +919,14 @@ def render_cv_builder():
     if "cv_wizard_step" not in st.session_state:
         st.session_state["cv_wizard_step"] = 1
 
+    # HANDLE DEMO DATA LOADING (Triggered by button later in code)
+    if st.session_state.get("trigger_demo_load", False):
+        demo_jd = styles.get_demo_builder_jd()
+        st.session_state["cv_builder"] = styles.get_demo_cv_builder_data()
+        st.session_state["cv_builder_jd"] = demo_jd
+        st.session_state["jd_sidebar_input"] = demo_jd
+        st.session_state["trigger_demo_load"] = False  # Reset flag
+
     # TITLE (Centered)
     st.markdown("""
     <div style='text-align: center; margin-bottom: 2rem;'>
@@ -1031,10 +1039,7 @@ def render_cv_builder():
         col_demo, col_reset = st.columns([1, 4])
         with col_demo:
              if st.button("Load Demo Data"):
-                 demo_jd = styles.get_demo_builder_jd()
-                 st.session_state["cv_builder"] = styles.get_demo_cv_builder_data()
-                 st.session_state["cv_builder_jd"] = demo_jd
-                 st.session_state["jd_sidebar_input"] = demo_jd  # Force widget update
+                 st.session_state["trigger_demo_load"] = True
                  st.rerun()
 
         col1, col2 = st.columns(2)
