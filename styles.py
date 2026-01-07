@@ -776,8 +776,29 @@ def get_demo_cv_builder_data():
         ],
         "languages": [
             {"language": "Italian", "level": "Native"},
-            {"language": "English", "level": "B2 Professional"}
+            {"language": "English", "level": "Intermediate (B1-B2)"}
         ]
     }
+
+
+def get_demo_builder_jd():
+    """Returns sample JD for the CV Builder suggestions."""
+    return """
+SENIOR MARKETING ANALYST
+DataDriven Corp | Milan, Italy (Hybrid)
+
+Requirements:
+- 4+ years experience in marketing analytics or data analysis
+- Expert proficiency in Google Analytics 4 and Google Tag Manager
+- Strong SQL skills for data extraction and analysis
+- Experience with BI tools (Looker Studio, Tableau, or Power BI)
+- Proficiency in Python for data analysis and automation
+- Experience with A/B testing and statistical analysis
+
+Nice to Have:
+- Experience with cloud platforms (GCP, AWS)
+- Machine Learning knowledge
+- Tableau or Power BI certification
+"""
 
 

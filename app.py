@@ -979,6 +979,7 @@ def render_cv_builder():
         with col_demo:
              if st.button("Load Demo Data"):
                  st.session_state["cv_builder"] = styles.get_demo_cv_builder_data()
+                 st.session_state["cv_builder_jd"] = styles.get_demo_builder_jd()
                  st.rerun()
 
         col1, col2 = st.columns(2)
@@ -1205,7 +1206,7 @@ def render_cv_builder():
 
         # Preview Area
         st.markdown("### CV Preview")
-        st.text_area("Generated Content", value=cv_text, height=400)
+        st.text_area("Generated Content", value=cv_text, height=800)
         
         st.divider()
         col1, col2, col3 = st.columns(3)
@@ -1215,7 +1216,11 @@ def render_cv_builder():
              
         with col2:
              # Basic PDF Generation
-             st.button("Download PDF (Coming Soon)", disabled=True, use_container_width=True)
+             pdf_bytes = ml_utils.generate_pdf_report(cv_text)
+             if pdf_bytes:
+                 st.download_button("Download PDF", pdf_bytes, file_name="My_CV.pdf", mime="application/pdf", use_container_width=True)
+             else:
+                 st.warning("PDF Error")
              
         with col3:
              if st.button("Use for Analysis →", type="primary", use_container_width=True):
