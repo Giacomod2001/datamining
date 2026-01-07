@@ -2253,12 +2253,13 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
     """
     Identifies the best fitting job roles excluding the one described in the JD.
     """
-    if not cv_skills or not constants.JOB_ARCHETYPES or not TfidfVectorizer:
+    job_archetypes = getattr(constants, "JOB_ARCHETYPES", {})
+    if not cv_skills or not job_archetypes or not TfidfVectorizer:
         return []
 
     # 1. Prepare Corpus
-    archetype_names = list(constants.JOB_ARCHETYPES.keys())
-    archetype_docs = [" ".join(constants.JOB_ARCHETYPES[name]) for name in archetype_names]
+    archetype_names = list(job_archetypes.keys())
+    archetype_docs = [" ".join(job_archetypes[name]) for name in archetype_names]
     
     # Docs: [0=CV, 1=JD (if exists), 2..N=Archetypes]
     corpus = [" ".join(cv_skills)]
