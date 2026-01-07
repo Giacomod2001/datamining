@@ -69,7 +69,7 @@ st.cache_resource.clear()
 
 st.set_page_config(
     page_title="CareerMatch AI - Smart Career Analytics",
-    page_icon="briefcase",
+    page_icon=None,
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -1330,9 +1330,7 @@ def render_landing_page():
         # SPACER to push Dev Console to bottom (approximate)
         st.markdown("<br>" * 15, unsafe_allow_html=True)
         
-        # DEVS CONSOLE (Bottom Left)
-        st.divider()
-        if st.button("🛠️ Devs Console", use_container_width=True):
+        if st.button("Devs Console", use_container_width=True):
              st.session_state["page"] = "Debugger"
              st.rerun()
 
@@ -1394,8 +1392,7 @@ def render_evaluation_page():
     # SIDEBAR - Controlli e Navigazione
     # =========================================================================
     with st.sidebar:
-        # 1. HOME BUTTON (Consistent everywhere)
-        if st.button("🏠 Home", use_container_width=True):
+        if st.button("Home", use_container_width=True):
             st.session_state["page"] = "Landing"
             st.rerun()
             
@@ -1468,7 +1465,7 @@ def render_evaluation_page():
         
         # 6. DEVS CONSOLE (Bottom Left)
         st.divider()
-        if st.button("🛠️ Devs Console", use_container_width=True):
+        if st.button("Devs Console", use_container_width=True):
              st.session_state["page"] = "Debugger"
              st.rerun()
              
