@@ -1358,6 +1358,22 @@ def render_home():
             st.session_state["page"] = "CV Builder"
             st.rerun()
         
+        with st.expander("How It Works"):
+            st.markdown("""
+            **CV Builder** helps you create a professional CV:
+            
+            1. Fill in your personal information
+            2. Add your professional summary
+            3. Select your core competencies
+            4. List your technical skills
+            5. Add work experience, education, and projects
+            
+            **Smart Features:**
+            - Paste a Job Description to get skill suggestions
+            - Download your CV as TXT or PDF
+            - Send directly to the analysis tool
+            """)
+        
         st.divider()
         
         # Modalità Demo - Carica dati di esempio per test rapido
