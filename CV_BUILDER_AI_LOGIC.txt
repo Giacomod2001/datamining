@@ -1,0 +1,39 @@
+CV BUILDER - AI & MACHINE LEARNING MODELS EXPLAINED
+===================================================
+
+This document outlines the specific Artificial Intelligence and Machine Learning techniques used within the "CV Builder" module of CareerMatch AI to provide real-time suggestions and optimization.
+
+1. NATURAL LANGUAGE PROCESSING (NLP)
+------------------------------------
+Technique: Feature Extraction & Keyword Matching
+Library: scikit-learn (implied via ml_utils), utilizing N-grams and Fuzzy Matching.
+
+How it works:
+- The system scans both your CV content (fields like Summary, Bio, Experience) and the target Job Description.
+- It uses "N-gram analysis" (processing sequences of 1, 2, or 3 words) to identify technical terms (e.g., "Machine Learning", "Google Analytics 4") rather than just single words.
+- It employs specialized "Fuzzy Matching" to recognize skills even if they are slightly misspelled or phrased differently (e.g., matching "React.js" with "ReactJS").
+
+2. SMART MATCHING ALGORITHM
+---------------------------
+Technique: Jaccard Similarity Index (Set Theory)
+Logic: Mathematical Set Intersection.
+
+How it works:
+- We treat the Job Description as a "Set" of required skills (Set A).
+- We treat your CV as a "Set" of possessed skills (Set B).
+- The "Optimization Score" is calculated using the Intersection of these sets divided by the Union (or the target set size), effectively measuring coverage.
+- Score = (Skills in Common) / (Total Skills Required in JD).
+
+3. ATS OPTIMIZATION ENGINE
+--------------------------
+Technique: Gap Analysis & Ranking
+
+How it works:
+- The system identifies the specific "Set Difference" (Skills in JD - Skills in CV).
+- These missing skills are prioritized and suggested in the sidebar.
+- This helps users "beat" Applicant Tracking Systems (ATS) by ensuring the exact keywords filters are looking for are present in the document.
+
+SUMMARY OF ARCHITECTURE
+-----------------------
+- Semantic Analysis: No (in this specific builder module, mostly keyword-based for precision).
+- Vectorization: TF-IDF (Term Frequency-Inverse Document Frequency) is used in the background to weight the importance of detected terms, ensuring "the" and "and" aren't counted as skills.
