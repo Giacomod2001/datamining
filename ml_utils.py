@@ -113,6 +113,26 @@ except ImportError:
 import constants  # Contiene HARD_SKILLS, SOFT_SKILLS, INFERENCE_RULES
 
 # =============================================================================
+# SEMI-SUPERVISED LEARNING MODULE
+# =============================================================================
+# Riferimento corso: "Semi-Supervised Learning", "Label Propagation"
+#
+# Il modulo semi_supervised_learner implementa un layer di apprendimento
+# che combina:
+# - Supervised: Random Forest trainato su constants.py
+# - Self-Learning: Pattern appresi automaticamente dai dati
+#
+# I pattern appresi sono persistenti in learned_patterns.json
+# =============================================================================
+try:
+    from semi_supervised_learner import get_learner, is_learning_enabled
+    SEMI_SUPERVISED_AVAILABLE = True
+except ImportError:
+    SEMI_SUPERVISED_AVAILABLE = False
+    def get_learner(): return None
+    def is_learning_enabled(): return False
+
+# =============================================================================
 # CLASSIFICATION: RANDOM FOREST
 # =============================================================================
 # Riferimento corso: "Classification and Regression", "Decision Tree"
@@ -1410,7 +1430,77 @@ def extract_skills_from_text(text: str) -> Tuple[Set[str], Set[str]]:
         for kw in generic_keywords:
             hard_found.add(kw.capitalize())
 
+    # =========================================================================
+    # STEP 5: SEMI-SUPERVISED ENHANCEMENT
+    # =========================================================================
+    # Riferimento corso: "Semi-Supervised Learning", "Label Propagation"
+    #
+    # Questo step usa il layer semi-supervisionato per:
+    # 1. Migliorare l'estrazione usando pattern appresi precedentemente
+    # 2. Apprendere nuovi pattern dalle skill trovate con alta confidenza
+    # =========================================================================
+    
+    if SEMI_SUPERVISED_AVAILABLE and is_learning_enabled():
+        try:
+            learner = get_learner()
+            if learner:
+                # Inizia sessione di apprendimento
+                learner.start_learning_session()
+                
+                # Migliora estrazione con pattern appresi
+                enhanced_hard = learner.enhance_extraction(text, hard_found)
+                enhanced_soft = learner.enhance_extraction(text, soft_found)
+                
+                # Unisci skill migliorate
+                hard_found.update(enhanced_hard - hard_found)
+                soft_found.update(enhanced_soft - soft_found)
+                
+                # Impara dal contesto delle skill confermate
+                learner.learn_from_context(text, hard_found | soft_found)
+                
+        except Exception as e:
+            print(f"[Semi-Supervised] Enhancement error: {e}")
+
     return hard_found, soft_found
+
+# =============================================================================
+# SEMI-SUPERVISED LEARNING STATS
+# =============================================================================
+def get_semi_supervised_stats() -> Dict:
+    """
+    STATISTICHE SEMI-SUPERVISED LEARNING
+    ======================================
+    Restituisce le statistiche del layer semi-supervisionato per il debugger.
+    
+    Returns:
+        Dict con statistiche di apprendimento
+    """
+    if SEMI_SUPERVISED_AVAILABLE:
+        try:
+            learner = get_learner()
+            if learner:
+                return learner.get_learning_stats()
+        except Exception as e:
+            print(f"[Semi-Supervised] Stats error: {e}")
+    
+    return {
+        "total_patterns_learned": 0,
+        "skills_enhanced": 0,
+        "learning_enabled": False,
+        "available": False
+    }
+
+def reset_semi_supervised_learning():
+    """Resetta tutti i pattern appresi."""
+    if SEMI_SUPERVISED_AVAILABLE:
+        try:
+            learner = get_learner()
+            if learner:
+                learner.reset_learned_patterns()
+                return True
+        except Exception:
+            pass
+    return False
 
 # =============================================================================
 def extract_text_from_pdf(pdf_file) -> str:
