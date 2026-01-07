@@ -1188,17 +1188,12 @@ def render_cv_builder():
         
         cv_text = "\n".join(cv_text_lines)
         
-        # Display preview in styled container
-        st.markdown("""
-        <div style='background: rgba(0, 119, 181, 0.05); border: 1px solid rgba(0, 119, 181, 0.2); border-radius: 10px; padding: 1.5rem; max-height: 600px; overflow-y: auto;'>
-        """, unsafe_allow_html=True)
-        
+        # Display preview
         if cv_text.strip():
             st.text(cv_text)
         else:
             st.caption("Start filling the form to see your CV preview here...")
         
-        st.markdown("</div>", unsafe_allow_html=True)
         
         st.markdown("---")
         
