@@ -768,10 +768,16 @@ def _interpret_topic_keywords(keywords: List[str]) -> str:
     design_arch = {'design', 'architecture', 'scalable', 'distributed', 'system', 'infrastructure'}
     business = {'business', 'strategy', 'marketing', 'sales', 'customer', 'revenue'}
     
+    # NEW: Data Mining specific keywords (Course Aligned)
+    data_mining = {'mining', 'text', 'clustering', 'classification', 'pattern', 'extraction', 'association', 'kdd'}
+    
     kw_lower = {k.lower() for k in keywords}
     
     # Determina la categoria principale basandosi sull'intersezione
-    if kw_lower & cloud_tech:
+    if kw_lower & data_mining:
+        return f"Data Mining & Text Analytics: Extracting patterns and knowledge ({', '.join(kw_lower & data_mining)})"
+
+    elif kw_lower & cloud_tech:
         if kw_lower & data_tech:
             return f"Cloud Data Engineering: Working with cloud platforms ({', '.join(kw_lower & cloud_tech)}) to manage and process data"
         elif kw_lower & design_arch:

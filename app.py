@@ -788,7 +788,12 @@ def render_debug_page():
                     
                     if result:
                         for idx, topic in enumerate(result['topics'], 1):
-                            st.success(f"**Topic {idx}:** {topic}")
+                            # Extract Title vs Description (format "Title: Description")
+                            if ":" in topic:
+                                title, desc = topic.split(":", 1)
+                                st.success(f"**{idx}. {title}:** {desc}")
+                            else:
+                                st.success(f"**Topic {idx}:** {topic}")
                         
                         if result.get('keywords'):
                             st.markdown("**Key Terms:**")
