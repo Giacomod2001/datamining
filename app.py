@@ -1200,13 +1200,13 @@ def render_cv_builder():
         # Action buttons
         st.markdown("### Actions")
         
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         
         with col1:
-            # Download CV
+            # Download CV as TXT
             if cv_text.strip():
                 st.download_button(
-                    "Download CV (TXT)",
+                    "Download TXT",
                     cv_text,
                     file_name=f"{cv_data.get('name', 'CV').replace(' ', '_')}_CV.txt",
                     mime="text/plain",
@@ -1214,6 +1214,62 @@ def render_cv_builder():
                 )
         
         with col2:
+            # Download CV as PDF
+            if cv_text.strip():
+                try:
+                    from fpdf import FPDF
+                    
+                    pdf = FPDF()
+                    pdf.add_page()
+                    pdf.set_auto_page_break(auto=True, margin=15)
+                    
+                    # Title
+                    pdf.set_font("Helvetica", "B", 16)
+                    pdf.cell(0, 10, cv_data.get("name", "CV"), ln=True, align="C")
+                    
+                    # Contact info
+                    pdf.set_font("Helvetica", "", 10)
+                    contact_parts = []
+                    if cv_data.get("location"):
+                        contact_parts.append(cv_data["location"])
+                    if cv_data.get("email"):
+                        contact_parts.append(cv_data["email"])
+                    if cv_data.get("phone"):
+                        contact_parts.append(cv_data["phone"])
+                    if contact_parts:
+                        pdf.cell(0, 5, " | ".join(contact_parts), ln=True, align="C")
+                    
+                    pdf.ln(5)
+                    
+                    # Content - split by sections
+                    pdf.set_font("Helvetica", "", 10)
+                    for line in cv_text.split("\n"):
+                        line = line.strip()
+                        if not line:
+                            pdf.ln(3)
+                        elif line.startswith("Professional Summary") or line.startswith("Core Competencies") or line.startswith("Technical Skills") or line.startswith("Professional Experience") or line.startswith("Education") or line.startswith("Key Projects") or line.startswith("Languages"):
+                            pdf.ln(3)
+                            pdf.set_font("Helvetica", "B", 11)
+                            pdf.cell(0, 6, line, ln=True)
+                            pdf.set_font("Helvetica", "", 10)
+                        else:
+                            # Handle special characters
+                            safe_line = line.encode('latin-1', 'replace').decode('latin-1')
+                            pdf.multi_cell(0, 5, safe_line)
+                    
+                    pdf_bytes = pdf.output()
+                    
+                    st.download_button(
+                        "Download PDF",
+                        pdf_bytes,
+                        file_name=f"{cv_data.get('name', 'CV').replace(' ', '_')}_CV.pdf",
+                        mime="application/pdf",
+                        use_container_width=True
+                    )
+                except ImportError:
+                    st.caption("PDF unavailable")
+        
+        with col3:
             # Use for Analysis
             if cv_text.strip():
                 if st.button("Use for Analysis", use_container_width=True, help="Send this CV to the Home page for job matching"):
