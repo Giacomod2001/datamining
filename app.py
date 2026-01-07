@@ -830,7 +830,7 @@ def render_cv_builder():
     # Demo Mode Button
     col_demo, col_reset = st.columns([1, 1])
     with col_demo:
-        if st.button("🎯 Try Demo", use_container_width=True, help="Load sample CV data to see how it works"):
+        if st.button("Try Demo", use_container_width=True, help="Load sample CV data to see how it works"):
             st.session_state["cv_builder"] = {
                 "name": "Giacomo Dellacqua",
                 "location": "Milan, Italy",
@@ -838,13 +838,7 @@ def render_cv_builder():
                 "phone": "+39 351 930 1321",
                 "summary": "Results-driven Digital Marketing Data Analyst with expertise in AI-powered business solutions and data-driven decision-making. Currently pursuing Master's in Artificial Intelligence for Business while gaining hands-on experience in marketing analytics, tracking implementation, and performance optimization.",
                 "competencies": ["Machine Learning", "Data Analytics", "Digital Marketing", "Google Cloud Platform", "Business Intelligence", "Predictive Modeling"],
-                "tech_skills": {
-                    "Programming & Analytics": ["Python", "SQL"],
-                    "Data & Analytics Tools": ["Google Analytics 4", "Google Tag Manager", "Looker Studio"],
-                    "Cloud & AI": ["Google Cloud Platform", "Machine Learning"],
-                    "Marketing & Digital": ["SEO", "SEM", "CRM"],
-                    "Other Tools": ["Git", "Microsoft Office"]
-                },
+                "tech_skills_text": "Programming & Analytics: Python, SQL\nMarketing & Analytics Tools: Google Analytics 4, Google Tag Manager, Looker Studio\nCloud & AI: Google Cloud Platform, Machine Learning\nMarketing & Digital: SEO, SEM, CRM\nOther Tools: Git, Microsoft Office",
                 "experiences": [
                     {
                         "title": "Digital Marketing Data Analyst Intern",
@@ -894,7 +888,7 @@ def render_cv_builder():
             st.rerun()
     
     with col_reset:
-        if st.button("🗑️ Clear Form", use_container_width=True, help="Reset all fields"):
+        if st.button("Clear Form", use_container_width=True, help="Reset all fields"):
             st.session_state["cv_builder"] = {
                 "name": "", "location": "", "email": "", "phone": "",
                 "summary": "", "competencies": [], "tech_skills": {},
@@ -907,12 +901,31 @@ def render_cv_builder():
     # Get CV Builder data from session state
     cv_data = st.session_state["cv_builder"]
     
+    # Job Description Input (optional, for smart suggestions)
+    with st.expander("Target Job Description (optional)", expanded=False):
+        st.caption("Paste a job description to get smart skill suggestions while building your CV")
+        jd_input = st.text_area(
+            "Job Description",
+            value=st.session_state.get("cv_builder_jd", ""),
+            height=150,
+            placeholder="Paste the job description here to get personalized skill suggestions...",
+            label_visibility="collapsed"
+        )
+        st.session_state["cv_builder_jd"] = jd_input
+        
+        # Also store in last_jd_text for compatibility
+        if jd_input:
+            st.session_state["last_jd_text"] = jd_input
+    
     # Check if we have a JD for smart suggestions
-    jd_text = st.session_state.get("last_jd_text", "")
+    jd_text = st.session_state.get("cv_builder_jd", "") or st.session_state.get("last_jd_text", "")
     jd_skills = set()
     if jd_text:
         jd_hard, jd_soft = ml_utils.extract_skills_from_text(jd_text)
         jd_skills = jd_hard | jd_soft
+        # Show summary of extracted skills
+        if jd_skills:
+            st.info(f"Job requires {len(jd_skills)} skills. Smart suggestions enabled.")
     
     # Layout: Form on left, Preview on right
     form_col, preview_col = st.columns([1, 1])
@@ -961,26 +974,12 @@ def render_cv_builder():
         st.markdown("---")
         st.markdown("### Technical Skills")
         
-        # Predefined categories
-        tech_categories = {
-            "Programming & Analytics": ["Python", "SQL", "R", "JavaScript", "Java", "C++", "MATLAB"],
-            "Data & Analytics Tools": ["Excel", "Google Analytics 4", "Google Tag Manager", "Looker Studio", "Power BI", "Tableau"],
-            "Cloud & AI": ["Google Cloud Platform", "AWS", "Azure", "Machine Learning", "Deep Learning", "TensorFlow", "PyTorch"],
-            "Marketing & Digital": ["SEO", "SEM", "Social Media Marketing", "Content Marketing", "Email Marketing", "CRM"],
-            "Other Tools": ["Git", "Docker", "Jira", "Figma", "Adobe Creative Suite", "Microsoft Office"]
-        }
-        
-        if "tech_skills" not in cv_data or not isinstance(cv_data["tech_skills"], dict):
-            cv_data["tech_skills"] = {}
-        
-        for category, options in tech_categories.items():
-            selected = st.multiselect(
-                category,
-                options=options,
-                default=cv_data["tech_skills"].get(category, []),
-                key=f"tech_{category}"
-            )
-            cv_data["tech_skills"][category] = selected
+        cv_data["tech_skills_text"] = st.text_area(
+            "List your technical skills (one category per line)",
+            value=cv_data.get("tech_skills_text", ""),
+            height=120,
+            placeholder="Programming: Python, SQL, R\nTools: Excel, Power BI, Tableau\nCloud: AWS, Google Cloud\nOther: Git, Jira, Figma"
+        )
         
         st.markdown("---")
         st.markdown("### Professional Experience")
@@ -1127,11 +1126,9 @@ def render_cv_builder():
             cv_text_lines.append("\nCore Competencies: " + " | ".join(cv_data["competencies"]))
         
         # Technical Skills
-        if cv_data.get("tech_skills"):
+        if cv_data.get("tech_skills_text"):
             cv_text_lines.append("\nTechnical Skills")
-            for category, skills in cv_data["tech_skills"].items():
-                if skills:
-                    cv_text_lines.append(f"{category}: {' • '.join(skills)}")
+            cv_text_lines.append(cv_data["tech_skills_text"])
         
         # Experience
         if cv_data.get("experiences"):
@@ -1217,7 +1214,7 @@ def render_cv_builder():
             # Download CV
             if cv_text.strip():
                 st.download_button(
-                    "📄 Download CV (TXT)",
+                    "Download CV (TXT)",
                     cv_text,
                     file_name=f"{cv_data.get('name', 'CV').replace(' ', '_')}_CV.txt",
                     mime="text/plain",
@@ -1227,7 +1224,7 @@ def render_cv_builder():
         with col2:
             # Use for Analysis
             if cv_text.strip():
-                if st.button("🔍 Use for Analysis", use_container_width=True, help="Send this CV to the Home page for job matching"):
+                if st.button("Use for Analysis", use_container_width=True, help="Send this CV to the Home page for job matching"):
                     st.session_state["cv_text"] = cv_text
                     st.session_state["page"] = "Home"
                     st.success("CV loaded! Redirecting to analysis...")
@@ -1239,10 +1236,14 @@ def render_cv_builder():
             st.markdown("### 💡 Smart Suggestions")
             st.caption("Based on your target job description")
             
-            # Get current CV skills
+            # Get current CV skills by extracting from text
             cv_skills = set(cv_data.get("competencies", []))
-            for cat_skills in cv_data.get("tech_skills", {}).values():
-                cv_skills.update(cat_skills)
+            # Extract skills from tech_skills_text using ML
+            tech_text = cv_data.get("tech_skills_text", "")
+            if tech_text:
+                extracted_hard, extracted_soft = ml_utils.extract_skills_from_text(tech_text)
+                cv_skills.update(extracted_hard)
+                cv_skills.update(extracted_soft)
             
             # Find missing skills
             missing_from_jd = jd_skills - cv_skills
@@ -1305,7 +1306,7 @@ def render_home():
         
         # Navigation
         st.markdown("### Navigation")
-        if st.button("📝 CV Builder", use_container_width=True, help="Create a professional CV with smart suggestions"):
+        if st.button("CV Builder", use_container_width=True, help="Create a professional CV with smart suggestions"):
             st.session_state["page"] = "CV Builder"
             st.rerun()
         
