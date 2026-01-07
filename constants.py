@@ -114,3 +114,43 @@ SOFT_SKILLS = {
     "Decision Making": ["decision making", "processo decisionale", "scelte strategiche", "business decisions"],
     "Communication": ["communication", "comunicazione", "presentazione risultati", "reporting"],
 }
+
+# =============================================================================
+# JOB ARCHETYPES (For Career Compass)
+# =============================================================================
+# These define typical skill profiles for different job roles.
+# Used by recommend_roles() to suggest alternative career paths.
+JOB_ARCHETYPES = {
+    "Data Analyst": {
+        "SQL", "Data Visualization", "Statistics", "Data Mining", "Business Intelligence",
+        "Data Cleaning", "Data Transformation", "OLAP", "Database"
+    },
+    "Data Scientist": {
+        "Machine Learning", "Data Mining", "Statistics", "Classification", "Clustering",
+        "Regression", "Neural Network", "Data Transformation", "Data Cleaning"
+    },
+    "Business Intelligence Analyst": {
+        "Business Intelligence", "Data Warehouse", "OLAP", "Data Visualization", "SQL",
+        "Database", "Data Mining", "Statistics", "Decision Making"
+    },
+    "Database Administrator": {
+        "Database", "SQL", "Data Warehouse", "Data Integration", "Data Cleaning",
+        "Structured Data", "OLAP"
+    },
+    "Machine Learning Engineer": {
+        "Machine Learning", "Classification", "Clustering", "Regression", "Neural Network",
+        "Random Forest", "Decision Tree", "Data Transformation"
+    },
+    "Marketing Analyst": {
+        "Data Mining", "Statistics", "Data Visualization", "Business Intelligence",
+        "Association Analysis", "Clustering", "Data Cleaning"
+    },
+    "Data Engineer": {
+        "SQL", "Database", "Data Warehouse", "Data Lake", "Data Integration",
+        "Data Transformation", "Data Cleaning", "Big Data"
+    },
+    "Research Analyst": {
+        "Statistics", "Hypothesis Testing", "Data Mining", "Data Cleaning",
+        "Data Transformation", "Analytical Thinking", "Problem Solving"
+    },
+}
