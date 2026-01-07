@@ -1251,7 +1251,7 @@ def render_landing_page():
     
     with col1:
         with st.container(border=True):
-            st.markdown(card_style.format("CV Builder", "Create and optimize your CV with AI-driven suggestions based on Job Descriptions."), unsafe_allow_html=True)
+            st.markdown(card_style.format("CV Builder", "Build a professional CV with our AI Wizard. Get real-time suggestions to match your dream job profile."), unsafe_allow_html=True)
             if st.button("Open CV Builder", use_container_width=True):
                 st.session_state["page"] = "CV Builder"
                 st.rerun()
