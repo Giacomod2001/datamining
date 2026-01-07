@@ -742,31 +742,80 @@ HARD_SKILLS = {
 }
 
 
-# SOFT SKILLS (Expanded for Versatility)
+# SOFT SKILLS (Expanded for Versatility - Multi-language: EN/IT/ES/DE/FR)
 SOFT_SKILLS = {
     # --- PERSONAL ---
-    "Creativity": ["creativity", "creative thinking", "innovation", "creatività", "pensiero creativo", "innovazione", "proattività", "iniziativa"],
-    "Problem Solving": ["problem solving", "analytical thinking", "critical thinking", "capacità analitiche", "risoluzione problemi", "pensiero critico", "troubleshooting"],
-    "Adaptability": ["adaptability", "flexibility", "resilience", "adattabilità", "flessibilità", "resilienza", "gestione del cambiamento", "open to change"],
-    "Time Management": ["time management", "prioritization", "gestione del tempo", "pianificazione", "rispetto scadenze", "organizzazione", "puntualità"],
-    "Stress Management": ["stress management", "working under pressure", "gestione dello stress", "lavoro sotto pressione", "controllo emotivo"],
+    # EN | IT | ES | DE | FR
+    "Creativity": ["creativity", "creative thinking", "innovation", "creatività", "pensiero creativo", "innovazione", "proattività", "iniziativa", 
+                   "creatividad", "pensamiento creativo", "innovación",  # ES
+                   "kreativität", "kreatives denken", "innovation",  # DE
+                   "créativité", "pensée créative", "innovation"],  # FR
+    "Problem Solving": ["problem solving", "analytical thinking", "critical thinking", "capacità analitiche", "risoluzione problemi", "pensiero critico", "troubleshooting",
+                        "resolución de problemas", "pensamiento analítico", "pensamiento crítico",  # ES
+                        "problemlösung", "analytisches denken", "kritisches denken",  # DE
+                        "résolution de problèmes", "pensée analytique", "pensée critique"],  # FR
+    "Adaptability": ["adaptability", "flexibility", "resilience", "adattabilità", "flessibilità", "resilienza", "gestione del cambiamento", "open to change",
+                     "adaptabilidad", "flexibilidad", "resiliencia",  # ES
+                     "anpassungsfähigkeit", "flexibilität", "belastbarkeit",  # DE
+                     "adaptabilité", "flexibilité", "résilience"],  # FR
+    "Time Management": ["time management", "prioritization", "gestione del tempo", "pianificazione", "rispetto scadenze", "organizzazione", "puntualità",
+                        "gestión del tiempo", "priorización", "organización",  # ES
+                        "zeitmanagement", "priorisierung", "pünktlichkeit",  # DE
+                        "gestion du temps", "priorisation", "ponctualité"],  # FR
+    "Stress Management": ["stress management", "working under pressure", "gestione dello stress", "lavoro sotto pressione", "controllo emotivo",
+                          "gestión del estrés", "trabajo bajo presión",  # ES
+                          "stressmanagement", "arbeiten unter druck",  # DE
+                          "gestion du stress", "travail sous pression"],  # FR
 
     # --- INTERPERSONAL ---
-    "Communication": ["communication", "presentation", "stakeholder", "comunicazione", "public speaking", "esposizione", "comunicazione efficace", "ascolto attivo", "active listening"],
-    "Teamwork": ["teamwork", "collaboration", "team player", "lavoro di squadra", "collaborazione", "spirito di squadra", "cooperazione"],
-    "Leadership": ["leadership", "team lead", "management", "mentoring", "gestione team", "supervisione", "guida", "coordinamento team", "delega"],
-    "Negotiation": ["negotiation", "persuasion", "conflict resolution", "negoziazione", "mediazione", "risoluzione conflitti", "persuasione"],
-    "Empathy": ["empathy", "emotional intelligence", "patia", "intelligenza emotiva", "comprensione", "sensibilità"],
+    "Communication": ["communication", "presentation", "stakeholder", "comunicazione", "public speaking", "esposizione", "comunicazione efficace", "ascolto attivo", "active listening",
+                      "comunicación", "presentación", "escucha activa",  # ES
+                      "kommunikation", "präsentation", "aktives zuhören",  # DE
+                      "communication", "présentation", "écoute active"],  # FR
+    "Teamwork": ["teamwork", "collaboration", "team player", "lavoro di squadra", "collaborazione", "spirito di squadra", "cooperazione",
+                 "trabajo en equipo", "colaboración", "espíritu de equipo",  # ES
+                 "teamarbeit", "zusammenarbeit", "teamfähigkeit",  # DE
+                 "travail d'équipe", "collaboration", "esprit d'équipe"],  # FR
+    "Leadership": ["leadership", "team lead", "management", "mentoring", "gestione team", "supervisione", "guida", "coordinamento team", "delega",
+                   "liderazgo", "gestión de equipos", "supervisión",  # ES
+                   "führung", "teamleitung", "mitarbeiterführung",  # DE
+                   "leadership", "gestion d'équipe", "encadrement"],  # FR
+    "Negotiation": ["negotiation", "persuasion", "conflict resolution", "negoziazione", "mediazione", "risoluzione conflitti", "persuasione",
+                    "negociación", "persuasión", "resolución de conflictos",  # ES
+                    "verhandlung", "überzeugungskraft", "konfliktlösung",  # DE
+                    "négociation", "persuasion", "résolution de conflits"],  # FR
+    "Empathy": ["empathy", "emotional intelligence", "patia", "intelligenza emotiva", "comprensione", "sensibilità",
+                "empatía", "inteligencia emocional", "comprensión",  # ES
+                "empathie", "emotionale intelligenz", "verständnis",  # DE
+                "empathie", "intelligence émotionnelle", "compréhension"],  # FR
 
     # --- RETAIL / SERVICE ---
-    "Customer Service": ["customer service", "client support", "customer orientation", "assistenza clienti", "orientamento al cliente", "servizio clienti", "supporto clienti", "gestione reclami"],
-    "Cash Handling": ["cash handling", "pos", "cash register", "uso cassa", "registratore di cassa", "gestione pagamenti", "maneggio denaro"],
-    "Sales Assistant": ["sales assistant", "shop assistant", "commesso", "addetto vendite", "visual merchandising", "allestimento"],
+    "Customer Service": ["customer service", "client support", "customer orientation", "assistenza clienti", "orientamento al cliente", "servizio clienti", "supporto clienti", "gestione reclami",
+                         "atención al cliente", "servicio al cliente", "soporte al cliente",  # ES
+                         "kundenservice", "kundensupport", "kundenorientierung",  # DE
+                         "service client", "support client", "orientation client"],  # FR
+    "Cash Handling": ["cash handling", "pos", "cash register", "uso cassa", "registratore di cassa", "gestione pagamenti", "maneggio denaro",
+                      "manejo de efectivo", "caja registradora",  # ES
+                      "kassieren", "bargeldhandling",  # DE
+                      "gestion de caisse", "caisse enregistreuse"],  # FR
+    "Sales Assistant": ["sales assistant", "shop assistant", "commesso", "addetto vendite", "visual merchandising", "allestimento",
+                        "asistente de ventas", "dependiente",  # ES
+                        "verkäufer", "verkaufsassistent",  # DE
+                        "vendeur", "assistant de vente"],  # FR
 
     # --- ADMIN / OFFICE ---
-    "Data Entry": ["data entry", "typing", "inserimento dati", "velocità di digitazione", "archiviazione", "gestione documenti"],
-    "Organization": ["organization", "multitasking", "planning", "organizzazione", "ordine", "precisione", "gestione agenda"],
-    "Attention to Detail": ["attention to detail", "precision", "accuracy", "attenzione ai dettagli", "precisione", "accuratezza", "cura dei dettagli"],
+    "Data Entry": ["data entry", "typing", "inserimento dati", "velocità di digitazione", "archiviazione", "gestione documenti",
+                   "entrada de datos", "mecanografía",  # ES
+                   "dateneingabe", "maschinenschreiben",  # DE
+                   "saisie de données", "dactylographie"],  # FR
+    "Organization": ["organization", "multitasking", "planning", "organizzazione", "ordine", "precisione", "gestione agenda",
+                     "organización", "planificación", "multitarea",  # ES
+                     "organisation", "planung", "multitasking",  # DE
+                     "organisation", "planification", "polyvalence"],  # FR
+    "Attention to Detail": ["attention to detail", "precision", "accuracy", "attenzione ai dettagli", "precisione", "accuratezza", "cura dei dettagli",
+                            "atención al detalle", "precisión", "exactitud",  # ES
+                            "liebe zum detail", "genauigkeit", "präzision",  # DE
+                            "attention aux détails", "précision", "exactitude"],  # FR
 }
 
 ALL_SKILLS = {**HARD_SKILLS, **SOFT_SKILLS}

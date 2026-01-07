@@ -1239,6 +1239,7 @@ def render_cv_builder():
             if cv_text.strip():
                 try:
                     from fpdf import FPDF
+                    from io import BytesIO
                     
                     pdf = FPDF()
                     pdf.add_page()
@@ -1246,7 +1247,11 @@ def render_cv_builder():
                     
                     # Title
                     pdf.set_font("Helvetica", "B", 16)
-                    name_safe = cv_data.get("name", "CV").encode('latin-1', 'replace').decode('latin-1')
+                    name_safe = cv_data.get("name", "CV")
+                    try:
+                        name_safe = name_safe.encode('latin-1').decode('latin-1')
+                    except:
+                        name_safe = name_safe.encode('ascii', 'replace').decode('ascii')
                     pdf.cell(0, 10, name_safe, ln=True, align="C")
                     
                     # Contact info
@@ -1259,8 +1264,12 @@ def render_cv_builder():
                     if cv_data.get("phone"):
                         contact_parts.append(cv_data["phone"])
                     if contact_parts:
-                        contact_safe = " | ".join(contact_parts).encode('latin-1', 'replace').decode('latin-1')
-                        pdf.cell(0, 5, contact_safe, ln=True, align="C")
+                        contact_text = " | ".join(contact_parts)
+                        try:
+                            contact_text = contact_text.encode('latin-1').decode('latin-1')
+                        except:
+                            contact_text = contact_text.encode('ascii', 'replace').decode('ascii')
+                        pdf.cell(0, 5, contact_text, ln=True, align="C")
                     
                     pdf.ln(5)
                     
@@ -1275,15 +1284,28 @@ def render_cv_builder():
                         elif any(line.startswith(h) for h in section_headers):
                             pdf.ln(3)
                             pdf.set_font("Helvetica", "B", 11)
-                            line_safe = line.encode('latin-1', 'replace').decode('latin-1')
-                            pdf.cell(0, 6, line_safe, ln=True)
+                            try:
+                                line = line.encode('latin-1').decode('latin-1')
+                            except:
+                                line = line.encode('ascii', 'replace').decode('ascii')
+                            pdf.cell(0, 6, line, ln=True)
                             pdf.set_font("Helvetica", "", 10)
                         else:
                             # Handle special characters
-                            safe_line = line.encode('latin-1', 'replace').decode('latin-1')
+                            try:
+                                safe_line = line.encode('latin-1').decode('latin-1')
+                            except:
+                                safe_line = line.encode('ascii', 'replace').decode('ascii')
                             pdf.multi_cell(0, 5, safe_line)
                     
-                    pdf_bytes = pdf.output()
+                    # Output to bytes
+                    pdf_buffer = BytesIO()
+                    pdf_output = pdf.output(dest='S')
+                    if isinstance(pdf_output, str):
+                        pdf_buffer.write(pdf_output.encode('latin-1'))
+                    else:
+                        pdf_buffer.write(pdf_output)
+                    pdf_bytes = pdf_buffer.getvalue()
                     
                     st.download_button(
                         "Download PDF",
@@ -1295,7 +1317,7 @@ def render_cv_builder():
                 except ImportError:
                     st.button("PDF unavailable", disabled=True, use_container_width=True)
                 except Exception as e:
-                    st.button("PDF Error", disabled=True, use_container_width=True, help=str(e))
+                    st.button(f"PDF Error: {str(e)[:30]}", disabled=True, use_container_width=True)
         
         with col3:
             # Use for Analysis
@@ -1321,13 +1343,26 @@ def render_cv_builder():
                 cv_skills.update(extracted_hard)
                 cv_skills.update(extracted_soft)
             
-            # Find missing skills
-            missing_from_jd = jd_skills - cv_skills
-            matched_skills = jd_skills & cv_skills
+            # Find missing skills - ONLY HARD SKILLS (soft skills can't be evaluated from CV)
+            jd_hard_skills = {s for s in jd_skills if s in constants.HARD_SKILLS}
             
-            # Calculate match score
-            if jd_skills:
-                match_score = int((len(matched_skills) / len(jd_skills)) * 100)
+            # Apply transferable skills logic using SKILL_CLUSTERS
+            cv_skills_with_transfers = set(cv_skills)
+            for cluster_name, cluster_skills in constants.SKILL_CLUSTERS.items():
+                # If user has any skill from cluster, they have transferable knowledge of others
+                user_cluster_skills = cv_skills & cluster_skills
+                if user_cluster_skills:
+                    cv_skills_with_transfers.update(cluster_skills)
+            
+            # Calculate matches considering transfers
+            missing_from_jd = jd_hard_skills - cv_skills_with_transfers
+            matched_skills = jd_hard_skills & cv_skills
+            transferable_skills = (jd_hard_skills & cv_skills_with_transfers) - matched_skills
+            
+            # Calculate match score (direct + transferable)
+            total_covered = len(matched_skills) + len(transferable_skills)
+            if jd_hard_skills:
+                match_score = int((total_covered / len(jd_hard_skills)) * 100)
             else:
                 match_score = 0
             
@@ -1342,7 +1377,10 @@ def render_cv_builder():
                     st.error(f"**{match_score}%** Match")
             
             with status_col:
-                st.caption(f"Your CV matches {len(matched_skills)} of {len(jd_skills)} required skills")
+                status_text = f"{len(matched_skills)} matched"
+                if transferable_skills:
+                    status_text += f", {len(transferable_skills)} transferable"
+                st.caption(status_text)
             
             # Matched Skills
             if matched_skills:
@@ -1350,28 +1388,28 @@ def render_cv_builder():
                     matched_html = " ".join([f"<span class='skill-tag-matched'>{s}</span>" for s in list(matched_skills)[:15]])
                     st.markdown(matched_html, unsafe_allow_html=True)
             
-            # Missing Skills - Key Recommendations
+            # Transferable Skills
+            if transferable_skills:
+                with st.expander(f"Transferable Skills ({len(transferable_skills)})", expanded=False):
+                    transfer_html = " ".join([f"<span class='skill-tag-transferable'>{s}</span>" for s in list(transferable_skills)[:10]])
+                    st.markdown(transfer_html, unsafe_allow_html=True)
+                    st.caption("You have similar tools/skills that transfer")
+            
+            # Missing Skills - Only Hard Skills
             if missing_from_jd:
-                st.markdown("**Add these skills to improve your match:**")
+                st.markdown("**Technical skills to consider adding:**")
                 
-                # Categorize missing skills
-                missing_hard = [s for s in missing_from_jd if s in constants.HARD_SKILLS]
-                missing_soft = [s for s in missing_from_jd if s in constants.SOFT_SKILLS]
-                
-                # Show priority skills first
-                priority_skills = list(missing_from_jd)[:8]
+                # Show priority skills first (max 6)
+                priority_skills = list(missing_from_jd)[:6]
                 skills_html = " ".join([f"<span class='skill-tag-missing'>{s}</span>" for s in priority_skills])
                 st.markdown(skills_html, unsafe_allow_html=True)
                 
-                if len(missing_from_jd) > 8:
-                    with st.expander(f"View all {len(missing_from_jd)} missing skills"):
+                if len(missing_from_jd) > 6:
+                    with st.expander(f"View all {len(missing_from_jd)} missing"):
                         all_missing_html = " ".join([f"<span class='skill-tag-missing'>{s}</span>" for s in missing_from_jd])
                         st.markdown(all_missing_html, unsafe_allow_html=True)
-                
-                # Actionable tip
-                st.caption("Tip: Add these skills to your Technical Skills or Professional Summary sections")
             else:
-                st.success("Excellent! Your CV covers all skills from the job description!")
+                st.success("Your CV covers all technical skills from the job!")
 
 # =============================================================================
 # INTERFACCIA UTENTE PRINCIPALE (UI)
