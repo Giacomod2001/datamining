@@ -1203,40 +1203,67 @@ def render_landing_page():
     Nuova pagina principale che funge da hub di navigazione.
     """
     
-    # Hidden Developer Access (Top Right)
-    col_spacer, col_dev = st.columns([10, 1])
-    with col_dev:
-        if st.button("Dev", key="dev_access", help="Developer Mode"):
+    # 1. SIDEBAR (Consistent Layout)
+    with st.sidebar:
+        # BRANDING (Centered) - Same as other pages
+        st.markdown("""
+        <div style='text-align: center; padding: 0.5rem 0;'>
+            <h2 style='font-size: 1.5rem; margin: 0;'>CareerMatch AI</h2>
+            <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>CAREER ASSISTANT</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.divider()
+        
+        # Navigation/Information
+        st.info("Welcome to your AI Career Assistant. Choose a tool to get started.")
+        
+        # SPACER to push Dev Console to bottom (approximate)
+        st.markdown("<br>" * 15, unsafe_allow_html=True)
+        
+        # DEVS CONSOLE (Bottom Left)
+        st.divider()
+        if st.button("🛠️ Devs Console", use_container_width=True):
              st.session_state["page"] = "Debugger"
              st.rerun()
 
-    # Hero Section
+    # 2. HERO SECTION
+    # Reduced top padding (4rem -> 2rem)
     st.markdown("""
-    <div style='text-align: center; padding: 4rem 2rem;'>
+    <div style='text-align: center; padding: 2rem 2rem 3rem 2rem;'>
         <h1 style='font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem; background: -webkit-linear-gradient(45deg, #0077B5, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>CareerMatch AI</h1>
-        <p style='font-size: 1.5rem; color: #8b949e; margin-bottom: 3rem;'>Advanced Data Mining & Text Analytics for Career Optimization</p>
+        <p style='font-size: 1.5rem; color: #8b949e; margin-bottom: 2rem;'>Advanced Data Mining & Text Analytics for Career Optimization</p>
     </div>
     """, unsafe_allow_html=True)
 
-    # Navigation Cards
+    # 3. NAVIGATION CARDS
     col1, col2 = st.columns(2)
+    
+    # Custom CSS for cards to ensure equal height and centering
+    card_style = """
+    <div style='text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: space-between;'>
+        <div>
+            <h3 style='margin-bottom: 1rem;'>{}</h3>
+            <p style='color: #8b949e; margin-bottom: 2rem;'>{}</p>
+        </div>
+    </div>
+    """
     
     with col1:
         with st.container(border=True):
-            st.markdown("### CV Builder")
-            st.markdown("Create and optimize your CV with AI-driven suggestions based on Job Descriptions.")
+            st.markdown(card_style.format("CV Builder", "Create and optimize your CV with AI-driven suggestions based on Job Descriptions."), unsafe_allow_html=True)
             if st.button("Open CV Builder", use_container_width=True):
                 st.session_state["page"] = "CV Builder"
                 st.rerun()
 
     with col2:
         with st.container(border=True):
-            st.markdown("### CV Evaluation")
-            st.markdown("Unlock your career potential. Get specific advice on how to bridge the gap and ace the interview.")
+            st.markdown(card_style.format("CV Evaluation", "Unlock your career potential. Get specific advice on how to bridge the gap and ace the interview."), unsafe_allow_html=True)
             if st.button("Start Evaluation", use_container_width=True):
                 st.session_state["page"] = "CV Evaluation"
                 st.rerun()
 
+    # Footer
     st.markdown("---")
     st.markdown("<div style='text-align: center; color: #666;'>Course: Data Mining & Text Analytics | Prof. Alessandro Bruno | A.A. 2025-2026</div>", unsafe_allow_html=True)
 
@@ -1346,6 +1373,10 @@ def render_evaluation_page():
     # ==========================================================================
     # MAIN CONTENT AREA - Hero Section
     # ==========================================================================
+    
+    # Initialize variables to avoid NameError
+    show_project_eval = st.session_state.get("show_project_toggle", False)
+    show_cover_letter = st.session_state.get("show_cover_letter", False)
     
     # Hero Header with Gradient - Centered and Enhanced
     st.markdown("""
