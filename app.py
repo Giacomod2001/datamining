@@ -1898,7 +1898,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
 
     # --- MAIN SCORE SECTION ---
     st.markdown("<div id='section-score'></div>", unsafe_allow_html=True)
-    st.header("Analysis Results")
+    st.header("Career Strategy Audit")
     
     # Row 1: Main Match Score (larger, more prominent)
     score_col1, score_col2 = st.columns([1, 2])
@@ -1945,8 +1945,8 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
             st.warning("**Good Potential.** You have a solid foundation for this role.")
             st.markdown("Some gaps exist, but your transferable skills can bridge them.")
         else:
-            st.error("**Significant Gap.** This role requires skills you're still developing.")
-            st.markdown("Consider the learning path below to build missing competencies.")
+            st.error("**Growth Opportunity.** This role requires skills you're still developing.")
+            st.markdown("Focus on the learning path below to unlock this role.")
         
         # Quick stats
         st.markdown("")
@@ -2151,11 +2151,11 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     
     # Missing Skills - Red tags
     if res["missing_hard"]:
-        st.markdown("**Missing Skills:**")
+        st.markdown("**Focus Areas to Bridge the Gap:**")
         missing_html = " ".join([f"<span class='skill-tag-missing'>{skill}</span>" for skill in sorted(res["missing_hard"])])
         st.markdown(missing_html, unsafe_allow_html=True)
     else:
-        st.success("No missing skills - Perfect match!")
+        st.success("All Key Requirements Met - You are ready!")
     
     st.markdown("")
     
