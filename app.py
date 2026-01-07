@@ -1232,9 +1232,9 @@ def render_cv_builder():
         
         # Job Integration - Smart Suggestions
         if jd_skills:
-            st.markdown("---")
-            st.markdown("### 💡 Smart Suggestions")
-            st.caption("Based on your target job description")
+            st.markdown(\"---\")
+            st.markdown(\"### Smart Suggestions\")
+            st.caption(\"Based on your target job description\")
             
             # Get current CV skills by extracting from text
             cv_skills = set(cv_data.get("competencies", []))
