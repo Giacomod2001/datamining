@@ -28,6 +28,7 @@ Click "Try Demo" to see the app in action with sample data.
 | **Match Score** | AI-based CV-Job compatibility score |
 | **Transferable Skills** | Automatic recognition of equivalent skills |
 | **Gap Analysis** | Identifies missing skills to develop |
+| **CV Builder** | Create professional CVs with smart skill suggestions |
 | **Cover Letter AI** | Intelligent cover letter evaluation |
 | **Career Compass** | Alternative role suggestions based on your profile |
 | **Learning Path** | Action plan with learning resources |

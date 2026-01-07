@@ -948,10 +948,13 @@ def render_cv_builder():
         if jd_skills:
             st.info("💡 Skills highlighted in green are required by your target job")
         
+        # Filter default competencies to only include valid options
+        valid_competencies = [c for c in cv_data.get("competencies", []) if c in all_skills]
+        
         cv_data["competencies"] = st.multiselect(
             "Select your key competencies",
             options=all_skills,
-            default=cv_data.get("competencies", []),
+            default=valid_competencies,
             help="Select 5-10 key skills that define your expertise"
         )
         
