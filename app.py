@@ -923,9 +923,6 @@ def render_cv_builder():
     if jd_text:
         jd_hard, jd_soft = ml_utils.extract_skills_from_text(jd_text)
         jd_skills = jd_hard | jd_soft
-        # Show summary of extracted skills
-        if jd_skills:
-            st.info(f"Job requires {len(jd_skills)} skills. Smart suggestions enabled.")
     
     # Layout: Form on left, Preview on right
     form_col, preview_col = st.columns([1, 1])
