@@ -1,21 +1,30 @@
-MIT License
+NON-COMMERCIAL LICENSE
 
 Copyright (c) 2025 Giacomo Dellacqua, Luca Tallarico, Ruben Scoletta
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. Definitions.
+   "Licensor" shall mean the copyright owner or entity authorized by the copyright owner that is granting the License.
+   "Work" shall mean the software, source code, documentation, and associated files provided under this License.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. Grant of License.
+   Subject to the terms and conditions of this License, Licensor hereby grants you a personal, non-exclusive, non-transferable, royalty-free license to access, view, and modify the Work solely for EDUCATIONAL and PERSONAL RESEARCH purposes.
+
+3. Restrictions.
+   a. COMMERCIAL USE IS STRICTLY PROHIBITED. You may not distribute, sub-license, or use the Work, or any derivative works, for any commercial purpose, including but not limited to:
+      - Selling, renting, or licensing the Work.
+      - Using the Work to provide services to third parties for a fee.
+      - Incorporating the Work into a commercial product.
+      - Using the Work for internal business operations of a commercial entity.
+   b. Redistribution. You may not distribute copies of the Work or derivative works to any third party without all the original authors' prior written permission.
+   c. Attribution. You must retain all copyright, patent, trademark, and attribution notices contained in the source code.
+
+4. Intellectual Property.
+   All rights, title, and interest in and to the Work, including all intellectual property rights, remain with the Licensor.
+
+5. Disclaimer of Warranty.
+   THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS IN THE WORK.
+
+6. Termination.
+   This License is effective until terminated. Your rights under this License will terminate automatically without notice from the Licensor if you fail to comply with any term(s) of this License. Upon termination, you shall cease all use of the Work and destroy all copies, full or partial, of the Work.

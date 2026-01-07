@@ -385,9 +385,20 @@ def perform_skill_clustering(skills: List[str]):
         
         # Visualizzazione dendrogramma
         plt.figure(figsize=(12, 8))
+        
+        # Dark Mode Styling
+        plt.rcParams.update({
+            "text.color": "white",
+            "axes.labelcolor": "white",
+            "xtick.color": "white",
+            "ytick.color": "white",
+            "axes.edgecolor": "white",
+            "axes.titlecolor": "white"
+        })
+        
         sch.set_link_color_palette([
-            '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', 
-            '#9467bd', '#8c564b', '#e377c2', '#7f7f7f'
+            '#00cc96', '#ef553b', '#636efa', '#ab63fa', 
+            '#ffa15a', '#19d3f3', '#ff6692', '#b6e880'
         ])
         
         # Threshold per colorazione: 70% dell'altezza massima
@@ -398,18 +409,18 @@ def perform_skill_clustering(skills: List[str]):
             labels=skills,
             leaf_rotation=45,
             leaf_font_size=12,
-            above_threshold_color='#AAAAAA',
+            above_threshold_color='#dddddd', # Lighter gray for better visibility
             color_threshold=color_threshold
         )
         
-        plt.rcParams['lines.linewidth'] = 2.5
-        plt.title("Dendrogramma Skill (Ward Linkage)")
-        plt.xlabel("Skills")
-        plt.ylabel("Distanza (Ward)")
+        plt.axhline(y=0, color='white', linewidth=1)
+        plt.title("Dendrogramma Skill (Ward Linkage)", color='white', fontsize=16)
+        plt.xlabel("Skills", color='white', fontsize=12)
+        plt.ylabel("Distanza (Ward)", color='white', fontsize=12)
         plt.tight_layout()
         
         dendro_path = "dendrogram_v2.png"
-        plt.savefig(dendro_path)
+        plt.savefig(dendro_path, transparent=True)
         plt.close()
 
         # =====================================================================
@@ -2615,10 +2626,90 @@ def suggest_semantic_improvements(user_skills: Set[str], jd_text: str) -> List[s
                 user_has = members.intersection(user_skills)
                 if user_has:
                     owned = list(user_has)[0]
-                    suggestions.append(
-                        f"**{gap}** is required. Since you know **{owned}**, mention that your skills are transferable (both are {cluster_name})."
                     )
                     
+        # Check Inference Rules (Parent implies Child capability often)
+        # Inverted check: If User has Parent, they might grasp Child
+        for parent, children in inference_rules.items():
+            if parent in user_skills and gap in children:
+                suggestions.append(
+                    f"**{gap}** is often associated with **{parent}**. If you know {parent}, emphasize your ability to pick up {gap} quickly."
+                )
+
+    return suggestions[:5] # Top 5 suggestions
+
+# =============================================================================
+# CV PDF GENERATION (Simple, One Page, Clean)
+# =============================================================================
+def generate_simple_cv_pdf(text_content: str) -> bytes:
+    """
+    Generates a clean, compact PDF for the CV export.
+    Optimized for single-page layout and proper character encoding.
+    """
+    if not FPDF:
+        return None
+        
+    class CV_PDF(FPDF):
+        def header(self):
+            # No header for CV, just pure content
+            pass
+            
+        def footer(self):
+            # Minimal footer
+            self.set_y(-15)
+            self.set_font('Arial', 'I', 8)
+            self.set_text_color(128, 128, 128)
+            self.cell(0, 10, f'{self.page_no()}', 0, 0, 'R')
+
+    pdf = CV_PDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    pdf.set_font("Arial", size=10) # Smaller font (-1/2 sizes)
+    pdf.set_text_color(0, 0, 0)
+    
+    # Pre-process text to handle encoding and bullets
+    replacements = {
+        "•": "-", "●": "-", "▪": "-", "–": "-", "—": "-",
+        "’": "'", "‘": "'", "“": '"', "”": '"',
+        "é": "e", "á": "a", "í": "i", "ó": "o", "ú": "u",
+        "à": "a", "è": "e", "ì": "i", "ò": "o", "ù": "u",
+        "€": "EUR"
+    }
+    
+    lines = text_content.split('\n')
+    
+    for line in lines:
+        clean_line = line
+        for k, v in replacements.items():
+            clean_line = clean_line.replace(k, v)
+        
+        # Strip unicode just in case
+        try:
+            clean_line = clean_line.encode('latin-1', 'replace').decode('latin-1')
+        except:
+            clean_line = ''.join([c if ord(c) < 128 else '?' for c in clean_line])
+
+        if clean_line.strip() == "":
+            pdf.ln(2)
+            continue
+
+        # Formatting Heuristics
+        if clean_line.isupper() and len(clean_line) < 60:
+            # Section Header
+            pdf.ln(3)
+            pdf.set_font("Arial", 'B', 11)
+            pdf.cell(0, 5, clean_line, 0, 1)
+            pdf.set_font("Arial", '', 10)
+        elif " | " in clean_line and len(clean_line) < 100:
+             # Subheader
+             pdf.set_font("Arial", 'B', 10)
+             pdf.cell(0, 5, clean_line, 0, 1)
+             pdf.set_font("Arial", '', 10)
+        else:
+            # Body text
+            pdf.multi_cell(0, 5, clean_line)
+            
+    return pdf.output(dest='S').encode('latin-1')
         # Check Inference Rules (Parent implies Child capability often)
         # Inverted check: If User has Parent, they might grasp Child
         for parent, children in inference_rules.items():
