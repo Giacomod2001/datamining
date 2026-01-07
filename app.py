@@ -94,6 +94,22 @@ if "page" not in st.session_state:
 if "demo_mode" not in st.session_state:
     st.session_state["demo_mode"] = False
 
+# CV Builder session state
+if "cv_builder" not in st.session_state:
+    st.session_state["cv_builder"] = {
+        "name": "",
+        "location": "",
+        "email": "",
+        "phone": "",
+        "summary": "",
+        "competencies": [],
+        "tech_skills": {},
+        "experiences": [],
+        "education": [],
+        "projects": [],
+        "languages": []
+    }
+
 # =============================================================================
 # DEBUGGER / CONSOLE SVILUPPATORE
 # =============================================================================
@@ -779,6 +795,391 @@ def render_debug_page():
             st.dataframe(df, use_container_width=True, hide_index=True)
 
 # =============================================================================
+# CV BUILDER PAGE
+# =============================================================================
+# Pagina per creare un CV professionale usando un form interattivo.
+# Integrazione con l'analisi Job per suggerire skill mancanti.
+# =============================================================================
+
+def render_cv_builder():
+    """
+    CV BUILDER PAGE
+    ===============
+    Permette di creare un CV professionale con:
+    - Form strutturato per ogni sezione
+    - Preview in tempo reale
+    - Suggerimenti skill basati su Job Description
+    - Export e integrazione con analisi
+    """
+    
+    # Header con pulsante per tornare all'app
+    col_back, col_title = st.columns([1, 5])
+    with col_back:
+        st.markdown("<div style='padding-top: 0.5rem;'></div>", unsafe_allow_html=True)
+        if st.button("← Back to Home"):
+            st.session_state["page"] = "Home"
+            st.rerun()
+    with col_title:
+        st.markdown("""
+        <h1 style='margin: 0; padding: 0;'>CV Builder</h1>
+        <p style='color: #8b949e; margin: 0.25rem 0 0 0;'>Create a professional CV with smart skill suggestions</p>
+        """, unsafe_allow_html=True)
+    
+    st.divider()
+    
+    # Get CV Builder data from session state
+    cv_data = st.session_state["cv_builder"]
+    
+    # Check if we have a JD for smart suggestions
+    jd_text = st.session_state.get("last_jd_text", "")
+    jd_skills = set()
+    if jd_text:
+        jd_hard, jd_soft = ml_utils.extract_skills_from_text(jd_text)
+        jd_skills = jd_hard | jd_soft
+    
+    # Layout: Form on left, Preview on right
+    form_col, preview_col = st.columns([1, 1])
+    
+    with form_col:
+        st.markdown("### Personal Information")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            cv_data["name"] = st.text_input("Full Name", value=cv_data.get("name", ""), placeholder="e.g., Giacomo Dellacqua")
+            cv_data["email"] = st.text_input("Email", value=cv_data.get("email", ""), placeholder="e.g., name@email.com")
+        with col2:
+            cv_data["location"] = st.text_input("Location", value=cv_data.get("location", ""), placeholder="e.g., Milan, Italy")
+            cv_data["phone"] = st.text_input("Phone", value=cv_data.get("phone", ""), placeholder="e.g., +39 XXX XXX XXXX")
+        
+        st.markdown("---")
+        st.markdown("### Professional Summary")
+        cv_data["summary"] = st.text_area(
+            "Brief summary of your professional profile",
+            value=cv_data.get("summary", ""),
+            height=100,
+            placeholder="Results-driven professional with expertise in..."
+        )
+        
+        st.markdown("---")
+        st.markdown("### Core Competencies")
+        
+        # Get all available skills for selection
+        all_skills = list(constants.HARD_SKILLS.keys()) + list(constants.SOFT_SKILLS.keys())
+        all_skills = sorted(set(all_skills))
+        
+        # Smart suggestions if JD is available
+        if jd_skills:
+            st.info("💡 Skills highlighted in green are required by your target job")
+        
+        cv_data["competencies"] = st.multiselect(
+            "Select your key competencies",
+            options=all_skills,
+            default=cv_data.get("competencies", []),
+            help="Select 5-10 key skills that define your expertise"
+        )
+        
+        st.markdown("---")
+        st.markdown("### Technical Skills")
+        
+        # Predefined categories
+        tech_categories = {
+            "Programming & Analytics": ["Python", "SQL", "R", "JavaScript", "Java", "C++", "MATLAB"],
+            "Data & Analytics Tools": ["Excel", "Google Analytics 4", "Google Tag Manager", "Looker Studio", "Power BI", "Tableau"],
+            "Cloud & AI": ["Google Cloud Platform", "AWS", "Azure", "Machine Learning", "Deep Learning", "TensorFlow", "PyTorch"],
+            "Marketing & Digital": ["SEO", "SEM", "Social Media Marketing", "Content Marketing", "Email Marketing", "CRM"],
+            "Other Tools": ["Git", "Docker", "Jira", "Figma", "Adobe Creative Suite", "Microsoft Office"]
+        }
+        
+        if "tech_skills" not in cv_data or not isinstance(cv_data["tech_skills"], dict):
+            cv_data["tech_skills"] = {}
+        
+        for category, options in tech_categories.items():
+            selected = st.multiselect(
+                category,
+                options=options,
+                default=cv_data["tech_skills"].get(category, []),
+                key=f"tech_{category}"
+            )
+            cv_data["tech_skills"][category] = selected
+        
+        st.markdown("---")
+        st.markdown("### Professional Experience")
+        
+        # Dynamic experience entries
+        if "experiences" not in cv_data or not isinstance(cv_data["experiences"], list):
+            cv_data["experiences"] = []
+        
+        num_exp = st.number_input("Number of experiences", min_value=0, max_value=10, value=len(cv_data["experiences"]) if cv_data["experiences"] else 1)
+        
+        # Ensure we have enough entries
+        while len(cv_data["experiences"]) < num_exp:
+            cv_data["experiences"].append({"title": "", "company": "", "location": "", "dates": "", "bullets": "", "tech": ""})
+        cv_data["experiences"] = cv_data["experiences"][:num_exp]
+        
+        for i, exp in enumerate(cv_data["experiences"]):
+            with st.expander(f"Experience {i+1}: {exp.get('title', 'New Position') or 'New Position'}", expanded=i==0):
+                exp["title"] = st.text_input("Job Title", value=exp.get("title", ""), key=f"exp_title_{i}", placeholder="e.g., Digital Marketing Analyst")
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    exp["company"] = st.text_input("Company", value=exp.get("company", ""), key=f"exp_company_{i}", placeholder="e.g., Company Name SPA")
+                    exp["location"] = st.text_input("Location", value=exp.get("location", ""), key=f"exp_loc_{i}", placeholder="e.g., Milan, Italy")
+                with col2:
+                    exp["dates"] = st.text_input("Dates", value=exp.get("dates", ""), key=f"exp_dates_{i}", placeholder="e.g., January 2024 – Present")
+                
+                exp["bullets"] = st.text_area(
+                    "Key achievements (one per line, start with •)",
+                    value=exp.get("bullets", ""),
+                    key=f"exp_bullets_{i}",
+                    height=100,
+                    placeholder="• Implemented tracking systems...\n• Analyzed website performance..."
+                )
+                exp["tech"] = st.text_input("Technologies used", value=exp.get("tech", ""), key=f"exp_tech_{i}", placeholder="e.g., Python, SQL, Google Analytics")
+        
+        st.markdown("---")
+        st.markdown("### Education")
+        
+        if "education" not in cv_data or not isinstance(cv_data["education"], list):
+            cv_data["education"] = []
+        
+        num_edu = st.number_input("Number of education entries", min_value=0, max_value=5, value=len(cv_data["education"]) if cv_data["education"] else 1)
+        
+        while len(cv_data["education"]) < num_edu:
+            cv_data["education"].append({"degree": "", "institution": "", "location": "", "dates": "", "details": ""})
+        cv_data["education"] = cv_data["education"][:num_edu]
+        
+        for i, edu in enumerate(cv_data["education"]):
+            with st.expander(f"Education {i+1}: {edu.get('degree', 'New Degree') or 'New Degree'}", expanded=i==0):
+                edu["degree"] = st.text_input("Degree", value=edu.get("degree", ""), key=f"edu_degree_{i}", placeholder="e.g., Master's in Artificial Intelligence")
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    edu["institution"] = st.text_input("Institution", value=edu.get("institution", ""), key=f"edu_inst_{i}", placeholder="e.g., IULM University")
+                    edu["location"] = st.text_input("Location", value=edu.get("location", ""), key=f"edu_loc_{i}", placeholder="e.g., Milan, Italy")
+                with col2:
+                    edu["dates"] = st.text_input("Dates", value=edu.get("dates", ""), key=f"edu_dates_{i}", placeholder="e.g., October 2024 – August 2026")
+                
+                edu["details"] = st.text_area(
+                    "Details/Coursework",
+                    value=edu.get("details", ""),
+                    key=f"edu_details_{i}",
+                    height=60,
+                    placeholder="Relevant coursework: Machine Learning, Big Data..."
+                )
+        
+        st.markdown("---")
+        st.markdown("### Key Projects")
+        
+        if "projects" not in cv_data or not isinstance(cv_data["projects"], list):
+            cv_data["projects"] = []
+        
+        num_proj = st.number_input("Number of projects", min_value=0, max_value=5, value=len(cv_data["projects"]) if cv_data["projects"] else 0)
+        
+        while len(cv_data["projects"]) < num_proj:
+            cv_data["projects"].append({"name": "", "description": "", "link": ""})
+        cv_data["projects"] = cv_data["projects"][:num_proj]
+        
+        for i, proj in enumerate(cv_data["projects"]):
+            with st.expander(f"Project {i+1}: {proj.get('name', 'New Project') or 'New Project'}", expanded=True):
+                proj["name"] = st.text_input("Project Name", value=proj.get("name", ""), key=f"proj_name_{i}", placeholder="e.g., Dropout Predictor AI")
+                proj["description"] = st.text_area(
+                    "Description",
+                    value=proj.get("description", ""),
+                    key=f"proj_desc_{i}",
+                    height=60,
+                    placeholder="Designed and developed..."
+                )
+                proj["link"] = st.text_input("Link (optional)", value=proj.get("link", ""), key=f"proj_link_{i}", placeholder="e.g., https://github.com/...")
+        
+        st.markdown("---")
+        st.markdown("### Languages")
+        
+        if "languages" not in cv_data or not isinstance(cv_data["languages"], list):
+            cv_data["languages"] = []
+        
+        num_lang = st.number_input("Number of languages", min_value=0, max_value=5, value=len(cv_data["languages"]) if cv_data["languages"] else 1)
+        
+        while len(cv_data["languages"]) < num_lang:
+            cv_data["languages"].append({"language": "", "level": ""})
+        cv_data["languages"] = cv_data["languages"][:num_lang]
+        
+        for i, lang in enumerate(cv_data["languages"]):
+            col1, col2 = st.columns(2)
+            with col1:
+                lang["language"] = st.text_input("Language", value=lang.get("language", ""), key=f"lang_name_{i}", placeholder="e.g., English")
+            with col2:
+                lang["level"] = st.selectbox(
+                    "Level",
+                    options=["", "Native", "Professional Proficiency (C1-C2)", "Intermediate (B1-B2)", "Basic (A1-A2)"],
+                    index=["", "Native", "Professional Proficiency (C1-C2)", "Intermediate (B1-B2)", "Basic (A1-A2)"].index(lang.get("level", "")) if lang.get("level", "") in ["", "Native", "Professional Proficiency (C1-C2)", "Intermediate (B1-B2)", "Basic (A1-A2)"] else 0,
+                    key=f"lang_level_{i}"
+                )
+        
+        # Save to session state
+        st.session_state["cv_builder"] = cv_data
+    
+    with preview_col:
+        st.markdown("### CV Preview")
+        
+        # Generate CV text
+        cv_text_lines = []
+        
+        # Header
+        if cv_data.get("name"):
+            cv_text_lines.append(cv_data["name"])
+            contact_parts = []
+            if cv_data.get("location"):
+                contact_parts.append(cv_data["location"])
+            if cv_data.get("email"):
+                contact_parts.append(f"Email: {cv_data['email']}")
+            if cv_data.get("phone"):
+                contact_parts.append(f"Phone: {cv_data['phone']}")
+            if contact_parts:
+                cv_text_lines.append(" | ".join(contact_parts))
+        
+        # Summary
+        if cv_data.get("summary"):
+            cv_text_lines.append("\nProfessional Summary")
+            cv_text_lines.append(cv_data["summary"])
+        
+        # Core Competencies
+        if cv_data.get("competencies"):
+            cv_text_lines.append("\nCore Competencies: " + " | ".join(cv_data["competencies"]))
+        
+        # Technical Skills
+        if cv_data.get("tech_skills"):
+            cv_text_lines.append("\nTechnical Skills")
+            for category, skills in cv_data["tech_skills"].items():
+                if skills:
+                    cv_text_lines.append(f"{category}: {' • '.join(skills)}")
+        
+        # Experience
+        if cv_data.get("experiences"):
+            cv_text_lines.append("\nProfessional Experience")
+            for exp in cv_data["experiences"]:
+                if exp.get("title"):
+                    cv_text_lines.append(f"\n{exp['title']}")
+                    location_date = []
+                    if exp.get("company"):
+                        location_date.append(exp["company"])
+                    if exp.get("location"):
+                        location_date.append(exp["location"])
+                    if exp.get("dates"):
+                        location_date.append(exp["dates"])
+                    if location_date:
+                        cv_text_lines.append(" | ".join(location_date))
+                    if exp.get("bullets"):
+                        cv_text_lines.append(exp["bullets"])
+                    if exp.get("tech"):
+                        cv_text_lines.append(f"Technologies: {exp['tech']}")
+        
+        # Education
+        if cv_data.get("education"):
+            cv_text_lines.append("\nEducation")
+            for edu in cv_data["education"]:
+                if edu.get("degree"):
+                    cv_text_lines.append(f"\n{edu['degree']}")
+                    inst_parts = []
+                    if edu.get("institution"):
+                        inst_parts.append(edu["institution"])
+                    if edu.get("location"):
+                        inst_parts.append(edu["location"])
+                    if edu.get("dates"):
+                        inst_parts.append(edu["dates"])
+                    if inst_parts:
+                        cv_text_lines.append(" | ".join(inst_parts))
+                    if edu.get("details"):
+                        cv_text_lines.append(edu["details"])
+        
+        # Projects
+        if cv_data.get("projects"):
+            cv_text_lines.append("\nKey Projects")
+            for proj in cv_data["projects"]:
+                if proj.get("name"):
+                    cv_text_lines.append(f"\n{proj['name']}")
+                    if proj.get("description"):
+                        cv_text_lines.append(proj["description"])
+                    if proj.get("link"):
+                        cv_text_lines.append(f"Link: {proj['link']}")
+        
+        # Languages
+        if cv_data.get("languages"):
+            lang_parts = []
+            for lang in cv_data["languages"]:
+                if lang.get("language") and lang.get("level"):
+                    lang_parts.append(f"{lang['language']}: {lang['level']}")
+            if lang_parts:
+                cv_text_lines.append("\nLanguages")
+                cv_text_lines.append(" | ".join(lang_parts))
+        
+        cv_text = "\n".join(cv_text_lines)
+        
+        # Display preview in styled container
+        st.markdown("""
+        <div style='background: rgba(0, 119, 181, 0.05); border: 1px solid rgba(0, 119, 181, 0.2); border-radius: 10px; padding: 1.5rem; max-height: 600px; overflow-y: auto;'>
+        """, unsafe_allow_html=True)
+        
+        if cv_text.strip():
+            st.text(cv_text)
+        else:
+            st.caption("Start filling the form to see your CV preview here...")
+        
+        st.markdown("</div>", unsafe_allow_html=True)
+        
+        st.markdown("---")
+        
+        # Action buttons
+        st.markdown("### Actions")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Download CV
+            if cv_text.strip():
+                st.download_button(
+                    "📄 Download CV (TXT)",
+                    cv_text,
+                    file_name=f"{cv_data.get('name', 'CV').replace(' ', '_')}_CV.txt",
+                    mime="text/plain",
+                    use_container_width=True
+                )
+        
+        with col2:
+            # Use for Analysis
+            if cv_text.strip():
+                if st.button("🔍 Use for Analysis", use_container_width=True, help="Send this CV to the Home page for job matching"):
+                    st.session_state["cv_text"] = cv_text
+                    st.session_state["page"] = "Home"
+                    st.success("CV loaded! Redirecting to analysis...")
+                    st.rerun()
+        
+        # Job Integration - Smart Suggestions
+        if jd_skills:
+            st.markdown("---")
+            st.markdown("### 💡 Smart Suggestions")
+            st.caption("Based on your target job description")
+            
+            # Get current CV skills
+            cv_skills = set(cv_data.get("competencies", []))
+            for cat_skills in cv_data.get("tech_skills", {}).values():
+                cv_skills.update(cat_skills)
+            
+            # Find missing skills
+            missing_from_jd = jd_skills - cv_skills
+            
+            if missing_from_jd:
+                st.warning(f"**{len(missing_from_jd)} skills from the job you might want to add:**")
+                
+                # Show as clickable tags (up to 10)
+                skills_html = " ".join([f"<span class='skill-tag-missing' style='cursor:pointer;'>{s}</span>" for s in list(missing_from_jd)[:10]])
+                st.markdown(skills_html, unsafe_allow_html=True)
+                
+                if len(missing_from_jd) > 10:
+                    st.caption(f"... and {len(missing_from_jd) - 10} more")
+            else:
+                st.success("Great! Your CV covers all skills from the job description!")
+
+# =============================================================================
 # INTERFACCIA UTENTE PRINCIPALE (UI)
 # =============================================================================
 # Riferimento corso: "Knowledge Presentation" (KDD Step 7)
@@ -819,6 +1220,14 @@ def render_home():
             <p style='color: #8b949e; font-size: 0.75rem;'>v2.0 - Powered by Machine Learning</p>
         </div>
         """, unsafe_allow_html=True)
+        
+        st.divider()
+        
+        # Navigation
+        st.markdown("### Navigation")
+        if st.button("📝 CV Builder", use_container_width=True, help="Create a professional CV with smart suggestions"):
+            st.session_state["page"] = "CV Builder"
+            st.rerun()
         
         st.divider()
         
@@ -1644,5 +2053,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
 if __name__ == "__main__":
     if st.session_state["page"] == "Debugger":
         render_debug_page()
+    elif st.session_state["page"] == "CV Builder":
+        render_cv_builder()
     else:
         render_home()

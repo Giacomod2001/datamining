@@ -143,11 +143,11 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Authors
 
-This project was developed as a collaborative effort with equal contributions from:
+This project was developed as a collaborative effort with the following primary responsibilities:
 
-- **Giacomo Dellacqua**
-- **Ruben Scoletta**
-- **Luca Tallarico**
+- **Giacomo Dellacqua** - Project Design (UI/UX & Application Architecture)
+- **Luca Tallarico** - Machine Learning & NLP/Text Mining
+- **Ruben Scoletta** - Testing, Quality Assurance & Documentation
 
 ---
 
