@@ -992,15 +992,15 @@ def render_cv_builder():
     
     # --- BUILDER SIDEBAR ---
     with st.sidebar:
-        st.markdown("### 🛠️ Builder Tools")
+        st.markdown("### Builder Tools")
         
-        guide_expander = st.expander("📝 Guide", expanded=False)
+        guide_expander = st.expander("Guide", expanded=False)
         with guide_expander:
              st.markdown("Fill the form on the left. The preview updates automatically.")
         
         if jd_text:
             st.divider()
-            st.markdown("### 🎯 Optimization Score")
+            st.markdown("### Optimization Score")
             
             # Gauge-like display
             st.markdown(f"""
@@ -1411,7 +1411,7 @@ def render_cv_builder():
         
         if jd_skills:
             st.markdown("---")
-            st.markdown("### 💡 AI Optimization Suggestions")
+            st.markdown("### AI Optimization Suggestions")
             st.caption("Pattern Recognition Analysis based on Target JD")
             
             # (Calculation moved up)
@@ -1483,6 +1483,13 @@ def render_landing_page():
     Nuova pagina principale che funge da hub di navigazione.
     """
     
+    # Hidden Developer Access (Top Right)
+    col_spacer, col_dev = st.columns([10, 1])
+    with col_dev:
+        if st.button("Dev", key="dev_access", help="Developer Mode"):
+             st.session_state["page"] = "Debugger"
+             st.rerun()
+
     # Hero Section
     st.markdown("""
     <div style='text-align: center; padding: 4rem 2rem;'>
@@ -1492,11 +1499,11 @@ def render_landing_page():
     """, unsafe_allow_html=True)
 
     # Navigation Cards
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(2)
     
     with col1:
         with st.container(border=True):
-            st.markdown("### 📝 CV Builder")
+            st.markdown("### CV Builder")
             st.markdown("Create and optimize your CV with AI-driven suggestions based on Job Descriptions.")
             if st.button("Open CV Builder", use_container_width=True):
                 st.session_state["page"] = "CV Builder"
@@ -1504,18 +1511,10 @@ def render_landing_page():
 
     with col2:
         with st.container(border=True):
-            st.markdown("### 📊 CV Evaluation")
+            st.markdown("### CV Evaluation")
             st.markdown("Analyze your existing CV against a Job Description to find gaps and transferable skills.")
             if st.button("Start Evaluation", use_container_width=True):
                 st.session_state["page"] = "CV Evaluation"
-                st.rerun()
-
-    with col3:
-        with st.container(border=True):
-            st.markdown("### 🛠️ Developer Mode")
-            st.markdown("Explore the underlying Data Mining models, Clustering, and Knowledge Base.")
-            if st.button("Open Debugger", use_container_width=True):
-                st.session_state["page"] = "Debugger"
                 st.rerun()
 
     st.markdown("---")
@@ -1540,7 +1539,7 @@ def render_evaluation_page():
     # =========================================================================
     with st.sidebar:
         # Home Button
-        if st.button("🏠 Home", use_container_width=True):
+        if st.button("Home", use_container_width=True):
             st.session_state["page"] = "Landing"
             st.rerun()
             
@@ -1852,7 +1851,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     st.divider()
     
     # --- KDD PROCESS VISUALIZATION ---
-    with st.expander("🔍 KDD Process Trace (Data Mining Pipeline)", expanded=False):
+    with st.expander("KDD Process Trace (Data Mining Pipeline)", expanded=False):
         st.markdown("""
         **Knowledge Discovery from Data (KDD) Process Applied:**
         1.  **Data Cleaning**: Noise removal, Lowercasing, Stop-word removal (NLTK).
