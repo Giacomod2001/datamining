@@ -1512,7 +1512,7 @@ def render_landing_page():
     with col2:
         with st.container(border=True):
             st.markdown("### CV Evaluation")
-            st.markdown("Analyze your existing CV against a Job Description to find gaps and transferable skills.")
+            st.markdown("Unlock your career potential. Get specific advice on how to bridge the gap and ace the interview.")
             if st.button("Start Evaluation", use_container_width=True):
                 st.session_state["page"] = "CV Evaluation"
                 st.rerun()
@@ -1538,22 +1538,24 @@ def render_evaluation_page():
     # SIDEBAR - Controlli e Navigazione
     # =========================================================================
     with st.sidebar:
-        # Home Button
-        if st.button("Home", use_container_width=True):
+        # 1. HOME BUTTON (Consistent everywhere)
+        if st.button("🏠 Home", use_container_width=True):
             st.session_state["page"] = "Landing"
             st.rerun()
             
-        # Header con branding
+        st.divider()
+
+        # 2. BRANDING (Centered)
         st.markdown("""
-        <div style='text-align: center; padding: 1rem 0;'>
-            <h1 style='font-size: 1.8rem; margin-bottom: 0.2rem;'>CareerMatch AI</h1>
-            <p style='color: #00A0DC; font-size: 0.9rem; font-weight: 600;'>CV Evaluation</p>
+        <div style='text-align: center; padding: 0.5rem 0;'>
+            <h2 style='font-size: 1.5rem; margin: 0;'>CareerMatch AI</h2>
+            <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>CAREER ASSISTANT</p>
         </div>
         """, unsafe_allow_html=True)
         
         st.divider()
         
-        # Quick Start Section
+        # 3. QUICK ACTIONS
         col_demo1, col_demo2 = st.columns(2)
         with col_demo1:
             if st.button("Try Demo", use_container_width=True, help="Load sample data"):
@@ -1571,75 +1573,53 @@ def render_evaluation_page():
                 st.rerun()
         
         if st.session_state.get("demo_mode"):
-            col1, col2 = st.columns([3, 1])
-            with col1:
-                st.success("Demo active")
-            with col2:
-                if st.button("✕", key="reset_demo", help="Reset"):
-                    st.session_state["demo_mode"] = False
-                    st.session_state["cv_text"] = ""
-                    st.session_state["jd_text"] = ""
-                    st.session_state["proj_text"] = ""
-                    st.session_state["cl_text"] = ""
-                    st.session_state["show_project_toggle"] = False
-                    st.session_state["show_cl_toggle"] = False
-                    st.rerun()
+            st.info("Demo Mode Active")
+            if st.button("Exit Demo", use_container_width=True):
+                st.session_state["demo_mode"] = False
+                st.session_state["cv_text"] = ""
+                st.session_state["jd_text"] = ""
+                st.session_state["proj_text"] = ""
+                st.session_state["cl_text"] = ""
+                st.rerun()
         
         st.divider()
         
-        # Analysis Options
-        st.markdown("**Options**")
+        # 4. CONFIGURATION
+        st.markdown("<div style='text-align: center; font-weight: bold; margin-bottom: 0.5rem;'>Analysis Options</div>", unsafe_allow_html=True)
         
         if "show_project_toggle" not in st.session_state:
             st.session_state["show_project_toggle"] = False
-        if "show_cl_toggle" not in st.session_state:
-            st.session_state["show_cl_toggle"] = False
-        
-        show_project_eval = st.toggle(
-            "Project Evaluation", 
-            key="show_project_toggle",
-            help="Verify skills through projects"
-        )
-        
-        show_cover_letter = st.toggle(
-            "Cover Letter Analysis", 
-            key="show_cl_toggle",
-            help="Analyze your cover letter"
-        )
+        if "show_cover_letter" not in st.session_state: # Fixed key consistency
+             st.session_state["show_cover_letter"] = False
+
+        st.toggle("Include Project Portfolio", key="show_project_toggle")
+        st.toggle("Include Cover Letter", key="show_cover_letter")
         
         st.divider()
         
-        # Skills Legend
-        with st.expander("Legend", expanded=False):
+        # 5. LEGEND
+        with st.expander("Result Legend", expanded=False):
             st.markdown("""
-            <div style='line-height: 1.8; font-size: 0.85em;'>
-                <span class='skill-tag-matched'>Matched</span> Direct match<br>
-                <span class='skill-tag-transferable'>Transfer</span> Similar skill<br>
-                <span class='skill-tag-missing'>Missing</span> Gap to fill
+            <div style='font-size: 0.8rem;'>
+                <span class='skill-tag-matched'>Matched</span> Good<br>
+                <span class='skill-tag-transferable'>Transferable</span> OK<br>
+                <span class='skill-tag-missing'>Gap</span> Needs Focus
             </div>
             """, unsafe_allow_html=True)
+            
+        # SPACER to push Dev Console to bottom
+        st.markdown("<br>" * 5, unsafe_allow_html=True)
         
-        # How It Works
-        with st.expander("How It Works", expanded=False):
-            st.markdown("""
-            1. Paste CV and Job Description
-            2. Click **Analyze**
-            3. Get skill gap insights
-            """)
-        
-        # Developer Mode
-        if st.toggle("Developer Mode", help="Access debugger"):
-            pwd = st.text_input("Password", type="password", key="dev_pwd")
-            if pwd == "1234":
-                if st.button("Open Debugger", use_container_width=True):
-                    st.session_state["page"] = "Debugger"
-                    st.rerun()
-        
-        # Footer
+        # 6. DEVS CONSOLE (Bottom Left)
         st.divider()
+        if st.button("🛠️ Devs Console", use_container_width=True):
+             st.session_state["page"] = "Debugger"
+             st.rerun()
+             
+        # Footer
         st.markdown("""
-        <div style='text-align: center; color: #8b949e; font-size: 0.7rem;'>
-            <a href='https://github.com/Giacomod2001/datamining' style='color: #00A0DC;'>GitHub</a>
+        <div style='text-align: center; color: #8b949e; font-size: 0.7rem; margin-top: 1rem;'>
+            v2.1 | <a href='#' style='color: #00A0DC;'>GitHub</a>
         </div>
         """, unsafe_allow_html=True)
 
@@ -1652,11 +1632,11 @@ def render_evaluation_page():
     <div class='hero-gradient'>
         <h1 style='margin: 0; font-size: 2.5rem; font-weight: 700;'>CareerMatch AI</h1>
         <p style='font-size: 1.2rem; color: #00A0DC; margin: 0.5rem 0; font-weight: 600;'>
-            AI-Powered CV-to-Job Matching
+            AI-Powered Career Assistant
         </p>
         <p style='color: #8b949e; font-size: 0.95rem; max-width: 600px; margin: 0.5rem auto 1rem auto;'>
-            Upload your CV and job description to discover your compatibility level,
-            transferable skills, and a personalized action plan
+            Upload your CV and job description to get actionable insights, interview prep, 
+            and a roadmap to your dream job.
         </p>
         <div style='display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; flex-wrap: wrap;'>
             <div style='text-align: center;'>
