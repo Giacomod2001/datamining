@@ -90,7 +90,7 @@ st.markdown(styles.get_premium_css(), unsafe_allow_html=True)
 # - demo_mode: se l'utente ha attivato la modalità demo
 
 if "page" not in st.session_state:
-    st.session_state["page"] = "Home"
+    st.session_state["page"] = "Landing"
 if "demo_mode" not in st.session_state:
     st.session_state["demo_mode"] = False
 
@@ -817,7 +817,7 @@ def render_cv_builder():
     with col_back:
         st.markdown("<div style='padding-top: 0.5rem;'></div>", unsafe_allow_html=True)
         if st.button("← Back to Home"):
-            st.session_state["page"] = "Home"
+            st.session_state["page"] = "Landing"
             st.rerun()
     with col_title:
         st.markdown("""
@@ -938,12 +938,86 @@ def render_cv_builder():
         if jd_input:
             st.session_state["last_jd_text"] = jd_input
     
+    
     # Check if we have a JD for smart suggestions
     jd_text = st.session_state.get("cv_builder_jd", "") or st.session_state.get("last_jd_text", "")
     jd_skills = set()
+    match_score = 0
+    matched_skills = set()
+    missing_from_jd = set()
+    transferable_skills = set()
+    
     if jd_text:
         jd_hard, jd_soft = ml_utils.extract_skills_from_text(jd_text)
         jd_skills = jd_hard | jd_soft
+        
+        # --- ML OPTIMIZATION LOGIC (Pattern Recognition) ---
+        # Calculate match immediately for Sidebar & Suggestions
+        
+        # 1. Get current CV skills
+        cv_skills = set(cv_data.get("competencies", []))
+        # 2. Extract skills from tech_skills_text
+        tech_text = cv_data.get("tech_skills_text", "")
+        if tech_text:
+            extracted_hard, extracted_soft = ml_utils.extract_skills_from_text(tech_text)
+            cv_skills.update(extracted_hard)
+            cv_skills.update(extracted_soft)
+            
+        # 3. Find missing skills (Hard Skills only for "Missing" labeling)
+        jd_hard_skills = {s for s in jd_skills if s in constants.HARD_SKILLS}
+        
+        # 4. Apply Transferable Skills (Inference Rules)
+        cv_skills_with_transfers = set(cv_skills)
+        for cluster_name, cluster_skills in constants.SKILL_CLUSTERS.items():
+            user_cluster_skills = cv_skills & cluster_skills
+            if user_cluster_skills:
+                cv_skills_with_transfers.update(cluster_skills)
+        
+        # 5. Categorize
+        missing_from_jd = jd_hard_skills - cv_skills_with_transfers
+        matched_skills = jd_hard_skills & cv_skills
+        transferable_skills = (jd_hard_skills & cv_skills_with_transfers) - matched_skills
+        
+        # 6. Calculate Score
+        total_covered = len(matched_skills) + len(transferable_skills)
+        if jd_hard_skills:
+            match_score = int((total_covered / len(jd_hard_skills)) * 100)
+    
+    # --- BUILDER SIDEBAR ---
+    with st.sidebar:
+        st.markdown("### 🛠️ Builder Tools")
+        
+        guide_expander = st.expander("📝 Guide", expanded=False)
+        with guide_expander:
+             st.markdown("Fill the form on the left. The preview updates automatically.")
+        
+        if jd_text:
+            st.divider()
+            st.markdown("### 🎯 Optimization Score")
+            
+            # Gauge-like display
+            st.markdown(f"""
+            <div style='text-align: center; margin-bottom: 1rem;'>
+                <div style='font-size: 2.5rem; font-weight: 700; color: {"#00C853" if match_score >= 80 else "#FFB300" if match_score >= 50 else "#E53935"};'>
+                    {match_score}%
+                </div>
+                <div style='font-size: 0.8rem; color: #8b949e;'>Pattern Match</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.progress(match_score)
+            
+            if missing_from_jd:
+                st.markdown("**Top Missing Keywords:**")
+                for s in list(missing_from_jd)[:5]:
+                    st.markdown(f"<span style='color: #E53935; font-size: 0.9rem;'>• {s}</span>", unsafe_allow_html=True)
+            else:
+                st.success("Great job! All key technical skills present.")
+                
+            st.caption("Add these to 'Core Competencies' or 'Technical Skills' to improve relevance.")
+            
+        else:
+            st.info("Paste a Job Description above to enable Smart suggestions.")
     
     # Layout: Form on left, Preview on right
     form_col, preview_col = st.columns([1, 1])
@@ -1328,43 +1402,12 @@ def render_cv_builder():
                     st.success("CV loaded! Redirecting to analysis...")
                     st.rerun()
         
-        # Job Integration - Smart Suggestions
         if jd_skills:
             st.markdown("---")
-            st.markdown("### Smart Suggestions")
-            st.caption("Based on your target job description")
+            st.markdown("### 💡 AI Optimization Suggestions")
+            st.caption("Pattern Recognition Analysis based on Target JD")
             
-            # Get current CV skills by extracting from text
-            cv_skills = set(cv_data.get("competencies", []))
-            # Extract skills from tech_skills_text using ML
-            tech_text = cv_data.get("tech_skills_text", "")
-            if tech_text:
-                extracted_hard, extracted_soft = ml_utils.extract_skills_from_text(tech_text)
-                cv_skills.update(extracted_hard)
-                cv_skills.update(extracted_soft)
-            
-            # Find missing skills - ONLY HARD SKILLS (soft skills can't be evaluated from CV)
-            jd_hard_skills = {s for s in jd_skills if s in constants.HARD_SKILLS}
-            
-            # Apply transferable skills logic using SKILL_CLUSTERS
-            cv_skills_with_transfers = set(cv_skills)
-            for cluster_name, cluster_skills in constants.SKILL_CLUSTERS.items():
-                # If user has any skill from cluster, they have transferable knowledge of others
-                user_cluster_skills = cv_skills & cluster_skills
-                if user_cluster_skills:
-                    cv_skills_with_transfers.update(cluster_skills)
-            
-            # Calculate matches considering transfers
-            missing_from_jd = jd_hard_skills - cv_skills_with_transfers
-            matched_skills = jd_hard_skills & cv_skills
-            transferable_skills = (jd_hard_skills & cv_skills_with_transfers) - matched_skills
-            
-            # Calculate match score (direct + transferable)
-            total_covered = len(matched_skills) + len(transferable_skills)
-            if jd_hard_skills:
-                match_score = int((total_covered / len(jd_hard_skills)) * 100)
-            else:
-                match_score = 0
+            # (Calculation moved up)
             
             # Match Score Display
             score_col, status_col = st.columns([1, 2])
@@ -1426,7 +1469,52 @@ def render_cv_builder():
 # L'UI è costruita con Streamlit, un framework Python per dashboard.
 # =============================================================================
 
-def render_home():
+def render_landing_page():
+    """
+    LANDING PAGE
+    ============
+    Nuova pagina principale che funge da hub di navigazione.
+    """
+    
+    # Hero Section
+    st.markdown("""
+    <div style='text-align: center; padding: 4rem 2rem;'>
+        <h1 style='font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem; background: -webkit-linear-gradient(45deg, #0077B5, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>CareerMatch AI</h1>
+        <p style='font-size: 1.5rem; color: #8b949e; margin-bottom: 3rem;'>Advanced Data Mining & Text Analytics for Career Optimization</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Navigation Cards
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        with st.container(border=True):
+            st.markdown("### 📝 CV Builder")
+            st.markdown("Create and optimize your CV with AI-driven suggestions based on Job Descriptions.")
+            if st.button("Open CV Builder", use_container_width=True):
+                st.session_state["page"] = "CV Builder"
+                st.rerun()
+
+    with col2:
+        with st.container(border=True):
+            st.markdown("### 📊 CV Evaluation")
+            st.markdown("Analyze your existing CV against a Job Description to find gaps and transferable skills.")
+            if st.button("Start Evaluation", use_container_width=True):
+                st.session_state["page"] = "CV Evaluation"
+                st.rerun()
+
+    with col3:
+        with st.container(border=True):
+            st.markdown("### 🛠️ Developer Mode")
+            st.markdown("Explore the underlying Data Mining models, Clustering, and Knowledge Base.")
+            if st.button("Open Debugger", use_container_width=True):
+                st.session_state["page"] = "Debugger"
+                st.rerun()
+
+    st.markdown("---")
+    st.markdown("<div style='text-align: center; color: #666;'>Course: Data Mining & Text Analytics | Prof. Alessandro Bruno | A.A. 2025-2026</div>", unsafe_allow_html=True)
+
+def render_evaluation_page():
     """
     RENDERING PAGINA PRINCIPALE
     ============================
@@ -1444,79 +1532,58 @@ def render_home():
     # SIDEBAR - Controlli e Navigazione
     # =========================================================================
     with st.sidebar:
+        # Home Button
+        if st.button("🏠 Home", use_container_width=True):
+            st.session_state["page"] = "Landing"
+            st.rerun()
+            
         # Header con branding
         st.markdown("""
         <div style='text-align: center; padding: 1rem 0;'>
             <h1 style='font-size: 1.8rem; margin-bottom: 0.2rem;'>CareerMatch AI</h1>
-            <p style='color: #00A0DC; font-size: 0.9rem; font-weight: 600;'>Smart Career Analytics Platform</p>
-            <p style='color: #8b949e; font-size: 0.75rem;'>v2.0 - Powered by Machine Learning</p>
+            <p style='color: #00A0DC; font-size: 0.9rem; font-weight: 600;'>CV Evaluation</p>
         </div>
         """, unsafe_allow_html=True)
         
         st.divider()
         
-        # Navigation
-        st.markdown("### Navigation")
-        if st.button("CV Builder", use_container_width=True, help="Create a professional CV with smart suggestions"):
-            st.session_state["page"] = "CV Builder"
-            st.rerun()
-        
-        st.divider()
-        
-        # Modalità Demo - Carica dati di esempio per test rapido
-        st.markdown("### Quick Start")
-        
+        # Quick Start Section
         col_demo1, col_demo2 = st.columns(2)
         with col_demo1:
-            if st.button("Try Demo", use_container_width=True, help="Load sample CV and Job Description to see the app in action"):
+            if st.button("Try Demo", use_container_width=True, help="Load sample data"):
                 st.session_state["demo_mode"] = True
-                # Force update the text area values in session state
                 st.session_state["cv_text"] = styles.get_demo_cv()
                 st.session_state["jd_text"] = styles.get_demo_jd()
-                # Also load project and cover letter demos
                 st.session_state["proj_text"] = styles.get_demo_project()
                 st.session_state["cl_text"] = styles.get_demo_cover_letter()
-                # Enable the toggles so user sees the full demo
                 st.session_state["show_project_toggle"] = True
                 st.session_state["show_cl_toggle"] = True
                 st.rerun()
         with col_demo2:
-            if st.session_state.get("demo_mode"):
-                if st.button("Reset", use_container_width=True):
+            if st.button("CV Builder", use_container_width=True, help="Create a CV"):
+                st.session_state["page"] = "CV Builder"
+                st.rerun()
+        
+        if st.session_state.get("demo_mode"):
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                st.success("Demo active")
+            with col2:
+                if st.button("✕", key="reset_demo", help="Reset"):
                     st.session_state["demo_mode"] = False
-                    # Clear all text areas
                     st.session_state["cv_text"] = ""
                     st.session_state["jd_text"] = ""
                     st.session_state["proj_text"] = ""
                     st.session_state["cl_text"] = ""
-                    # Reset toggles
                     st.session_state["show_project_toggle"] = False
                     st.session_state["show_cl_toggle"] = False
                     st.rerun()
         
-        if st.session_state.get("demo_mode"):
-            st.success("Demo mode active.")
-        
-        # How It Works - Combined
-        with st.expander("How It Works", expanded=False):
-            st.markdown("""
-            **Job Matching:**
-            1. Paste your CV and a Job Description
-            2. Click Analyze for instant skill matching
-            3. Get personalized learning paths
-            
-            **CV Builder:**
-            1. Fill in your professional info
-            2. Add skills, experience, education
-            3. Download as PDF or use for analysis
-            """)
-        
         st.divider()
         
-        # Optional Features Section
-        st.markdown("### Analysis Options")
+        # Analysis Options
+        st.markdown("**Options**")
         
-        # Initialize toggle states if not present
         if "show_project_toggle" not in st.session_state:
             st.session_state["show_project_toggle"] = False
         if "show_cl_toggle" not in st.session_state:
@@ -1525,48 +1592,48 @@ def render_home():
         show_project_eval = st.toggle(
             "Project Evaluation", 
             key="show_project_toggle",
-            help="Upload project descriptions to verify skills through your portfolio. Increases match score when projects demonstrate missing skills."
+            help="Verify skills through projects"
         )
         
         show_cover_letter = st.toggle(
             "Cover Letter Analysis", 
             key="show_cl_toggle",
-            help="Get AI feedback on keyword coverage, structure, and personalization of your application letter."
+            help="Analyze your cover letter"
         )
         
         st.divider()
         
-        # Skills Legend - Compact & Visual
-        with st.expander("Skills Legend", expanded=True):
+        # Skills Legend
+        with st.expander("Legend", expanded=False):
             st.markdown("""
-            <div style='line-height: 2;'>
-                <span class='skill-tag-matched' style='font-size: 0.8em;'>Matched</span> Direct skill match<br>
-                <span class='skill-tag-transferable' style='font-size: 0.8em;'>Transfer</span> Similar skill found<br>
-                <span class='skill-tag-project' style='font-size: 0.8em;'>Project</span> Portfolio verified<br>
-                <span class='skill-tag-missing' style='font-size: 0.8em;'>Missing</span> Gap to fill<br>
-                <span class='skill-tag-bonus' style='font-size: 0.8em;'>Bonus</span> Extra advantage
+            <div style='line-height: 1.8; font-size: 0.85em;'>
+                <span class='skill-tag-matched'>Matched</span> Direct match<br>
+                <span class='skill-tag-transferable'>Transfer</span> Similar skill<br>
+                <span class='skill-tag-missing'>Missing</span> Gap to fill
             </div>
             """, unsafe_allow_html=True)
         
-        st.divider()
+        # How It Works
+        with st.expander("How It Works", expanded=False):
+            st.markdown("""
+            1. Paste CV and Job Description
+            2. Click **Analyze**
+            3. Get skill gap insights
+            """)
         
-        # Developer Mode - Hidden by Default
-        if st.toggle("Developer Mode", help="Access debugging tools and analytics internals"):
-            pwd = st.text_input("Password", type="password", key="dev_pwd", placeholder="Enter dev password")
+        # Developer Mode
+        if st.toggle("Developer Mode", help="Access debugger"):
+            pwd = st.text_input("Password", type="password", key="dev_pwd")
             if pwd == "1234":
                 if st.button("Open Debugger", use_container_width=True):
                     st.session_state["page"] = "Debugger"
                     st.rerun()
-            elif pwd:
-                st.error("Wrong password")
         
         # Footer
         st.divider()
         st.markdown("""
-        <div style='text-align: center; color: #8b949e; font-size: 0.75rem;'>
-            CareerMatch AI<br>
-            <a href='https://github.com/Giacomod2001/datamining' style='color: #00A0DC;'>GitHub</a> | 
-            <a href='https://dataminingiulm.streamlit.app/' style='color: #00A0DC;'>Live Demo</a>
+        <div style='text-align: center; color: #8b949e; font-size: 0.7rem;'>
+            <a href='https://github.com/Giacomod2001/datamining' style='color: #00A0DC;'>GitHub</a>
         </div>
         """, unsafe_allow_html=True)
 
@@ -2277,5 +2344,7 @@ if __name__ == "__main__":
         render_debug_page()
     elif st.session_state["page"] == "CV Builder":
         render_cv_builder()
+    elif st.session_state["page"] == "CV Evaluation":
+        render_evaluation_page()
     else:
-        render_home()
+        render_landing_page()
