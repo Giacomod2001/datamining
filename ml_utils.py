@@ -2516,3 +2516,110 @@ def analyze_cover_letter(cover_letter_text: str, jd_text: str, cv_text: str = ""
         'language': cl_lang
     }
 
+
+# =============================================================================
+# OPTIMIZATION: SMART SKILL SORTING & SEMANTIC SUGGESTIONS
+# =============================================================================
+
+def smart_sort_skills(user_skills: List[str], jd_text: str) -> List[Tuple[str, float]]:
+    """
+    Sorts user skills by relevance to the JD using Semantic Similarity.
+    
+    Logic:
+    1. Treats JD as the 'Query'
+    2. Treats each Skill as a 'Document'
+    3. Calculates Cosine Similarity between JD and each Skill
+    4. Returns sorted list [(Skill, Score)]
+    
+    This ensures that if JD mentions "Python" a lot, "Python" moves to the top 
+    of the CV skills list.
+    """
+    if not user_skills:
+        return []
+    if not jd_text or not TfidfVectorizer:
+        # Fallback: alphabetical
+        return [(s, 0.0) for s in sorted(user_skills)]
+
+    try:
+        # Create a mini corpus: [JD, Skill_1, Skill_2, ...]
+        # We add "context" to skills to help matching (e.g. "SkillName skill")
+        corpus = [jd_text] + [f"{s} skill" for s in user_skills]
+        
+        # Vectorize
+        vectorizer = TfidfVectorizer(stop_words='english')
+        tfidf_matrix = vectorizer.fit_transform(corpus)
+        
+        # Calculate similarity between JD (idx 0) and Skills (idx 1..)
+        jd_vec = tfidf_matrix[0:1]
+        skill_vecs = tfidf_matrix[1:]
+        
+        scores = cosine_similarity(jd_vec, skill_vecs).flatten()
+        
+        # Pair skills with scores
+        skill_scores = []
+        for i, skill in enumerate(user_skills):
+            # Boost score if exact match found in JD text (case insensitive)
+            base_score = scores[i]
+            if skill.lower() in jd_text.lower():
+                base_score += 0.5 # Big boost for exact keyword match
+            
+            skill_scores.append((skill, base_score))
+            
+        # Sort desc
+        skill_scores.sort(key=lambda x: x[1], reverse=True)
+        return skill_scores
+        
+    except Exception as e:
+        print(f"Smart Sort Error: {e}")
+        return [(s, 0.0) for s in sorted(user_skills)]
+
+
+def suggest_semantic_improvements(user_skills: Set[str], jd_text: str) -> List[str]:
+    """
+    Suggests subtle improvements based on Knowledge Base inference.
+    
+    Logic:
+    - Finds missing skills
+    - Checks if User has 'Related' skills (Cluster or Parent)
+    - Suggests specific phrasing to bridge the gap.
+    
+    Example:
+    - User has: "Tableau"
+    - JD wants: "Power BI"
+    - Suggestion: "Your Tableau experience is highly transferable to Power BI. Mention 'BI Tool Adaptability'."
+    """
+    suggestions = []
+    
+    # 1. Identify Gaps
+    jd_hard, _ = extract_skills_from_text(jd_text)
+    missing = jd_hard - user_skills
+    
+    if not missing:
+        return []
+        
+    skill_clusters = getattr(constants, "SKILL_CLUSTERS", {})
+    inference_rules = getattr(constants, "INFERENCE_RULES", {})
+    
+    # 2. Analyze Gaps against Knowledge Base
+    for gap in missing:
+        # Check Equivalent Clusters
+        for cluster_name, members in skill_clusters.items():
+            if gap in members:
+                # Does user have ANY other skill in this cluster?
+                user_has = members.intersection(user_skills)
+                if user_has:
+                    owned = list(user_has)[0]
+                    suggestions.append(
+                        f"**{gap}** is required. Since you know **{owned}**, mention that your skills are transferable (both are {cluster_name})."
+                    )
+                    
+        # Check Inference Rules (Parent implies Child capability often)
+        # Inverted check: If User has Parent, they might grasp Child
+        for parent, children in inference_rules.items():
+            if parent in user_skills and gap in children:
+                suggestions.append(
+                    f"**{gap}** is often associated with **{parent}** (which you have). Consider adding it if you have exposure."
+                )
+
+    return suggestions[:5] # Top 5 only
+
