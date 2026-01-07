@@ -837,7 +837,7 @@ def render_cv_builder():
                 "email": "dellacquagiacomo@gmail.com",
                 "phone": "+39 351 930 1321",
                 "summary": "Results-driven Digital Marketing Data Analyst with expertise in AI-powered business solutions and data-driven decision-making. Currently pursuing Master's in Artificial Intelligence for Business while gaining hands-on experience in marketing analytics, tracking implementation, and performance optimization.",
-                "competencies": ["Machine Learning", "Data Analytics", "Digital Marketing", "Google Cloud Platform", "Business Intelligence", "Predictive Modeling"],
+                "competencies": ["Machine Learning", "Data Science", "SQL", "Python", "Google Analytics", "Data Visualization"],
                 "tech_skills_text": "Programming & Analytics: Python, SQL\nMarketing & Analytics Tools: Google Analytics 4, Google Tag Manager, Looker Studio\nCloud & AI: Google Cloud Platform, Machine Learning\nMarketing & Digital: SEO, SEM, CRM\nOther Tools: Git, Microsoft Office",
                 "experiences": [
                     {
@@ -885,6 +885,27 @@ def render_cv_builder():
                     {"language": "English", "level": "Professional Proficiency (C1-C2)"}
                 ]
             }
+            # Also load a demo JD for Smart Suggestions
+            demo_jd = """
+            Junior Data Analyst - Marketing Analytics
+            
+            We are looking for a Junior Data Analyst to join our Marketing team.
+            
+            Requirements:
+            - Bachelor's or Master's degree in Data Science, Statistics, or related field
+            - Proficiency in Python, SQL, and data visualization tools (Tableau, Power BI)
+            - Experience with Google Analytics, A/B Testing, and marketing analytics
+            - Knowledge of Machine Learning and Predictive Modeling
+            - Strong communication and problem-solving skills
+            - Experience with AWS or cloud platforms is a plus
+            - Knowledge of R and statistical analysis preferred
+            
+            Nice to have:
+            - Experience with Big Data technologies (Spark, Hadoop)
+            - Familiarity with Marketing Automation tools
+            - Project Management experience
+            """
+            st.session_state["cv_builder_jd"] = demo_jd.strip()
             st.rerun()
     
     with col_reset:
@@ -1225,7 +1246,8 @@ def render_cv_builder():
                     
                     # Title
                     pdf.set_font("Helvetica", "B", 16)
-                    pdf.cell(0, 10, cv_data.get("name", "CV"), ln=True, align="C")
+                    name_safe = cv_data.get("name", "CV").encode('latin-1', 'replace').decode('latin-1')
+                    pdf.cell(0, 10, name_safe, ln=True, align="C")
                     
                     # Contact info
                     pdf.set_font("Helvetica", "", 10)
@@ -1237,20 +1259,24 @@ def render_cv_builder():
                     if cv_data.get("phone"):
                         contact_parts.append(cv_data["phone"])
                     if contact_parts:
-                        pdf.cell(0, 5, " | ".join(contact_parts), ln=True, align="C")
+                        contact_safe = " | ".join(contact_parts).encode('latin-1', 'replace').decode('latin-1')
+                        pdf.cell(0, 5, contact_safe, ln=True, align="C")
                     
                     pdf.ln(5)
                     
                     # Content - split by sections
                     pdf.set_font("Helvetica", "", 10)
+                    section_headers = ["Professional Summary", "Core Competencies", "Technical Skills", "Professional Experience", "Education", "Key Projects", "Languages"]
+                    
                     for line in cv_text.split("\n"):
                         line = line.strip()
                         if not line:
                             pdf.ln(3)
-                        elif line.startswith("Professional Summary") or line.startswith("Core Competencies") or line.startswith("Technical Skills") or line.startswith("Professional Experience") or line.startswith("Education") or line.startswith("Key Projects") or line.startswith("Languages"):
+                        elif any(line.startswith(h) for h in section_headers):
                             pdf.ln(3)
                             pdf.set_font("Helvetica", "B", 11)
-                            pdf.cell(0, 6, line, ln=True)
+                            line_safe = line.encode('latin-1', 'replace').decode('latin-1')
+                            pdf.cell(0, 6, line_safe, ln=True)
                             pdf.set_font("Helvetica", "", 10)
                         else:
                             # Handle special characters
@@ -1267,7 +1293,9 @@ def render_cv_builder():
                         use_container_width=True
                     )
                 except ImportError:
-                    st.caption("PDF unavailable")
+                    st.button("PDF unavailable", disabled=True, use_container_width=True)
+                except Exception as e:
+                    st.button("PDF Error", disabled=True, use_container_width=True, help=str(e))
         
         with col3:
             # Use for Analysis
@@ -1295,18 +1323,55 @@ def render_cv_builder():
             
             # Find missing skills
             missing_from_jd = jd_skills - cv_skills
+            matched_skills = jd_skills & cv_skills
             
+            # Calculate match score
+            if jd_skills:
+                match_score = int((len(matched_skills) / len(jd_skills)) * 100)
+            else:
+                match_score = 0
+            
+            # Match Score Display
+            score_col, status_col = st.columns([1, 2])
+            with score_col:
+                if match_score >= 80:
+                    st.success(f"**{match_score}%** Match")
+                elif match_score >= 50:
+                    st.warning(f"**{match_score}%** Match")
+                else:
+                    st.error(f"**{match_score}%** Match")
+            
+            with status_col:
+                st.caption(f"Your CV matches {len(matched_skills)} of {len(jd_skills)} required skills")
+            
+            # Matched Skills
+            if matched_skills:
+                with st.expander(f"Matched Skills ({len(matched_skills)})", expanded=False):
+                    matched_html = " ".join([f"<span class='skill-tag-matched'>{s}</span>" for s in list(matched_skills)[:15]])
+                    st.markdown(matched_html, unsafe_allow_html=True)
+            
+            # Missing Skills - Key Recommendations
             if missing_from_jd:
-                st.warning(f"**{len(missing_from_jd)} skills from the job you might want to add:**")
+                st.markdown("**Add these skills to improve your match:**")
                 
-                # Show as clickable tags (up to 10)
-                skills_html = " ".join([f"<span class='skill-tag-missing' style='cursor:pointer;'>{s}</span>" for s in list(missing_from_jd)[:10]])
+                # Categorize missing skills
+                missing_hard = [s for s in missing_from_jd if s in constants.HARD_SKILLS]
+                missing_soft = [s for s in missing_from_jd if s in constants.SOFT_SKILLS]
+                
+                # Show priority skills first
+                priority_skills = list(missing_from_jd)[:8]
+                skills_html = " ".join([f"<span class='skill-tag-missing'>{s}</span>" for s in priority_skills])
                 st.markdown(skills_html, unsafe_allow_html=True)
                 
-                if len(missing_from_jd) > 10:
-                    st.caption(f"... and {len(missing_from_jd) - 10} more")
+                if len(missing_from_jd) > 8:
+                    with st.expander(f"View all {len(missing_from_jd)} missing skills"):
+                        all_missing_html = " ".join([f"<span class='skill-tag-missing'>{s}</span>" for s in missing_from_jd])
+                        st.markdown(all_missing_html, unsafe_allow_html=True)
+                
+                # Actionable tip
+                st.caption("Tip: Add these skills to your Technical Skills or Professional Summary sections")
             else:
-                st.success("Great! Your CV covers all skills from the job description!")
+                st.success("Excellent! Your CV covers all skills from the job description!")
 
 # =============================================================================
 # INTERFACCIA UTENTE PRINCIPALE (UI)
@@ -1358,22 +1423,6 @@ def render_home():
             st.session_state["page"] = "CV Builder"
             st.rerun()
         
-        with st.expander("How It Works"):
-            st.markdown("""
-            **CV Builder** helps you create a professional CV:
-            
-            1. Fill in your personal information
-            2. Add your professional summary
-            3. Select your core competencies
-            4. List your technical skills
-            5. Add work experience, education, and projects
-            
-            **Smart Features:**
-            - Paste a Job Description to get skill suggestions
-            - Download your CV as TXT or PDF
-            - Send directly to the analysis tool
-            """)
-        
         st.divider()
         
         # Modalità Demo - Carica dati di esempio per test rapido
@@ -1408,30 +1457,20 @@ def render_home():
                     st.rerun()
         
         if st.session_state.get("demo_mode"):
-            st.success("Demo mode active. Sample data loaded below.")
+            st.success("Demo mode active.")
         
-        st.divider()
-        
-        # How It Works
+        # How It Works - Combined
         with st.expander("How It Works", expanded=False):
             st.markdown("""
-            **1. Upload Your CV**
-            - PDF or paste text directly
-            - AI extracts 620+ skill types automatically
+            **Job Matching:**
+            1. Paste your CV and a Job Description
+            2. Click Analyze for instant skill matching
+            3. Get personalized learning paths
             
-            **2. Add the Job Description**  
-            - Copy from any job board
-            - We analyze what the company really needs
-            
-            **3. Click Analyze**
-            - Instant skill matching
-            - Transferable skills recognition
-            - Compatibility score
-            
-            **4. Explore Results**
-            - Personalized learning path
-            - Alternative role suggestions
-            - Interview talking points
+            **CV Builder:**
+            1. Fill in your professional info
+            2. Add skills, experience, education
+            3. Download as PDF or use for analysis
             """)
         
         st.divider()
