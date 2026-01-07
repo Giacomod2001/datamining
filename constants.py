@@ -3,14 +3,14 @@
 CareerMatch AI - Knowledge Base (constants.py)
 ================================================================================
 
-Questo file contiene la KNOWLEDGE BASE dell'applicazione, rigorosamente limitata
-ai concetti presenti nel file "DATA MINING E TEXT.txt".
+This file contains the KNOWLEDGE BASE of the application, strictly limited
+to concepts from the course material "DATA MINING E TEXT.txt".
 
 ================================================================================
 """
 
 # =============================================================================
-# REGOLE DI INFERENZA (Basate sul corso)
+# INFERENCE RULES (Based on course material)
 # =============================================================================
 INFERENCE_RULES = {
     # Data Mining Process
@@ -35,7 +35,7 @@ INFERENCE_RULES = {
 }
 
 # =============================================================================
-# SKILL CLUSTERS (Raggruppamenti concettuali del corso)
+# SKILL CLUSTERS (Conceptual groupings from course)
 # =============================================================================
 SKILL_CLUSTERS = {
     "Supervised Learning": {"Classification", "Regression", "Decision Tree", "Random Forest", "Neural Network", "Supervised Learning"},
@@ -54,15 +54,15 @@ PROJECT_BASED_SKILLS = {
 }
 
 # =============================================================================
-# HARD SKILLS (Estratte da DATA MINING E TEXT.txt)
+# HARD SKILLS (Extracted from DATA MINING E TEXT.txt)
 # =============================================================================
 HARD_SKILLS = {
-    # --- CONCETTI GENERALI ---
+    # --- GENERAL CONCEPTS ---
     "Data Mining": ["data mining", "knowledge discovery", "kdd", "estrazione dati"],
     "Big Data": ["big data", "grandi quantità di dati", "large datasets"],
     "Business Intelligence": ["business intelligence", "bi"],
     
-    # --- PROCESSO KDD ---
+    # --- KDD PROCESS ---
     "Data Cleaning": ["data cleaning", "pulizia dati", "rimozione rumore", "noise reduction", "data cleansing"],
     "Data Integration": ["data integration", "integrazione dati", "data fusion"],
     "Data Transformation": ["data transformation", "trasformazione dati", "normalizzazione", "aggregazione"],
@@ -76,7 +76,7 @@ HARD_SKILLS = {
     "SQL": ["sql", "structured query language", "query", "select", "join", "insert", "update", "delete"],
     "OLAP": ["olap", "online analytical processing", "drill-down", "roll-up"],
 
-    # --- TECNICHE DI ANALISI ---
+    # --- ANALYSIS TECHNIQUES ---
     "Clustering": ["clustering", "cluster analysis", "raggruppamento", "segmentazione"],
     "K-Means": ["k-means", "kmeans", "k means", "partitioning method"],
     "Hierarchical Clustering": ["hierarchical clustering", "dendrogram", "dendrogramma", "agglomerative clustering"],
@@ -106,8 +106,8 @@ HARD_SKILLS = {
 # =============================================================================
 # SOFT SKILLS
 # =============================================================================
-# Manteniamo solo quelle vagamente deducibili dal contesto di analisi/business
-# citato nel testo (es. "Decision Making" supportato dal Data Warehouse)
+# Only those deducible from the analysis/business context
+# mentioned in the text (e.g., "Decision Making" supported by Data Warehouse)
 SOFT_SKILLS = {
     "Analytical Thinking": ["analytical thinking", "pensiero analitico", "analisi critica", "interpretazione dati"],
     "Problem Solving": ["problem solving", "risoluzione problemi", "trovare soluzioni"],
