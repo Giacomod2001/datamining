@@ -4,7 +4,7 @@
 
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-PolyForm--NC-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-2.0-0077B5?style=flat)](CHANGELOG.md)
 
 ---
@@ -97,6 +97,7 @@ Input Text --> Tokenization --> N-gram Generation --> TF-IDF --> ML Model --> Ou
 ```
 
 Key techniques:
+
 - **TF-IDF**: Term Frequency-Inverse Document Frequency for text representation
 - **N-grams**: Capture compound skills like "machine learning"
 - **Fuzzy Matching**: Handle typos with 85% Levenshtein threshold
@@ -113,7 +114,7 @@ Key techniques:
 ### Skill Legend
 
 | Tag | Meaning |
-|-----|---------| 
+|-----|---------|
 | Matched | Skill present in CV |
 | Transferable | Equivalent skill recognized |
 | Project | Verified through portfolio |
@@ -138,7 +139,12 @@ Contributions welcome! Open an Issue or Pull Request.
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+This project is licensed under the **PolyForm Noncommercial License 1.0.0**.
+
+You are free to use, modify, and distribute this software for **non-commercial purposes only**.
+Commercial use requires explicit written permission from the authors.
+
+See [LICENSE](LICENSE) for full terms.
 
 ---
 

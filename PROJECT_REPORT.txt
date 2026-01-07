@@ -8,7 +8,7 @@ Versione: 2.0
 Università: IULM University - A.Y. 2025-2026
 Corso: Data Mining & Text Analytics
 Docente: Prof. Alessandro Bruno
-Licenza: MIT License
+Licenza: PolyForm Noncommercial License 1.0.0
 
 ================================================================================
                               1. PANORAMICA GENERALE
@@ -39,7 +39,7 @@ datamining_git/
 ├── requirements.txt    (2 KB)                - Dipendenze Python
 ├── README.md           (5 KB)                - Documentazione
 ├── Acknowledgment      (1 KB)                - Riconoscimenti AI tools
-├── LICENSE             (1 KB)                - Licenza MIT
+├── LICENSE             (5 KB)                - PolyForm Noncommercial License 1.0.0
 ├── Demo_Candidate_DS_CV.pdf                  - CV di esempio
 ├── .devcontainer/                            - Configurazione Dev Container
 ├── .github/                                  - GitHub Actions/Workflows
@@ -383,7 +383,7 @@ RESPONSIVE:
 requirements.txt:
 
 # FRONTEND
-streamlit>=1.43.0    - Framework dashboard
+streamlit>=1.41.0    - Framework dashboard
 plotly               - Grafici interattivi
 
 # DATA PROCESSING
@@ -521,6 +521,8 @@ JOB_ARCHETYPES: Dict[str, Set[str]]
 LEARNING_RESOURCES: Dict[str, Dict]
     - Risorse per ogni skill
     - skill → {courses, project}
+
+(Note: LEARNING_RESOURCES is currently a stub in constants.py)
 
 ================================================================================
                               10. TEAM & CREDITS
