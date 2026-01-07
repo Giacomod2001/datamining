@@ -1002,11 +1002,33 @@ def render_cv_builder():
             jd_hard, jd_soft = ml_utils.extract_skills_from_text(jd_text)
             jd_reqs = jd_hard | jd_soft
             
-            # User skills
+            # User skills - Aggregate from ALL sections
             user_skills = set(cv_data.get("competencies", []))
-            tech_text = cv_data.get("tech_skills_text", "")
-            if tech_text:
-                th, ts = ml_utils.extract_skills_from_text(tech_text)
+            
+            # Combine text from all sections for comprehensive extraction
+            parts = [
+                cv_data.get("summary", ""),
+                cv_data.get("tech_skills_text", "")
+            ]
+            
+            # Add Experience text
+            for exp in cv_data.get("experiences", []):
+                parts.append(exp.get("title", ""))
+                parts.append(exp.get("bullets", ""))
+                parts.append(exp.get("tech", ""))
+                
+            # Add Projects text
+            for proj in cv_data.get("projects", []):
+                parts.append(proj.get("description", ""))
+                
+            # Add Education text
+            for edu in cv_data.get("education", []):
+                parts.append(edu.get("details", ""))
+                
+            full_cv_text = " ".join(parts)
+            
+            if full_cv_text:
+                th, ts = ml_utils.extract_skills_from_text(full_cv_text)
                 user_skills.update(th)
                 user_skills.update(ts)
             
