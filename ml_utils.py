@@ -2201,9 +2201,8 @@ def generate_pdf_report(text_content: str) -> bytes:
         
     class PDF(FPDF):
         def header(self):
-            self.set_font('Arial', 'B', 15)
-            self.cell(0, 10, 'CareerMatch AI Report', 0, 1, 'C')
-            self.ln(10)
+            # No title header - clean document
+            pass
             
         def footer(self):
             self.set_y(-15)

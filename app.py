@@ -1303,7 +1303,7 @@ def render_cv_builder():
 
         # Preview Area
         st.markdown("### CV Preview")
-        st.text_area("Generated Content", value=cv_text, height=800)
+        st.markdown(f"<pre style='white-space: pre-wrap; background: #161b22; padding: 1.5rem; border-radius: 10px; border: 1px solid #30363d; max-height: 600px; overflow-y: auto;'>{cv_text}</pre>", unsafe_allow_html=True)
         
         st.divider()
         col1, col2, col3 = st.columns(3)
