@@ -1022,8 +1022,19 @@ def render_cv_builder():
                 if missing:
                     st.caption(f"Missing: {', '.join(list(missing)[:3])}")
         
+        # How AI Works (Explanation)
+        st.markdown("<br>", unsafe_allow_html=True)
+        with st.expander("🤖 How AI Works", expanded=False):
+            st.markdown("""
+            **Real-time Analysis:**
+            
+            1.  **NLP Extraction**: We use Natural Language Processing to detect skills in your profile and the JD.
+            2.  **Smart Matching**: The match score is calculated using **Set Theory (Jaccard Index)** to measure the overlap between your skills and job requirements.
+            3.  **Optimization**: The system identifies key missing keywords to help you pass Applicant Tracking Systems (ATS).
+            """)
+        
         # SPACER and DEV LINK
-        st.markdown("<br>" * 5, unsafe_allow_html=True)
+        st.markdown("<br>" * 3, unsafe_allow_html=True)
         st.divider()
         if st.button("Devs Console", use_container_width=True):
              st.session_state["page"] = "Debugger"
