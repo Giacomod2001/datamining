@@ -134,18 +134,69 @@ def render_debug_page():
     5. Knowledge - Database skill e regole
     """
     
-    # Header con pulsante per tornare all'app
-    col_back, col_title = st.columns([1, 5])
-    with col_back:
-        st.markdown("<div style='padding-top: 0.5rem;'></div>", unsafe_allow_html=True)
-        if st.button("Back to App"):
-            st.session_state["page"] = "Home"
-            st.rerun()
-    with col_title:
+    # =========================================================================
+    # SIDEBAR - Navigation & Controls (Consistent with App)
+    # =========================================================================
+    with st.sidebar:
+        # BRANDING (Centered)
         st.markdown("""
-        <h1 style='margin: 0; padding: 0;'>Developer Console</h1>
-        <p style='color: #8b949e; margin: 0.25rem 0 0 0;'>Advanced Analytics & System Diagnostics</p>
+        <div style='text-align: center; padding: 0.5rem 0;'>
+            <h2 style='font-size: 1.5rem; margin: 0;'>CareerMatch AI</h2>
+            <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>DEV SYSTEM INTERFACE</p>
+        </div>
         """, unsafe_allow_html=True)
+        
+        st.divider()
+        
+        if st.button("Home", key="dev_home_btn", use_container_width=True):
+             st.session_state["page"] = "Landing"
+             st.rerun()
+
+    # =========================================================================
+    # SECURITY ASSERTION
+    # =========================================================================
+    if "dev_authenticated" not in st.session_state:
+        st.session_state["dev_authenticated"] = False
+
+    if not st.session_state["dev_authenticated"]:
+        st.markdown("<br>" * 3, unsafe_allow_html=True) 
+        
+        # Center Login Box
+        c1, c2, c3 = st.columns([1, 2, 1])
+        with c2:
+            st.markdown("""
+            <div style='text-align: center; margin-bottom: 2rem;'>
+                <h2 style='margin: 0;'>System Locked</h2>
+                <p style='color: #8b949e;'>Restricted Access Area</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            pwd = st.text_input("Enter Access Code", type="password", help="System Administrator Password")
+            
+            if st.button("Authenticate System", type="primary", use_container_width=True):
+                if pwd == "1234":
+                    st.session_state["dev_authenticated"] = True
+                    st.success("Access Granted. Initializing...")
+                    st.rerun()
+                else:
+                    st.error("Access Denied: Invalid Credentials")
+        return
+
+    # =========================================================================
+    # MAIN CONSOLE UI
+    # =========================================================================
+    
+    st.markdown("""
+    <div style='display: flex; align-items: center; justify-content: space-between;'>
+        <div>
+            <h1 style='margin: 0; padding: 0;'>Developer Console</h1>
+            <p style='color: #8b949e; margin: 0.25rem 0 0 0;'>Advanced Analytics & Diagnostics Interface</p>
+        </div>
+        <div style='text-align: right;'>
+             <span style='background: #0d1117; border: 1px solid #30363d; padding: 4px 12px; border-radius: 20px; color: #00C853; font-size: 0.8rem; font-weight: bold;'>● SYSTEM ONLINE</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
     
     st.divider()
     
@@ -868,18 +919,13 @@ def render_cv_builder():
     if "cv_wizard_step" not in st.session_state:
         st.session_state["cv_wizard_step"] = 1
 
-    # Header con pulsante per tornare all'app
-    col_back, col_title = st.columns([1, 5])
-    with col_back:
-        st.markdown("<div style='padding-top: 0.5rem;'></div>", unsafe_allow_html=True)
-        if st.button("← Back to Home"):
-            st.session_state["page"] = "Landing"
-            st.rerun()
-    with col_title:
-        st.markdown("""
+    # TITLE (Centered)
+    st.markdown("""
+    <div style='text-align: center; margin-bottom: 2rem;'>
         <h1 style='margin: 0; padding: 0;'>CV Builder</h1>
         <p style='color: #8b949e; margin: 0.25rem 0 0 0;'>Professional CV Wizard</p>
-        """, unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
     
     st.divider()
 
@@ -917,6 +963,13 @@ def render_cv_builder():
 
     # --- SIDEBAR TOOLS (Consistent across steps) ---
     with st.sidebar:
+        # Home Button (Top)
+        if st.button("Home", key="home_btn", use_container_width=True):
+             st.session_state["page"] = "Landing"
+             st.rerun()
+        
+        st.divider()
+        
         st.markdown("### Builder Tools")
         
         # JD Input for Smart Suggestions (Always visible)
@@ -978,8 +1031,10 @@ def render_cv_builder():
         col_demo, col_reset = st.columns([1, 4])
         with col_demo:
              if st.button("Load Demo Data"):
+                 demo_jd = styles.get_demo_builder_jd()
                  st.session_state["cv_builder"] = styles.get_demo_cv_builder_data()
-                 st.session_state["cv_builder_jd"] = styles.get_demo_builder_jd()
+                 st.session_state["cv_builder_jd"] = demo_jd
+                 st.session_state["jd_sidebar_input"] = demo_jd  # Force widget update
                  st.rerun()
 
         col1, col2 = st.columns(2)

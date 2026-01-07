@@ -739,44 +739,52 @@ def get_demo_cv_builder_data():
     Structure matches st.session_state["cv_builder"].
     """
     return {
-        "name": "Marco Bianchi",
-        "location": "Milan, Italy",
-        "email": "marco.bianchi@email.com",
-        "phone": "+39 333 1234567",
-        "summary": "Results-driven Marketing Analyst with 4 years of experience in data-driven marketing and business intelligence. Expert in Google Analytics, campaign optimization, and dashboard creation. Currently pursuing certifications in cloud technologies.",
-        "competencies": ["Google Analytics 4", "SQL", "Python", "Looker Studio", "Tableau", "Digital Marketing", "SEO", "SEM"],
+        "name": "Giacomo Dellacqua",
+        "location": "Vigevano, Lombardia, Italy",
+        "email": "dellacquagiacomo@gmail.com",
+        "phone": "+39 351 930 1321",
+        "summary": "Results-driven Digital Marketing Data Analyst with expertise in AI-powered business solutions and data-driven decision-making. Currently pursuing Master's in Artificial Intelligence for Business while gaining hands-on experience in marketing analytics, tracking implementation, and performance optimization at Randstad Group Italia.",
+        "competencies": ["Machine Learning", "Data Analytics", "Digital Marketing", "Google Cloud Platform", "Business Intelligence", "Predictive Modeling", "Marketing Automation", "Python", "SQL", "BigQuery"],
         "experiences": [
             {
-                "role": "Marketing Data Analyst",
-                "company": "Digital Agency Milano",
-                "duration": "2022 - Present",
-                "desc": "Designed interactive dashboards in Looker Studio tracking campaign KPIs and ROI. Implemented tracking ecosystems using Google Tag Manager across 50+ client websites."
+                "role": "Digital Marketing Data Analyst Intern",
+                "company": "Randstad Group Italia SPA",
+                "duration": "November 2025 – Present",
+                "desc": "Implement and maintain online tracking ecosystems using Google Tag Manager. Analyze website performance using Google Analytics 4. Design interactive dashboards with Google Looker Studio. Support paid performance campaigns and conduct A/B testing.",
+                "tech": "Google Analytics 4, Google Tag Manager, Google Looker Studio, SQL, Python"
             },
             {
                 "role": "Junior Digital Marketing Specialist",
-                "company": "StartUp Italia",
-                "duration": "2020 - 2022",
-                "desc": "Executed multi-platform social media campaigns increasing engagement by 40%. Managed email marketing automation and CRM database of 100K+ contacts."
+                "company": "Otreat",
+                "duration": "January 2024 – March 2024",
+                "desc": "Managed multi-platform social media presence and executed performance-driven marketing strategies. Developed advertising campaigns and email newsletters. Operated CRM systems and e-commerce platforms. Conducted quantitative analysis of campaign metrics.",
+                "tech": "Social Media Tools, CRM Platforms, E-commerce Systems, Email Marketing"
             }
         ],
         "education": [
             {
-                "degree": "Bachelor in Marketing & Communication",
-                "institution": "Università Bocconi",
-                "year": "2020",
-                "details": "Relevant Coursework: Statistics, Consumer Behavior, Digital Marketing"
+                "degree": "Master's Degree in Artificial Intelligence for Business and Society",
+                "institution": "Università IULM",
+                "year": "2024 - 2026",
+                "details": "Specialized curriculum integrating AI, Big Data, Marketing Analytics. Coursework: Machine Learning, Predictive Analytics, Big Data Management."
+            },
+            {
+                "degree": "Bachelor's Degree in Corporate Communication and Public Relations",
+                "institution": "Università IULM",
+                "year": "2021 - 2024",
+                "details": "Specialized in strategic communication, stakeholder relations, and business management."
             }
         ],
         "projects": [
             {
-                "name": "E-commerce Analytics Dashboard",
-                "tech": "Python, BigQuery, Looker Studio",
-                "desc": "Built end-to-end analytics solution to track customer journey and revenue attribution across marketing channels."
+                "name": "Dropout Predictor AI",
+                "link": "https://github.com/Giacomod2001/dropout-predictor", 
+                "description": "Designed and developed a functional MVP of a cloud-native ML platform to predict university dropout risk, demonstrating data-driven retention strategies."
             }
         ],
         "languages": [
             {"language": "Italian", "level": "Native"},
-            {"language": "English", "level": "Intermediate (B1-B2)"}
+            {"language": "English", "level": "Professional (C1-C2)"} 
         ]
     }
 
