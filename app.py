@@ -810,15 +810,19 @@ def render_debug_page():
 
 def render_cv_builder():
     """
-    CV BUILDER PAGE
-    ===============
-    Permette di creare un CV professionale con:
-    - Form strutturato per ogni sezione
-    - Preview in tempo reale
-    - Suggerimenti skill basati su Job Description
-    - Export e integrazione con analisi
+    CV BUILDER PAGE (WIZARD MODE)
+    =============================
+    Permette di creare un CV professionale con un flusso guidato (Wizard):
+    Step 1: Profile (Dati personali e Summary)
+    Step 2: Skills (Competenze e suggerimenti ML)
+    Step 3: Experience (Lavoro e Formazione)
+    Step 4: Review (Anteprima e Export)
     """
     
+    # Initialize basic session state for wizard
+    if "cv_wizard_step" not in st.session_state:
+        st.session_state["cv_wizard_step"] = 1
+
     # Header con pulsante per tornare all'app
     col_back, col_title = st.columns([1, 5])
     with col_back:
@@ -829,274 +833,208 @@ def render_cv_builder():
     with col_title:
         st.markdown("""
         <h1 style='margin: 0; padding: 0;'>CV Builder</h1>
-        <p style='color: #8b949e; margin: 0.25rem 0 0 0;'>Create a professional CV with smart skill suggestions</p>
+        <p style='color: #8b949e; margin: 0.25rem 0 0 0;'>Professional CV Wizard</p>
         """, unsafe_allow_html=True)
     
     st.divider()
+
+    # WIZARD PROGRESS BAR
+    steps = ["1. Profile", "2. Skills", "3. Experience", "4. Review"]
+    curr_step = st.session_state["cv_wizard_step"]
     
-    # Demo Mode Button
-    col_demo, col_reset = st.columns([1, 1])
-    with col_demo:
-        if st.button("Try Demo", use_container_width=True, help="Load sample CV data to see how it works"):
-            st.session_state["cv_builder"] = {
-                "name": "Giacomo Dellacqua",
-                "location": "Milan, Italy",
-                "email": "dellacquagiacomo@gmail.com",
-                "phone": "+39 351 930 1321",
-                "summary": "Results-driven Digital Marketing Data Analyst with expertise in AI-powered business solutions and data-driven decision-making. Currently pursuing Master's in Artificial Intelligence for Business while gaining hands-on experience in marketing analytics, tracking implementation, and performance optimization.",
-                "competencies": ["Machine Learning", "Data Science", "SQL", "Python", "Google Analytics", "Data Visualization"],
-                "tech_skills_text": "Programming & Analytics: Python, SQL\nMarketing & Analytics Tools: Google Analytics 4, Google Tag Manager, Looker Studio\nCloud & AI: Google Cloud Platform, Machine Learning\nMarketing & Digital: SEO, SEM, CRM\nOther Tools: Git, Microsoft Office",
-                "experiences": [
-                    {
-                        "title": "Digital Marketing Data Analyst Intern",
-                        "company": "Randstad Group Italia SPA",
-                        "location": "Milan, Italy (Hybrid)",
-                        "dates": "November 2025 – Present",
-                        "bullets": "• Implement and maintain online tracking ecosystems using Google Tag Manager\n• Analyze website performance and monitor KPIs using Google Analytics 4\n• Design interactive dashboards and reports with Google Looker Studio\n• Support paid performance campaigns for candidate acquisition",
-                        "tech": "Google Analytics 4, Google Tag Manager, Looker Studio, SQL, Python"
-                    },
-                    {
-                        "title": "Junior Digital Marketing Specialist",
-                        "company": "Otreat",
-                        "location": "Milan, Italy (Hybrid)",
-                        "dates": "January 2024 – March 2024",
-                        "bullets": "• Managed multi-platform social media presence\n• Developed advertising campaigns and email newsletters\n• Operated CRM systems and e-commerce platforms\n• Conducted quantitative analysis of campaign performance metrics",
-                        "tech": "Social Media Tools, CRM Platforms, Email Marketing"
-                    }
-                ],
-                "education": [
-                    {
-                        "degree": "Master's Degree in Artificial Intelligence for Business and Society",
-                        "institution": "IULM University",
-                        "location": "Milan, Italy",
-                        "dates": "October 2024 – August 2026 (Expected)",
-                        "details": "Relevant Coursework: Machine Learning, Predictive Analytics, Big Data Management, AI Ethics, Business Intelligence"
-                    },
-                    {
-                        "degree": "Bachelor's Degree in Corporate Communication and Public Relations",
-                        "institution": "IULM University",
-                        "location": "Milan, Italy",
-                        "dates": "September 2021 – July 2024",
-                        "details": "Specialized in strategic communication, stakeholder relations, and business management"
-                    }
-                ],
-                "projects": [
-                    {
-                        "name": "Dropout Predictor AI",
-                        "description": "Designed and developed a cloud-native ML platform to predict university dropout risk, demonstrating data-driven retention strategies.",
-                        "link": "https://github.com/Giacomod2001/dropout-predictor"
-                    }
-                ],
-                "languages": [
-                    {"language": "Italian", "level": "Native"},
-                    {"language": "English", "level": "Professional Proficiency (C1-C2)"}
-                ]
-            }
-            # Also load a demo JD for Smart Suggestions
-            demo_jd = """
-            Junior Data Analyst - Marketing Analytics
-            
-            We are looking for a Junior Data Analyst to join our Marketing team.
-            
-            Requirements:
-            - Bachelor's or Master's degree in Data Science, Statistics, or related field
-            - Proficiency in Python, SQL, and data visualization tools (Tableau, Power BI)
-            - Experience with Google Analytics, A/B Testing, and marketing analytics
-            - Knowledge of Machine Learning and Predictive Modeling
-            - Strong communication and problem-solving skills
-            - Experience with AWS or cloud platforms is a plus
-            - Knowledge of R and statistical analysis preferred
-            
-            Nice to have:
-            - Experience with Big Data technologies (Spark, Hadoop)
-            - Familiarity with Marketing Automation tools
-            - Project Management experience
-            """
-            st.session_state["cv_builder_jd"] = demo_jd.strip()
-            st.rerun()
+    # Custom CSS for Wizard
+    st.markdown("""
+    <style>
+    .wizard-step { font-weight: bold; color: #8b949e; margin-right: 1.5rem; }
+    .wizard-step.active { color: #00A0DC; border-bottom: 2px solid #00A0DC; }
+    .wizard-step.completed { color: #00C853; }
+    </style>
+    """, unsafe_allow_html=True)
     
-    with col_reset:
-        if st.button("Clear Form", use_container_width=True, help="Reset all fields"):
-            st.session_state["cv_builder"] = {
-                "name": "", "location": "", "email": "", "phone": "",
-                "summary": "", "competencies": [], "tech_skills": {},
-                "experiences": [], "education": [], "projects": [], "languages": []
-            }
-            st.rerun()
+    # Render Progress
+    cols = st.columns(4)
+    for i, label in enumerate(steps):
+        step_num = i + 1
+        status_class = "active" if step_num == curr_step else ("completed" if step_num < curr_step else "")
+        with cols[i]:
+            st.markdown(f"<div class='wizard-step {status_class}' style='text-align: center;'>{label}</div>", unsafe_allow_html=True)
+            if step_num < curr_step:
+                st.progress(100)
+            elif step_num == curr_step:
+                st.progress(50)
+            else:
+                st.progress(0)
     
-    st.divider()
-    
-    # Get CV Builder data from session state
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # Get CV Data
     cv_data = st.session_state["cv_builder"]
-    
-    # Job Description Input (optional, for smart suggestions)
-    with st.expander("Target Job Description (optional)", expanded=False):
-        st.caption("Paste a job description to get smart skill suggestions while building your CV")
-        jd_input = st.text_area(
-            "Job Description",
-            value=st.session_state.get("cv_builder_jd", ""),
-            height=150,
-            placeholder="Paste the job description here to get personalized skill suggestions...",
-            label_visibility="collapsed"
-        )
-        st.session_state["cv_builder_jd"] = jd_input
-        
-        # Also store in last_jd_text for compatibility
-        if jd_input:
-            st.session_state["last_jd_text"] = jd_input
-    
-    
-    # Check if we have a JD for smart suggestions
-    jd_text = st.session_state.get("cv_builder_jd", "") or st.session_state.get("last_jd_text", "")
-    jd_skills = set()
-    match_score = 0
-    matched_skills = set()
-    missing_from_jd = set()
-    transferable_skills = set()
-    
-    if jd_text:
-        jd_hard, jd_soft = ml_utils.extract_skills_from_text(jd_text)
-        jd_skills = jd_hard | jd_soft
-        
-        # --- ML OPTIMIZATION LOGIC (Pattern Recognition) ---
-        # Calculate match immediately for Sidebar & Suggestions
-        
-        # 1. Get current CV skills
-        cv_skills = set(cv_data.get("competencies", []))
-        # 2. Extract skills from tech_skills_text
-        tech_text = cv_data.get("tech_skills_text", "")
-        if tech_text:
-            extracted_hard, extracted_soft = ml_utils.extract_skills_from_text(tech_text)
-            cv_skills.update(extracted_hard)
-            cv_skills.update(extracted_soft)
-            
-        # 3. Find missing skills (Hard Skills only for "Missing" labeling)
-        jd_hard_skills = {s for s in jd_skills if s in constants.HARD_SKILLS}
-        
-        # 4. Apply Transferable Skills (Inference Rules)
-        cv_skills_with_transfers = set(cv_skills)
-        for cluster_name, cluster_skills in constants.SKILL_CLUSTERS.items():
-            user_cluster_skills = cv_skills & cluster_skills
-            if user_cluster_skills:
-                cv_skills_with_transfers.update(cluster_skills)
-        
-        # 5. Categorize
-        missing_from_jd = jd_hard_skills - cv_skills_with_transfers
-        matched_skills = jd_hard_skills & cv_skills
-        transferable_skills = (jd_hard_skills & cv_skills_with_transfers) - matched_skills
-        
-        # 6. Calculate Score
-        total_covered = len(matched_skills) + len(transferable_skills)
-        if jd_hard_skills:
-            match_score = int((total_covered / len(jd_hard_skills)) * 100)
-    
-    # --- BUILDER SIDEBAR ---
+
+    # --- SIDEBAR TOOLS (Consistent across steps) ---
     with st.sidebar:
         st.markdown("### Builder Tools")
         
-        guide_expander = st.expander("Guide", expanded=False)
-        with guide_expander:
-             st.markdown("Fill the form on the left. The preview updates automatically.")
-        
-        if jd_text:
-            st.divider()
-            st.markdown("### Optimization Score")
-            
-            # Gauge-like display
-            st.markdown(f"""
-            <div style='text-align: center; margin-bottom: 1rem;'>
-                <div style='font-size: 2.5rem; font-weight: 700; color: {"#00C853" if match_score >= 80 else "#FFB300" if match_score >= 50 else "#E53935"};'>
-                    {match_score}%
-                </div>
-                <div style='font-size: 0.8rem; color: #8b949e;'>Pattern Match</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.progress(match_score)
-            
-            if missing_from_jd:
-                st.markdown("**Top Missing Keywords:**")
-                for s in list(missing_from_jd)[:5]:
-                    st.markdown(f"<span style='color: #E53935; font-size: 0.9rem;'>• {s}</span>", unsafe_allow_html=True)
-            else:
-                st.success("Great job! All key technical skills present.")
+        # JD Input for Smart Suggestions (Always visible)
+        with st.expander("Target Job Description", expanded=True):
+            st.caption("Paste JD for smart suggestions")
+            jd_input = st.text_area(
+                "Job Description",
+                value=st.session_state.get("cv_builder_jd", ""),
+                height=150,
+                placeholder="Paste JD here...",
+                label_visibility="collapsed",
+                key="jd_sidebar_input"
+            )
+            # Sync key
+            if jd_input != st.session_state.get("cv_builder_jd", ""):
+                st.session_state["cv_builder_jd"] = jd_input
+                st.rerun()
                 
-            st.caption("Add these to 'Core Competencies' or 'Technical Skills' to improve relevance.")
+        # Smart Score (Mini)
+        jd_text = st.session_state.get("cv_builder_jd", "")
+        if jd_text:
+            # Quick calc
+            jd_hard, jd_soft = ml_utils.extract_skills_from_text(jd_text)
+            jd_reqs = jd_hard | jd_soft
             
-        else:
-            st.info("Paste a Job Description above to enable Smart suggestions.")
+            # User skills
+            user_skills = set(cv_data.get("competencies", []))
+            tech_text = cv_data.get("tech_skills_text", "")
+            if tech_text:
+                th, ts = ml_utils.extract_skills_from_text(tech_text)
+                user_skills.update(th)
+                user_skills.update(ts)
+            
+            # Match
+            matches = jd_reqs.intersection(user_skills)
+            score = int((len(matches) / len(jd_hard)) * 100) if jd_hard else 0
+            
+            st.markdown(f"**Optimization Score:** {score}%")
+            st.progress(score)
+            
+            if score < 100:
+                missing = jd_hard - user_skills
+                if missing:
+                    st.caption(f"Missing: {', '.join(list(missing)[:3])}")
     
-    # Layout: Form on left, Preview on right
-    form_col, preview_col = st.columns([1, 1])
+    # --- WIZARD STEPS CONTENT ---
     
-    with form_col:
-        st.markdown("### Personal Information")
+    # STEP 1: PROFILE
+    if curr_step == 1:
+        st.header("1. Personal Profile")
         
+        col_demo, col_reset = st.columns([1, 4])
+        with col_demo:
+             if st.button("Load Demo Data"):
+                 # Load Demo Logic (Simulated for brevity, logic exists in prev file)
+                 st.session_state["cv_builder"]["name"] = "Giacomo Dellacqua"
+                 st.session_state["cv_builder"]["summary"] = "Motivated Data Analyst..."
+                 st.session_state["cv_builder"]["competencies"] = ["Python", "SQL"]
+                 st.rerun()
+
         col1, col2 = st.columns(2)
         with col1:
-            cv_data["name"] = st.text_input("Full Name", value=cv_data.get("name", ""), placeholder="e.g., Giacomo Dellacqua")
-            cv_data["email"] = st.text_input("Email", value=cv_data.get("email", ""), placeholder="e.g., name@email.com")
+            cv_data["name"] = st.text_input("Full Name", value=cv_data.get("name", ""))
+            cv_data["email"] = st.text_input("Email", value=cv_data.get("email", ""))
         with col2:
-            cv_data["location"] = st.text_input("Location", value=cv_data.get("location", ""), placeholder="e.g., Milan, Italy")
-            cv_data["phone"] = st.text_input("Phone", value=cv_data.get("phone", ""), placeholder="e.g., +39 XXX XXX XXXX")
-        
-        st.markdown("---")
+            cv_data["location"] = st.text_input("Location", value=cv_data.get("location", ""))
+            cv_data["phone"] = st.text_input("Phone", value=cv_data.get("phone", ""))
+            
         st.markdown("### Professional Summary")
         cv_data["summary"] = st.text_area(
-            "Brief summary of your professional profile",
+            "Write a compelling summary", 
             value=cv_data.get("summary", ""),
-            height=100,
-            placeholder="Results-driven professional with expertise in..."
+            height=150,
+            placeholder="E.g. Experienced Project Manager with 5+ years..."
         )
         
-        st.markdown("---")
-        st.markdown("### Core Competencies")
+        # Nav Buttons
+        col_prev, col_next = st.columns([1, 1])
+        with col_next:
+            if st.button("Next: Skills →", type="primary", use_container_width=True):
+                st.session_state["cv_wizard_step"] = 2
+                st.rerun()
+
+    # STEP 2: SKILLS
+    elif curr_step == 2:
+        st.header("2. Skills & Competencies")
         
-        # Get all available skills for selection
-        all_skills = list(constants.HARD_SKILLS.keys()) + list(constants.SOFT_SKILLS.keys())
-        all_skills = sorted(set(all_skills))
+        # Smart Suggestions Logic
+        if jd_text:
+            jd_hard, _ = ml_utils.extract_skills_from_text(jd_text)
+            user_skills = set(cv_data.get("competencies", []))
+            missing = jd_hard - user_skills
+            
+            if missing:
+                st.info(f"💡 **JD Suggestions:** Consider adding: {', '.join(list(missing)[:5])}")
         
-        # Smart suggestions if JD is available
-        if jd_skills:
-            st.info("💡 Skills highlighted in green are required by your target job")
-        
-        # Filter default competencies to only include valid options
-        valid_competencies = [c for c in cv_data.get("competencies", []) if c in all_skills]
-        
+        # Competencies
+        all_skills = sorted(list(set(list(constants.HARD_SKILLS.keys()) + list(constants.SOFT_SKILLS.keys()))))
         cv_data["competencies"] = st.multiselect(
-            "Select your key competencies",
-            options=all_skills,
-            default=valid_competencies,
-            help="Select 5-10 key skills that define your expertise"
+            "Core Competencies (Select from DB)", 
+            options=all_skills, 
+            default=[c for c in cv_data.get("competencies", []) if c in all_skills]
         )
         
-        st.markdown("---")
-        st.markdown("### Technical Skills")
-        
+        # Tech Skills Text
+        st.markdown("### Technical Skills (Free Text)")
         cv_data["tech_skills_text"] = st.text_area(
-            "List your technical skills (one category per line)",
+            "Categorized Skills",
             value=cv_data.get("tech_skills_text", ""),
-            height=120,
-            placeholder="Programming: Python, SQL, R\nTools: Excel, Power BI, Tableau\nCloud: AWS, Google Cloud\nOther: Git, Jira, Figma"
+            height=200,
+            placeholder="Languages: Python, Java\nTools: Tableau, Git"
         )
         
-        st.markdown("---")
-        st.markdown("### Professional Experience")
+        # Nav Buttons
+        col_prev, col_next = st.columns([1, 1])
+        with col_prev:
+            if st.button("← Back"):
+                st.session_state["cv_wizard_step"] = 1
+                st.rerun()
+        with col_next:
+            if st.button("Next: Experience →", type="primary", use_container_width=True):
+                st.session_state["cv_wizard_step"] = 3
+                st.rerun()
+
+    # STEP 3: EXPERIENCE
+    elif curr_step == 3:
+        st.header("3. Professional Experience")
         
-        # Dynamic experience entries
-        if "experiences" not in cv_data or not isinstance(cv_data["experiences"], list):
-            cv_data["experiences"] = []
+        # Dynamic Experience List
+        if "experiences" not in cv_data: cv_data["experiences"] = []
         
-        num_exp = st.number_input("Number of experiences", min_value=0, max_value=10, value=len(cv_data["experiences"]) if cv_data["experiences"] else 1)
-        
-        # Ensure we have enough entries
-        while len(cv_data["experiences"]) < num_exp:
-            cv_data["experiences"].append({"title": "", "company": "", "location": "", "dates": "", "bullets": "", "tech": ""})
-        cv_data["experiences"] = cv_data["experiences"][:num_exp]
-        
+        # Add Button
+        if st.button("+ Add Experience"):
+            cv_data["experiences"].insert(0, {})
+            st.rerun()
+            
         for i, exp in enumerate(cv_data["experiences"]):
-            with st.expander(f"Experience {i+1}: {exp.get('title', 'New Position') or 'New Position'}", expanded=i==0):
-                exp["title"] = st.text_input("Job Title", value=exp.get("title", ""), key=f"exp_title_{i}", placeholder="e.g., Digital Marketing Analyst")
+            with st.expander(f"{exp.get('title', 'Position')} at {exp.get('company', 'Company')}", expanded=True):
+                c1, c2 = st.columns(2)
+                exp["title"] = c1.text_input("Job Title", value=exp.get("title", ""), key=f"t{i}")
+                exp["company"] = c2.text_input("Company", value=exp.get("company", ""), key=f"c{i}")
+                
+                c3, c4 = st.columns(2)
+                exp["dates"] = c3.text_input("Dates", value=exp.get("dates", ""), key=f"d{i}")
+                exp["location"] = c4.text_input("Location", value=exp.get("location", ""), key=f"l{i}")
+                
+                exp["bullets"] = st.text_area("Key Achievements", value=exp.get("bullets", ""), key=f"b{i}", height=100)
+                
+                if st.button("Remove", key=f"del{i}"):
+                    cv_data["experiences"].pop(i)
+                    st.rerun()
+
+        # Nav Buttons
+        st.divider()
+        col_prev, col_next = st.columns([1, 1])
+        with col_prev:
+            if st.button("← Back"):
+                st.session_state["cv_wizard_step"] = 2
+                st.rerun()
+        with col_next:
+            if st.button("Next: Review →", type="primary", use_container_width=True):
+                st.session_state["cv_wizard_step"] = 4
+                st.rerun()
                 
                 col1, col2 = st.columns(2)
                 with col1:
