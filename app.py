@@ -978,10 +978,7 @@ def render_cv_builder():
         col_demo, col_reset = st.columns([1, 4])
         with col_demo:
              if st.button("Load Demo Data"):
-                 # Load Demo Logic (Simulated for brevity, logic exists in prev file)
-                 st.session_state["cv_builder"]["name"] = "Giacomo Dellacqua"
-                 st.session_state["cv_builder"]["summary"] = "Motivated Data Analyst..."
-                 st.session_state["cv_builder"]["competencies"] = ["Python", "SQL"]
+                 st.session_state["cv_builder"] = styles.get_demo_cv_builder_data()
                  st.rerun()
 
         col1, col2 = st.columns(2)
@@ -1364,7 +1361,7 @@ def render_evaluation_page():
                 st.session_state["proj_text"] = styles.get_demo_project()
                 st.session_state["cl_text"] = styles.get_demo_cover_letter()
                 st.session_state["show_project_toggle"] = True
-                st.session_state["show_cl_toggle"] = True
+                st.session_state["show_cover_letter"] = True
                 st.rerun()
         with col_demo2:
             if st.button("CV Builder", use_container_width=True, help="Create a CV"):

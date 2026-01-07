@@ -732,3 +732,52 @@ Best regards,
 Marco Bianchi
 """
 
+
+def get_demo_cv_builder_data():
+    """
+    Returns a complete dictionary for populating the CV Builder Wizard.
+    Structure matches st.session_state["cv_builder"].
+    """
+    return {
+        "name": "Marco Bianchi",
+        "location": "Milan, Italy",
+        "email": "marco.bianchi@email.com",
+        "phone": "+39 333 1234567",
+        "summary": "Results-driven Marketing Analyst with 4 years of experience in data-driven marketing and business intelligence. Expert in Google Analytics, campaign optimization, and dashboard creation. Currently pursuing certifications in cloud technologies.",
+        "competencies": ["Google Analytics 4", "SQL", "Python", "Looker Studio", "Tableau", "Digital Marketing", "SEO", "SEM"],
+        "experiences": [
+            {
+                "role": "Marketing Data Analyst",
+                "company": "Digital Agency Milano",
+                "duration": "2022 - Present",
+                "desc": "Designed interactive dashboards in Looker Studio tracking campaign KPIs and ROI. Implemented tracking ecosystems using Google Tag Manager across 50+ client websites."
+            },
+            {
+                "role": "Junior Digital Marketing Specialist",
+                "company": "StartUp Italia",
+                "duration": "2020 - 2022",
+                "desc": "Executed multi-platform social media campaigns increasing engagement by 40%. Managed email marketing automation and CRM database of 100K+ contacts."
+            }
+        ],
+        "education": [
+            {
+                "degree": "Bachelor in Marketing & Communication",
+                "institution": "Università Bocconi",
+                "year": "2020",
+                "details": "Relevant Coursework: Statistics, Consumer Behavior, Digital Marketing"
+            }
+        ],
+        "projects": [
+            {
+                "name": "E-commerce Analytics Dashboard",
+                "tech": "Python, BigQuery, Looker Studio",
+                "desc": "Built end-to-end analytics solution to track customer journey and revenue attribution across marketing channels."
+            }
+        ],
+        "languages": [
+            {"language": "Italian", "level": "Native"},
+            {"language": "English", "level": "B2 Professional"}
+        ]
+    }
+
+
