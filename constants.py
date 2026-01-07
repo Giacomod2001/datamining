@@ -119,38 +119,108 @@ SOFT_SKILLS = {
 # JOB ARCHETYPES (For Career Compass)
 # =============================================================================
 # These define typical skill profiles for different job roles.
-# Used by recommend_roles() to suggest alternative career paths.
+# Covers major career paths from Italian university degrees.
 JOB_ARCHETYPES = {
-    "Data Analyst": {
-        "SQL", "Data Visualization", "Statistics", "Data Mining", "Business Intelligence",
-        "Data Cleaning", "Data Transformation", "OLAP", "Database"
-    },
-    "Data Scientist": {
-        "Machine Learning", "Data Mining", "Statistics", "Classification", "Clustering",
-        "Regression", "Neural Network", "Data Transformation", "Data Cleaning"
-    },
-    "Business Intelligence Analyst": {
-        "Business Intelligence", "Data Warehouse", "OLAP", "Data Visualization", "SQL",
-        "Database", "Data Mining", "Statistics", "Decision Making"
-    },
-    "Database Administrator": {
-        "Database", "SQL", "Data Warehouse", "Data Integration", "Data Cleaning",
-        "Structured Data", "OLAP"
-    },
-    "Machine Learning Engineer": {
-        "Machine Learning", "Classification", "Clustering", "Regression", "Neural Network",
-        "Random Forest", "Decision Tree", "Data Transformation"
-    },
-    "Marketing Analyst": {
-        "Data Mining", "Statistics", "Data Visualization", "Business Intelligence",
-        "Association Analysis", "Clustering", "Data Cleaning"
-    },
-    "Data Engineer": {
-        "SQL", "Database", "Data Warehouse", "Data Lake", "Data Integration",
-        "Data Transformation", "Data Cleaning", "Big Data"
-    },
-    "Research Analyst": {
-        "Statistics", "Hypothesis Testing", "Data Mining", "Data Cleaning",
-        "Data Transformation", "Analytical Thinking", "Problem Solving"
-    },
+    # --- DATA & ANALYTICS ---
+    "Data Analyst": {"SQL", "Data Visualization", "Statistics", "Data Mining", "Business Intelligence", "Data Cleaning"},
+    "Data Scientist": {"Machine Learning", "Data Mining", "Statistics", "Classification", "Clustering", "Regression"},
+    "Business Intelligence Analyst": {"Business Intelligence", "Data Warehouse", "OLAP", "Data Visualization", "SQL"},
+    "Data Engineer": {"SQL", "Database", "Data Warehouse", "Data Lake", "Data Integration", "Big Data"},
+    
+    # --- MARKETING & COMMUNICATION ---
+    "Marketing Manager": {"Marketing", "Digital Marketing", "Campaign Management", "Brand Management", "Market Research"},
+    "Digital Marketing Specialist": {"SEO", "SEM", "Social Media", "Google Analytics", "Content Marketing", "Email Marketing"},
+    "Social Media Manager": {"Social Media", "Content Creation", "Community Management", "Instagram", "TikTok", "Facebook"},
+    "Content Strategist": {"Content Marketing", "Copywriting", "SEO", "Editorial Planning", "Brand Voice"},
+    "PR Specialist": {"Public Relations", "Media Relations", "Press Release", "Crisis Management", "Corporate Communication"},
+    "Communication Manager": {"Corporate Communication", "Internal Communication", "Public Relations", "Event Management"},
+    
+    # --- BUSINESS & MANAGEMENT ---
+    "Project Manager": {"Project Management", "Agile", "Scrum", "Stakeholder Management", "Risk Management", "Budgeting"},
+    "Business Analyst": {"Business Analysis", "Requirements Gathering", "Process Improvement", "Data Analysis", "Stakeholder Management"},
+    "Management Consultant": {"Strategy", "Business Analysis", "Problem Solving", "Presentation", "Financial Analysis"},
+    "Operations Manager": {"Operations Management", "Supply Chain", "Process Optimization", "Team Leadership", "KPI Management"},
+    "Product Manager": {"Product Management", "User Research", "Roadmapping", "Agile", "Market Analysis", "UX"},
+    "Account Manager": {"Account Management", "Client Relations", "Sales", "Negotiation", "CRM"},
+    
+    # --- FINANCE & ECONOMICS ---
+    "Financial Analyst": {"Financial Analysis", "Excel", "Financial Modeling", "Valuation", "Reporting", "Statistics"},
+    "Accountant": {"Accounting", "Bookkeeping", "Tax", "Financial Reporting", "Auditing", "SAP"},
+    "Controller": {"Controlling", "Budgeting", "Financial Planning", "Cost Analysis", "Reporting"},
+    "Investment Analyst": {"Investment Analysis", "Portfolio Management", "Risk Assessment", "Financial Markets"},
+    "Risk Manager": {"Risk Management", "Compliance", "Regulatory", "Financial Analysis", "Insurance"},
+    "Auditor": {"Auditing", "Compliance", "Internal Control", "Financial Reporting", "Risk Assessment"},
+    
+    # --- HR & PEOPLE ---
+    "HR Manager": {"Human Resources", "Talent Acquisition", "Employee Relations", "HR Strategy", "Labor Law"},
+    "Recruiter": {"Recruiting", "Talent Acquisition", "Interviewing", "Employer Branding", "Sourcing", "LinkedIn"},
+    "Training Specialist": {"Training", "Learning Development", "E-Learning", "Curriculum Design", "Facilitation"},
+    "HR Business Partner": {"HR Strategy", "Talent Management", "Performance Management", "Change Management"},
+    
+    # --- TECHNOLOGY & IT ---
+    "Software Developer": {"Programming", "Software Development", "Git", "Problem Solving", "Testing", "APIs"},
+    "Frontend Developer": {"HTML", "CSS", "JavaScript", "React", "UI Development", "Responsive Design"},
+    "Backend Developer": {"Python", "Java", "SQL", "APIs", "Databases", "Server Management"},
+    "Full Stack Developer": {"Frontend", "Backend", "JavaScript", "Python", "Database", "DevOps"},
+    "UX Designer": {"UX Design", "User Research", "Wireframing", "Prototyping", "Figma", "Usability Testing"},
+    "UI Designer": {"UI Design", "Visual Design", "Figma", "Adobe Creative Suite", "Typography", "Color Theory"},
+    "IT Support Specialist": {"Technical Support", "Troubleshooting", "Windows", "Networking", "Hardware"},
+    "System Administrator": {"System Administration", "Linux", "Windows Server", "Networking", "Security"},
+    "Cybersecurity Analyst": {"Cybersecurity", "Security", "Network Security", "Threat Analysis", "Compliance"},
+    
+    # --- SALES & COMMERCIAL ---
+    "Sales Representative": {"Sales", "Negotiation", "CRM", "Lead Generation", "Customer Relations", "Presentation"},
+    "Sales Manager": {"Sales Management", "Team Leadership", "Strategy", "Forecasting", "KPI", "Negotiation"},
+    "Business Development Manager": {"Business Development", "Sales", "Partnership", "Strategy", "Networking"},
+    "E-commerce Manager": {"E-commerce", "Digital Marketing", "SEO", "Analytics", "Conversion Optimization"},
+    "Export Manager": {"International Trade", "Export", "Negotiation", "Languages", "Logistics", "Contracts"},
+    
+    # --- LEGAL ---
+    "Legal Counsel": {"Legal", "Contract Law", "Corporate Law", "Compliance", "Negotiation", "Legal Research"},
+    "Paralegal": {"Legal Research", "Document Review", "Contracts", "Legal Writing", "Case Management"},
+    "Compliance Officer": {"Compliance", "Regulatory", "Risk Management", "Auditing", "Policy Development"},
+    
+    # --- HEALTHCARE & PHARMA ---
+    "Clinical Research Associate": {"Clinical Trials", "GCP", "Medical Research", "Data Management", "Regulatory"},
+    "Medical Science Liaison": {"Medical Affairs", "Scientific Communication", "Healthcare", "Pharma", "Stakeholder Management"},
+    "Pharmaceutical Sales Rep": {"Pharma Sales", "Medical Knowledge", "Relationship Building", "Presentation"},
+    "Healthcare Manager": {"Healthcare Management", "Hospital Administration", "Budget", "Team Leadership"},
+    
+    # --- ENGINEERING ---
+    "Mechanical Engineer": {"Mechanical Engineering", "CAD", "Design", "Manufacturing", "Problem Solving"},
+    "Electrical Engineer": {"Electrical Engineering", "Electronics", "Circuit Design", "Testing", "Automation"},
+    "Civil Engineer": {"Civil Engineering", "Structural Design", "AutoCAD", "Construction", "Project Management"},
+    "Industrial Engineer": {"Industrial Engineering", "Process Optimization", "Lean", "Six Sigma", "Operations"},
+    "Quality Engineer": {"Quality Assurance", "QA", "Testing", "ISO", "Process Improvement", "Auditing"},
+    
+    # --- EDUCATION & RESEARCH ---
+    "Research Assistant": {"Research", "Data Collection", "Statistical Analysis", "Academic Writing", "Literature Review"},
+    "Teacher": {"Teaching", "Curriculum Development", "Student Assessment", "Classroom Management", "Communication"},
+    "Professor": {"Research", "Teaching", "Academic Publishing", "Grant Writing", "Mentoring"},
+    
+    # --- CREATIVE & DESIGN ---
+    "Graphic Designer": {"Graphic Design", "Adobe Creative Suite", "Illustrator", "Photoshop", "InDesign", "Branding"},
+    "Art Director": {"Art Direction", "Creative Strategy", "Brand Design", "Team Leadership", "Visual Communication"},
+    "Video Producer": {"Video Production", "Video Editing", "Premiere Pro", "After Effects", "Storytelling"},
+    "Copywriter": {"Copywriting", "Creative Writing", "Advertising", "Brand Voice", "SEO"},
+    
+    # --- HOSPITALITY & TOURISM ---
+    "Hotel Manager": {"Hotel Management", "Hospitality", "Customer Service", "Revenue Management", "Team Leadership"},
+    "Event Manager": {"Event Planning", "Event Management", "Logistics", "Vendor Management", "Budget"},
+    "Tour Operator": {"Tourism", "Travel Planning", "Customer Service", "Languages", "Destination Knowledge"},
+    
+    # --- LOGISTICS & SUPPLY CHAIN ---
+    "Supply Chain Manager": {"Supply Chain", "Logistics", "Procurement", "Inventory Management", "Vendor Relations"},
+    "Logistics Coordinator": {"Logistics", "Shipping", "Warehouse", "Transportation", "Documentation"},
+    "Procurement Specialist": {"Procurement", "Vendor Management", "Negotiation", "Contract Management", "Cost Reduction"},
+    
+    # --- ENVIRONMENT & SUSTAINABILITY ---
+    "Environmental Consultant": {"Environmental Science", "Sustainability", "EIA", "Compliance", "Reporting"},
+    "Sustainability Manager": {"Sustainability", "ESG", "Carbon Footprint", "Reporting", "Strategy", "Compliance"},
+    
+    # --- ARCHITECTURE & REAL ESTATE ---
+    "Architect": {"Architecture", "AutoCAD", "Revit", "3D Modeling", "Design", "Building Codes"},
+    "Real Estate Agent": {"Real Estate", "Sales", "Negotiation", "Market Analysis", "Customer Relations"},
+    "Property Manager": {"Property Management", "Tenant Relations", "Maintenance", "Budgeting", "Contracts"},
 }
+
