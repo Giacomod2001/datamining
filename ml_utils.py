@@ -1587,7 +1587,8 @@ def generate_pdf_report(res: Dict, jd_text: str = "") -> bytes:
         pdf.ln(5)
 
         for skill in res["missing_hard"]:
-            r = constants.LEARNING_RESOURCES.get(skill, None)
+            learning_resources = getattr(constants, "LEARNING_RESOURCES", {})
+            r = learning_resources.get(skill, None)
 
             content = "Use general search engines to find tutorials."
             link_url = f"https://www.google.com/search?q=learn+{urllib.parse.quote(skill)}"
@@ -2626,6 +2627,8 @@ def suggest_semantic_improvements(user_skills: Set[str], jd_text: str) -> List[s
                 user_has = members.intersection(user_skills)
                 if user_has:
                     owned = list(user_has)[0]
+                    suggestions.append(
+                        f"Your experience with **{owned}** applies to **{gap}** (both are in {cluster_name})."
                     )
                     
         # Check Inference Rules (Parent implies Child capability often)
@@ -2710,13 +2713,4 @@ def generate_simple_cv_pdf(text_content: str) -> bytes:
             pdf.multi_cell(0, 5, clean_line)
             
     return pdf.output(dest='S').encode('latin-1')
-        # Check Inference Rules (Parent implies Child capability often)
-        # Inverted check: If User has Parent, they might grasp Child
-        for parent, children in inference_rules.items():
-            if parent in user_skills and gap in children:
-                suggestions.append(
-                    f"**{gap}** is often associated with **{parent}** (which you have). Consider adding it if you have exposure."
-                )
-
-    return suggestions[:5] # Top 5 only
 
