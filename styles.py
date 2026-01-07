@@ -788,7 +788,7 @@ def get_demo_cv_builder_data():
         ],
         "languages": [
             {"language": "Italian", "level": "Native"},
-            {"language": "English", "level": "Intermediate (B1-B2)"} 
+            {"language": "English", "level": "Professional Proficiency (B2)"} 
         ]
     }
 
