@@ -997,14 +997,15 @@ def render_cv_builder():
                 st.rerun()
 
     # STEP 3: EXPERIENCE
+    # STEP 3: EXPERIENCE & EDUCATION
     elif curr_step == 3:
-        st.header("3. Professional Experience")
+        st.header("3. Experience & Qualifications")
         
-        # Dynamic Experience List
+        # --- EXPERIENCE ---
+        st.markdown("### Professional Experience")
         if "experiences" not in cv_data: cv_data["experiences"] = []
         
-        # Add Button
-        if st.button("+ Add Experience"):
+        if st.button("+ Add Position", key="add_exp"):
             cv_data["experiences"].insert(0, {})
             st.rerun()
             
@@ -1015,14 +1016,78 @@ def render_cv_builder():
                 exp["company"] = c2.text_input("Company", value=exp.get("company", ""), key=f"c{i}")
                 
                 c3, c4 = st.columns(2)
-                exp["dates"] = c3.text_input("Dates", value=exp.get("dates", ""), key=f"d{i}")
+                exp["dates"] = c3.text_input("Dates", value=exp.get("dates", ""), key=f"d{i}", placeholder="e.g. Jan 2023 - Present")
                 exp["location"] = c4.text_input("Location", value=exp.get("location", ""), key=f"l{i}")
                 
-                exp["bullets"] = st.text_area("Key Achievements", value=exp.get("bullets", ""), key=f"b{i}", height=100)
+                exp["bullets"] = st.text_area("Key Achievements", value=exp.get("bullets", ""), key=f"b{i}", height=100, placeholder="• Achieved X by doing Y...")
+                exp["tech"] = st.text_input("Technologies Used", value=exp.get("tech", ""), key=f"tech{i}")
                 
-                if st.button("Remove", key=f"del{i}"):
+                if st.button("Delete Position", key=f"del_exp{i}"):
                     cv_data["experiences"].pop(i)
                     st.rerun()
+
+        st.divider()
+
+        # --- EDUCATION ---
+        st.markdown("### Education")
+        if "education" not in cv_data: cv_data["education"] = []
+        
+        if st.button("+ Add Education", key="add_edu"):
+            cv_data["education"].insert(0, {})
+            st.rerun()
+            
+        for i, edu in enumerate(cv_data["education"]):
+            with st.expander(f"{edu.get('degree', 'Degree')} at {edu.get('institution', 'Institution')}", expanded=True):
+                edu["degree"] = st.text_input("Degree/Certificate", value=edu.get("degree", ""), key=f"ed_deg{i}")
+                
+                c1, c2 = st.columns(2)
+                edu["institution"] = c1.text_input("Institution", value=edu.get("institution", ""), key=f"ed_inst{i}")
+                edu["location"] = c2.text_input("Location", value=edu.get("location", ""), key=f"ed_loc{i}")
+                
+                edu["dates"] = st.text_input("Dates", value=edu.get("dates", ""), key=f"ed_date{i}")
+                edu["details"] = st.text_area("Details (Coursework, Honors)", value=edu.get("details", ""), key=f"ed_det{i}", height=80)
+                
+                if st.button("Delete Education", key=f"del_edu{i}"):
+                    cv_data["education"].pop(i)
+                    st.rerun()
+
+        st.divider()
+
+        # --- PROJECTS ---
+        st.markdown("### Key Projects")
+        if "projects" not in cv_data: cv_data["projects"] = []
+        
+        if st.button("+ Add Project", key="add_proj"):
+            cv_data["projects"].insert(0, {})
+            st.rerun()
+            
+        for i, proj in enumerate(cv_data["projects"]):
+            with st.expander(f"{proj.get('name', 'Project')}", expanded=True):
+                proj["name"] = st.text_input("Project Name", value=proj.get("name", ""), key=f"pj_name{i}")
+                proj["link"] = st.text_input("Link (URL)", value=proj.get("link", ""), key=f"pj_link{i}")
+                proj["description"] = st.text_area("Description", value=proj.get("description", ""), key=f"pj_desc{i}", height=80)
+                
+                if st.button("Delete Project", key=f"del_proj{i}"):
+                    cv_data["projects"].pop(i)
+                    st.rerun()
+
+        st.divider()
+
+        # --- LANGUAGES ---
+        st.markdown("### Languages")
+        if "languages" not in cv_data: cv_data["languages"] = []
+        
+        if st.button("+ Add Language", key="add_lang"):
+            cv_data["languages"].append({"language": "", "level": ""})
+            st.rerun()
+            
+        for i, lang in enumerate(cv_data["languages"]):
+            c1, c2, c3 = st.columns([2, 2, 1])
+            lang["language"] = c1.text_input("Language", value=lang.get("language", ""), key=f"lg_name{i}")
+            lang["level"] = c2.selectbox("Level", ["Native", "Professional (C1-C2)", "Intermediate (B1-B2)", "Basic (A1-A2)"], index=0, key=f"lg_lvl{i}")
+            if c3.button("X", key=f"del_lang{i}"):
+                cv_data["languages"].pop(i)
+                st.rerun()
 
         # Nav Buttons
         st.divider()
@@ -1035,369 +1100,86 @@ def render_cv_builder():
             if st.button("Next: Review →", type="primary", use_container_width=True):
                 st.session_state["cv_wizard_step"] = 4
                 st.rerun()
-                
-                col1, col2 = st.columns(2)
-                with col1:
-                    exp["company"] = st.text_input("Company", value=exp.get("company", ""), key=f"exp_company_{i}", placeholder="e.g., Company Name SPA")
-                    exp["location"] = st.text_input("Location", value=exp.get("location", ""), key=f"exp_loc_{i}", placeholder="e.g., Milan, Italy")
-                with col2:
-                    exp["dates"] = st.text_input("Dates", value=exp.get("dates", ""), key=f"exp_dates_{i}", placeholder="e.g., January 2024 – Present")
-                
-                exp["bullets"] = st.text_area(
-                    "Key achievements (one per line, start with •)",
-                    value=exp.get("bullets", ""),
-                    key=f"exp_bullets_{i}",
-                    height=100,
-                    placeholder="• Implemented tracking systems...\n• Analyzed website performance..."
-                )
-                exp["tech"] = st.text_input("Technologies used", value=exp.get("tech", ""), key=f"exp_tech_{i}", placeholder="e.g., Python, SQL, Google Analytics")
+
+    # STEP 4: REVIEW & EXPORT
+    elif curr_step == 4:
+        st.header("4. Final Review")
         
-        st.markdown("---")
-        st.markdown("### Education")
-        
-        if "education" not in cv_data or not isinstance(cv_data["education"], list):
-            cv_data["education"] = []
-        
-        num_edu = st.number_input("Number of education entries", min_value=0, max_value=5, value=len(cv_data["education"]) if cv_data["education"] else 1)
-        
-        while len(cv_data["education"]) < num_edu:
-            cv_data["education"].append({"degree": "", "institution": "", "location": "", "dates": "", "details": ""})
-        cv_data["education"] = cv_data["education"][:num_edu]
-        
-        for i, edu in enumerate(cv_data["education"]):
-            with st.expander(f"Education {i+1}: {edu.get('degree', 'New Degree') or 'New Degree'}", expanded=i==0):
-                edu["degree"] = st.text_input("Degree", value=edu.get("degree", ""), key=f"edu_degree_{i}", placeholder="e.g., Master's in Artificial Intelligence")
-                
-                col1, col2 = st.columns(2)
-                with col1:
-                    edu["institution"] = st.text_input("Institution", value=edu.get("institution", ""), key=f"edu_inst_{i}", placeholder="e.g., IULM University")
-                    edu["location"] = st.text_input("Location", value=edu.get("location", ""), key=f"edu_loc_{i}", placeholder="e.g., Milan, Italy")
-                with col2:
-                    edu["dates"] = st.text_input("Dates", value=edu.get("dates", ""), key=f"edu_dates_{i}", placeholder="e.g., October 2024 – August 2026")
-                
-                edu["details"] = st.text_area(
-                    "Details/Coursework",
-                    value=edu.get("details", ""),
-                    key=f"edu_details_{i}",
-                    height=60,
-                    placeholder="Relevant coursework: Machine Learning, Big Data..."
-                )
-        
-        st.markdown("---")
-        st.markdown("### Key Projects")
-        
-        if "projects" not in cv_data or not isinstance(cv_data["projects"], list):
-            cv_data["projects"] = []
-        
-        num_proj = st.number_input("Number of projects", min_value=0, max_value=5, value=len(cv_data["projects"]) if cv_data["projects"] else 0)
-        
-        while len(cv_data["projects"]) < num_proj:
-            cv_data["projects"].append({"name": "", "description": "", "link": ""})
-        cv_data["projects"] = cv_data["projects"][:num_proj]
-        
-        for i, proj in enumerate(cv_data["projects"]):
-            with st.expander(f"Project {i+1}: {proj.get('name', 'New Project') or 'New Project'}", expanded=True):
-                proj["name"] = st.text_input("Project Name", value=proj.get("name", ""), key=f"proj_name_{i}", placeholder="e.g., Dropout Predictor AI")
-                proj["description"] = st.text_area(
-                    "Description",
-                    value=proj.get("description", ""),
-                    key=f"proj_desc_{i}",
-                    height=60,
-                    placeholder="Designed and developed..."
-                )
-                proj["link"] = st.text_input("Link (optional)", value=proj.get("link", ""), key=f"proj_link_{i}", placeholder="e.g., https://github.com/...")
-        
-        st.markdown("---")
-        st.markdown("### Languages")
-        
-        if "languages" not in cv_data or not isinstance(cv_data["languages"], list):
-            cv_data["languages"] = []
-        
-        num_lang = st.number_input("Number of languages", min_value=0, max_value=5, value=len(cv_data["languages"]) if cv_data["languages"] else 1)
-        
-        while len(cv_data["languages"]) < num_lang:
-            cv_data["languages"].append({"language": "", "level": ""})
-        cv_data["languages"] = cv_data["languages"][:num_lang]
-        
-        for i, lang in enumerate(cv_data["languages"]):
-            col1, col2 = st.columns(2)
-            with col1:
-                lang["language"] = st.text_input("Language", value=lang.get("language", ""), key=f"lang_name_{i}", placeholder="e.g., English")
-            with col2:
-                lang["level"] = st.selectbox(
-                    "Level",
-                    options=["", "Native", "Professional Proficiency (C1-C2)", "Intermediate (B1-B2)", "Basic (A1-A2)"],
-                    index=["", "Native", "Professional Proficiency (C1-C2)", "Intermediate (B1-B2)", "Basic (A1-A2)"].index(lang.get("level", "")) if lang.get("level", "") in ["", "Native", "Professional Proficiency (C1-C2)", "Intermediate (B1-B2)", "Basic (A1-A2)"] else 0,
-                    key=f"lang_level_{i}"
-                )
-        
-        # Save to session state
-        st.session_state["cv_builder"] = cv_data
-    
-    with preview_col:
-        st.markdown("### CV Preview")
-        
-        # Generate CV text
+        # Generate CV Text
         cv_text_lines = []
-        
-        # Header
         if cv_data.get("name"):
             cv_text_lines.append(cv_data["name"])
-            contact_parts = []
-            if cv_data.get("location"):
-                contact_parts.append(cv_data["location"])
-            if cv_data.get("email"):
-                contact_parts.append(f"Email: {cv_data['email']}")
-            if cv_data.get("phone"):
-                contact_parts.append(f"Phone: {cv_data['phone']}")
-            if contact_parts:
-                cv_text_lines.append(" | ".join(contact_parts))
+            parts = [p for p in [cv_data.get("location"), cv_data.get("email"), cv_data.get("phone")] if p]
+            if parts: cv_text_lines.append(" | ".join(parts))
         
-        # Summary
         if cv_data.get("summary"):
-            cv_text_lines.append("\nProfessional Summary")
+            cv_text_lines.append("\nSUMMARY")
             cv_text_lines.append(cv_data["summary"])
-        
-        # Core Competencies
+            
         if cv_data.get("competencies"):
-            cv_text_lines.append("\nCore Competencies: " + " | ".join(cv_data["competencies"]))
-        
-        # Technical Skills
+            cv_text_lines.append("\nCORE COMPETENCIES")
+            cv_text_lines.append(" | ".join(cv_data["competencies"]))
+            
         if cv_data.get("tech_skills_text"):
-            cv_text_lines.append("\nTechnical Skills")
+            cv_text_lines.append("\nTECHNICAL SKILLS")
             cv_text_lines.append(cv_data["tech_skills_text"])
-        
-        # Experience
+            
         if cv_data.get("experiences"):
-            cv_text_lines.append("\nProfessional Experience")
+            cv_text_lines.append("\nPROFESSIONAL EXPERIENCE")
             for exp in cv_data["experiences"]:
                 if exp.get("title"):
-                    cv_text_lines.append(f"\n{exp['title']}")
-                    location_date = []
-                    if exp.get("company"):
-                        location_date.append(exp["company"])
-                    if exp.get("location"):
-                        location_date.append(exp["location"])
-                    if exp.get("dates"):
-                        location_date.append(exp["dates"])
-                    if location_date:
-                        cv_text_lines.append(" | ".join(location_date))
-                    if exp.get("bullets"):
-                        cv_text_lines.append(exp["bullets"])
-                    if exp.get("tech"):
-                        cv_text_lines.append(f"Technologies: {exp['tech']}")
-        
-        # Education
+                    head = f"{exp['title']}"
+                    if exp.get("company"): head += f" | {exp['company']}"
+                    if exp.get("dates"): head += f" ({exp['dates']})"
+                    cv_text_lines.append(f"\n{head}")
+                    if exp.get("bullets"): cv_text_lines.append(exp["bullets"])
+                    if exp.get("tech"): cv_text_lines.append(f"Tech: {exp['tech']}")
+
         if cv_data.get("education"):
-            cv_text_lines.append("\nEducation")
+            cv_text_lines.append("\nEDUCATION")
             for edu in cv_data["education"]:
-                if edu.get("degree"):
-                    cv_text_lines.append(f"\n{edu['degree']}")
-                    inst_parts = []
-                    if edu.get("institution"):
-                        inst_parts.append(edu["institution"])
-                    if edu.get("location"):
-                        inst_parts.append(edu["location"])
-                    if edu.get("dates"):
-                        inst_parts.append(edu["dates"])
-                    if inst_parts:
-                        cv_text_lines.append(" | ".join(inst_parts))
-                    if edu.get("details"):
-                        cv_text_lines.append(edu["details"])
-        
-        # Projects
+                head = f"{edu.get('degree', '')}"
+                if edu.get("institution"): head += f" | {edu['institution']}"
+                if edu.get("dates"): head += f" ({edu['dates']})"
+                cv_text_lines.append(f"\n{head}")
+                if edu.get("details"): cv_text_lines.append(edu["details"])
+
         if cv_data.get("projects"):
-            cv_text_lines.append("\nKey Projects")
+            cv_text_lines.append("\nPROJECTS")
             for proj in cv_data["projects"]:
-                if proj.get("name"):
-                    cv_text_lines.append(f"\n{proj['name']}")
-                    if proj.get("description"):
-                        cv_text_lines.append(proj["description"])
-                    if proj.get("link"):
-                        cv_text_lines.append(f"Link: {proj['link']}")
-        
-        # Languages
-        if cv_data.get("languages"):
-            lang_parts = []
-            for lang in cv_data["languages"]:
-                if lang.get("language") and lang.get("level"):
-                    lang_parts.append(f"{lang['language']}: {lang['level']}")
-            if lang_parts:
-                cv_text_lines.append("\nLanguages")
-                cv_text_lines.append(" | ".join(lang_parts))
-        
+                head = f"{proj.get('name', '')}"
+                if proj.get("link"): head += f" [{proj['link']}]"
+                cv_text_lines.append(f"\n{head}")
+                if proj.get("description"): cv_text_lines.append(proj["description"])
+
         cv_text = "\n".join(cv_text_lines)
+
+        # Preview Area
+        st.markdown("### CV Preview")
+        st.text_area("Generated Content", value=cv_text, height=400)
         
-        # Display preview
-        if cv_text.strip():
-            st.text(cv_text)
-        else:
-            st.caption("Start filling the form to see your CV preview here...")
-        
-        
-        st.markdown("---")
-        
-        # Action buttons
-        st.markdown("### Actions")
-        
+        st.divider()
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            # Download CV as TXT
-            if cv_text.strip():
-                st.download_button(
-                    "Download TXT",
-                    cv_text,
-                    file_name=f"{cv_data.get('name', 'CV').replace(' ', '_')}_CV.txt",
-                    mime="text/plain",
-                    use_container_width=True
-                )
-        
+             st.download_button("Download TXT", cv_text, file_name="My_CV.txt", use_container_width=True)
+             
         with col2:
-            # Download CV as PDF
-            if cv_text.strip():
-                try:
-                    from fpdf import FPDF
-                    from io import BytesIO
-                    
-                    pdf = FPDF()
-                    pdf.add_page()
-                    pdf.set_auto_page_break(auto=True, margin=15)
-                    
-                    # Title
-                    pdf.set_font("Helvetica", "B", 16)
-                    name_safe = cv_data.get("name", "CV")
-                    try:
-                        name_safe = name_safe.encode('latin-1').decode('latin-1')
-                    except:
-                        name_safe = name_safe.encode('ascii', 'replace').decode('ascii')
-                    pdf.cell(0, 10, name_safe, ln=True, align="C")
-                    
-                    # Contact info
-                    pdf.set_font("Helvetica", "", 10)
-                    contact_parts = []
-                    if cv_data.get("location"):
-                        contact_parts.append(cv_data["location"])
-                    if cv_data.get("email"):
-                        contact_parts.append(cv_data["email"])
-                    if cv_data.get("phone"):
-                        contact_parts.append(cv_data["phone"])
-                    if contact_parts:
-                        contact_text = " | ".join(contact_parts)
-                        try:
-                            contact_text = contact_text.encode('latin-1').decode('latin-1')
-                        except:
-                            contact_text = contact_text.encode('ascii', 'replace').decode('ascii')
-                        pdf.cell(0, 5, contact_text, ln=True, align="C")
-                    
-                    pdf.ln(5)
-                    
-                    # Content - split by sections
-                    pdf.set_font("Helvetica", "", 10)
-                    section_headers = ["Professional Summary", "Core Competencies", "Technical Skills", "Professional Experience", "Education", "Key Projects", "Languages"]
-                    
-                    for line in cv_text.split("\n"):
-                        line = line.strip()
-                        if not line:
-                            pdf.ln(3)
-                        elif any(line.startswith(h) for h in section_headers):
-                            pdf.ln(3)
-                            pdf.set_font("Helvetica", "B", 11)
-                            try:
-                                line = line.encode('latin-1').decode('latin-1')
-                            except:
-                                line = line.encode('ascii', 'replace').decode('ascii')
-                            pdf.cell(0, 6, line, ln=True)
-                            pdf.set_font("Helvetica", "", 10)
-                        else:
-                            # Handle special characters
-                            try:
-                                safe_line = line.encode('latin-1').decode('latin-1')
-                            except:
-                                safe_line = line.encode('ascii', 'replace').decode('ascii')
-                            pdf.multi_cell(0, 5, safe_line)
-                    
-                    # Output to bytes
-                    pdf_buffer = BytesIO()
-                    pdf_output = pdf.output(dest='S')
-                    if isinstance(pdf_output, str):
-                        pdf_buffer.write(pdf_output.encode('latin-1'))
-                    else:
-                        pdf_buffer.write(pdf_output)
-                    pdf_bytes = pdf_buffer.getvalue()
-                    
-                    st.download_button(
-                        "Download PDF",
-                        pdf_bytes,
-                        file_name=f"{cv_data.get('name', 'CV').replace(' ', '_')}_CV.pdf",
-                        mime="application/pdf",
-                        use_container_width=True
-                    )
-                except ImportError:
-                    st.button("PDF unavailable", disabled=True, use_container_width=True)
-                except Exception as e:
-                    st.button(f"PDF Error: {str(e)[:30]}", disabled=True, use_container_width=True)
-        
+             # Basic PDF Generation
+             st.button("Download PDF (Coming Soon)", disabled=True, use_container_width=True)
+             
         with col3:
-            # Use for Analysis
-            if cv_text.strip():
-                if st.button("Use for Analysis", use_container_width=True, help="Send this CV to the Home page for job matching"):
-                    st.session_state["cv_text"] = cv_text
-                    st.session_state["page"] = "Home"
-                    st.success("CV loaded! Redirecting to analysis...")
-                    st.rerun()
-        
-        if jd_skills:
-            st.markdown("---")
-            st.markdown("### AI Optimization Suggestions")
-            st.caption("Pattern Recognition Analysis based on Target JD")
-            
-            # (Calculation moved up)
-            
-            # Match Score Display
-            score_col, status_col = st.columns([1, 2])
-            with score_col:
-                if match_score >= 80:
-                    st.success(f"**{match_score}%** Match")
-                elif match_score >= 50:
-                    st.warning(f"**{match_score}%** Match")
-                else:
-                    st.error(f"**{match_score}%** Match")
-            
-            with status_col:
-                status_text = f"{len(matched_skills)} matched"
-                if transferable_skills:
-                    status_text += f", {len(transferable_skills)} transferable"
-                st.caption(status_text)
-            
-            # Matched Skills
-            if matched_skills:
-                with st.expander(f"Matched Skills ({len(matched_skills)})", expanded=False):
-                    matched_html = " ".join([f"<span class='skill-tag-matched'>{s}</span>" for s in list(matched_skills)[:15]])
-                    st.markdown(matched_html, unsafe_allow_html=True)
-            
-            # Transferable Skills
-            if transferable_skills:
-                with st.expander(f"Transferable Skills ({len(transferable_skills)})", expanded=False):
-                    transfer_html = " ".join([f"<span class='skill-tag-transferable'>{s}</span>" for s in list(transferable_skills)[:10]])
-                    st.markdown(transfer_html, unsafe_allow_html=True)
-                    st.caption("You have similar tools/skills that transfer")
-            
-            # Missing Skills - Only Hard Skills
-            if missing_from_jd:
-                st.markdown("**Technical skills to consider adding:**")
-                
-                # Show priority skills first (max 6)
-                priority_skills = list(missing_from_jd)[:6]
-                skills_html = " ".join([f"<span class='skill-tag-missing'>{s}</span>" for s in priority_skills])
-                st.markdown(skills_html, unsafe_allow_html=True)
-                
-                if len(missing_from_jd) > 6:
-                    with st.expander(f"View all {len(missing_from_jd)} missing"):
-                        all_missing_html = " ".join([f"<span class='skill-tag-missing'>{s}</span>" for s in missing_from_jd])
-                        st.markdown(all_missing_html, unsafe_allow_html=True)
-            else:
-                st.success("Your CV covers all technical skills from the job!")
+             if st.button("Use for Analysis →", type="primary", use_container_width=True):
+                 st.session_state["cv_text"] = cv_text
+                 st.session_state["page"] = "CV Evaluation" # Redirect to Eval
+                 st.success("CV Loaded! Redirecting...")
+                 st.rerun()
+
+        # Nav Buttons
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("← Back to Edit"):
+            st.session_state["cv_wizard_step"] = 3
+            st.rerun()
 
 # =============================================================================
 # INTERFACCIA UTENTE PRINCIPALE (UI)
