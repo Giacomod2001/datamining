@@ -827,6 +827,83 @@ def render_cv_builder():
     
     st.divider()
     
+    # Demo Mode Button
+    col_demo, col_reset = st.columns([1, 1])
+    with col_demo:
+        if st.button("🎯 Try Demo", use_container_width=True, help="Load sample CV data to see how it works"):
+            st.session_state["cv_builder"] = {
+                "name": "Giacomo Dellacqua",
+                "location": "Milan, Italy",
+                "email": "dellacquagiacomo@gmail.com",
+                "phone": "+39 351 930 1321",
+                "summary": "Results-driven Digital Marketing Data Analyst with expertise in AI-powered business solutions and data-driven decision-making. Currently pursuing Master's in Artificial Intelligence for Business while gaining hands-on experience in marketing analytics, tracking implementation, and performance optimization.",
+                "competencies": ["Machine Learning", "Data Analytics", "Digital Marketing", "Google Cloud Platform", "Business Intelligence", "Predictive Modeling"],
+                "tech_skills": {
+                    "Programming & Analytics": ["Python", "SQL"],
+                    "Data & Analytics Tools": ["Google Analytics 4", "Google Tag Manager", "Looker Studio"],
+                    "Cloud & AI": ["Google Cloud Platform", "Machine Learning"],
+                    "Marketing & Digital": ["SEO", "SEM", "CRM"],
+                    "Other Tools": ["Git", "Microsoft Office"]
+                },
+                "experiences": [
+                    {
+                        "title": "Digital Marketing Data Analyst Intern",
+                        "company": "Randstad Group Italia SPA",
+                        "location": "Milan, Italy (Hybrid)",
+                        "dates": "November 2025 – Present",
+                        "bullets": "• Implement and maintain online tracking ecosystems using Google Tag Manager\n• Analyze website performance and monitor KPIs using Google Analytics 4\n• Design interactive dashboards and reports with Google Looker Studio\n• Support paid performance campaigns for candidate acquisition",
+                        "tech": "Google Analytics 4, Google Tag Manager, Looker Studio, SQL, Python"
+                    },
+                    {
+                        "title": "Junior Digital Marketing Specialist",
+                        "company": "Otreat",
+                        "location": "Milan, Italy (Hybrid)",
+                        "dates": "January 2024 – March 2024",
+                        "bullets": "• Managed multi-platform social media presence\n• Developed advertising campaigns and email newsletters\n• Operated CRM systems and e-commerce platforms\n• Conducted quantitative analysis of campaign performance metrics",
+                        "tech": "Social Media Tools, CRM Platforms, Email Marketing"
+                    }
+                ],
+                "education": [
+                    {
+                        "degree": "Master's Degree in Artificial Intelligence for Business and Society",
+                        "institution": "IULM University",
+                        "location": "Milan, Italy",
+                        "dates": "October 2024 – August 2026 (Expected)",
+                        "details": "Relevant Coursework: Machine Learning, Predictive Analytics, Big Data Management, AI Ethics, Business Intelligence"
+                    },
+                    {
+                        "degree": "Bachelor's Degree in Corporate Communication and Public Relations",
+                        "institution": "IULM University",
+                        "location": "Milan, Italy",
+                        "dates": "September 2021 – July 2024",
+                        "details": "Specialized in strategic communication, stakeholder relations, and business management"
+                    }
+                ],
+                "projects": [
+                    {
+                        "name": "Dropout Predictor AI",
+                        "description": "Designed and developed a cloud-native ML platform to predict university dropout risk, demonstrating data-driven retention strategies.",
+                        "link": "https://github.com/Giacomod2001/dropout-predictor"
+                    }
+                ],
+                "languages": [
+                    {"language": "Italian", "level": "Native"},
+                    {"language": "English", "level": "Professional Proficiency (C1-C2)"}
+                ]
+            }
+            st.rerun()
+    
+    with col_reset:
+        if st.button("🗑️ Clear Form", use_container_width=True, help="Reset all fields"):
+            st.session_state["cv_builder"] = {
+                "name": "", "location": "", "email": "", "phone": "",
+                "summary": "", "competencies": [], "tech_skills": {},
+                "experiences": [], "education": [], "projects": [], "languages": []
+            }
+            st.rerun()
+    
+    st.divider()
+    
     # Get CV Builder data from session state
     cv_data = st.session_state["cv_builder"]
     
