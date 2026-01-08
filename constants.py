@@ -260,7 +260,7 @@ HARD_SKILLS = {
     "Recruiting": ["recruiting", "recruitment", "selezione", "talent acquisition", "hiring"],
     "HR Management": ["hr", "human resources", "risorse umane", "hr management"],
     "Talent Management": ["talent management", "gestione talenti", "talent development"],
-    "Training & Development": ["training", "formazione", "learning development", "l&d"],
+    "Training & Development": ["training delivery", "formazione personale", "learning development", "l&d"],
     "Performance Management": ["performance management", "valutazione performance", "appraisal"],
     "Compensation & Benefits": ["compensation", "retribuzione", "benefits", "total rewards"],
     "Labor Law": ["labor law", "diritto del lavoro", "contrattualistica", "ccnl"],
@@ -337,6 +337,23 @@ HARD_SKILLS = {
     "Import/Export": ["import export", "commercio estero", "customs", "dogana"],
     "Demand Planning": ["demand planning", "pianificazione domanda", "forecasting"],
     "Vendor Management": ["vendor management", "gestione fornitori", "supplier"],
+    
+    # ========== SCIENCE & LAB ==========
+    "Biology": ["biology", "biologia", "biological sciences", "scienze biologiche"],
+    "Chemistry": ["chemistry", "chimica", "chemical science", "scienze chimiche"],
+    "Biotechnology": ["biotechnology", "biotecnologie", "biotech"],
+    "Microbiology": ["microbiology", "microbiologia", "microbiological analysis"],
+    "Molecular Biology": ["molecular biology", "biologia molecolare"],
+    "PCR": ["pcr", "qpcr", "polymerase chain reaction"],
+    "HPLC": ["hplc", "chromatography", "cromatografia", "liquid chromatography"],
+    "Gascromatography": ["gascromatografia", "gas chromatography", "gc-ms"],
+    "Cell Culture": ["cell culture", "colture cellulari", "cell lines"],
+    "ELISA": ["elisa", "immunoassays", "saggi immunoenzimatici"],
+    "Western Blot": ["western blot", "protein analysis", "analisi proteica"],
+    "Spectrophotometry": ["spectrophotometry", "spettrofotometria", "spettrofotometro"],
+    "Lab Safety": ["lab safety", "sicurezza laboratorio", "glp", "good laboratory practice"],
+    "GMP": ["gmp", "good manufacturing practice", "norme di buona fabbricazione"],
+    "Analytical Chemistry": ["analytical chemistry", "chimica analitica", "analisi chimiche"],
     
     # ========== HEALTHCARE & PHARMA ==========
     "Clinical Research": ["clinical research", "ricerca clinica", "studi clinici"],
