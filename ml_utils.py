@@ -2308,11 +2308,32 @@ def generate_pdf_report(text_content: str) -> bytes:
             i += 1
             continue
         
-        # Regular content
+        # Regular content - clean special characters for PDF
+        clean_line = line
+        # Replace common special characters with ASCII equivalents
+        replacements = {
+            '•': '-',
+            '–': '-',
+            '—': '-',
+            '"': '"',
+            '"': '"',
+            ''': "'",
+            ''': "'",
+            '…': '...',
+            '→': '->',
+            '←': '<-',
+            '✓': '[x]',
+            '✗': '[ ]',
+            '★': '*',
+            '@': 'at',
+        }
+        for old, new in replacements.items():
+            clean_line = clean_line.replace(old, new)
+        
         try:
-            clean_line = line.encode('latin-1', 'replace').decode('latin-1')
+            clean_line = clean_line.encode('latin-1', 'ignore').decode('latin-1')
         except:
-            clean_line = line
+            clean_line = ''.join(c if ord(c) < 128 else '' for c in clean_line)
             
         pdf.set_font('Arial', '', 10)
         pdf.set_text_color(50, 50, 50)
