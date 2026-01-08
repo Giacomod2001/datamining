@@ -1551,7 +1551,7 @@ def generate_pdf_report(res: Dict, jd_text: str = "", cl_analysis: Dict = None) 
     
     if recs:
         for role, score, _ in recs:
-            pdf.cell(0, 4, clean(f"- {role}: {score:.0f}% match"), 0, 1)
+            pdf.cell(0, 4, clean(f"- {role}: {float(score):.0f}% match"), 0, 1)
     else:
         pdf.cell(0, 4, "No alternative roles found with high confidence.", 0, 1)
     pdf.ln(3)
