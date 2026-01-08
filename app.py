@@ -1062,13 +1062,11 @@ def render_cv_builder():
         
         # How AI Works (Explanation)
         st.markdown("<br>", unsafe_allow_html=True)
-        with st.expander("How AI Works", expanded=False):
+        with st.expander("How it Works", expanded=False):
             st.markdown("""
-            **Real-time Analysis:**
-            
-            1.  **NLP Extraction**: We use Natural Language Processing to detect skills in your profile and the JD.
-            2.  **Smart Matching**: The match score is calculated using **Set Theory (Jaccard Index)** to measure the overlap between your skills and job requirements.
-            3.  **Optimization**: The system identifies key missing keywords to help you pass Applicant Tracking Systems (ATS).
+            - **Skill Detection**: Analyzes your CV and matches keywords against the Job Description
+            - **Score Calculation**: Shows % of required skills you already have
+            - **Gap Analysis**: Identifies missing skills to help you optimize your CV
             """)
         
         # SPACER and DEV LINK
