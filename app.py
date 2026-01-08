@@ -1260,58 +1260,119 @@ def render_cv_builder():
     elif curr_step == 4:
         st.header("4. Final Review")
         
-        # Generate CV Text
+        # Generate CV Text (for TXT/PDF download)
         cv_text_lines = []
         if cv_data.get("name"):
             cv_text_lines.append(cv_data["name"])
             parts = [p for p in [cv_data.get("location"), cv_data.get("email"), cv_data.get("phone")] if p]
             if parts: cv_text_lines.append(" | ".join(parts))
-        
         if cv_data.get("summary"):
-            cv_text_lines.append("\nSUMMARY")
-            cv_text_lines.append(cv_data["summary"])
-            
+            cv_text_lines.append("\nSUMMARY\n" + cv_data["summary"])
         if cv_data.get("competencies"):
-            cv_text_lines.append("\nCORE COMPETENCIES")
-            cv_text_lines.append(" | ".join(cv_data["competencies"]))
-            
+            cv_text_lines.append("\nCORE COMPETENCIES\n" + " | ".join(cv_data["competencies"]))
         if cv_data.get("tech_skills_text"):
-            cv_text_lines.append("\nTECHNICAL SKILLS")
-            cv_text_lines.append(cv_data["tech_skills_text"])
-            
+            cv_text_lines.append("\nTECHNICAL SKILLS\n" + cv_data["tech_skills_text"])
         if cv_data.get("experiences"):
             cv_text_lines.append("\nPROFESSIONAL EXPERIENCE")
             for exp in cv_data["experiences"]:
                 if exp.get("title"):
-                    head = f"{exp['title']}"
-                    if exp.get("company"): head += f" | {exp['company']}"
-                    if exp.get("dates"): head += f" ({exp['dates']})"
-                    cv_text_lines.append(f"\n{head}")
+                    line = f"\n{exp['title']}"
+                    if exp.get("company"): line += f" @ {exp['company']}"
+                    if exp.get("dates"): line += f" ({exp['dates']})"
+                    cv_text_lines.append(line)
                     if exp.get("bullets"): cv_text_lines.append(exp["bullets"])
-                    if exp.get("tech"): cv_text_lines.append(f"Tech: {exp['tech']}")
-
         if cv_data.get("education"):
             cv_text_lines.append("\nEDUCATION")
             for edu in cv_data["education"]:
-                head = f"{edu.get('degree', '')}"
-                if edu.get("institution"): head += f" | {edu['institution']}"
-                if edu.get("dates"): head += f" ({edu['dates']})"
-                cv_text_lines.append(f"\n{head}")
+                line = f"\n{edu.get('degree', '')}"
+                if edu.get("institution"): line += f" @ {edu['institution']}"
+                if edu.get("dates"): line += f" ({edu['dates']})"
+                cv_text_lines.append(line)
                 if edu.get("details"): cv_text_lines.append(edu["details"])
-
         if cv_data.get("projects"):
             cv_text_lines.append("\nPROJECTS")
             for proj in cv_data["projects"]:
-                head = f"{proj.get('name', '')}"
-                if proj.get("link"): head += f" [{proj['link']}]"
-                cv_text_lines.append(f"\n{head}")
+                cv_text_lines.append(f"\n{proj.get('name', '')}")
                 if proj.get("description"): cv_text_lines.append(proj["description"])
-
+        if cv_data.get("languages"):
+            cv_text_lines.append("\nLANGUAGES")
+            cv_text_lines.append(" | ".join([f"{l['language']}: {l['level']}" for l in cv_data["languages"] if l.get("language")]))
         cv_text = "\n".join(cv_text_lines)
+        
+        # Build HTML Preview
+        html_parts = []
+        
+        # Header
+        if cv_data.get("name"):
+            html_parts.append(f"<h2 style='color: #00A0DC; margin: 0;'>{cv_data['name']}</h2>")
+            parts = [p for p in [cv_data.get("location"), cv_data.get("email"), cv_data.get("phone")] if p]
+            if parts:
+                html_parts.append(f"<p style='color: #8b949e; margin: 0.25rem 0 1rem 0;'>{' | '.join(parts)}</p>")
+        
+        # Summary
+        if cv_data.get("summary"):
+            html_parts.append("<h4 style='color: #fff; border-bottom: 1px solid #30363d; padding-bottom: 0.5rem; margin-top: 1.5rem;'>SUMMARY</h4>")
+            html_parts.append(f"<p style='color: #c9d1d9; line-height: 1.6;'>{cv_data['summary']}</p>")
+        
+        # Core Competencies
+        if cv_data.get("competencies"):
+            html_parts.append("<h4 style='color: #fff; border-bottom: 1px solid #30363d; padding-bottom: 0.5rem; margin-top: 1.5rem;'>CORE COMPETENCIES</h4>")
+            tags = "".join([f"<span style='background: #0d419d; color: #7ec8ff; padding: 4px 12px; border-radius: 15px; margin: 3px; display: inline-block; font-size: 0.85rem;'>{c}</span>" for c in cv_data["competencies"]])
+            html_parts.append(f"<div style='margin: 0.5rem 0;'>{tags}</div>")
+        
+        # Technical Skills
+        if cv_data.get("tech_skills_text"):
+            html_parts.append("<h4 style='color: #fff; border-bottom: 1px solid #30363d; padding-bottom: 0.5rem; margin-top: 1.5rem;'>TECHNICAL SKILLS</h4>")
+            html_parts.append(f"<p style='color: #c9d1d9;'>{cv_data['tech_skills_text']}</p>")
+        
+        # Experience
+        if cv_data.get("experiences"):
+            html_parts.append("<h4 style='color: #fff; border-bottom: 1px solid #30363d; padding-bottom: 0.5rem; margin-top: 1.5rem;'>PROFESSIONAL EXPERIENCE</h4>")
+            for exp in cv_data["experiences"]:
+                if exp.get("title"):
+                    html_parts.append(f"<div style='margin: 1rem 0; padding-left: 1rem; border-left: 3px solid #00A0DC;'>")
+                    html_parts.append(f"<strong style='color: #fff;'>{exp['title']}</strong>")
+                    if exp.get("company"): html_parts.append(f"<span style='color: #8b949e;'> @ {exp['company']}</span>")
+                    if exp.get("dates"): html_parts.append(f"<span style='color: #6e7681; float: right;'>{exp['dates']}</span>")
+                    if exp.get("bullets"):
+                        bullets_html = exp["bullets"].replace("\n", "<br>")
+                        html_parts.append(f"<p style='color: #c9d1d9; margin: 0.5rem 0; white-space: pre-line;'>{bullets_html}</p>")
+                    if exp.get("tech"):
+                        html_parts.append(f"<p style='color: #58a6ff; font-size: 0.85rem; margin: 0.25rem 0;'>Tech: {exp['tech']}</p>")
+                    html_parts.append("</div>")
+        
+        # Education
+        if cv_data.get("education"):
+            html_parts.append("<h4 style='color: #fff; border-bottom: 1px solid #30363d; padding-bottom: 0.5rem; margin-top: 1.5rem;'>EDUCATION</h4>")
+            for edu in cv_data["education"]:
+                html_parts.append(f"<div style='margin: 0.75rem 0;'>")
+                html_parts.append(f"<strong style='color: #fff;'>{edu.get('degree', '')}</strong>")
+                if edu.get("institution"): html_parts.append(f"<span style='color: #8b949e;'> @ {edu['institution']}</span>")
+                if edu.get("dates"): html_parts.append(f"<span style='color: #6e7681; float: right;'>{edu['dates']}</span>")
+                if edu.get("details"): html_parts.append(f"<p style='color: #c9d1d9; margin: 0.25rem 0;'>{edu['details']}</p>")
+                html_parts.append("</div>")
+        
+        # Projects
+        if cv_data.get("projects"):
+            html_parts.append("<h4 style='color: #fff; border-bottom: 1px solid #30363d; padding-bottom: 0.5rem; margin-top: 1.5rem;'>PROJECTS</h4>")
+            for proj in cv_data["projects"]:
+                html_parts.append(f"<div style='margin: 0.75rem 0;'>")
+                html_parts.append(f"<strong style='color: #fff;'>{proj.get('name', '')}</strong>")
+                if proj.get("link"): html_parts.append(f" <a href='{proj['link']}' style='color: #58a6ff;' target='_blank'>[Link]</a>")
+                if proj.get("description"): html_parts.append(f"<p style='color: #c9d1d9; margin: 0.25rem 0;'>{proj['description']}</p>")
+                html_parts.append("</div>")
+        
+        # Languages
+        if cv_data.get("languages"):
+            html_parts.append("<h4 style='color: #fff; border-bottom: 1px solid #30363d; padding-bottom: 0.5rem; margin-top: 1.5rem;'>LANGUAGES</h4>")
+            lang_html = " | ".join([f"<span style='color: #c9d1d9;'>{l['language']}: <strong>{l['level']}</strong></span>" for l in cv_data["languages"] if l.get("language")])
+            html_parts.append(f"<p>{lang_html}</p>")
+        
+        cv_html = "\n".join(html_parts)
 
         # Preview Area
         st.markdown("### CV Preview")
-        st.markdown(f"<pre style='white-space: pre-wrap; background: #161b22; padding: 1.5rem; border-radius: 10px; border: 1px solid #30363d; max-height: 600px; overflow-y: auto;'>{cv_text}</pre>", unsafe_allow_html=True)
+        st.markdown(f"<div style='background: #161b22; padding: 2rem; border-radius: 12px; border: 1px solid #30363d; max-height: 700px; overflow-y: auto;'>{cv_html}</div>", unsafe_allow_html=True)
         
         st.divider()
         col1, col2, col3 = st.columns(3)
