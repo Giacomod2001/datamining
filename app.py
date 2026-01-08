@@ -1944,9 +1944,9 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         # Next Best Action
         if res["missing_hard"]:
             top_missing = list(res["missing_hard"])[:3]
-            st.markdown(f"**🎯 Priority Focus:** Learn **{', '.join(top_missing)}**")
+            st.markdown(f"**Priority Focus:** Learn **{', '.join(top_missing)}**")
         elif pct >= 90:
-            st.markdown("**🚀 Ready to Apply:** Your profile is very strong!")
+            st.markdown("**Ready to Apply:** Your profile is very strong!")
     
     # Row 2: Portfolio & Cover Letter Cards
     if ("project_verified" in res and res["project_verified"]) or cl_analysis:
@@ -1959,7 +1959,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
             with c1 if idx == 0 else c2:
                 st.markdown("""
                 <div class="dashboard-card">
-                    <h4 style="margin-top:0;">📂 Portfolio Intelligence</h4>
+                    <h4 style="margin-top:0;">Portfolio Intelligence</h4>
                 """, unsafe_allow_html=True)
                 
                 qual = res.get('portfolio_quality', 0)
@@ -1979,7 +1979,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
             with c1 if idx == 0 else c2:
                 st.markdown("""
                 <div class="dashboard-card">
-                    <h4 style="margin-top:0;">📝 Cover Letter Assessment</h4>
+                    <h4 style="margin-top:0;">Cover Letter Assessment</h4>
                 """, unsafe_allow_html=True)
                 
                 cl_score = cl_analysis.get("overall_score", 0)
@@ -2112,19 +2112,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
             for sugg in add_suggestions[:4]:
                 st.markdown(f"<span style='color: #FFB300;'>•</span> {sugg}", unsafe_allow_html=True)
         
-        if cl_analysis:
-            with add_cols[add_idx] if add_idx < 2 else st.container():
-                st.subheader("Cover Letter Assessment")
-                cl_score = cl_analysis['overall_score']
-                
-                if cl_score >= 80:
-                    st.success(f"**{cl_score:.0f}%** - Excellent cover letter!")
-                elif cl_score >= 60:
-                    st.warning(f"**{cl_score:.0f}%** - Good, with room for improvement")
-                else:
-                    st.error(f"**{cl_score:.0f}%** - Needs Work")
-                
-                st.caption(f"{cl_analysis['word_count']} words | {cl_analysis['language'] or 'EN'}")
+
 
     st.divider()
     st.markdown("<div id='section-skills'></div>", unsafe_allow_html=True)
