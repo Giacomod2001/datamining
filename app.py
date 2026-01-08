@@ -1031,7 +1031,14 @@ def render_cv_builder():
             # Add Education text
             for edu in cv_data.get("education", []):
                 parts.append(edu.get("details", ""))
-                
+            
+            # Add Languages
+            for lang in cv_data.get("languages", []):
+                lang_name = lang.get("language", "").strip()
+                if lang_name:
+                    user_skills.add(lang_name)
+                    parts.append(lang_name)
+                    
             full_cv_text = " ".join(parts)
             
             if full_cv_text:
@@ -1039,14 +1046,16 @@ def render_cv_builder():
                 user_skills.update(th)
                 user_skills.update(ts)
             
-            # Match
+            # Match against ALL JD requirements (hard + soft)
             matches = jd_reqs.intersection(user_skills)
-            score = int((len(matches) / len(jd_hard)) * 100) if jd_hard else 0
+            score = int((len(matches) / len(jd_reqs)) * 100) if jd_reqs else 0
+            score = min(score, 100)  # Cap at 100%
             
             st.markdown(f"**Optimization Score:** {score}%")
             st.progress(score)
             
             if score < 100:
+                # Show missing HARD skills only (actionable items)
                 missing = jd_hard - user_skills
                 if missing:
                     st.caption(f"Missing: {', '.join(list(missing)[:3])}")
@@ -2297,7 +2306,8 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     
     # Generate Detailed Content
     report_text = ml_utils.generate_detailed_report_text(res, jd_text if jd_text else "", cl_analysis)
-    report_pdf = ml_utils.generate_pdf_report(report_text)
+    # Use styled PDF with res Dict (first overload), not simple text version
+    report_pdf = ml_utils.generate_pdf_report(res, jd_text if jd_text else "")
     
     col_dl1, col_dl2 = st.columns(2)
     with col_dl1:
