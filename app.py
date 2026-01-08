@@ -1804,21 +1804,6 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     - Suggerimenti azionabili
     """
     st.divider()
-    
-    # --- KDD PROCESS VISUALIZATION ---
-    with st.expander("KDD Process Trace (Data Mining Pipeline)", expanded=False):
-        st.markdown("""
-        **Knowledge Discovery from Data (KDD) Process Applied:**
-        1.  **Data Cleaning**: Noise removal, Lowercasing, Stop-word removal (NLTK).
-        2.  **Data Integration**: Merging CV Text + Job Description + Knowledge Base.
-        3.  **Data Transformation**: Text-to-Vector conversion using TF-IDF (3000 features).
-        4.  **Data Mining**:
-            *   *Pattern Recognition*: Matching N-grams against Hard/Soft Skill DB.
-            *   *Clustering*: Hierarchical Grouping of skills (see Debugger).
-        5.  **Knowledge Presentation**: Dashboard generation and visual insights.
-        """)
-        
-    st.divider()
     pct = res["match_percentage"]
     
     # =========================================================================
