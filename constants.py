@@ -90,12 +90,17 @@ INFERENCE_RULES = {
     "Spanish": ["Languages", "International Business"],
     "Chinese": ["Languages", "International Trade", "Asia Business"],
     
-    # --- LAB & SCIENCE ---
-    "GMP": ["Quality Control", "Quality Assurance", "Compliance"],
-    "GLP": ["Quality Control", "Quality Assurance", "Lab Safety"],
+    # --- SCIENCE & QUALITY ---
+    "GMP": ["ISO Standards", "Quality Control", "Quality Assurance", "Compliance", "Quality Management"],
+    "GLP": ["ISO Standards", "Quality Control", "Quality Assurance", "Lab Safety", "Quality Management"],
+    "Data Analysis": ["Statistics", "Excel", "Reporting"],
+    "Biotechnology": ["Biology", "Chemistry", "Life Sciences", "Lab Skills", "Microbiology"],
     "Microbiology": ["Biology", "Lab Skills", "Quality Control"],
-    "PCR": ["Molecular Biology", "Lab Skills"],
+    "Molecular Biology": ["Biology", "Genetics", "Lab Skills"],
+    "Spectrophotometry": ["Analytical Chemistry", "Lab Skills"],
+    "Western Blot": ["Biology", "Lab Skills", "Molecular Biology"],
     "HPLC": ["Analytical Chemistry", "Lab Skills", "Quality Control"],
+    "PCR": ["Molecular Biology", "Lab Skills"],
 }
 
 # =============================================================================
@@ -406,7 +411,7 @@ HARD_SKILLS = {
     "Microsoft Office": ["microsoft office", "ms office", "office 365", "word excel powerpoint"],
     "Google Workspace": ["google workspace", "g suite", "google docs", "google sheets"],
     "Slack": ["slack", "team messaging", "comunicazione team"],
-    "Teams": ["microsoft teams", "ms teams"],
+    "Microsoft Teams": ["microsoft teams", "ms teams", "teams software"],
     "Zoom": ["zoom", "video conferencing", "webinar"],
     "Jira": ["jira", "atlassian jira", "issue tracking"],
     "Confluence": ["confluence", "atlassian confluence", "documentation"],
