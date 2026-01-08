@@ -2307,7 +2307,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     # Generate Detailed Content
     report_text = ml_utils.generate_detailed_report_text(res, jd_text if jd_text else "", cl_analysis)
     # Use styled PDF with res Dict (first overload), not simple text version
-    report_pdf = ml_utils.generate_pdf_report(res, jd_text if jd_text else "")
+    report_pdf = ml_utils.generate_pdf_report(res, jd_text if jd_text else "", cl_analysis)
     
     col_dl1, col_dl2 = st.columns(2)
     with col_dl1:

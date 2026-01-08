@@ -1435,121 +1435,142 @@ def extract_text_from_pdf(pdf_file) -> str:
     except Exception as e:
         raise Exception(f"PDF Error: {str(e)}")
 
-def generate_pdf_report(res: Dict, jd_text: str = "") -> bytes:
+def generate_pdf_report(res: Dict, jd_text: str = "", cl_analysis: Dict = None) -> bytes:
     """
-    Generates a clean, professional PDF report matching CV Builder style.
+    Generates a comprehensive PDF report with skills, cover letter, interview tips, and job recommendations.
     """
     if not FPDF:
         return b"FPDF library missing."
 
     class ReportPDF(FPDF):
-        def header(self):
-            pass
-            
         def footer(self):
             self.set_y(-15)
             self.set_font('Arial', 'I', 8)
             self.set_text_color(128, 128, 128)
             self.cell(0, 10, f'CareerMatch AI | Page {self.page_no()}', 0, 0, 'C')
-            
-        def section_header(self, title):
-            self.set_font('Arial', 'B', 12)
-            self.set_text_color(0, 77, 115)
-            self.cell(0, 8, title.upper(), 0, 1)
-            self.set_draw_color(0, 119, 181)
-            self.line(10, self.get_y(), 200, self.get_y())
-            self.ln(3)
-            self.set_text_color(0, 0, 0)
 
     def clean(text):
         if not text: return ""
-        replacements = {
-            "'": "'", "'": "'", """: '"', """: '"', "–": "-", "—": "-",
-            "…": "...", "•": "-", "→": "->", "←": "<-"
-        }
-        for k, v in replacements.items():
-            text = text.replace(k, v)
+        for old, new in {"'": "'", "'": "'", """: '"', """: '"', "–": "-", "•": "-", "→": "->"}.items():
+            text = text.replace(old, new)
         return text.encode('latin-1', 'ignore').decode('latin-1')
 
     pdf = ReportPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
     
-    # Title
-    pdf.set_font('Arial', 'B', 20)
+    # ===== TITLE =====
+    pdf.set_font('Arial', 'B', 18)
     pdf.set_text_color(0, 77, 115)
-    pdf.cell(0, 12, 'CareerMatch AI Report', 0, 1, 'C')
-    pdf.set_font('Arial', '', 10)
-    pdf.set_text_color(100, 100, 100)
-    pdf.cell(0, 6, 'CV-to-Job Match Analysis', 0, 1, 'C')
-    pdf.ln(10)
+    pdf.cell(0, 10, 'CareerMatch AI - Complete Analysis', 0, 1, 'C')
+    pdf.ln(5)
     
-    # Match Score Box
+    # ===== SECTION 1: MATCH SCORE =====
     pct = res.get("match_percentage", 0)
-    if pct >= 80:
-        assessment = "Excellent Match"
-    elif pct >= 60:
-        assessment = "Good Potential"
-    else:
-        assessment = "Needs Improvement"
-    
-    pdf.set_font('Arial', 'B', 16)
-    pdf.set_text_color(0, 77, 115)
-    pdf.cell(0, 10, f"Match Score: {pct:.1f}% - {assessment}", 0, 1, 'C')
-    pdf.ln(8)
+    assessment = "Excellent" if pct >= 80 else ("Good" if pct >= 60 else "Needs Work")
+    pdf.set_font('Arial', 'B', 14)
+    pdf.set_text_color(0, 0, 0)
+    pdf.cell(0, 8, f"1. Profile Match: {pct:.0f}% ({assessment})", 0, 1)
+    pdf.ln(2)
     
     # Matched Skills
-    pdf.section_header("Matched Skills")
-    pdf.set_font('Arial', '', 10)
-    pdf.set_text_color(0, 100, 0)
     matched = res.get("matching_hard", [])
-    if matched:
-        for skill in matched:
-            pdf.cell(0, 5, f"  + {clean(skill)}", 0, 1)
-    else:
-        pdf.cell(0, 5, "  None", 0, 1)
-    pdf.ln(5)
+    pdf.set_font('Arial', 'B', 10)
+    pdf.cell(0, 6, f"Matched ({len(matched)}):", 0, 1)
+    pdf.set_font('Arial', '', 9)
+    pdf.set_text_color(0, 100, 0)
+    pdf.multi_cell(0, 4, clean(", ".join(matched[:15])) + ("..." if len(matched) > 15 else "") if matched else "None")
     
     # Missing Skills
-    pdf.section_header("Missing Skills")
-    pdf.set_font('Arial', '', 10)
-    pdf.set_text_color(150, 0, 0)
     missing = res.get("missing_hard", [])
-    if missing:
-        for skill in missing:
-            pdf.cell(0, 5, f"  - {clean(skill)}", 0, 1)
-    else:
-        pdf.cell(0, 5, "  None", 0, 1)
-    pdf.ln(5)
+    pdf.set_font('Arial', 'B', 10)
+    pdf.set_text_color(0, 0, 0)
+    pdf.cell(0, 6, f"Missing ({len(missing)}):", 0, 1)
+    pdf.set_font('Arial', '', 9)
+    pdf.set_text_color(150, 0, 0)
+    pdf.multi_cell(0, 4, clean(", ".join(missing)) if missing else "None")
+    pdf.ln(3)
     
-    # Transferable Skills
+    # ===== SECTION 2: COVER LETTER =====
+    if cl_analysis:
+        pdf.set_font('Arial', 'B', 14)
+        pdf.set_text_color(0, 0, 0)
+        cl_score = cl_analysis.get("overall_score", 0)
+        pdf.cell(0, 8, f"2. Cover Letter: {cl_score:.0f}%", 0, 1)
+        pdf.set_font('Arial', '', 9)
+        pdf.set_text_color(50, 50, 50)
+        
+        # Strengths
+        strengths = cl_analysis.get("strengths", [])
+        if strengths:
+            pdf.set_text_color(0, 100, 0)
+            pdf.multi_cell(0, 4, "Strengths: " + clean(", ".join(strengths[:3])))
+        
+        # Improvements
+        improvements = cl_analysis.get("improvements", [])
+        if improvements:
+            pdf.set_text_color(180, 120, 0)
+            pdf.multi_cell(0, 4, "Improve: " + clean(", ".join(improvements[:3])))
+        pdf.ln(3)
+    
+    # ===== SECTION 3: INTERVIEW TIPS =====
+    pdf.set_font('Arial', 'B', 14)
+    pdf.set_text_color(0, 0, 0)
+    pdf.cell(0, 8, "3. Interview Preparation", 0, 1)
+    pdf.set_font('Arial', '', 9)
+    pdf.set_text_color(50, 50, 50)
+    
+    # Generate tips based on analysis
+    tips = []
+    if matched:
+        tips.append(f"Highlight your experience with: {', '.join(list(matched)[:5])}")
+    if missing:
+        tips.append(f"Be ready to explain how you'd learn: {', '.join(list(missing)[:3])}")
     transferable = res.get("transferable", {})
     if transferable:
-        pdf.section_header("Transferable Skills")
-        pdf.set_font('Arial', '', 10)
-        pdf.set_text_color(180, 120, 0)
-        for required, have in transferable.items():
-            pdf.cell(0, 5, f"  {clean(required)} -> You have: {clean(have)}", 0, 1)
-        pdf.ln(5)
+        tips.append(f"Emphasize transferable skills: {', '.join(list(transferable.keys())[:3])}")
+    if pct >= 70:
+        tips.append("Your profile is strong - focus on cultural fit and motivation")
+    else:
+        tips.append("Prepare examples showing quick learning ability")
     
-    # Bonus Skills
-    bonus = res.get("bonus_skills", [])
-    if bonus:
-        pdf.section_header("Bonus Skills")
-        pdf.set_font('Arial', '', 10)
-        pdf.set_text_color(80, 80, 80)
-        for skill in bonus:
-            pdf.cell(0, 5, f"  * {clean(skill)}", 0, 1)
-        pdf.ln(5)
+    for i, tip in enumerate(tips[:4], 1):
+        pdf.multi_cell(0, 4, clean(f"{i}. {tip}"))
+    pdf.ln(3)
     
-    # Statistics
-    pdf.section_header("Summary Statistics")
-    pdf.set_font('Arial', '', 10)
+    # ===== SECTION 4: ALTERNATIVE CAREERS =====
+    pdf.set_font('Arial', 'B', 14)
+    pdf.set_text_color(0, 0, 0)
+    pdf.cell(0, 8, "4. Alternative Career Paths", 0, 1)
+    pdf.set_font('Arial', '', 9)
     pdf.set_text_color(50, 50, 50)
-    pdf.cell(0, 5, f"  Matched: {len(matched)}", 0, 1)
-    pdf.cell(0, 5, f"  Missing: {len(missing)}", 0, 1)
-    pdf.cell(0, 5, f"  Transferable: {len(transferable)}", 0, 1)
-    pdf.cell(0, 5, f"  Bonus: {len(bonus)}", 0, 1)
+    
+    # Get recommendations
+    cv_skills = set(matched) | set(res.get("bonus_skills", []))
+    recs = recommend_roles(cv_skills, jd_text)[:5]
+    
+    if recs:
+        for role, score, _ in recs:
+            pdf.cell(0, 4, clean(f"- {role}: {score:.0f}% match"), 0, 1)
+    else:
+        pdf.cell(0, 4, "No alternative roles found with high confidence.", 0, 1)
+    pdf.ln(3)
+    
+    # ===== SECTION 5: ACTION PLAN =====
+    pdf.set_font('Arial', 'B', 14)
+    pdf.set_text_color(0, 0, 0)
+    pdf.cell(0, 8, "5. Action Plan", 0, 1)
+    pdf.set_font('Arial', '', 9)
+    pdf.set_text_color(50, 50, 50)
+    
+    actions = [
+        f"Focus on learning: {', '.join(list(missing)[:3])}" if missing else "Your skills are well-aligned!",
+        "Update your LinkedIn with matched keywords",
+        "Practice STAR method for behavioral questions",
+        "Research the company culture and recent news"
+    ]
+    for i, action in enumerate(actions, 1):
+        pdf.multi_cell(0, 4, clean(f"{i}. {action}"))
     
     return pdf.output(dest='S').encode('latin-1', 'ignore')
 
