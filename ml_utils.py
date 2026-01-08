@@ -1474,7 +1474,7 @@ def generate_pdf_report(res: Dict, jd_text: str = "", cl_analysis: Dict = None) 
     pdf.ln(2)
     
     # Matched Skills
-    matched = res.get("matching_hard", [])
+    matched = list(res.get("matching_hard", []))
     pdf.set_font('Arial', 'B', 10)
     pdf.cell(0, 6, f"Matched ({len(matched)}):", 0, 1)
     pdf.set_font('Arial', '', 9)
@@ -1482,7 +1482,7 @@ def generate_pdf_report(res: Dict, jd_text: str = "", cl_analysis: Dict = None) 
     pdf.multi_cell(0, 4, clean(", ".join(matched[:15])) + ("..." if len(matched) > 15 else "") if matched else "None")
     
     # Missing Skills
-    missing = res.get("missing_hard", [])
+    missing = list(res.get("missing_hard", []))
     pdf.set_font('Arial', 'B', 10)
     pdf.set_text_color(0, 0, 0)
     pdf.cell(0, 6, f"Missing ({len(missing)}):", 0, 1)
