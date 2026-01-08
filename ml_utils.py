@@ -2208,54 +2208,119 @@ def generate_detailed_report_text(res: Dict, jd_text: str = "", cl_analysis: Dic
 
 
 def generate_pdf_report(text_content: str) -> bytes:
-    """Converts the text report into a PDF bytes object."""
+    """
+    Generates a professionally formatted CV PDF.
+    Uses proper sections, headers, and spacing for readability.
+    """
     if not FPDF:
         return None
         
-    class PDF(FPDF):
+    class CVPDF(FPDF):
         def header(self):
-            # No title header - clean document
-            pass
+            pass  # No automatic header
             
         def footer(self):
             self.set_y(-15)
             self.set_font('Arial', 'I', 8)
+            self.set_text_color(128, 128, 128)
             self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
-
-    pdf = PDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
-    
-    # Simple line-by-line write
-    for line in text_content.split('\n'):
-        # Handle simple bolding logic based on markers
-        if "====" in line or "----" in line:
-            pdf.ln(2)
-            pdf.cell(0, 5, line, 0, 1)
-            pdf.ln(2)
-        elif line.startswith("Assessment:") or line.startswith("Match Score:"):
-            pdf.set_font("Arial", 'B', 12)
-            pdf.cell(0, 8, line, 0, 1)
-            pdf.set_font("Arial", '', 12)
-        elif line.strip().startswith(("1.", "2.", "3.")):
-             pdf.set_font("Arial", 'B', 12)
-             pdf.cell(0, 10, line, 0, 1)
-             pdf.set_font("Arial", '', 12)
-        elif line.strip().startswith(("A.", "B.", "C.")):
-             pdf.set_font("Arial", 'B', 12)
-             pdf.cell(0, 8, line, 0, 1)
-             pdf.set_font("Arial", '', 12)
-        else:
-            # Handle unicode chars roughly (FPDF doesn't love emojis/unicode standard font)
-            # Replace common bullets to safe chars
-            clean_line = line.replace('✅', '[+]').replace('❌', '[!]').replace('⚠️', '[~]').replace('🚀', '')
-            try:
-                clean_line = clean_line.encode('latin-1', 'replace').decode('latin-1')
-            except:
-                clean_line = clean_line # Fallback
-            pdf.multi_cell(0, 6, clean_line)
             
-    return pdf.output(dest='S').encode('latin-1') # Return bytes
+        def section_header(self, title):
+            """Draw a section header with underline."""
+            self.set_font('Arial', 'B', 12)
+            self.set_text_color(0, 77, 115)  # LinkedIn blue
+            self.cell(0, 8, title.upper(), 0, 1)
+            # Draw line under header
+            self.set_draw_color(0, 119, 181)
+            self.line(10, self.get_y(), 200, self.get_y())
+            self.ln(3)
+            self.set_text_color(0, 0, 0)
+            
+        def add_entry(self, title, subtitle="", date="", description=""):
+            """Add an experience/education entry."""
+            self.set_font('Arial', 'B', 11)
+            self.set_text_color(33, 33, 33)
+            self.cell(0, 6, title, 0, 1)
+            
+            if subtitle or date:
+                self.set_font('Arial', '', 10)
+                self.set_text_color(100, 100, 100)
+                line = ""
+                if subtitle: line += subtitle
+                if date: line += f"  |  {date}" if subtitle else date
+                self.cell(0, 5, line, 0, 1)
+            
+            if description:
+                self.set_font('Arial', '', 10)
+                self.set_text_color(50, 50, 50)
+                self.ln(1)
+                # Handle bullet points
+                for line in description.split('\n'):
+                    clean = line.strip()
+                    if clean:
+                        try:
+                            clean = clean.encode('latin-1', 'replace').decode('latin-1')
+                        except:
+                            pass
+                        self.multi_cell(0, 5, clean)
+            self.ln(4)
+
+    pdf = CVPDF()
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    
+    lines = text_content.split('\n')
+    in_section = None
+    
+    # Parse the text content and format appropriately
+    i = 0
+    while i < len(lines):
+        line = lines[i].strip()
+        
+        # Skip empty lines
+        if not line:
+            i += 1
+            continue
+        
+        # First line = Name (large header)
+        if i == 0:
+            pdf.set_font('Arial', 'B', 20)
+            pdf.set_text_color(0, 77, 115)
+            pdf.cell(0, 12, line, 0, 1, 'C')
+            i += 1
+            continue
+        
+        # Second line = Contact info
+        if i == 1 and '|' in line:
+            pdf.set_font('Arial', '', 10)
+            pdf.set_text_color(100, 100, 100)
+            pdf.cell(0, 6, line, 0, 1, 'C')
+            pdf.ln(8)
+            i += 1
+            continue
+        
+        # Section headers (all caps words)
+        if line in ['SUMMARY', 'CORE COMPETENCIES', 'TECHNICAL SKILLS', 
+                    'PROFESSIONAL EXPERIENCE', 'EDUCATION', 'PROJECTS', 'LANGUAGES']:
+            pdf.ln(4)
+            pdf.section_header(line)
+            in_section = line
+            i += 1
+            continue
+        
+        # Regular content
+        try:
+            clean_line = line.encode('latin-1', 'replace').decode('latin-1')
+        except:
+            clean_line = line
+            
+        pdf.set_font('Arial', '', 10)
+        pdf.set_text_color(50, 50, 50)
+        pdf.multi_cell(0, 5, clean_line)
+        pdf.ln(1)
+        i += 1
+            
+    return pdf.output(dest='S').encode('latin-1')
 
 
 # =============================================================================
