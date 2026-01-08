@@ -1568,6 +1568,15 @@ def render_evaluation_page():
         
         st.divider()
         
+        # How it Works
+        st.markdown("<br>", unsafe_allow_html=True)
+        with st.expander("How it Works", expanded=False):
+            st.markdown("""
+            - **Upload**: Provide your CV and the Job Description
+            - **Analyze**: AI compares your profile against requirements
+            - **Review**: Get a detailed score, gap analysis, and interview tips
+            """)
+            
         # 5. LEGEND
         with st.expander("Result Legend", expanded=False):
             st.markdown("""
