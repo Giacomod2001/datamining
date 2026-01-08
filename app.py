@@ -1062,7 +1062,7 @@ def render_cv_builder():
         
         # How AI Works (Explanation)
         st.markdown("<br>", unsafe_allow_html=True)
-        with st.expander("🤖 How AI Works", expanded=False):
+        with st.expander("How AI Works", expanded=False):
             st.markdown("""
             **Real-time Analysis:**
             
@@ -1124,7 +1124,7 @@ def render_cv_builder():
             missing = jd_hard - user_skills
             
             if missing:
-                st.info(f"💡 **JD Suggestions:** Consider adding: {', '.join(list(missing)[:5])}")
+                st.info(f"**JD Suggestions:** Consider adding: {', '.join(list(missing)[:5])}")
         
         # Competencies
         all_skills = sorted(list(set(list(constants.HARD_SKILLS.keys()) + list(constants.SOFT_SKILLS.keys()))))
