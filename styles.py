@@ -735,7 +735,7 @@ Marco Bianchi
 
 def get_demo_cv_builder_data():
     """
-    Returns a complete dictionary for populating the CV Builder Wizard.
+    Returns a complete dictionary for populating the CV Builder.
     Structure matches st.session_state["cv_builder"].
     """
     return {
@@ -788,7 +788,7 @@ def get_demo_cv_builder_data():
         ],
         "languages": [
             {"language": "Italian", "level": "Native"},
-            {"language": "English", "level": "Professional Proficiency (B2)"} 
+            {"language": "English", "level": "Intermediate (B1-B2)"}
         ]
     }
 

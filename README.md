@@ -102,27 +102,6 @@ Key techniques:
 - **N-grams**: Capture compound skills like "machine learning"
 - **Fuzzy Matching**: Handle typos with 85% Levenshtein threshold
 
-### Semi-Supervised Learning Layer
-
-CareerMatch AI utilizes a **semi-supervised learning** approach that combines:
-
-| Component | Description |
-|-----------|-------------|
-| **Supervised Learning** | Random Forest trained on skill database (constants.py) |
-| **Self-Learning** | System automatically expands knowledge base |
-| **Label Propagation** | High-confidence predictions teach new patterns |
-| **Persistence** | Learned patterns stored in JSON, survive restarts |
-
-**How it works:**
-
-1. Initial skill extraction uses the curated knowledge base (620+ skills)
-2. When a skill is detected with >85% confidence, the system looks for similar phrases
-3. Similar phrases (>70% TF-IDF cosine similarity) inherit the skill label
-4. New patterns are saved to `learned_patterns.json`
-5. Future analyses benefit from the expanded knowledge
-
-**Course Reference:** "Semi-Supervised Learning", "Label Propagation"
-
 ---
 
 ## How It Works
