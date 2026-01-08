@@ -10,6 +10,43 @@ Suitable for graduates from any Italian university degree program.
 """
 
 # =============================================================================
+# ML_MODELS - Modelli ML del Corso (6 selezionati)
+# =============================================================================
+# Reference: DATA MINING E TEXT.txt - Corso Data Mining & Text Analytics
+ML_MODELS = {
+    "TF-IDF": {
+        "type": "Feature Extraction",
+        "desc": "Trasforma testo in Vector Space Model (TF × IDF)",
+        "ref": "Text Mining, Word Vector Representation"
+    },
+    "Random Forest": {
+        "type": "Classification (Supervised)",
+        "desc": "Ensemble di Decision Trees con majority voting",
+        "ref": "Classification and Regression"
+    },
+    "K-Means": {
+        "type": "Clustering (Unsupervised)",
+        "desc": "Partitioning: assegna punti → ricalcola centroidi → ripeti",
+        "ref": "Clustering Techniques"
+    },
+    "Hierarchical Clustering": {
+        "type": "Clustering (Unsupervised)", 
+        "desc": "Agglomerativo bottom-up con Ward linkage → dendrogramma",
+        "ref": "Hierarchical Clustering"
+    },
+    "LDA": {
+        "type": "Topic Modeling (Unsupervised)",
+        "desc": "Modello generativo: documento = mixture di topic",
+        "ref": "Topic Model"
+    },
+    "NER": {
+        "type": "Information Extraction",
+        "desc": "Estrae entità nominate (ORG, PERSON, LOC, DATE)",
+        "ref": "Named Entity Recognition"
+    }
+}
+
+# =============================================================================
 # INFERENCE RULES (Skill Relationships)
 # =============================================================================
 # When a user has Skill A, they likely also have competency in related skills

@@ -41,8 +41,6 @@ datamining_git/
 ├── Acknowledgment      (1 KB)                - AI Tools Acknowledgments
 ├── LICENSE             (5 KB)                - PolyForm Noncommercial License 1.0.0
 ├── Demo_Candidate_DS_CV.pdf                  - Sample CV
-├── semi_supervised_learner.py (12 KB)        - Self-Learning ML Module [NEW]
-├── learned_patterns.json                     - Persistent Learned Patterns [NEW]
 ├── .devcontainer/                            - Dev Container Configuration
 ├── .github/                                  - GitHub Actions/Workflows
 └── .gitignore                                - Git Ignore File
@@ -178,31 +176,6 @@ E) PRINCIPAL COMPONENT ANALYSIS (PCA)
    
    Usage: Dimensionality reduction for cluster scatter plots.
 
-F) SEMI-SUPERVISED LEARNING (Label Propagation)
-   Course Reference: "Semi-Supervised Learning", "Label Propagation"
-   
-   Parameters:
-   - HIGH_CONFIDENCE_THRESHOLD: 0.85 (85% confidence for reliable labels)
-   - SIMILARITY_THRESHOLD: 0.70 (70% TF-IDF cosine similarity)
-   - MAX_PATTERNS_PER_SKILL: 20 (noise prevention)
-   
-   Algorithm:
-   1. Random Forest predicts skills with probability scores
-   2. High-confidence predictions (>85%) become "seed labels"
-   3. TF-IDF similarity finds similar text chunks
-   4. Labels propagate to similar chunks (>70% similarity)
-   5. New patterns saved to learned_patterns.json
-   
-   Persistence:
-   - Learned patterns stored in JSON file
-   - Patterns survive application restarts
-   - System improves with each analysis
-   
-   Benefits:
-   - Automatically expands knowledge base
-   - Learns new skill synonyms and phrases
-   - Combines supervised + unsupervised learning
-   - No manual labeling required for expansion
 
 ------------------------------------------------------------------------------
 4.3 TEXT MINING TECHNIQUES
@@ -562,9 +535,8 @@ CODE STATISTICS:
 
 FUNCTIONAL COVERAGE:
 - Stop words languages: 5 (EN, IT, ES, FR, DE)
-- ML algorithms: 6 (RF, K-Means, Hierarchical, LDA, PCA, Semi-Supervised)
+- ML algorithms: 5 (RF, K-Means, Hierarchical, LDA, PCA)
 - Text Mining techniques: 4 (TF-IDF, N-gram, Fuzzy, NER)
-- Self-Learning: Yes (Label Propagation with JSON persistence)
 
 PERFORMANCE:
 - Analysis time: ~5 seconds
