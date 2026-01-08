@@ -89,6 +89,13 @@ INFERENCE_RULES = {
     "German": ["Languages", "International Business"],
     "Spanish": ["Languages", "International Business"],
     "Chinese": ["Languages", "International Trade", "Asia Business"],
+    
+    # --- LAB & SCIENCE ---
+    "GMP": ["Quality Control", "Quality Assurance", "Compliance"],
+    "GLP": ["Quality Control", "Quality Assurance", "Lab Safety"],
+    "Microbiology": ["Biology", "Lab Skills", "Quality Control"],
+    "PCR": ["Molecular Biology", "Lab Skills"],
+    "HPLC": ["Analytical Chemistry", "Lab Skills", "Quality Control"],
 }
 
 # =============================================================================
@@ -183,7 +190,7 @@ HARD_SKILLS = {
     "Data Analysis": ["data analysis", "analisi dati", "data analytics", "analytics"],
     "Data Visualization": ["data visualization", "visualizzazione dati", "dashboard", "charts"],
     "Statistics": ["statistics", "statistica", "statistical analysis", "analisi statistica"],
-    "Machine Learning": ["machine learning", "ml", "ai", "artificial intelligence", "deep learning"],
+    "Machine Learning": ["machine learning", "ml", "artificial intelligence", "deep learning"],
     "Excel": ["excel", "spreadsheet", "pivot tables", "vlookup", "foglio elettronico"],
     "Power BI": ["power bi", "powerbi", "microsoft power bi"],
     "Tableau": ["tableau", "tableau desktop", "tableau server"],
@@ -219,7 +226,7 @@ HARD_SKILLS = {
     "Scrum": ["scrum", "scrum master", "sprint", "scrum framework"],
     "Business Analysis": ["business analysis", "analisi business", "business analyst", "ba"],
     "Strategic Planning": ["strategic planning", "pianificazione strategica", "strategy"],
-    "Operations Management": ["operations", "operations management", "gestione operativa"],
+    "Operations Management": ["operations management", "direzione operativa"],
     "Process Improvement": ["process improvement", "ottimizzazione processi", "bpm"],
     "Change Management": ["change management", "gestione del cambiamento", "change"],
     "Stakeholder Management": ["stakeholder management", "gestione stakeholder"],
@@ -281,7 +288,7 @@ HARD_SKILLS = {
     "Corporate Law": ["corporate law", "diritto societario", "company law"],
     "Labor Law (Legal)": ["diritto del lavoro", "employment law", "giuslavoristico"],
     "Compliance": ["compliance", "conformità normativa", "regulatory compliance"],
-    "GDPR": ["gdpr", "privacy", "data protection", "protezione dati", "privacy policy"],
+    "GDPR": ["gdpr", "data protection", "protezione dati", "regolamento europeo privacy"],
     "Intellectual Property": ["intellectual property", "ip", "proprietà intellettuale", "brevetti"],
     "M&A": ["m&a", "mergers acquisitions", "fusioni acquisizioni", "corporate transactions"],
     "Legal Research": ["legal research", "ricerca giuridica", "giurisprudenza"],
@@ -309,7 +316,7 @@ HARD_SKILLS = {
     "Electrical Engineering": ["electrical engineering", "ingegneria elettrica", "elettrotecnica"],
     "Civil Engineering": ["civil engineering", "ingegneria civile", "costruzioni"],
     "Industrial Engineering": ["industrial engineering", "ingegneria gestionale", "industriale"],
-    "Chemical Engineering": ["chemical engineering", "ingegneria chimica", "chimica"],
+    "Chemical Engineering": ["chemical engineering", "ingegneria chimica", "impianti chimici"],
     "AutoCAD": ["autocad", "cad", "computer aided design", "disegno tecnico"],
     "SolidWorks": ["solidworks", "solid works", "3d cad"],
     "MATLAB": ["matlab", "simulink", "scientific computing"],
@@ -382,7 +389,7 @@ HARD_SKILLS = {
     "Microsoft Office": ["microsoft office", "ms office", "office 365", "word excel powerpoint"],
     "Google Workspace": ["google workspace", "g suite", "google docs", "google sheets"],
     "Slack": ["slack", "team messaging", "comunicazione team"],
-    "Teams": ["microsoft teams", "teams", "ms teams"],
+    "Teams": ["microsoft teams", "ms teams"],
     "Zoom": ["zoom", "video conferencing", "webinar"],
     "Jira": ["jira", "atlassian jira", "issue tracking"],
     "Confluence": ["confluence", "atlassian confluence", "documentation"],
