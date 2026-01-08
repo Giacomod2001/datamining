@@ -1858,30 +1858,49 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
 
     # --- MAIN SCORE SECTION ---
     st.markdown("<div id='section-score'></div>", unsafe_allow_html=True)
-    st.header("Career Strategy Audit")
     
-    # Row 1: Main Match Score (larger, more prominent)
-    score_col1, score_col2 = st.columns([1, 2])
+    # Custom CSS for cards
+    st.markdown("""
+    <style>
+    .dashboard-card {
+        background-color: #1E252B;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #30363d;
+        margin-bottom: 20px;
+    }
+    .metric-value {
+        font-size: 32px;
+        font-weight: bold;
+        color: #00A0DC;
+    }
+    .metric-label {
+        font-size: 14px;
+        color: #8b949e;
+    }
+    </style>
+    """, unsafe_allow_html=True)
     
-    with score_col1:
-        # Clean Gauge Indicator
+    # Layout: Score Gauge (Left) + Stats (Right)
+    col_gauge, col_stats = st.columns([1.5, 2.5])
+    
+    with col_gauge:
+        # Gauge Chart
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
             value=pct,
-            number={'suffix': '%', 'font': {'size': 48, 'color': '#ffffff'}},
+            number={'suffix': '%', 'font': {'size': 40, 'color': '#ffffff'}},
             gauge={
-                'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "#8b949e", 'tickfont': {'color': '#8b949e'}},
+                'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "#30363d"},
                 'bar': {'color': "#00A0DC"},
                 'bgcolor': "rgba(0,0,0,0)",
                 'borderwidth': 0,
                 'steps': [
-                    {'range': [0, 40], 'color': 'rgba(239, 85, 59, 0.3)'},
-                    {'range': [40, 70], 'color': 'rgba(255, 193, 7, 0.3)'},
-                    {'range': [70, 100], 'color': 'rgba(0, 204, 150, 0.3)'}
+                    {'range': [0, 100], 'color': '#0d1117'}
                 ],
                 'threshold': {
-                    'line': {'color': "#00cc96", 'width': 4},
-                    'thickness': 0.8,
+                    'line': {'color': "#00A0DC", 'width': 4},
+                    'thickness': 0.75,
                     'value': pct
                 }
             }
@@ -1889,58 +1908,93 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         fig.update_layout(
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
-            margin=dict(t=40, b=20, l=40, r=40),
-            height=200,
-            font={'color': '#ffffff'}
+            margin=dict(t=30, b=10, l=30, r=30),
+            height=180,
         )
         st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
-    
-    with score_col2:
-        st.subheader("Profile Match Assessment")
-        st.markdown("")
-        if pct >= 80:
-            st.success("**Excellent Match!** Your profile is highly aligned with this role.")
-            st.markdown("You have most required skills. Focus on highlighting your experience.")
-        elif pct >= 60:
-            st.warning("**Good Potential.** You have a solid foundation for this role.")
-            st.markdown("Some gaps exist, but your transferable skills can bridge them.")
-        else:
-            st.error("**Growth Opportunity.** This role requires skills you're still developing.")
-            st.markdown("Focus on the learning path below to unlock this role.")
         
-        # Quick stats
+        # Match Assessment Text below gauge
+        if pct >= 80:
+            assessment = "Excellent Match"
+            desc = "Highly aligned profile."
+        elif pct >= 60:
+            assessment = "Good Potential"
+            desc = "Solid foundation."
+        else:
+            assessment = "Growth Opportunity"
+            desc = "Significant gaps."
+            
+        st.markdown(f"<div style='text-align: center; margin-top: -20px;'><h3 style='margin:0;'>{assessment}</h3><p style='color: #8b949e;'>{desc}</p></div>", unsafe_allow_html=True)
+
+    with col_stats:
+        st.subheader("Analysis Overview")
         st.markdown("")
-        stat1, stat2, stat3 = st.columns(3)
-        stat1.metric("Matched", len(res["matching_hard"]))
-        stat2.metric("Missing", len(res["missing_hard"]))
-        stat3.metric("Bonus", len(res["extra_hard"]))
+        
+        # Key Metrics Row
+        m1, m2, m3 = st.columns(3)
+        with m1:
+            st.metric("Matched Skills", len(res["matching_hard"]), delta=None)
+        with m2:
+            st.metric("Missing Skills", len(res["missing_hard"]), delta_color="inverse")
+        with m3:
+            st.metric("Bonus Skills", len(res["extra_hard"]))
+            
+        st.divider()
+        
+        # Next Best Action
+        if res["missing_hard"]:
+            top_missing = list(res["missing_hard"])[:3]
+            st.markdown(f"**🎯 Priority Focus:** Learn **{', '.join(top_missing)}**")
+        elif pct >= 90:
+            st.markdown("**🚀 Ready to Apply:** Your profile is very strong!")
     
-    # Row 2: Additional metrics (if present)
+    # Row 2: Portfolio & Cover Letter Cards
     if ("project_verified" in res and res["project_verified"]) or cl_analysis:
         st.markdown("")
-        add_cols = st.columns(2)
-        add_idx = 0
+        c1, c2 = st.columns(2)
+        idx = 0
         
+        # Portfolio Card
         if "project_verified" in res and res["project_verified"]:
-            with add_cols[add_idx]:
-                st.subheader("Portfolio Intelligence")
+            with c1 if idx == 0 else c2:
+                st.markdown("""
+                <div class="dashboard-card">
+                    <h4 style="margin-top:0;">📂 Portfolio Intelligence</h4>
+                """, unsafe_allow_html=True)
                 
-                # Portfolio Quality Score
-                quality = res.get('portfolio_quality', 0)
-                st.metric("Portfolio Score", f"{quality:.0f}%", 
-                         help="Based on skill coverage, project complexity, and job relevance")
+                qual = res.get('portfolio_quality', 0)
+                st.metric("Portfolio Score", f"{qual:.0f}%")
+                st.caption(f"{len(res['project_verified'])} verified skills")
                 
-                # Verified Skills Count
-                verified_list = list(res['project_verified'])
-                st.caption(f"**{len(verified_list)} skills verified** through your projects")
-                
-                # Talking Points (most useful for interviews)
-                talking_points = res.get('talking_points', [])
-                if talking_points:
-                    st.markdown("**Interview Talking Points:**")
-                    for tp in talking_points[:3]:
+                if res.get('talking_points'):
+                    st.markdown("**Talking Points:**")
+                    for tp in res['talking_points'][:2]:
                         st.markdown(f"- {tp}")
-            add_idx += 1
+                
+                st.markdown("</div>", unsafe_allow_html=True)
+                idx += 1
+        
+        # Cover Letter Card
+        if cl_analysis:
+            with c1 if idx == 0 else c2:
+                st.markdown("""
+                <div class="dashboard-card">
+                    <h4 style="margin-top:0;">📝 Cover Letter Assessment</h4>
+                """, unsafe_allow_html=True)
+                
+                cl_score = cl_analysis.get("overall_score", 0)
+                st.metric("Cover Letter Score", f"{cl_score:.0f}%")
+                st.caption(f"{cl_analysis.get('word_count', 0)} words | {cl_analysis.get('language', 'Unknown')}")
+                
+                if cl_analysis.get("strengths"):
+                     st.markdown("**Top Strength:**")
+                     strength = cl_analysis['strengths'][0].replace("**", "")
+                     st.markdown(f"_{strength}_")
+                
+                st.markdown("</div>", unsafe_allow_html=True)
+                idx += 1
+
+    # --- MAIN SCORE SECTION ---
     
     # --- DEDICATED PROJECT COACHING SECTION ---
     if "project_verified" in res and res["project_verified"]:
