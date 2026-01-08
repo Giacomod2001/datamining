@@ -1550,17 +1550,25 @@ def generate_pdf_report(res: Dict, jd_text: str = "", cl_analysis: Dict = None) 
     recs = recommend_roles(cv_skills, jd_text)[:5]
     
     if recs:
-        for role, score, _ in recs:
+        for item in recs:
+            # recommend_roles returns dicts, not tuples
+            if isinstance(item, dict):
+                role = item.get("role", "Unknown")
+                score = item.get("score", 0)
+            else:
+                # Fallback if it returns tuples
+                role = item[0]
+                score = item[1]
+                
             try:
-                # Handle string scores like "85%" or non-numeric types
+                # Handle string scores safely
                 if isinstance(score, str):
                     import re
-                    # Extract numbers
                     nums = re.findall(r"[\d\.]+", score)
                     score_val = float(nums[0]) if nums else 0
                 else:
                     score_val = float(score)
-            except (ValueError, TypeError, IndexError):
+            except:
                 score_val = 0
                 
             pdf.cell(0, 4, clean(f"- {role}: {score_val:.0f}% match"), 0, 1)
