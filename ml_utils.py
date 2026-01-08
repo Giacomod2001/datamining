@@ -2207,7 +2207,7 @@ def generate_detailed_report_text(res: Dict, jd_text: str = "", cl_analysis: Dic
 
 
 
-def generate_pdf_report(text_content: str) -> bytes:
+def generate_cv_pdf(text_content: str) -> bytes:
     """
     Generates a professionally formatted CV PDF.
     Uses proper sections, headers, and spacing for readability.

@@ -1391,7 +1391,7 @@ def render_cv_builder():
              
         with col2:
              # Basic PDF Generation
-             pdf_bytes = ml_utils.generate_pdf_report(cv_text)
+             pdf_bytes = ml_utils.generate_cv_pdf(cv_text)
              if pdf_bytes:
                  st.download_button("Download PDF", pdf_bytes, file_name="My_CV.pdf", mime="application/pdf", use_container_width=True)
              else:
