@@ -536,105 +536,137 @@ hr {
 
 
 def get_demo_cv():
-    """Returns sample CV text for demo mode - optimized for ~73% match."""
+    """
+    Returns sample CV text for demo mode.
+    
+    CALIBRATION TARGET: ~72% match
+    
+    JD will require 14 hard skills. This CV has 10 of them.
+    Match = 10/14 = 71.4%
+    
+    CV SKILLS (10 matching):
+    1. Python           - YES (in JD)
+    2. SQL              - YES (in JD)
+    3. Google Analytics - YES (in JD)
+    4. GTM              - YES (in JD)
+    5. Looker Studio    - YES (in JD, counts as BI)
+    6. A/B Testing      - YES (in JD)
+    7. CRM              - YES (in JD)
+    8. Excel            - YES (in JD)
+    9. SEO              - YES (in JD)
+    10. Social Media    - YES (in JD)
+    
+    CV SKILLS NOT IN JD (bonus):
+    - Email Marketing
+    - Content Marketing
+    
+    JD SKILLS NOT IN CV (gaps = 4):
+    - Tableau/Power BI  - NO (has Looker but JD wants Tableau specifically)
+    - Machine Learning  - NO
+    - Cloud (AWS/GCP)   - NO
+    - Statistical Analysis - NO (only has A/B testing)
+    """
     return """
 MARCO BIANCHI
-Digital Marketing & Data Analyst
+Digital Marketing Analyst
 Milan, Italy | marco.bianchi@email.com | +39 333 1234567
 
 PROFESSIONAL SUMMARY
-Results-driven Marketing Analyst with 4 years of experience in data-driven marketing 
-and business intelligence. Expert in Google Analytics, campaign optimization, and 
-dashboard creation. Currently pursuing certifications in cloud technologies.
+Results-driven Marketing Analyst with 4 years of experience in digital analytics 
+and campaign optimization. Expert in Google Analytics, SEO strategy, and 
+dashboard creation. Strong foundation in Python and SQL for data analysis.
 
 TECHNICAL SKILLS
-Programming: Python, SQL, BigQuery
-Analytics & BI: Google Analytics 4, Google Tag Manager, Looker Studio, Data Visualization
-Marketing: Campaign Management, A/B Testing, Performance Marketing, Social Media, Email Marketing
-Tools: CRM Platforms, Microsoft Office, Excel, Google Workspace
-Languages: Italian (Native), English (B2 Professional)
+- Analytics: Google Analytics 4, Google Tag Manager, Looker Studio
+- Programming: Python, SQL, Excel (Advanced)
+- Marketing: SEO, Social Media Marketing, A/B Testing, Email Marketing
+- Tools: CRM Platforms (HubSpot), Content Marketing
 
 PROFESSIONAL EXPERIENCE
 
 Marketing Data Analyst | Digital Agency Milano | 2022 - Present
-- Designed interactive dashboards in Looker Studio tracking campaign KPIs and ROI
-- Implemented tracking ecosystems using Google Tag Manager across 50+ client websites
-- Analyzed performance data using Google Analytics 4 to optimize conversion rates by 25%
+- Designed interactive dashboards in Looker Studio tracking campaign KPIs
+- Implemented tracking ecosystems using Google Tag Manager across 50+ websites
+- Analyzed performance data using Google Analytics 4 to optimize conversions
 - Managed A/B testing programs for landing pages and email campaigns
-- Collaborated with creative teams on data-driven marketing strategies
+- Developed SEO strategies improving organic traffic by 35%
 
 Junior Digital Marketing Specialist | StartUp Italia | 2020 - 2022
 - Executed multi-platform social media campaigns increasing engagement by 40%
-- Managed email marketing automation and CRM database of 100K+ contacts
-- Created campaign performance reports and presented insights to stakeholders
-- Supported paid advertising campaigns on Google Ads and Facebook
+- Managed CRM database and email marketing automation for 100K+ contacts
+- Created performance reports using Python and SQL for stakeholder insights
+- Supported content marketing initiatives and blog management
 
 EDUCATION
 Bachelor in Marketing & Communication | Università Bocconi | 2020
-Relevant Coursework: Statistics, Consumer Behavior, Digital Marketing, Market Research
 
 CERTIFICATIONS
 - Google Analytics Individual Qualification (GAIQ)
 - Google Ads Search Certification
 - HubSpot Inbound Marketing
-
-KEY PROJECT
-E-commerce Analytics Dashboard | Personal Project | 2023
-Built end-to-end analytics solution using Python, BigQuery, and Looker Studio
-to track customer journey and revenue attribution across marketing channels.
 """
 
 
 def get_demo_jd():
-    """Returns sample Job Description for demo mode - designed for ~73% match."""
+    """
+    Returns sample Job Description for demo mode.
+    
+    CALIBRATION TARGET: ~72% match (10 matching / 14 required = 71.4%)
+    
+    REQUIRED SKILLS (14 total):
+    1. Python              - CV HAS IT
+    2. SQL                 - CV HAS IT
+    3. Google Analytics 4  - CV HAS IT
+    4. Google Tag Manager  - CV HAS IT
+    5. Looker Studio / BI  - CV HAS IT (Looker)
+    6. A/B Testing         - CV HAS IT
+    7. SEO                 - CV HAS IT
+    8. Social Media        - CV HAS IT
+    9. CRM                 - CV HAS IT
+    10. Excel              - CV HAS IT
+    11. Tableau or Power BI - CV MISSING (uses Looker, not Tableau)
+    12. Machine Learning   - CV MISSING
+    13. Cloud (AWS/GCP)    - CV MISSING
+    14. Statistical Analysis - CV MISSING
+    
+    Result: 10/14 = 71.4% hard skill match
+    """
     return """
 SENIOR MARKETING ANALYST
 DataDriven Corp | Milan, Italy (Hybrid)
 
 About Us:
-DataDriven Corp is a leading marketing technology company seeking a Senior Marketing 
-Analyst to join our Analytics team. You will drive data-informed decision making 
-across our marketing organization.
-
-Requirements:
+DataDriven Corp is a leading marketing technology company looking for a Senior 
+Marketing Analyst to join our growing Analytics team.
 
 Required Technical Skills:
-- 4+ years experience in marketing analytics or data analysis
 - Expert proficiency in Google Analytics 4 and Google Tag Manager
-- Strong SQL skills for data extraction and analysis
-- Experience with BI tools (Looker Studio, Tableau, or Power BI)
+- Strong SQL skills for data extraction and querying
 - Proficiency in Python for data analysis and automation
-- Experience with A/B testing and statistical analysis
+- Experience with Tableau or Power BI for business intelligence reporting
+- Advanced Excel skills including pivot tables and macros
+- Experience with A/B testing and statistical analysis methodologies
+- Knowledge of cloud platforms (AWS or GCP) for data pipelines
 
 Required Marketing Skills:
-- Deep understanding of digital marketing channels (SEO, SEM, Social Media)
-- Experience with campaign tracking and attribution modeling
-- Knowledge of CRM platforms and email marketing
-- Strong stakeholder communication and presentation skills
+- Deep understanding of SEO and organic search optimization
+- Experience with SEM and paid advertising campaigns
+- Social media marketing and analytics expertise
+- Proficiency with CRM platforms (Salesforce, HubSpot)
 
 Nice to Have:
-- Experience with cloud platforms (GCP, AWS)
-- Machine Learning knowledge for predictive analytics
-- Tableau or Power BI certification
-- Experience with dbt or data transformation tools
-- Knowledge of Snowflake or data warehousing concepts
+- Machine Learning experience for predictive marketing models
+- Experience with marketing attribution modeling
+- Knowledge of data warehousing concepts
 
 Soft Skills:
 - Excellent analytical and problem-solving abilities
-- Strong communication skills for technical and non-technical audiences
-- Ability to work independently and in cross-functional teams
-- Detail-oriented with strong project management skills
-
-What We Offer:
-- Competitive salary: EUR 45,000 - 55,000
-- Hybrid work arrangement (3 days office, 2 days remote)
-- Learning budget for certifications and courses
-- Health insurance and wellness benefits
-- International team environment
+- Strong communication skills
+- Detail-oriented with project management skills
 
 Languages:
-- English (Required - working language)
-- Italian (Required for client communication)
+- English (Required)
+- Italian (Preferred)
 """
 
 
