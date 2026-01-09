@@ -213,7 +213,31 @@ INFERENCE_RULES = {
     # --- LEGAL (NEW) ---
     "Corporate Law": ["Legal", "Contract Law", "Business"],
     "IP Law": ["Legal", "Intellectual Property", "Research"],
-    "Compliance": ["Legal", "Risk Management", "Regulations"],
+    # --- CONSTRUCTION & REAL ESTATE ---
+    "Construction Management": ["Project Management", "Engineering", "Leadership"],
+    "Architecture": ["Design", "Creativity", "Engineering", "Software"],
+    "BIM": ["Architecture", "Engineering", "Software", "Construction Management"],
+    "Real Estate": ["Sales", "Negotiation", "Finance", "Customer Service"],
+    "Facility Management": ["Operations", "Maintenance", "Management"],
+
+    # --- INSURANCE & ACTUARIAL ---
+    "Actuarial Science": ["Math", "Statistics", "Finance", "Risk Management"],
+    "Underwriting": ["Insurance", "Risk Management", "Analysis", "Finance"],
+    "Claims": ["Insurance", "Customer Service", "Negotiation", "Problem Solving"],
+    
+    # --- CREATIVE & MEDIA ---
+    "Video Production": ["Creativity", "Technology", "Storytelling", "Art"],
+    "Audio Engineering": ["Technology", "Music", "Creativity"],
+    "Journalism": ["Writing", "Communication", "Research", "Media"],
+    
+    # --- EDUCATION ---
+    "Instructional Design": ["Education", "Technology", "Creativity", "Training"],
+    "Special Education": ["Teaching", "Patience", "Communication", "Empathy"],
+    
+    # --- MANUFACTURING ---
+    "Lean Manufacturing": ["Manufacturing", "Process Improvement", "Efficiency"],
+    "Quality Assurance": ["Quality Control", "Compliance", "Attention to Detail"],
+    "Six Sigma": ["Process Improvement", "Statistics", "Quality Management"],
     
     # --- SCIENCE & QUALITY ---
     "GMP": ["ISO Standards", "Quality Control", "Quality Assurance", "Compliance", "Quality Management"],
