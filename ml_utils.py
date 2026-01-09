@@ -2443,11 +2443,11 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
         missing_norm = role_norm - cv_expanded
         missing_display = [s for s in role_skills if s.lower() in missing_norm]
         
-        # 7. Quality Filter (v1.33 -> v1.34 Junior Friendly)
-        # Only show recommendations that have a decent overlap (>30%)
-        # 40% was still too high for "Junior -> Senior" pivots. 30% is safer.
+        # 7. Quality Filter (v1.35 - Adjusted for word-based TF-IDF)
+        # Word-based matching produces lower raw cosine scores than char-based.
+        # 10% threshold is appropriate for word ngrams; ensures we show relevant roles.
         final_score = score * 100
-        if final_score < 30:
+        if final_score < 10:
             continue
             
         recommendations.append({
