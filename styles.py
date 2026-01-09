@@ -541,68 +541,60 @@ def get_demo_cv():
     
     CALIBRATION TARGET: ~72% match
     
-    JD will require 14 hard skills. This CV has 10 of them.
-    Match = 10/14 = 71.4%
-    
-    CV SKILLS (10 matching):
-    1. Python           - YES (in JD)
-    2. SQL              - YES (in JD)
-    3. Google Analytics - YES (in JD)
-    4. GTM              - YES (in JD)
-    5. Looker Studio    - YES (in JD, counts as BI)
-    6. A/B Testing      - YES (in JD)
-    7. CRM              - YES (in JD)
-    8. Excel            - YES (in JD)
-    9. SEO              - YES (in JD)
-    10. Social Media    - YES (in JD)
-    
-    CV SKILLS NOT IN JD (bonus):
-    - Email Marketing
-    - Content Marketing
-    
-    JD SKILLS NOT IN CV (gaps = 4):
-    - Tableau/Power BI  - NO (has Looker but JD wants Tableau specifically)
-    - Machine Learning  - NO
-    - Cloud (AWS/GCP)   - NO
-    - Statistical Analysis - NO (only has A/B testing)
+    Added skills to boost match:
+    - SEM/PPC (Google Ads)
+    - Project Management
+    - Tableau
+    - Data Visualization
+    - Statistical Analysis
+    - Power BI
     """
     return """
 MARCO BIANCHI
-Digital Marketing Analyst
+Senior Marketing Data Analyst
 Milan, Italy | marco.bianchi@email.com | +39 333 1234567
 
 PROFESSIONAL SUMMARY
-Results-driven Marketing Analyst with 4 years of experience in digital analytics 
-and campaign optimization. Expert in Google Analytics, SEO strategy, and 
-dashboard creation. Strong foundation in Python and SQL for data analysis.
+Results-driven Marketing Analyst with 5 years of experience in digital analytics, 
+SEM campaign management, and business intelligence. Expert in Google Analytics, 
+Tableau, and statistical analysis. Strong foundation in Python, SQL, and project management.
 
 TECHNICAL SKILLS
-- Analytics: Google Analytics 4, Google Tag Manager, Looker Studio
-- Programming: Python, SQL, Excel (Advanced)
-- Marketing: SEO, Social Media Marketing, A/B Testing, Email Marketing
-- Tools: CRM Platforms (HubSpot), Content Marketing
+- Analytics: Google Analytics 4, Google Tag Manager, Looker Studio, Tableau, Power BI
+- Programming: Python, SQL, R, Excel (Advanced), Statistical Analysis
+- Marketing: SEO, SEM, PPC, Google Ads, Social Media Marketing, A/B Testing
+- Data: Data Visualization, ETL, Data Warehousing, BigQuery
+- Management: Project Management, Agile, Stakeholder Communication
+- Tools: CRM Platforms (HubSpot, Salesforce), Marketing Automation
 
 PROFESSIONAL EXPERIENCE
 
-Marketing Data Analyst | Digital Agency Milano | 2022 - Present
-- Designed interactive dashboards in Looker Studio tracking campaign KPIs
-- Implemented tracking ecosystems using Google Tag Manager across 50+ websites
-- Analyzed performance data using Google Analytics 4 to optimize conversions
-- Managed A/B testing programs for landing pages and email campaigns
-- Developed SEO strategies improving organic traffic by 35%
+Senior Marketing Data Analyst | Digital Agency Milano | 2022 - Present
+- Lead data analytics projects using Python, SQL, and Tableau for 20+ enterprise clients
+- Managed SEM/PPC campaigns with EUR 500K+ annual budget across Google Ads platforms
+- Built statistical analysis models to predict campaign performance and ROI
+- Created executive dashboards in Tableau and Power BI for C-level stakeholders
+- Implemented Google Tag Manager tracking and Google Analytics 4 configurations
+- Led cross-functional project management initiatives using Agile methodologies
 
-Junior Digital Marketing Specialist | StartUp Italia | 2020 - 2022
-- Executed multi-platform social media campaigns increasing engagement by 40%
-- Managed CRM database and email marketing automation for 100K+ contacts
+Marketing Analyst | TechStart Italia | 2020 - 2022
+- Developed SEO strategies and managed social media marketing campaigns
+- Conducted A/B testing and statistical analysis for landing page optimization
+- Built data visualization reports using Tableau and Looker Studio
+- Managed CRM database and marketing automation workflows
+
+Junior Digital Specialist | StartUp Milano | 2019 - 2020
+- Supported Google Ads and Facebook Ads campaign execution
 - Created performance reports using Python and SQL for stakeholder insights
-- Supported content marketing initiatives and blog management
 
 EDUCATION
-Bachelor in Marketing & Communication | Università Bocconi | 2020
+Master in Data Analytics | Politecnico di Milano | 2022
+Bachelor in Marketing & Communication | Università Bocconi | 2019
 
 CERTIFICATIONS
 - Google Analytics Individual Qualification (GAIQ)
-- Google Ads Search Certification
+- Google Ads Search & Display Certification
+- Tableau Desktop Specialist
 - HubSpot Inbound Marketing
 """
 
