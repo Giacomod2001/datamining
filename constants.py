@@ -113,6 +113,21 @@ INFERENCE_RULES = {
     "M&A": ["Corporate Law", "Due Diligence", "Legal Contracts", "Corporate Finance"],
     "Contract Law": ["Legal Research", "Negotiation", "Documentation"],
     
+    # --- ANALYTICAL CHEMISTRY & QC LAB (NEW) ---
+    "HPLC": ["Chromatography", "Analytical Chemistry", "Lab Skills", "QC Lab"],
+    "Gas Chromatography": ["Chromatography", "Analytical Chemistry", "Lab Skills", "QC Lab"],
+    "Spectroscopy": ["Analytical Chemistry", "Lab Skills", "Material Analysis"],
+    "Western Blot": ["Protein Analysis", "Lab Skills", "Molecular Biology"],
+    "ELISA": ["Protein Analysis", "Lab Skills", "Immunoassay"],
+    "PCR": ["Molecular Techniques", "Lab Skills", "Molecular Biology"],
+    "qPCR": ["Molecular Techniques", "Lab Skills", "Molecular Biology", "PCR"],
+    "GMP": ["Quality Management", "Compliance", "Pharma", "Manufacturing"],
+    "GLP": ["Quality Management", "Compliance", "Lab Safety", "Research"],
+    "ISO 22716": ["Cosmetic Regulations", "Quality Management", "GMP"],
+    "Cosmetic Regulations": ["Regulatory", "Compliance", "Quality Control"],
+    "CLP Regulation": ["Regulatory", "Compliance", "Safety", "Chemical Safety"],
+    "Microbiological Analysis": ["Lab Skills", "Quality Control", "Microbiology"],
+    
     # --- HR & RECRUITING (DETAILED) ---
     "Recruiting": ["Talent Acquisition", "Interviewing", "HR Management", "Communication"],
     "Sourcing": ["Recruiting", "Talent Acquisition", "LinkedIn Recruiter", "Boolean Search"],
@@ -434,6 +449,34 @@ HARD_SKILLS = {
     "Clinical Trials": ["clinical trials", "clinical development", "gcp", "ich-gcp", "clinical data management", "edc"],
     "Regulatory": ["regulatory affairs", "fda submissions", "ema", "ind", "nda", "medical device regulation", "iso 13485"],
 
+    # ========== ANALYTICAL CHEMISTRY & QC LAB (NEW - Killer Keywords) ==========
+    # These are DISTINCT from molecular biology - required for QC/Lab Technician roles
+    
+    "HPLC": ["hplc", "high performance liquid chromatography", "uplc", "cromatografia liquida"],
+    "Gas Chromatography": ["gas chromatography", "gc", "gc-ms", "gascromatografia", "cromatografia gassosa"],
+    "Chromatography": ["chromatography", "cromatografia", "ion chromatography", "thin layer chromatography", "tlc"],
+    "Spectroscopy": ["spectroscopy", "uv-vis", "ir spectroscopy", "nmr", "mass spectrometry", "spettrometria"],
+    "Titration": ["titration", "titolazione", "volumetric analysis", "acid-base titration"],
+    "Sample Preparation": ["sample preparation", "preparazione campioni", "extraction", "filtration", "homogenization"],
+    
+    # Quality Control Lab Specific
+    "QC Lab": ["quality control laboratory", "controllo qualità", "qc lab", "laboratorio controllo qualità"],
+    "Analytical Method Validation": ["method validation", "validazione metodo", "analytical validation", "icq q2"],
+    "Stability Testing": ["stability testing", "test stabilità", "accelerated stability", "shelf life"],
+    "Microbiological Analysis": ["microbiological analysis", "analisi microbiologiche", "microbial testing", "bioburden"],
+    "Raw Material Testing": ["raw material testing", "materie prime", "incoming inspection", "material qualification"],
+    
+    # Cosmetic & Detergent Industry Specific
+    "Cosmetic Regulations": ["cosmetic regulation 1223/2009", "regolamento cosmetico", "1223/2009", "cosmetic gmp"],
+    "CLP Regulation": ["clp regulation", "clp 1272/2008", "1272/2008", "classification labeling packaging", "ghs"],
+    "ISO 22716": ["iso 22716", "cosmetic gmp", "good manufacturing practice cosmetics"],
+    "Detergent Testing": ["detergent testing", "detergenza", "surfactant analysis", "cleaning validation"],
+    
+    # ISO Standards (Lab Specific)
+    "ISO 9001": ["iso 9001", "quality management system", "sistema gestione qualità"],
+    "ISO 14001": ["iso 14001", "environmental management", "gestione ambientale"],
+    "ISO 17025": ["iso 17025", "lab accreditation", "laboratory accreditation", "accreditamento laboratorio"],
+
     # ========== ENGINEERING (DETAILED) ==========
     "Mechanical Engineering": ["mechanical engineering", "mechanics"],
     
@@ -735,4 +778,13 @@ JOB_ARCHETYPES = {
     "Sound Engineer": {"Audio Engineering", "Pro Tools", "Mixing", "Music"},
     "Video Producer": {"Video Production", "Project Management", "Creativity", "Budgeting"},
     "Art Curator": {"Art History", "Organization", "Communication", "Research"},
+
+    # ========== LABORATORY & QC (NEW) ==========
+    "Lab Technician": {"Lab Skills", "HPLC", "Gas Chromatography", "Quality Control", "GMP", "Sample Preparation"},
+    "QC Analyst": {"Quality Control", "HPLC", "Gas Chromatography", "Microbiological Analysis", "GMP", "ISO Standards"},
+    "Research Scientist": {"Research", "Lab Skills", "Data Analysis", "Scientific Writing", "Molecular Biology"},
+    "Formulation Chemist": {"Chemistry", "Formulation", "Lab Skills", "QC Lab", "Product Development"},
+    "Cosmetic Chemist": {"Chemistry", "Cosmetic Regulations", "ISO 22716", "Formulation", "Quality Control"},
+    "Regulatory Affairs Specialist (Pharma)": {"Regulatory", "Compliance", "GMP", "Clinical Trials", "Documentation"},
+    "Microbiologist": {"Microbiology", "Lab Skills", "Microbiological Analysis", "Quality Control", "GLP"},
 }
