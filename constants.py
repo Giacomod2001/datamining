@@ -452,15 +452,13 @@ HARD_SKILLS = {
     # ========== ANALYTICAL CHEMISTRY & QC LAB (NEW - Killer Keywords) ==========
     # These are DISTINCT from molecular biology - required for QC/Lab Technician roles
     
-    "HPLC": ["hplc", "high performance liquid chromatography", "uplc", "cromatografia liquida"],
-    "Gas Chromatography": ["gas chromatography", "gc", "gc-ms", "gascromatografia", "cromatografia gassosa"],
-    "Chromatography": ["chromatography", "cromatografia", "ion chromatography", "thin layer chromatography", "tlc"],
+    "HPLC": ["hplc", "high performance liquid chromatography", "uplc"],
+    "Gas Chromatography": ["gas chromatography", "gc-ms", "gascromatografia"],
     "Spectroscopy": ["spectroscopy", "uv-vis", "ir spectroscopy", "nmr", "mass spectrometry", "spettrometria"],
     "Titration": ["titration", "titolazione", "volumetric analysis", "acid-base titration"],
     "Sample Preparation": ["sample preparation", "preparazione campioni", "extraction", "filtration", "homogenization"],
     
-    # Quality Control Lab Specific
-    "QC Lab": ["quality control laboratory", "controllo qualità", "qc lab", "laboratorio controllo qualità"],
+    # Quality Control Lab Specific (Removed QC Lab - too generic, "controllo qualità" matches everything)
     "Analytical Method Validation": ["method validation", "validazione metodo", "analytical validation", "icq q2"],
     "Stability Testing": ["stability testing", "test stabilità", "accelerated stability", "shelf life"],
     "Microbiological Analysis": ["microbiological analysis", "analisi microbiologiche", "microbial testing", "bioburden"],
