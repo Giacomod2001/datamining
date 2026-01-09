@@ -193,7 +193,7 @@ def render_debug_page():
             <p style='color: #8b949e; margin: 0.25rem 0 0 0;'>Advanced Analytics & Diagnostics Interface</p>
         </div>
         <div style='text-align: right;'>
-             <span style='background: #0d1117; border: 1px solid #30363d; padding: 4px 12px; border-radius: 20px; color: #00C853; font-size: 0.8rem; font-weight: bold;'>● SYSTEM ONLINE</span>
+             <span style='background: #0d1117; border: 1px solid #30363d; padding: 4px 12px; border-radius: 20px; color: #00C853; font-size: 0.8rem; font-weight: bold;'>SYSTEM ONLINE</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -1474,6 +1474,32 @@ def render_landing_page():
         <p style='font-size: 1.5rem; color: #8b949e; margin-bottom: 2rem;'>Advanced Data Mining & Text Analytics for Career Optimization</p>
     </div>
     """, unsafe_allow_html=True)
+
+    # Metrics Row
+    m1, m2, m3 = st.columns(3)
+    with m1:
+        st.markdown("""
+        <div style="text-align: center;">
+            <h2 style="color: #00f2c3; margin-bottom: 0;">1500+</h2>
+            <p style="color: #a0a0a0; font-size: 14px;">Killer Keywords</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with m2:
+        st.markdown("""
+        <div style="text-align: center;">
+            <h2 style="color: #00f2c3; margin-bottom: 0;">120+</h2>
+            <p style="color: #a0a0a0; font-size: 14px;">Job Archetypes</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with m3:
+        st.markdown("""
+        <div style="text-align: center;">
+            <h2 style="color: #ffdb4d; margin-bottom: 0;">25+</h2>
+            <p style="color: #a0a0a0; font-size: 14px;">Sectors Covered</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    st.markdown("<br>", unsafe_allow_html=True)
 
     # 3. NAVIGATION CARDS
     col1, col2 = st.columns(2)
