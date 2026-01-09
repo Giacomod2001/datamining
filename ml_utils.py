@@ -2194,45 +2194,49 @@ def generate_cv_pdf(text_content: str) -> bytes:
         return None
         
     class CVPDF(FPDF):
+        """
+        Professional CV PDF Generator
+        Style: Times (Garamond-like serif), Black text only
+        Sizes: 13pt titles, 11pt body
+        Max: 2 pages
+        """
         def header(self):
             pass  # No automatic header
             
         def footer(self):
             self.set_y(-15)
-            self.set_font('Arial', 'I', 8)
-            self.set_text_color(128, 128, 128)
+            self.set_font('Times', 'I', 9)
+            self.set_text_color(0, 0, 0)  # Black
             self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
             
         def section_header(self, title):
-            """Draw a section header with underline."""
-            self.set_font('Arial', 'B', 12)
-            self.set_text_color(0, 77, 115)  # LinkedIn blue
-            self.cell(0, 8, title.upper(), 0, 1)
-            # Draw line under header
-            self.set_draw_color(0, 119, 181)
+            """Draw a section header with underline - 13pt bold."""
+            self.set_font('Times', 'B', 13)
+            self.set_text_color(0, 0, 0)  # Black
+            self.cell(0, 7, title, 0, 1)
+            # Subtle underline
+            self.set_draw_color(0, 0, 0)
             self.line(10, self.get_y(), 200, self.get_y())
-            self.ln(3)
-            self.set_text_color(0, 0, 0)
+            self.ln(2)
             
         def add_entry(self, title, subtitle="", date="", description=""):
-            """Add an experience/education entry."""
-            self.set_font('Arial', 'B', 11)
-            self.set_text_color(33, 33, 33)
-            self.cell(0, 6, title, 0, 1)
+            """Add an experience/education entry - 11pt body."""
+            self.set_font('Times', 'B', 11)
+            self.set_text_color(0, 0, 0)  # Black
+            self.cell(0, 5, title, 0, 1)
             
             if subtitle or date:
-                self.set_font('Arial', '', 10)
-                self.set_text_color(100, 100, 100)
+                self.set_font('Times', 'I', 11)
+                self.set_text_color(0, 0, 0)  # Black
                 line = ""
                 if subtitle: line += subtitle
                 if date: line += f"  |  {date}" if subtitle else date
                 self.cell(0, 5, line, 0, 1)
             
             if description:
-                self.set_font('Arial', '', 10)
-                self.set_text_color(50, 50, 50)
+                self.set_font('Times', '', 11)
+                self.set_text_color(0, 0, 0)  # Black
                 self.ln(1)
-                # Handle bullet points
                 for line in description.split('\n'):
                     clean = line.strip()
                     if clean:
@@ -2241,7 +2245,7 @@ def generate_cv_pdf(text_content: str) -> bytes:
                         except:
                             pass
                         self.multi_cell(0, 5, clean)
-            self.ln(4)
+            self.ln(3)
 
     pdf = CVPDF()
     pdf.add_page()
@@ -2260,27 +2264,28 @@ def generate_cv_pdf(text_content: str) -> bytes:
             i += 1
             continue
         
-        # First line = Name (large header)
+        # First line = Name (14pt, bold, centered)
         if i == 0:
-            pdf.set_font('Arial', 'B', 20)
-            pdf.set_text_color(0, 77, 115)
-            pdf.cell(0, 12, line, 0, 1, 'C')
+            pdf.set_font('Times', 'B', 14)
+            pdf.set_text_color(0, 0, 0)  # Black
+            pdf.cell(0, 8, line, 0, 1, 'C')
             i += 1
             continue
         
-        # Second line = Contact info
+        # Second line = Contact info (11pt, centered)
         if i == 1 and '|' in line:
-            pdf.set_font('Arial', '', 10)
-            pdf.set_text_color(100, 100, 100)
-            pdf.cell(0, 6, line, 0, 1, 'C')
-            pdf.ln(8)
+            pdf.set_font('Times', '', 11)
+            pdf.set_text_color(0, 0, 0)  # Black
+            pdf.cell(0, 5, line, 0, 1, 'C')
+            pdf.ln(6)
             i += 1
             continue
         
         # Section headers (all caps words)
         if line in ['SUMMARY', 'CORE COMPETENCIES', 'TECHNICAL SKILLS', 
-                    'PROFESSIONAL EXPERIENCE', 'EDUCATION', 'PROJECTS', 'LANGUAGES']:
-            pdf.ln(4)
+                    'PROFESSIONAL EXPERIENCE', 'EDUCATION', 'PROJECTS', 'LANGUAGES',
+                    'PROFESSIONAL SUMMARY', 'SKILLS', 'EXPERIENCE', 'CERTIFICATIONS']:
+            pdf.ln(3)
             pdf.section_header(line)
             in_section = line
             i += 1
@@ -2303,7 +2308,7 @@ def generate_cv_pdf(text_content: str) -> bytes:
             '✓': '[x]',
             '✗': '[ ]',
             '★': '*',
-            '@': 'at',
+            '@': ' at ',
         }
         for old, new in replacements.items():
             clean_line = clean_line.replace(old, new)
@@ -2313,8 +2318,8 @@ def generate_cv_pdf(text_content: str) -> bytes:
         except:
             clean_line = ''.join(c if ord(c) < 128 else '' for c in clean_line)
             
-        pdf.set_font('Arial', '', 10)
-        pdf.set_text_color(50, 50, 50)
+        pdf.set_font('Times', '', 11)
+        pdf.set_text_color(0, 0, 0)  # Black
         pdf.multi_cell(0, 5, clean_line)
         pdf.ln(1)
         i += 1

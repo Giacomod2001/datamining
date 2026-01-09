@@ -125,9 +125,9 @@ INFERENCE_RULES = {
     "GMP": ["Quality Management", "Compliance", "Pharma", "Manufacturing"],
     "GLP": ["Quality Management", "Compliance", "Lab Safety", "Research"],
     "ISO 22716": ["Cosmetic Regulations", "Quality Management", "GMP"],
-    "Cosmetic Regulations": ["Regulatory", "Compliance", "Quality Control"],
+    "Cosmetic Regulations": ["Regulatory", "Compliance"],
     "CLP Regulation": ["Regulatory", "Compliance"],
-    "Microbiological Analysis": ["Lab Skills", "Quality Control", "Microbiology"],
+    "Microbiological Analysis": ["Lab Skills", "Microbiology"],
     
     # --- HR & RECRUITING (Tightened: removed generic 'Communication', 'HR Management' where not specific) ---
     "Recruiting": ["Talent Acquisition", "Interviewing"],
