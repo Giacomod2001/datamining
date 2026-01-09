@@ -1398,14 +1398,19 @@ def render_cv_builder():
         st.divider()
         col1, col2, col3 = st.columns(3)
         
+        # Get candidate name for filename (sanitize for filesystem)
+        candidate_name = cv_data.get("name", "My_CV").replace(" ", "_").replace("/", "_").replace("\\", "_")
+        if not candidate_name:
+            candidate_name = "My_CV"
+        
         with col1:
-             st.download_button("Download TXT", cv_text, file_name="My_CV.txt", use_container_width=True)
+             st.download_button("Download TXT", cv_text, file_name=f"{candidate_name}_CV.txt", use_container_width=True)
              
         with col2:
              # Basic PDF Generation
              pdf_bytes = ml_utils.generate_cv_pdf(cv_text)
              if pdf_bytes:
-                 st.download_button("Download PDF", pdf_bytes, file_name="My_CV.pdf", mime="application/pdf", use_container_width=True)
+                 st.download_button("Download PDF", pdf_bytes, file_name=f"{candidate_name}_CV.pdf", mime="application/pdf", use_container_width=True)
              else:
                  st.warning("PDF Error")
              
