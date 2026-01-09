@@ -51,44 +51,169 @@ ML_MODELS = {
 # =============================================================================
 # When a user has Skill A, they likely also have competency in related skills
 INFERENCE_RULES = {
-    # --- TECHNOLOGY ---
-    "Python": ["Programming", "Data Analysis", "Scripting", "Automation"],
-    "JavaScript": ["Programming", "Web Development", "Frontend"],
-    "Java": ["Programming", "Backend Development", "OOP"],
-    "SQL": ["Database Management", "Data Analysis", "Data Querying"],
-    "Excel": ["Data Analysis", "Spreadsheets", "Reporting", "Financial Modeling"],
-    "Power BI": ["Data Visualization", "Business Intelligence", "Reporting"],
-    "Tableau": ["Data Visualization", "Business Intelligence", "Analytics"],
-    "Google Analytics": ["Web Analytics", "Digital Marketing", "Data Analysis"],
-    "SAP": ["ERP", "Enterprise Systems", "Business Processes"],
-    "Salesforce": ["CRM", "Sales Management", "Customer Relations"],
-    "HubSpot": ["CRM", "Marketing Automation", "Inbound Marketing"],
+    # --- TECHNOLOGY & IT ---
+    "React": ["JavaScript", "Frontend Development", "Web Development", "UI Design"],
+    "Vue": ["JavaScript", "Frontend Development", "Web Development"],
+    "Angular": ["JavaScript", "Frontend Development", "Web Development", "TypeScript"],
+    "TypeScript": ["JavaScript", "Frontend Development"],
+    "Django": ["Python", "Backend Development", "Web Development", "API Development"],
+    "Flask": ["Python", "Backend Development", "Web Development", "API Development"],
+    "Spring": ["Java", "Backend Development", "OOP", "API Development"],
+    "Hibernate": ["Java", "Database Management", "ORM"],
     "AWS": ["Cloud Computing", "Infrastructure", "DevOps"],
     "Azure": ["Cloud Computing", "Infrastructure", "Enterprise IT"],
-    "Docker": ["DevOps", "Containerization", "Deployment"],
-    "Figma": ["UI Design", "UX Design", "Prototyping", "Visual Design"],
-    "Adobe Photoshop": ["Graphic Design", "Image Editing", "Visual Design"],
-    "Adobe Illustrator": ["Graphic Design", "Vector Design", "Branding"],
-    "AutoCAD": ["Technical Drawing", "Engineering Design", "CAD"],
-    "MATLAB": ["Engineering", "Data Analysis", "Scientific Computing"],
+    "GCP": ["Cloud Computing", "Infrastructure", "Google Cloud"],
+    "Docker": ["DevOps", "Containerization", "Deployment", "Infrastructure"],
+    "Kubernetes": ["DevOps", "Containerization", "Orchestration"],
+    "Terraform": ["DevOps", "Infrastructure as Code", "Cloud Computing"],
+    "Git": ["Version Control", "Collaboration", "Software Development"],
+    "Linux": ["Operating Systems", "System Administration", "DevOps"],
+
+    # --- MARKETING & DIGITAL ---
+    "Google Ads": ["SEM", "Digital Marketing", "Paid Advertising", "PPC", "Marketing Strategy"],
+    "Facebook Ads": ["Social Media Marketing", "Digital Marketing", "Paid Advertising", "Marketing Strategy"],
+    "LinkedIn Ads": ["B2B Marketing", "Social Media Marketing", "Paid Advertising"],
+    "Google Analytics": ["Data Analysis", "Web Analytics", "Digital Marketing", "Reporting"],
+    "GA4": ["Data Analysis", "Web Analytics", "Google Analytics"],
+    "SEO": ["Digital Marketing", "Content Marketing", "Website Optimization", "Organic Growth"],
+    "HubSpot": ["CRM", "Marketing Automation", "Inbound Marketing", "Lead Generation"],
+    "Salesforce": ["CRM", "Sales Management", "Customer Relations", "Pipeline Management"],
+    "Copywriting": ["Content Marketing", "Writing", "Communication", "Marketing"],
     
-    # --- BUSINESS ---
-    "Project Management": ["Planning", "Organization", "Leadership", "Stakeholder Management"],
-    "Agile": ["Scrum", "Sprint Planning", "Iterative Development"],
-    "Scrum": ["Agile", "Team Collaboration", "Project Management"],
-    "Financial Analysis": ["Excel", "Reporting", "Business Analysis"],
-    "Accounting": ["Financial Reporting", "Bookkeeping", "Tax"],
-    "Marketing": ["Communication", "Strategy", "Brand Management"],
-    "Digital Marketing": ["SEO", "Social Media", "Content Marketing", "Analytics"],
-    "Sales": ["Negotiation", "Customer Relations", "Communication"],
+    # --- BUSINESS & MANAGEMENT ---
+    "Jira": ["Project Management", "Agile", "Organization", "Task Management"],
+    "Trello": ["Project Management", "Organization", "Kanban"],
+    "Asana": ["Project Management", "Organization", "Task Management"],
+    "Scrum": ["Agile", "Project Management", "Team Leadership"],
+    "Kanban": ["Agile", "Project Management", "Process Improvement"],
+    "Budgeting": ["Financial Analysis", "Management", "Strategic Planning"],
+    "Stakeholder Management": ["Communication", "Leadership", "Relationship Building"],
     
-    # --- LANGUAGES ---
-    "English (C1)": ["English", "International Communication", "Business English"],
-    "English (B2)": ["English", "Professional Communication"],
-    "French": ["Languages", "International Business"],
-    "German": ["Languages", "International Business"],
-    "Spanish": ["Languages", "International Business"],
-    "Chinese": ["Languages", "International Trade", "Asia Business"],
+    # --- FINANCE & ACCOUNTING ---
+    "Financial Reporting": ["Accounting", "Excel", "Compliance"],
+    "Auditing": ["Accounting", "Compliance", "Financial Reporting", "Internal Controls"],
+    "Tax": ["Accounting", "Compliance", "Financial Reporting"],
+    "Financial Modeling": ["Excel", "Valuation", "Corporate Finance", "Investment Analysis"],
+    "SAP": ["ERP", "Accounting", "Business Processes"],
+    "Oracle Financials": ["ERP", "Accounting", "Financial Reporting"],
+    "IFRS": ["Accounting", "Financial Reporting", "Compliance"],
+    "GAAP": ["Accounting", "Financial Reporting", "Compliance"],
+    
+    # --- DESIGN & CREATIVE ---
+    "Adobe Photoshop": ["Graphic Design", "Image Editing", "Visual Design", "Adobe Creative Suite"],
+    "Adobe Illustrator": ["Graphic Design", "Vector Design", "Branding", "Adobe Creative Suite"],
+    "Adobe InDesign": ["Graphic Design", "Layout", "Publishing", "Adobe Creative Suite"],
+    "Figma": ["UI Design", "UX Design", "Prototyping", "Web Design"],
+    "Sketch": ["UI Design", "UX Design", "Prototyping"],
+    "Premiere Pro": ["Video Editing", "Content Creation", "Adobe Creative Suite"],
+    "After Effects": ["Motion Graphics", "Video Editing", "Animation"],
+    
+    # --- LEGAL ---
+    "GDPR": ["Compliance", "Privacy Law", "Data Protection", "Legal Research"],
+    "M&A": ["Corporate Law", "Due Diligence", "Legal Contracts", "Corporate Finance"],
+    "Contract Law": ["Legal Research", "Negotiation", "Documentation"],
+    
+    # --- HR & RECRUITING (DETAILED) ---
+    "Recruiting": ["Talent Acquisition", "Interviewing", "HR Management", "Communication"],
+    "Sourcing": ["Recruiting", "Talent Acquisition", "LinkedIn Recruiter", "Boolean Search"],
+    "Headhunting": ["Recruiting", "Executive Search", "Networking", "Sourcing"],
+    "ATS Management": ["Recruiting", "Data Analysis", "HRIS", "Process Optimization"],
+    "HR Management": ["Employee Relations", "Labor Law", "Performance Management", "Organizational Development"],
+    "Payroll": ["Accounting", "HR Management", "Compliance", "Excel", "Admin"],
+    "Labor Law": ["HR Management", "Compliance", "Legal", "Industrial Relations"],
+    "Compensation & Benefits": ["HR Management", "Payroll", "Data Analysis", "Total Rewards"],
+    "Training & Development": ["HR Management", "Public Speaking", "Mentoring", "Education", "L&D"],
+    "Talent Management": ["HR Management", "Leadership", "Succession Planning", "Employee Engagement"],
+    
+    # --- SUPPLY CHAIN & LOGISTICS (DETAILED) ---
+    "Supply Chain Management": ["Logistics", "Procurement", "Inventory Management", "Operations Management"],
+    "Logistics": ["Transportation", "Warehouse Management", "Inventory Management", "Supply Chain Management"],
+    "Fleet Management": ["Logistics", "Transportation", "Operations"],
+    "Warehouse Management": ["Logistics", "Inventory Management", "Safety", "WMS"],
+    "Procurement": ["Negotiation", "Vendor Management", "Supply Chain Management", "Purchasing", "Sourcing"],
+    "Strategic Sourcing": ["Procurement", "Negotiation", "Market Research", "Cost Analysis"],
+    "Vendor Management": ["Procurement", "Relationship Management", "Supply Chain Management"],
+    "Demand Planning": ["Supply Chain Management", "Data Analysis", "Forecasting", "Inventory Management"],
+    "Inventory Management": ["Supply Chain Management", "Logistics", "Data Analysis"],
+    "SAP": ["ERP", "Logistics", "Inventory Management", "Business Processes"],
+    
+    # --- HOSPITALITY & TOURISM (DETAILED) ---
+    "Hotel Management": ["Hospitality", "Customer Service", "Operations Management", "Team Leadership"],
+    "Front Office": ["Customer Service", "Reception", "Hospitality", "Communication"],
+    "Housekeeping Management": ["Hospitality", "Operations Management", "Quality Control"],
+    "F&B Management": ["Hospitality", "Customer Service", "Budgeting", "Food Safety"],
+    "HACCP": ["Food Safety", "Compliance", "Quality Control"],
+    "Menu Engineering": ["F&B Management", "Marketing", "Cost Control"],
+    "Tourism": ["Travel Planning", "Customer Service", "Geography", "Languages"],
+    "Ticketing": ["Travel Planning", "Customer Service", "GDS"],
+    "GDS": ["Ticketing", "Travel Planning"],
+    
+    # --- EDUCATION & TRAINING ---
+    "Teaching": ["Communication", "Public Speaking", "Mentoring", "Curriculum Development"],
+    "Training Delivery": ["Public Speaking", "Presentation", "Facilitation", "Adult Learning"],
+    "Curriculum Development": ["Teaching", "Instructional Design", "Planning"],
+    "E-Learning": ["Instructional Design", "LMS", "Digital Literacy", "Training & Development"],
+    
+    # --- CUSTOMER SERVICE & RETAIL ---
+    "Customer Service": ["Communication", "Problem Solving", "Conflict Resolution", "Empathy"],
+    "Retail": ["Sales", "Customer Service", "Inventory Management", "Merchandising"],
+    "Visual Merchandising": ["Retail", "Creativity", "Design", "Marketing"],
+    
+    # --- BIOTECH & SCIENCE (DETAILED) ---
+    "Biotechnology": ["Biology", "Chemistry", "Life Sciences", "Lab Skills"],
+    "Molecular Biology": ["Biology", "Genetics", "Lab Skills", "PCR", "Research"],
+    "PCR": ["Molecular Biology", "Lab Skills", "Genetics"],
+    "Cell Culture": ["Biology", "Lab Skills", "Sterile Technique", "Research"],
+    "Western Blot": ["Molecular Biology", "Lab Skills", "Protein Analysis"],
+    "Bioinformatics": ["Biology", "Computer Science", "Data Analysis", "Genomics", "Python", "R"],
+    "Genetics": ["Biology", "Molecular Biology", "Research"],
+    "Clinical Research": ["Healthcare", "GCP", "Data Analysis", "Regulatory Affairs"],
+    "Regulatory Affairs": ["Compliance", "Healthcare", "Legal", "Life Sciences", "FDA/EMA"],
+    "Pharmacovigilance": ["Healthcare", "Drug Safety", "Compliance"],
+    
+    # --- LANGUAGES (DETAILED) ---
+    "Translation": ["Languages", "Writing", "Intercultural Communication"],
+    "Interpretation": ["Languages", "Public Speaking", "Active Listening", "Memory"],
+    "Simultaneous Interpretation": ["Interpretation", "Concentration", "Multitasking"],
+    "CAT Tools": ["Translation", "Technology", "Localization"],
+    "Business English": ["English", "Business Communication"],
+    "Localization": ["Translation", "Cultural Adaptation", "Tech"],
+    
+    # --- ENGINEERING (SPECIALIZED) ---
+    "Mechanical Engineering": ["Engineering", "Physics", "Math", "CAD"],
+    "Energy Engineering": ["Engineering", "Sustainability", "Physics"],
+    "Renewable Energy": ["Energy Engineering", "Sustainability", "Environmental Science"],
+    "Mechatronics": ["Mechanical Engineering", "Electronics", "Computer Science", "Robotics"],
+    "Robotics": ["Mechatronics", "Automation", "Programming"],
+    "PLC Programming": ["Automation", "Electrical Engineering", "Control Systems"],
+    "PLC": ["Automation", "Industrial Engineering"],
+    "CAD": ["Design", "Engineering", "Technical Drawing", "Modeling"],
+    "SolidWorks": ["CAD", "Mechanical Engineering", "3D Modeling"],
+    "Simulation": ["Engineering", "Analysis", "Math"],
+    
+    # --- ADVANCED FINANCE & IT ---
+    "Quantitative Finance": ["Finance", "Math", "Statistics", "Programming"],
+    "Algorithmic Trading": ["Quantitative Finance", "Programming", "Data Analysis"],
+    "Stochastic Calculus": ["Math", "Quantitative Finance"],
+    "Quantum Computing": ["Computer Science", "Physics", "Math"],
+    "Cybersecurity": ["IT", "Risk Management", "System Administration"],
+    "Algorithms": ["Computer Science", "Programming", "Logic"],
+    "Accounting": ["Finance", "Math", "Compliance", "Detail Oriented"],
+    "Financial Analysis": ["Finance", "Excel", "Data Analysis"],
+    
+    # --- MARKETING & SALES (NEW) ---
+    "SEO": ["Digital Marketing", "Analytics", "Content Strategy"],
+    "SEM": ["Digital Marketing", "Advertising", "Analytics"],
+    "Content Marketing": ["Marketing", "Writing", "Creativity"],
+    "Social Media": ["Marketing", "Communication", "Community Management"],
+    "Sales": ["Communication", "Negotiation", "Customer Service"],
+    "Tech Sales": ["Sales", "Technology", "Presentation"],
+    "CRM": ["Sales", "Data Management", "Organization"],
+
+    # --- LEGAL (NEW) ---
+    "Corporate Law": ["Legal", "Contract Law", "Business"],
+    "IP Law": ["Legal", "Intellectual Property", "Research"],
+    "Compliance": ["Legal", "Risk Management", "Regulations"],
     
     # --- SCIENCE & QUALITY ---
     "GMP": ["ISO Standards", "Quality Control", "Quality Assurance", "Compliance", "Quality Management"],
@@ -174,251 +299,169 @@ PROJECT_BASED_SKILLS = {
 # HARD SKILLS (Technical/Measurable Skills)
 # =============================================================================
 HARD_SKILLS = {
-    # ========== TECHNOLOGY & IT ==========
+    # ========== TECHNOLOGY & IT (DETAILED) ==========
     "Programming": ["programming", "coding", "sviluppo software", "programmazione"],
-    "Python": ["python", "py", "pandas", "numpy", "django", "flask"],
-    "JavaScript": ["javascript", "js", "node", "react", "vue", "angular", "typescript"],
-    "Java": ["java", "spring", "spring boot", "j2ee", "maven"],
-    "C#": ["c#", "csharp", ".net", "dotnet", "asp.net"],
-    "SQL": ["sql", "mysql", "postgresql", "database", "query", "oracle sql"],
-    "HTML": ["html", "html5", "markup", "web structure"],
-    "CSS": ["css", "css3", "sass", "scss", "tailwind", "bootstrap"],
-    "Git": ["git", "github", "gitlab", "bitbucket", "version control"],
-    "APIs": ["api", "rest", "restful", "graphql", "web services", "soap"],
-    "Cloud Computing": ["cloud", "aws", "azure", "gcp", "google cloud", "cloud computing"],
-    "DevOps": ["devops", "ci/cd", "jenkins", "docker", "kubernetes", "deployment"],
-    "Cybersecurity": ["cybersecurity", "security", "information security", "sicurezza informatica"],
-    "Networking": ["networking", "network administration", "tcp/ip", "lan/wan"],
-    "IT Support": ["it support", "technical support", "helpdesk", "troubleshooting"],
+    "Python": ["python", "py", "pandas", "numpy", "django", "flask", "fastapi"],
+    "JavaScript": ["javascript", "js", "node", "react", "vue", "angular", "typescript", "es6+"],
+    "Java": ["java", "spring", "spring boot", "jakarta ee", "hibernate", "maven", "gradle"],
+    "C#": ["c#", "csharp", ".net", "dotnet", "asp.net core", "entity framework", "blazor"],
+    "SQL": ["sql", "mysql", "postgresql", "t-sql", "pl/sql", "database design", "query optimization"],
     
-    # ========== DATA & ANALYTICS ==========
-    "Data Analysis": ["data analysis", "analisi dati", "data analytics", "analytics"],
-    "Data Visualization": ["data visualization", "visualizzazione dati", "dashboard", "charts"],
-    "Statistics": ["statistics", "statistica", "statistical analysis", "analisi statistica"],
-    "Machine Learning": ["machine learning", "ml", "artificial intelligence", "deep learning"],
-    "Excel": ["excel", "spreadsheet", "pivot tables", "vlookup", "foglio elettronico"],
-    "Power BI": ["power bi", "powerbi", "microsoft power bi"],
-    "Tableau": ["tableau", "tableau desktop", "tableau server"],
-    "Google Analytics": ["google analytics", "ga4", "ga", "web analytics"],
-    "BigQuery": ["bigquery", "big query", "google bigquery"],
-    "R": ["r programming", "r language", "rstudio", "r statistics"],
-    "SPSS": ["spss", "ibm spss", "statistical software"],
-    "Business Intelligence": ["business intelligence", "bi", "intelligence aziendale"],
-    "Reporting": ["reporting", "report", "analisi report", "business reporting"],
+    # Frontend (Killer Keywords)
+    "Frontend Development": ["frontend", "front-end", "ui implementation"],
+    "State Management": ["redux", "pinia", "zustand", "mobx", "context api", "ngrx", "recoil"],
+    "Modern Web": ["pwa", "progressive web apps", "service workers", "webassembly", "wasm", "webgl", "three.js"],
+    "Testing (Frontend)": ["jest", "cypress", "playwright", "react testing library", "selenium", "puppeteer"],
+    "Performance": ["web performance", "core web vitals", "lazy loading", "tree shaking", "lighthouse"],
+    "Accessibility": ["wcag", "wai-aria", "accessibility", "a11y", "screen readers"],
+
+    # Backend (Killer Keywords)
+    "Backend Development": ["backend", "back-end", "server-side"],
+    "Microservices": ["microservices", "micro-services", "distributed systems", "service mesh", "istio"],
+    "API Design": ["rest", "graphql", "grpc", "openapi", "swagger", "api gateway"],
+    "Messaging": ["kafka", "apache kafka", "rabbitmq", "activemq", "pub/sub", "event-driven", "sqs", "sns"],
+    "Serverless": ["serverless", "aws lambda", "azure functions", "google cloud functions", "faas"],
+
+    # DevOps & Cloud (Killer Keywords)
+    "DevOps": ["devops", "sre", "site reliability engineering"],
+    "Cloud Computing": ["aws", "azure", "gcp", "google cloud", "cloud native"],
+    "Containerization": ["docker", "kubernetes", "k8s", "helm", "openshift", "containerd"],
+    "IaC": ["terraform", "infrastructure as code", "ansible", "cloudformation", "pulumi"],
+    "CI/CD": ["jenkins", "gitlab ci", "github actions", "circleci", "argo cd", "pipelines"],
+    "Monitoring": ["prometheus", "grafana", "datadog", "elk stack", "splunk", "new relic", "observability"],
+
+    # ========== MARKETING & COMMUNICATION (DETAILED) ==========
+    "Marketing Strategy": ["marketing strategy", "pianificazione marketing", "marketing mix", "go-to-market"],
     
-    # ========== MARKETING & DIGITAL ==========
-    "Marketing": ["marketing", "marketing strategy", "strategia marketing"],
-    "Digital Marketing": ["digital marketing", "marketing digitale", "online marketing"],
-    "SEO": ["seo", "search engine optimization", "ottimizzazione motori ricerca", "organic"],
-    "SEM": ["sem", "search engine marketing", "ppc", "pay per click", "paid search"],
-    "Social Media Marketing": ["social media marketing", "smm", "social media", "social marketing"],
-    "Content Marketing": ["content marketing", "content strategy", "contenuti", "blogging"],
-    "Email Marketing": ["email marketing", "newsletter", "dem", "email campaigns", "mailchimp"],
-    "Google Ads": ["google ads", "adwords", "google advertising", "search ads"],
-    "Facebook Ads": ["facebook ads", "meta ads", "instagram ads", "social ads"],
-    "Influencer Marketing": ["influencer marketing", "influencer", "creator marketing"],
-    "Brand Management": ["brand management", "gestione brand", "branding", "brand strategy"],
-    "Market Research": ["market research", "ricerche di mercato", "market analysis"],
-    "CRM": ["crm", "customer relationship", "salesforce", "hubspot", "gestione clienti"],
-    "Marketing Automation": ["marketing automation", "automazione marketing", "hubspot", "marketo"],
-    "Copywriting": ["copywriting", "copy", "scrittura persuasiva", "advertising copy"],
-    "Public Relations": ["public relations", "pr", "relazioni pubbliche", "media relations"],
-    "Event Marketing": ["event marketing", "eventi", "event planning"],
+    # SEO (Killer Keywords)
+    "SEO": ["seo", "optimization", "organic traffic"],
+    "Technical SEO": ["technical seo", "schema markup", "structured data", "core web vitals", "log file analysis", "crawl budget"],
+    "Keyword Strategy": ["keyword research", "search intent", "semrush", "ahrefs", "long-tail keywords"],
+    "Local SEO": ["local seo", "google my business", "local pack", "citation building"],
+
+    # PPC/SEM (Killer Keywords)
+    "SEM": ["sem", "ppc", "pay per click", "paid search"],
+    "Programmatic Ads": ["programmatic advertising", "rtb", "real-time bidding", "dsp", "ssp", "dv360"],
+    "Ad Tech": ["google tag manager", "gtm", "facebook pixel", "conversion api", "server-side tagging"],
+    "Conversion Optimization": ["cro", "conversion rate optimization", "a/b testing", "multivariate testing", "hotjar", "crazy egg"],
+
+    # Social & Content (Killer Keywords)
+    "Social Media": ["social media marketing", "smm", "community management"],
+    "Social Listening": ["social listening", "sentiment analysis", "brandwatch", "sprout social", "mention"],
+    "Influencer Strategy": ["influencer marketing", "creator economy", "affiliate marketing", "ugc campaigns"],
+    "Content Strategy": ["content marketing", "storytelling", "editorial calendar", "content governance"],
+    "Specialized Content": ["technical writing", "ghostwriting", "video scripting", "white papers", "case studies"],
+
+    # Communication
+    "Public Relations": ["public relations", "pr", "media relations", "press release", "crisis communication"],
+    "Corporate Communication": ["corporate communication", "internal communication", "investor relations", "stakeholder engagement"],
     
-    # ========== BUSINESS & MANAGEMENT ==========
-    "Project Management": ["project management", "gestione progetti", "pm", "project manager"],
-    "Agile": ["agile", "agile methodology", "metodologia agile", "agile project"],
-    "Scrum": ["scrum", "scrum master", "sprint", "scrum framework"],
-    "Business Analysis": ["business analysis", "analisi business", "business analyst", "ba"],
-    "Strategic Planning": ["strategic planning", "pianificazione strategica", "strategy"],
-    "Operations Management": ["operations management", "direzione operativa"],
-    "Process Improvement": ["process improvement", "ottimizzazione processi", "bpm"],
-    "Change Management": ["change management", "gestione del cambiamento", "change"],
-    "Stakeholder Management": ["stakeholder management", "gestione stakeholder"],
-    "Risk Management": ["risk management", "gestione rischi", "risk assessment"],
-    "Quality Management": ["quality management", "gestione qualità", "iso", "quality"],
-    "Lean": ["lean", "lean management", "lean manufacturing", "lean thinking"],
-    "Six Sigma": ["six sigma", "6 sigma", "dmaic", "process excellence"],
-    "KPI Management": ["kpi", "key performance indicators", "metrics", "performance"],
-    "Budgeting": ["budgeting", "budget", "pianificazione budget", "budget management"],
-    "Presentation": ["presentation", "presentazioni", "powerpoint", "public speaking"],
-    "Negotiation": ["negotiation", "negoziazione", "trattativa", "contrattazione"],
-    "Leadership": ["leadership", "team leadership", "people management", "gestione team"],
+    # ========== BUSINESS, SALES & LEGAL (DETAILED) ==========
+    # Sales (Killer Keywords)
+    "Tech Sales": ["saas sales", "technical sales", "solution selling", "consultative selling", "demo skills"],
+    "Sales Methodologies": ["spin selling", "challenger sale", "meddic", "sandler training", "bant"],
+    "Sales Operations": ["sales ops", "pipeline management", "sales forecasting", "territory planning", "quota management"],
+    "CRM Admin": ["salesforce admin", "hubspot crm", "crm implementation", "workflow automation"],
+
+    # Legal (Killer Keywords)
+    "Corporate Law": ["corporate law", "m&a", "mergers and acquisitions", "due diligence", "corporate governance"],
+    "IP Law": ["intellectual property", "trademark", "patent", "copyright", "licensing", "freedom to operate"],
+    "Contract Law": ["contract negotiation", "drafting", "nda", "sla", "master service agreement"],
+    "Compliance": ["regulatory compliance", "gdpr", "data privacy", "anti-money laundering", "aml", "kyc"],
     
-    # ========== FINANCE & ACCOUNTING ==========
-    "Financial Analysis": ["financial analysis", "analisi finanziaria", "finance analysis"],
-    "Accounting": ["accounting", "contabilità", "ragioneria", "bookkeeping"],
-    "Financial Reporting": ["financial reporting", "bilancio", "financial statements"],
-    "Budgeting and Forecasting": ["forecasting", "previsioni", "budget forecasting"],
-    "Auditing": ["auditing", "revisione contabile", "audit", "internal audit"],
-    "Tax": ["tax", "fiscale", "taxation", "imposte", "dichiarazioni fiscali"],
-    "Financial Modeling": ["financial modeling", "modellazione finanziaria", "dcf"],
-    "Valuation": ["valuation", "valutazione aziendale", "company valuation"],
-    "Treasury": ["treasury", "tesoreria", "cash management"],
-    "Credit Analysis": ["credit analysis", "analisi credito", "credit risk"],
-    "Investment Analysis": ["investment analysis", "analisi investimenti", "portfolio"],
-    "SAP": ["sap", "sap erp", "sap fi", "sap co", "sap mm", "sap sd"],
-    "Oracle Financials": ["oracle", "oracle financials", "oracle erp"],
-    "Bloomberg": ["bloomberg", "bloomberg terminal", "financial data"],
+    # Business Management
+    "Project Management": ["project management", "pmp", "prince2"],
+    "Agile Frameworks": ["agile", "scrum", "kanban", "safe", "less", "sprint planning"],
+    "Product Management": ["product management", "product roadmap", "user stories", "product lifecycle", "mvp"],
+    "Business Analysis": ["business analysis", "requirements gathering", "bpmn", "process mapping", "gap analysis"],
+
+    # ========== FINANCE & ECONOMICS (DETAILED) ==========
+    "Accounting": ["accounting", "financial statements", "ifrs", "gaap", "bookkeeping", "general ledger"],
+    "Financial Analysis": ["financial analysis", "financial modeling", "dcf", "valuation", "fp&a"],
+    "Taxation": ["tax compliance", "tax planning", "transfer pricing", "vat", "corporate tax"],
     
-    # ========== HUMAN RESOURCES ==========
-    "Recruiting": ["recruiting", "recruitment", "selezione", "talent acquisition", "hiring"],
-    "HR Management": ["hr", "human resources", "risorse umane", "hr management"],
-    "Talent Management": ["talent management", "gestione talenti", "talent development"],
-    "Training & Development": ["training delivery", "formazione personale", "learning development", "l&d"],
-    "Performance Management": ["performance management", "valutazione performance", "appraisal"],
-    "Compensation & Benefits": ["compensation", "retribuzione", "benefits", "total rewards"],
-    "Labor Law": ["labor law", "diritto del lavoro", "contrattualistica", "ccnl"],
-    "HR Analytics": ["hr analytics", "people analytics", "workforce analytics"],
-    "Employer Branding": ["employer branding", "talent attraction", "recruiting marketing"],
-    "Onboarding": ["onboarding", "inserimento", "new hire", "induction"],
-    "HRIS": ["hris", "hr information system", "workday", "successfactors"],
+    # Quantitative Finance (Killer Keywords)
+    "Quant Finance": ["quantitative finance", "stochastic calculus", "black-scholes", "garch", "time series analysis"],
+    "Risk Management": ["value at risk", "var", "stress testing", "credit risk modeling", "market risk", "basel iii"],
+    "Algorithmic Trading": ["algorithmic trading", "hft", "high-frequency trading", "market microstructure", "order book dynamics"],
+    "Derivatives": ["derivatives", "options pricing", "futures", "swaps", "structured products", "exotics"],
+    "Investment Management": ["asset allocation", "portfolio construction", "factor investing", "smart beta", "esg investing"],
+
+    # ========== BIOTECHNOLOGY & LIFE SCIENCES (DETAILED) ==========
+    "Biotechnology": ["biotechnology", "life sciences", "pharma"],
     
-    # ========== SALES & COMMERCIAL ==========
-    "Sales": ["sales", "vendita", "vendite", "commerciale", "selling"],
-    "B2B Sales": ["b2b", "business to business", "enterprise sales", "corporate sales"],
-    "B2C Sales": ["b2c", "business to consumer", "retail sales", "consumer sales"],
-    "Account Management": ["account management", "gestione clienti", "key account"],
-    "Business Development": ["business development", "sviluppo business", "biz dev"],
-    "Lead Generation": ["lead generation", "lead gen", "prospecting", "pipeline"],
-    "Sales Management": ["sales management", "direzione vendite", "sales leadership"],
-    "Customer Success": ["customer success", "cs", "customer satisfaction", "retention"],
-    "Inside Sales": ["inside sales", "telesales", "remote selling"],
-    "Field Sales": ["field sales", "outside sales", "vendita esterna"],
-    "Retail": ["retail", "vendita al dettaglio", "store management", "negozio"],
-    "E-commerce": ["e-commerce", "ecommerce", "online sales", "vendita online"],
+    # Molecular Biology (Killer Keywords)
+    "Gene Editing": ["crispr", "crispr/cas9", "gene editing", "genome engineering", "talens", "zinc finger nucleases"],
+    "Molecular Techniques": ["cloning", "plasmid design", "site-directed mutagenesis", "transfection", "rna interference", "qpcr"],
+    "Sequencing": ["ngs", "next-generation sequencing", "illumina", "sanger sequencing", "library preparation", "rna-seq", "scrna-seq"],
+    "Protein Analysis": ["western blot", "elisa", "protein purification", "chromatography", "akts", "sds-page", "mass spectrometry"],
     
-    # ========== LEGAL ==========
-    "Contract Law": ["contract law", "contrattualistica", "contratti", "legal contracts"],
-    "Corporate Law": ["corporate law", "diritto societario", "company law"],
-    "Labor Law (Legal)": ["diritto del lavoro", "employment law", "giuslavoristico"],
-    "Compliance": ["compliance", "conformità normativa", "regulatory compliance"],
-    "GDPR": ["gdpr", "data protection", "protezione dati", "regolamento europeo privacy"],
-    "Intellectual Property": ["intellectual property", "ip", "proprietà intellettuale", "brevetti"],
-    "M&A": ["m&a", "mergers acquisitions", "fusioni acquisizioni", "corporate transactions"],
-    "Legal Research": ["legal research", "ricerca giuridica", "giurisprudenza"],
-    "Due Diligence": ["due diligence", "analisi due diligence", "dd"],
-    "Litigation": ["litigation", "contenzioso", "dispute", "cause legali"],
+    # Cell Biology (Killer Keywords)
+    "Cell Culture": ["mammalian cell culture", "primary cells", "stem cells", "ipsc", "organoids", "3d culture"],
+    "Cytometry": ["flow cytometry", "facs", "cell sorting", "immunophenotyping", "gating strategies"],
+    "Microscopy": ["confocal microscopy", "fluorescence microscopy", "live cell imaging", "sem", "tem", "imagej"],
     
-    # ========== DESIGN & CREATIVE ==========
-    "Graphic Design": ["graphic design", "grafica", "design grafico", "visual design"],
-    "UI Design": ["ui design", "user interface", "interfaccia utente", "interface design"],
-    "UX Design": ["ux design", "user experience", "esperienza utente", "ux research"],
-    "Web Design": ["web design", "website design", "design siti web"],
-    "Adobe Creative Suite": ["adobe", "photoshop", "illustrator", "indesign", "premiere", "after effects"],
-    "Figma": ["figma", "figma design"],
-    "Sketch": ["sketch", "sketch app"],
-    "InDesign": ["indesign", "adobe indesign", "impaginazione", "layout"],
-    "Video Editing": ["video editing", "montaggio video", "premiere pro", "final cut"],
-    "Motion Graphics": ["motion graphics", "after effects", "animazione"],
-    "Photography": ["photography", "fotografia", "photo editing", "lightroom"],
-    "3D Modeling": ["3d modeling", "modellazione 3d", "blender", "maya", "3ds max"],
-    "Branding": ["branding", "brand identity", "identità visiva", "logo design"],
-    "Typography": ["typography", "tipografia", "fonts", "lettering"],
+    # Bioinformatics (Killer Keywords)
+    "Bioinformatics": ["bioinformatics", "computational biology", "genomics", "metagenomics", "phylogenetics"],
+    "Structural Biology": ["pymol", "chimera", "molecular docking", "molecular dynamics", "alphafold", "rosetta"],
+    "Bio-Scripting": ["biopython", "bioconductor", "r programming", "bash scripting", "pipeline development"],
+
+    # Pharma & Clinical
+    "Clinical Trials": ["clinical trials", "clinical development", "gcp", "ich-gcp", "clinical data management", "edc"],
+    "Regulatory": ["regulatory affairs", "fda submissions", "ema", "ind", "nda", "medical device regulation", "iso 13485"],
+
+    # ========== ENGINEERING (DETAILED) ==========
+    "Mechanical Engineering": ["mechanical engineering", "mechanics"],
     
-    # ========== ENGINEERING ==========
-    "Mechanical Engineering": ["mechanical engineering", "ingegneria meccanica", "meccanica"],
-    "Electrical Engineering": ["electrical engineering", "ingegneria elettrica", "elettrotecnica"],
-    "Civil Engineering": ["civil engineering", "ingegneria civile", "costruzioni"],
-    "Industrial Engineering": ["industrial engineering", "ingegneria gestionale", "industriale"],
-    "Chemical Engineering": ["chemical engineering", "ingegneria chimica", "impianti chimici"],
-    "AutoCAD": ["autocad", "cad", "computer aided design", "disegno tecnico"],
-    "SolidWorks": ["solidworks", "solid works", "3d cad"],
-    "MATLAB": ["matlab", "simulink", "scientific computing"],
-    "PLC Programming": ["plc", "programmazione plc", "automazione industriale"],
-    "Quality Control": ["quality control", "qc", "controllo qualità", "ispezione"],
-    "Manufacturing": ["manufacturing", "produzione", "fabbricazione", "processo produttivo"],
-    "Maintenance": ["maintenance", "manutenzione", "maintenance management"],
-    "HSE": ["hse", "health safety environment", "sicurezza lavoro", "ambiente"],
-    "ISO Standards": ["iso", "iso 9001", "iso 14001", "iso 45001", "certificazioni"],
+    # Simulation & Analysis (Killer Keywords)
+    "Simulation": ["fem", "finite element analysis", "cfd", "computational fluid dynamics", "ansys", "abaqus", "nastran"],
+    "CAD/Design": ["catia", "solidworks", "creo", "inventor", "gd&t", "geometric dimensioning", "tolerance analysis"],
+    "Thermodynamics": ["thermodynamics", "heat transfer", "hvac design", "fluid mechanics", "combustion"],
+
+    # Mechatronics & Automation (Killer Keywords)
+    "PLC & SCADA": ["plc programming", "siemens step 7", "tia portal", "allen bradley", "rslogix", "scada", "wonderware", "hmi"],
+    "Robotics": ["industrial robotics", "kuka", "fanuc", "abb", "robot programming", "ros", "robot operating system", "kinematics"],
+    "Control Systems": ["control theory", "pid control", "matlab/simulink", "state estimations", "kalman filter"],
+    "Embedded": ["embedded c", "microcontrollers", "stm32", "arduino", "rtos", "firmware development", "i2c", "spi", "uart"],
+
+    # Energy (Killer Keywords)
+    "Renewable Energy": ["renewable energy", "solar pv", "photovoltaics", "wind energy", "pvsyst", "helioscope", "windsim"],
+    "Grid & Storage": ["smart grid", "energy storage", "bess", "battery management systems", "high voltage", "power systems analysis"],
+    "Sustainability": ["energy efficiency", "carbon footprint", "lca", "life cycle assessment", "leed", "energy audit"],
+
+    # ========== LANGUAGES & TRANSLATION (DETAILED) ==========
+    "Languages": ["english", "italian", "french", "german", "spanish", "chinese", "japanese"],
     
-    # ========== SUPPLY CHAIN & LOGISTICS ==========
-    "Supply Chain Management": ["supply chain", "catena fornitura", "supply chain management"],
-    "Logistics": ["logistics", "logistica", "trasporti", "distribuzione"],
-    "Procurement": ["procurement", "acquisti", "purchasing", "approvvigionamento"],
-    "Inventory Management": ["inventory", "magazzino", "stock management", "inventario"],
-    "Warehouse Management": ["warehouse", "gestione magazzino", "wms", "logistica magazzino"],
-    "Transportation": ["transportation", "trasporto", "spedizioni", "shipping"],
-    "Import/Export": ["import export", "commercio estero", "customs", "dogana"],
-    "Demand Planning": ["demand planning", "pianificazione domanda", "forecasting"],
-    "Vendor Management": ["vendor management", "gestione fornitori", "supplier"],
+    # Translation (Killer Keywords)
+    "Translation Tech": ["cat tools", "trados studio", "memoq", "memsource", "wordfast", "terminology management"],
+    "Specialized Translation": ["legal translation", "biomedical translation", "patent translation", "technical translation", "financial translation"],
+    "Localization": ["localization", "l10n", "internationalization", "i18n", "software localization", "game localization", "transcreation"],
+    "Post-Editing": ["mtpe", "machine translation post-editing", "neural machine translation"],
+
+    # Interpreting (Killer Keywords)
+    "Interpreting Modes": ["simultaneous interpreting", "consecutive interpreting", "chuchotage", "liaison interpreting"],
+    "Remote Interpreting": ["rsi", "remote simultaneous interpreting", "kudo", "interpretfy", "zoom interpretation"],
     
-    # ========== SCIENCE & LAB ==========
-    "Biology": ["biology", "biologia", "biological sciences", "scienze biologiche"],
-    "Chemistry": ["chemistry", "chimica", "chemical science", "scienze chimiche"],
-    "Biotechnology": ["biotechnology", "biotecnologie", "biotech"],
-    "Microbiology": ["microbiology", "microbiologia", "microbiological analysis"],
-    "Molecular Biology": ["molecular biology", "biologia molecolare"],
-    "PCR": ["pcr", "qpcr", "polymerase chain reaction"],
-    "HPLC": ["hplc", "chromatography", "cromatografia", "liquid chromatography"],
-    "Gascromatography": ["gascromatografia", "gas chromatography", "gc-ms"],
-    "Cell Culture": ["cell culture", "colture cellulari", "cell lines"],
-    "ELISA": ["elisa", "immunoassays", "saggi immunoenzimatici"],
-    "Western Blot": ["western blot", "protein analysis", "analisi proteica"],
-    "Spectrophotometry": ["spectrophotometry", "spettrofotometria", "spettrofotometro"],
-    "Lab Safety": ["lab safety", "sicurezza laboratorio", "glp", "good laboratory practice"],
-    "GMP": ["gmp", "good manufacturing practice", "norme di buona fabbricazione"],
-    "Analytical Chemistry": ["analytical chemistry", "chimica analitica", "analisi chimiche"],
+    # ========== HUMAN RESOURCES (DETAILED) ==========
+    # Talent Acquisition (Killer Keywords)
+    "Sourcing": ["boolean search", "x-ray search", "github sourcing", "stackoverflow sourcing", "talent mapping"],
+    "Recruitment Marketing": ["employer branding", "career page optimization", "recruitment analytics", "candidate experience"],
+    "Assessment": ["psychometric testing", "assessment centers", "behavioral interviewing", "star method", "coding challenges"],
     
-    # ========== HEALTHCARE & PHARMA ==========
-    "Clinical Research": ["clinical research", "ricerca clinica", "studi clinici"],
-    "GCP": ["gcp", "good clinical practice", "buone pratiche cliniche"],
-    "Medical Writing": ["medical writing", "scrittura medica", "regulatory"],
-    "Pharmacovigilance": ["pharmacovigilance", "farmacovigilanza", "drug safety"],
-    "Regulatory Affairs": ["regulatory affairs", "affari regolatori", "ema", "aifa"],
-    "Healthcare Administration": ["healthcare admin", "amministrazione sanitaria"],
-    "Medical Sales": ["medical sales", "informazione scientifica", "pharma sales"],
-    "Nursing": ["nursing", "infermieristica", "assistenza infermieristica"],
-    "Patient Care": ["patient care", "assistenza pazienti", "cura paziente"],
-    
-    # ========== HOSPITALITY & TOURISM ==========
-    "Hotel Management": ["hotel management", "gestione alberghiera", "hospitality"],
-    "Front Office": ["front office", "reception", "accoglienza"],
-    "F&B Management": ["f&b", "food beverage", "ristorazione", "restaurant"],
-    "Event Management": ["event management", "organizzazione eventi", "eventi"],
-    "Tourism": ["tourism", "turismo", "tour operator", "travel"],
-    "Revenue Management": ["revenue management", "yield management", "pricing"],
-    "Customer Service": ["customer service", "servizio clienti", "assistenza clienti"],
-    "Reservation Systems": ["reservation", "prenotazioni", "booking", "amadeus", "opera"],
-    "Concierge": ["concierge", "guest relations", "guest services"],
-    
-    # ========== EDUCATION & RESEARCH ==========
-    "Teaching": ["teaching", "insegnamento", "docenza", "didattica"],
-    "Curriculum Development": ["curriculum development", "sviluppo programmi", "instructional design"],
-    "Research": ["research", "ricerca", "academic research", "ricerca scientifica"],
-    "Academic Writing": ["academic writing", "scrittura accademica", "pubblicazioni"],
-    "E-Learning": ["e-learning", "online learning", "formazione online", "lms"],
-    "Tutoring": ["tutoring", "tutoraggio", "ripetizioni"],
-    "Training Delivery": ["training delivery", "erogazione formazione"],
-    
-    # ========== LANGUAGES ==========
-    "English (Native)": ["english native", "inglese madrelingua", "native english"],
-    "English (C2)": ["english c2", "inglese c2", "fluent english", "inglese fluente"],
-    "English (C1)": ["english c1", "inglese c1", "advanced english", "inglese avanzato"],
-    "English (B2)": ["english b2", "inglese b2", "upper intermediate", "inglese intermedio alto"],
-    "English (B1)": ["english b1", "inglese b1", "intermediate english", "inglese intermedio"],
-    "Italian": ["italian", "italiano", "lingua italiana"],
-    "French": ["french", "francese", "français", "lingua francese"],
-    "German": ["german", "tedesco", "deutsch", "lingua tedesca"],
-    "Spanish": ["spanish", "spagnolo", "español", "lingua spagnola"],
-    "Portuguese": ["portuguese", "portoghese", "português"],
-    "Chinese": ["chinese", "cinese", "mandarin", "mandarino", "中文"],
-    "Arabic": ["arabic", "arabo", "العربية"],
-    "Russian": ["russian", "russo", "русский"],
-    "Japanese": ["japanese", "giapponese", "日本語"],
-    
-    # ========== TOOLS & SOFTWARE ==========
-    "Microsoft Office": ["microsoft office", "ms office", "office 365", "word excel powerpoint"],
-    "Google Workspace": ["google workspace", "g suite", "google docs", "google sheets"],
-    "Slack": ["slack", "team messaging", "comunicazione team"],
-    "Microsoft Teams": ["microsoft teams", "ms teams", "teams software"],
-    "Zoom": ["zoom", "video conferencing", "webinar"],
-    "Jira": ["jira", "atlassian jira", "issue tracking"],
-    "Confluence": ["confluence", "atlassian confluence", "documentation"],
-    "Notion": ["notion", "knowledge management", "wiki"],
-    "Monday.com": ["monday", "monday.com", "project tracking"],
-    "Asana": ["asana", "task management"],
-    "Trello": ["trello", "kanban board"],
+    # Comp & Ben (Killer Keywords)
+    "Compensation": ["salary benchmarking", "job grading", "hay method", "mercer", "towers watson", "executive compensation"],
+    "Benefits": ["benefits administration", "welfare plans", "pension schemes", "health insurance", "total rewards"],
+
+    # ========== SUPPLY CHAIN & LOGISTICS (DETAILED) ==========
+    "Supply Chain": ["supply chain management", "scm"],
+    "Planning (Killer Keywords)": ["demand planning", "s&op", "sales and operations planning", "mrp ii", "inventory optimization", "safety stock analysis"],
+    "Procurement (Killer Keywords)": ["strategic sourcing", "category management", "rfq/rfp management", "supplier relationship management", "srm", "contract negotiation"],
+    "Logistics (Killer Keywords)": ["freight forwarding", "incoterms 2020", "last mile delivery", "fleet telematics", "reverse logistics", "wms configuration"],
+
+    # ========== DATA & ANALTYICS (STANDARD) ==========
+    "Data Analysis": ["data analysis", "pandas", "numpy", "excel", "power query"],
+    "Visualization": ["power bi", "tableau", "looker", "qlik", "domo", "google data studio"],
+    "Big Data": ["hadoop", "spark", "hive", "databricks", "snowflake", "redshift"],
 }
 
 # =============================================================================
