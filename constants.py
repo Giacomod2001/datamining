@@ -252,7 +252,7 @@ INFERENCE_RULES = {
     
     # --- MANUFACTURING ---
     "Lean Manufacturing": ["Manufacturing", "Process Improvement", "Efficiency"],
-    "Quality Assurance": ["Quality Control", "Compliance", "Attention to Detail"],
+    "Quality Assurance": ["Compliance", "Attention to Detail"],
     "Six Sigma": ["Process Improvement", "Statistics", "Quality Management"],
     
     # --- SCIENCE & QUALITY ---
@@ -261,7 +261,7 @@ INFERENCE_RULES = {
     "GLP": ["Quality Management", "Lab Safety"],
     "Data Analysis": ["Statistics", "Excel", "Reporting"],
     "Biotechnology": ["Biology", "Chemistry", "Life Sciences", "Lab Skills", "Microbiology"],
-    "Microbiology": ["Biology", "Lab Skills", "Quality Control"],
+    "Microbiology": ["Biology", "Lab Skills"],
     "Molecular Biology": ["Biology", "Genetics", "Lab Skills"],
     "Spectrophotometry": ["Analytical Chemistry", "Lab Skills"],
     "Western Blot": ["Biology", "Lab Skills", "Molecular Biology"],
