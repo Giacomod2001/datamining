@@ -2427,32 +2427,36 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
             if skill == rule_skill.lower():
                 cv_expanded.update(s.lower() for s in inferred)
     
-    # 6. Rank and Format
+    # 6. Rank and Format - Use skill-based overlap for accurate scoring
     recommendations = []
-    for i, score in enumerate(similarities):
+    for i, tfidf_score in enumerate(similarities):
         role_name = archetype_names[i]
         
-        # Skip excluded roles (redundant)
+        # Skip excluded roles (redundant with JD)
         if role_name in excluded_roles:
             continue
             
         role_skills = constants.JOB_ARCHETYPES[role_name]
         role_norm = {s.lower() for s in role_skills}
         
-        # Use expanded CV skills for comparison
+        # Calculate actual skill overlap (matched skills / role requirements)
+        matched_skills = cv_expanded & role_norm
         missing_norm = role_norm - cv_expanded
         missing_display = [s for s in role_skills if s.lower() in missing_norm]
         
-        # 7. Quality Filter (v1.35 - Adjusted for word-based TF-IDF)
-        # Word-based matching produces lower raw cosine scores than char-based.
-        # 10% threshold is appropriate for word ngrams; ensures we show relevant roles.
-        final_score = score * 100
-        if final_score < 10:
+        # Score = overlap percentage (more meaningful than TF-IDF cosine)
+        if len(role_norm) > 0:
+            overlap_score = (len(matched_skills) / len(role_norm)) * 100
+        else:
+            overlap_score = 0
+        
+        # Quality Filter - Only show roles with at least 20% skill match
+        if overlap_score < 20:
             continue
             
         recommendations.append({
             "role": role_name,
-            "score": final_score, 
+            "score": overlap_score, 
             "missing": missing_display
         })
         
