@@ -1,6 +1,6 @@
 # CareerMatch AI
 
-> AI-Powered CV-to-Job Matching Platform
+> CV-JD Match Analyzer — AI tool for job seekers. Compares CV with job descriptions, calculates match %, finds skill gaps, and suggests learning paths. Built with ML/NLP on Streamlit.
 
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
@@ -19,7 +19,7 @@ Click "Try Demo" to see the app in action with sample data.
 
 ## What is CareerMatch AI?
 
-**CareerMatch AI** is an intelligent analytics platform that uses **Machine Learning** and **NLP** to analyze the compatibility between your CV and job postings.
+**CareerMatch AI** analyzes CV-Job compatibility using **ML/NLP**. Get match scores, discover transferable skills, and receive personalized learning paths.
 
 ### Key Features
 
