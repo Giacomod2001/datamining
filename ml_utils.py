@@ -2317,8 +2317,23 @@ def generate_cv_pdf(text_content: str) -> bytes:
             clean_line = clean_line.encode('latin-1', 'ignore').decode('latin-1')
         except:
             clean_line = ''.join(c if ord(c) < 128 else '' for c in clean_line)
+        
+        # Detect experience/education titles (contain 'at' or date patterns like '(Month Year')
+        # Add extra spacing before new entries
+        is_entry_title = False
+        if in_section in ['PROFESSIONAL EXPERIENCE', 'EXPERIENCE', 'EDUCATION', 'PROJECTS']:
+            # Check if line looks like an entry title (contains date or 'at')
+            if (' at ' in clean_line.lower() or 
+                '(' in clean_line and any(year in clean_line for year in ['2020', '2021', '2022', '2023', '2024', '2025', '2026']) or
+                ' - ' in clean_line and any(month in clean_line for month in ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'Present'])):
+                is_entry_title = True
+                pdf.ln(4)  # Extra space before new entry
+                pdf.set_font('Times', 'B', 11)  # Bold for titles
+            else:
+                pdf.set_font('Times', '', 11)
+        else:
+            pdf.set_font('Times', '', 11)
             
-        pdf.set_font('Times', '', 11)
         pdf.set_text_color(0, 0, 0)  # Black
         pdf.multi_cell(0, 5, clean_line)
         pdf.ln(1)
