@@ -2755,17 +2755,17 @@ def generate_simple_cv_pdf(text_content: str) -> bytes:
             pass
             
         def footer(self):
-            # Minimal footer
+            # Minimal footer - Times, Black
             self.set_y(-15)
-            self.set_font('Arial', 'I', 8)
-            self.set_text_color(128, 128, 128)
+            self.set_font('Times', 'I', 9)
+            self.set_text_color(0, 0, 0)
             self.cell(0, 10, f'{self.page_no()}', 0, 0, 'R')
 
     pdf = CV_PDF()
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
-    pdf.set_font("Arial", size=10) # Smaller font (-1/2 sizes)
-    pdf.set_text_color(0, 0, 0)
+    pdf.set_font("Times", size=11)  # Times 11pt base
+    pdf.set_text_color(0, 0, 0)  # All black
     
     # Pre-process text to handle encoding and bullets
     replacements = {
@@ -2795,16 +2795,19 @@ def generate_simple_cv_pdf(text_content: str) -> bytes:
 
         # Formatting Heuristics
         if clean_line.isupper() and len(clean_line) < 60:
-            # Section Header
-            pdf.ln(3)
-            pdf.set_font("Arial", 'B', 11)
-            pdf.cell(0, 5, clean_line, 0, 1)
-            pdf.set_font("Arial", '', 10)
+            # Section Header - 13pt Bold Times
+            pdf.ln(4)
+            pdf.set_font("Times", 'B', 13)
+            pdf.set_text_color(0, 0, 0)
+            pdf.cell(0, 6, clean_line, 0, 1)
+            pdf.set_font("Times", '', 11)
         elif " | " in clean_line and len(clean_line) < 100:
-             # Subheader
-             pdf.set_font("Arial", 'B', 10)
+             # Subheader - 11pt Bold Times
+             pdf.ln(3)
+             pdf.set_font("Times", 'B', 11)
+             pdf.set_text_color(0, 0, 0)
              pdf.cell(0, 5, clean_line, 0, 1)
-             pdf.set_font("Arial", '', 10)
+             pdf.set_font("Times", '', 11)
         else:
             # Body text
             pdf.multi_cell(0, 5, clean_line)
