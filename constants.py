@@ -715,4 +715,24 @@ JOB_ARCHETYPES = {
     "Receptionist": {"Customer Service", "Communication", "Organization", "Multitasking"},
     "Data Entry Specialist": {"Data Entry", "Excel", "Attention to Detail", "Organization"},
     "Personal Assistant": {"Organization", "Time Management", "Communication", "Multitasking"},
+
+    # ========== CONSTRUCTION & REAL ESTATE (NEW) ==========
+    "Construction Manager": {"Construction Management", "Project Management", "Budgeting", "Leadership", "Safety"},
+    "Architect": {"Architecture", "Design", "AutoCAD", "SketchUp", "Creativity"},
+    "Civil Engineer (Site)": {"Civil Engineering", "Construction Management", "AutoCAD", "Surveying"},
+    "Real Estate Agent": {"Real Estate", "Sales", "Negotiation", "Communication", "Customer Service"},
+    "Property Manager": {"Property Management", "Customer Service", "Organization", "Maintenance"},
+    "Facility Manager": {"Facility Management", "Maintenance", "Leadership", "Budgeting"},
+
+    # ========== INSURANCE & ACTUARIAL (NEW) ==========
+    "Actuary": {"Actuarial Science", "Statistics", "Math", "Risk Management", "Excel"},
+    "Underwriter": {"Underwriting", "Risk Analysis", "Insurance", "Analytical Skills"},
+    "Claims Adjuster": {"Claims", "Insurance", "Customer Service", "Negotiation", "Investigation"},
+    "Insurance Broker": {"Insurance", "Sales", "Negotiation", "Communication"},
+
+    # ========== CREATIVE ARTS & MEDIA (NEW) ==========
+    "Journalist": {"Journalism", "Writing", "Research", "Communication", "Interviewing"},
+    "Sound Engineer": {"Audio Engineering", "Pro Tools", "Mixing", "Music"},
+    "Video Producer": {"Video Production", "Project Management", "Creativity", "Budgeting"},
+    "Art Curator": {"Art History", "Organization", "Communication", "Research"},
 }

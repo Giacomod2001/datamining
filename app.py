@@ -1662,20 +1662,7 @@ def render_evaluation_page():
             Upload your CV and job description to get actionable insights, interview prep, 
             and a roadmap to your dream job.
         </p>
-        <div style='display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; flex-wrap: wrap;'>
-            <div style='text-align: center;'>
-                <div style='font-size: 1.5rem; font-weight: bold; color: #00A0DC;'>620+</div>
-                <div style='font-size: 0.75rem; color: #6e7681;'>Skills Analyzed</div>
-            </div>
-            <div style='text-align: center;'>
-                <div style='font-size: 1.5rem; font-weight: bold; color: #00C853;'>85%</div>
-                <div style='font-size: 0.75rem; color: #6e7681;'>Match Accuracy</div>
-            </div>
-            <div style='text-align: center;'>
-                <div style='font-size: 1.5rem; font-weight: bold; color: #FFB300;'>5 sec</div>
-                <div style='font-size: 0.75rem; color: #6e7681;'>Analysis Time</div>
-            </div>
-        </div>
+
     </div>
     """, unsafe_allow_html=True)
 
