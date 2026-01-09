@@ -255,16 +255,16 @@ INFERENCE_RULES = {
     "Six Sigma": ["Process Improvement", "Statistics", "Quality Management"],
     
     # --- SCIENCE & QUALITY ---
-    "GMP": ["ISO Standards", "Quality Control", "Quality Assurance", "Compliance", "Quality Management"],
-    "GLP": ["ISO Standards", "Quality Control", "Quality Assurance", "Lab Safety", "Quality Management"],
+    # GMP/GLP - Reduced to prevent over-matching (was: 5 inferences each)
+    "GMP": ["Quality Management", "Compliance"],
+    "GLP": ["Quality Management", "Lab Safety"],
     "Data Analysis": ["Statistics", "Excel", "Reporting"],
     "Biotechnology": ["Biology", "Chemistry", "Life Sciences", "Lab Skills", "Microbiology"],
     "Microbiology": ["Biology", "Lab Skills", "Quality Control"],
     "Molecular Biology": ["Biology", "Genetics", "Lab Skills"],
     "Spectrophotometry": ["Analytical Chemistry", "Lab Skills"],
     "Western Blot": ["Biology", "Lab Skills", "Molecular Biology"],
-    "HPLC": ["Analytical Chemistry", "Lab Skills", "Quality Control"],
-    "PCR": ["Molecular Biology", "Lab Skills"],
+    # Note: HPLC/PCR inference rules are defined above in the ANALYTICAL CHEMISTRY section
 }
 
 # =============================================================================
