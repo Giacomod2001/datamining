@@ -1652,19 +1652,7 @@ def render_evaluation_page():
     show_cover_letter = st.session_state.get("show_cover_letter", False)
     
     # Hero Header with Gradient - Centered and Enhanced
-    st.markdown("""
-    <div class='hero-gradient'>
-        <h1 style='margin: 0; font-size: 2.5rem; font-weight: 700;'>CareerMatch AI</h1>
-        <p style='font-size: 1.2rem; color: #00A0DC; margin: 0.5rem 0; font-weight: 600;'>
-            AI-Powered Career Assistant
-        </p>
-        <p style='color: #8b949e; font-size: 0.95rem; max-width: 600px; margin: 0.5rem auto 1rem auto;'>
-            Upload your CV and job description to get actionable insights, interview prep, 
-            and a roadmap to your dream job.
-        </p>
 
-    </div>
-    """, unsafe_allow_html=True)
 
     # =============================================================================
     # INPUT COLUMNS: JD | CV | Project (optional) | Cover Letter (optional)
