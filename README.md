@@ -1,6 +1,6 @@
 # CareerMatch AI
 
-> CV-JD Match Analyzer — AI tool for job seekers. Compares CV with job descriptions, calculates match %, finds skill gaps, and suggests learning paths. Built with ML/NLP on Streamlit.
+> AI-powered job search toolkit: CV-JD match scoring, skill gap analysis, smart CV Builder with suggestions, and personalized learning paths. Built with ML/NLP on Streamlit.
 
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)

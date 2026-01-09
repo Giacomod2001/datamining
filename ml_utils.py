@@ -2367,8 +2367,8 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
         
     corpus.extend(archetype_docs)
     
-    # 2. Vectorization
-    vectorizer = TfidfVectorizer(analyzer='char_wb', ngram_range=(2, 4), min_df=1)
+    # 2. Vectorization - Use word-based matching for accurate skill comparison
+    vectorizer = TfidfVectorizer(analyzer='word', ngram_range=(1, 2), min_df=1, lowercase=True)
     tfidf_matrix = vectorizer.fit_transform(corpus)
     
     # 3. Identify Target Role from JD (if redundant)
