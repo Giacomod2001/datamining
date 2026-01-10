@@ -1089,49 +1089,78 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
     import re
     
     # Known companies database (common in Italian CVs)
+    # NOTE: Only include companies that are EMPLOYERS, not tool/product names
+    # (removed Google, Salesforce, Adobe etc. because they appear as tool names)
     known_companies = {
-        # Major Italian companies
+        # Italian staffing/recruiting companies
         "Randstad", "Adecco", "Manpower", "Gi Group", "Umana", "Synergie",
+        # Companies from demo CV
         "Otreat", "Digital Agency Milano", "TechStart Italia", "StartUp Milano",
+        # Major Italian corporations (typically employers)
         "Enel", "Eni", "Intesa Sanpaolo", "UniCredit", "Generali", "Poste Italiane",
         "Telecom Italia", "TIM", "Vodafone Italia", "Wind Tre", "Fastweb",
         "Fiat", "Ferrari", "Lamborghini", "Maserati", "Alfa Romeo", "Stellantis",
         "Luxottica", "Barilla", "Ferrero", "Lavazza", "Pirelli", "Prada", "Gucci",
         "Armani", "Versace", "Dolce & Gabbana", "Benetton", "Calzedonia",
-        # Tech companies
-        "Google", "Microsoft", "Amazon", "Apple", "Meta", "IBM", "Oracle", "SAP",
-        "Salesforce", "Adobe", "Spotify", "Netflix", "Uber", "Airbnb", "Stripe",
+        # Consulting firms (typically employers, not tool names)
         "Accenture", "Deloitte", "PwC", "EY", "KPMG", "McKinsey", "BCG", "Bain",
-        # Data/Marketing agencies
-        "DataDriven Corp", "Digital Agency", "Marketing Solutions", "Tech Solutions",
-        # Italian Universities (for education sections)
+        # Marketing agencies from demo
+        "DataDriven Corp",
+        # Italian Universities
         "Politecnico di Milano", "Università Bocconi", "Bocconi", "IULM", "Università IULM",
         "Sapienza", "Luiss", "Cattolica", "Bicocca", "Politecnico di Torino",
-        "Università di Bologna", "Università di Padova", "Università di Firenze",
     }
     
-    # Pattern 1: "Job Title | Company Name"
-    pipe_pattern = r'\|\s*([A-Z][A-Za-z\s&\.]+?)(?:\s*\||$|\n)'
+    # Tech companies that ALSO have products with the same name
+    # These need CONTEXT-AWARE detection (only if after "|" or "at")
+    tech_companies_ambiguous = {
+        "Google", "Microsoft", "Amazon", "Apple", "Meta", "IBM", "Oracle", "SAP",
+        "Salesforce", "Adobe", "Spotify", "Netflix", "Uber", "Airbnb", "Stripe",
+        "HubSpot", "Slack", "Zoom", "Atlassian", "Shopify", "Twitter", "LinkedIn",
+    }
+    
+    # Pattern 1: "Job Title | Company Name" - extracts company after pipe
+    pipe_pattern = r'\|\s*([A-Z][A-Za-z\s&\.\-]+?)(?:\s*\||$|\n|\s+\d{4})'
     for match in re.finditer(pipe_pattern, text):
         company = match.group(1).strip()
+        # Remove trailing dates like "2022" or "Present"
+        company = re.sub(r'\s*\d{4}.*$', '', company).strip()
+        company = re.sub(r'\s*-\s*Present.*$', '', company, flags=re.IGNORECASE).strip()
         if company and len(company) > 2 and company.lower() not in exclusion_set:
             # Ensure it's not a location
             if company not in entities["Locations"] and company.lower() not in {"italy", "milan", "rome"}:
                 entities["Organizations"].append(company)
     
-    # Pattern 2: "at Company Name" or "presso Company"
-    at_pattern = r'(?:at|presso|@)\s+([A-Z][A-Za-z\s&\.]+?)(?:\s*[\|\n,]|$)'
+    # Pattern 2: "at Company Name" or "presso Company" - employment context
+    at_pattern = r'(?:at|presso|@)\s+([A-Z][A-Za-z\s&\.\-]+?)(?:\s*[\|\n,\.]|$)'
     for match in re.finditer(at_pattern, text, re.IGNORECASE):
         company = match.group(1).strip()
         if company and len(company) > 2 and company.lower() not in exclusion_set:
             if company not in entities["Locations"]:
                 entities["Organizations"].append(company)
     
-    # Pattern 3: Known companies database lookup
+    # Pattern 3: Safe companies database lookup (no ambiguity with tool names)
     for company in known_companies:
         if company.lower() in text.lower():
             if company not in entities["Organizations"]:
                 entities["Organizations"].append(company)
+    
+    # Pattern 4: CONTEXT-AWARE detection for ambiguous tech companies
+    # Only add if they appear in employment patterns, not as tool names
+    for company in tech_companies_ambiguous:
+        # Check if company appears after "|" or "at" (employment context)
+        employment_patterns = [
+            rf'\|\s*{re.escape(company)}\b',  # "| Google"
+            rf'\bat\s+{re.escape(company)}\b',  # "at Google"
+            rf'\bpresso\s+{re.escape(company)}\b',  # "presso Google"
+            rf'\bworked\s+(?:at|for)\s+{re.escape(company)}\b',  # "worked at Google"
+            rf'{re.escape(company)}\s+(?:S\.?p\.?A\.?|S\.?r\.?l\.?|Inc|Ltd|Corp)',  # "Google Inc"
+        ]
+        for pattern in employment_patterns:
+            if re.search(pattern, text, re.IGNORECASE):
+                if company not in entities["Organizations"]:
+                    entities["Organizations"].append(company)
+                break  # Found in employment context, add it
 
     # 3. Post-Processing Fixes (Known Misclassifications)
     # EXPANDED: Italian cities, European capitals, major world cities
