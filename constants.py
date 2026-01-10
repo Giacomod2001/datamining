@@ -51,221 +51,86 @@ ML_MODELS = {
 # =============================================================================
 # When a user has Skill A, they likely also have competency in related skills
 INFERENCE_RULES = {
-    # --- TECHNOLOGY & IT (Tightened: removed generic inferences) ---
-    "React": ["JavaScript", "Frontend Development"],
-    "Vue": ["JavaScript", "Frontend Development"],
-    "Angular": ["JavaScript", "Frontend Development", "TypeScript"],
+    # ===========================================================================
+    # CLEANED INFERENCE RULES - Max 1-2 direct technical inferences per skill
+    # No soft skills (Communication, Problem Solving), no cross-domain cascading
+    # ===========================================================================
+
+    # --- TECHNOLOGY & IT ---
+    "React": ["JavaScript"],
+    "Vue": ["JavaScript"],
+    "Angular": ["JavaScript", "TypeScript"],
     "TypeScript": ["JavaScript"],
-    "Django": ["Python", "Backend Development"],
-    "Flask": ["Python", "Backend Development"],
-    "Spring": ["Java", "Backend Development"],
-    "Hibernate": ["Java", "Database Management"],
+    "Django": ["Python"],
+    "Flask": ["Python"],
+    "Spring": ["Java"],
+    "Hibernate": ["Java"],
     "AWS": ["Cloud Computing"],
     "Azure": ["Cloud Computing"],
     "GCP": ["Cloud Computing"],
-    "Docker": ["DevOps", "Containerization"],
-    "Kubernetes": ["DevOps", "Containerization"],
-    "Terraform": ["DevOps", "Infrastructure as Code"],
+    "Docker": ["DevOps"],
+    "Kubernetes": ["DevOps"],
+    "Terraform": ["DevOps"],
     "Git": ["Version Control"],
-    "Linux": ["Operating Systems", "System Administration"],
 
-    # --- MARKETING & DIGITAL (Tightened: removed generic 'Marketing Strategy') ---
-    "Google Ads": ["SEM", "PPC"],
-    "Facebook Ads": ["Social Media Marketing", "Paid Advertising"],
-    "LinkedIn Ads": ["B2B Marketing", "Social Media Marketing"],
-    "Google Analytics": ["Web Analytics", "Data Analysis"],
-    "GA4": ["Web Analytics", "Google Analytics"],
-    "SEO": ["Digital Marketing", "Content Marketing"],
-    "HubSpot": ["CRM", "Marketing Automation"],
-    "Salesforce": ["CRM", "Sales Management"],
-    "Copywriting": ["Content Marketing", "Writing"],
-    
-    # --- BUSINESS & MANAGEMENT (Tightened: removed generic 'Leadership', 'Organization') ---
-    "Jira": ["Project Management", "Agile"],
-    "Trello": ["Project Management", "Kanban"],
+    # --- MARKETING & DIGITAL ---
+    "Google Ads": ["SEM"],
+    "Facebook Ads": ["Social Media Marketing"],
+    "LinkedIn Ads": ["Social Media Marketing"],
+    "Google Analytics": ["Web Analytics"],
+    "GA4": ["Web Analytics"],
+    "HubSpot": ["CRM"],
+    "Salesforce": ["CRM"],
+
+    # --- BUSINESS & MANAGEMENT ---
+    "Jira": ["Project Management"],
+    "Trello": ["Project Management"],
     "Asana": ["Project Management"],
-    "Scrum": ["Agile", "Project Management"],
-    "Kanban": ["Agile", "Project Management"],
-    "Budgeting": ["Financial Analysis"],
-    "Stakeholder Management": ["Communication"],
-    
-    # --- FINANCE & ACCOUNTING (Tightened: removed generic 'Compliance') ---
-    "Financial Reporting": ["Accounting", "Excel"],
-    "Auditing": ["Accounting", "Financial Reporting"],
+    "Scrum": ["Agile"],
+    "Kanban": ["Agile"],
+
+    # --- FINANCE & ACCOUNTING ---
+    "Financial Reporting": ["Accounting"],
+    "Auditing": ["Accounting"],
     "Tax": ["Accounting"],
-    "Financial Modeling": ["Excel", "Valuation"],
+    "Financial Modeling": ["Excel"],
     "SAP": ["ERP"],
-    "Oracle Financials": ["ERP", "Accounting"],
-    "IFRS": ["Accounting", "Financial Reporting"],
-    "GAAP": ["Accounting", "Financial Reporting"],
-    
-    # --- DESIGN & CREATIVE (Tightened: removed redundant 'Adobe Creative Suite' where specific tools are mentioned) ---
-    "Adobe Photoshop": ["Graphic Design", "Image Editing"],
-    "Adobe Illustrator": ["Graphic Design", "Vector Design"],
-    "Adobe InDesign": ["Graphic Design", "Layout"],
-    "Figma": ["UI Design", "UX Design"],
-    "Sketch": ["UI Design", "UX Design"],
+    "IFRS": ["Accounting"],
+    "GAAP": ["Accounting"],
+
+    # --- DESIGN & CREATIVE ---
+    "Adobe Photoshop": ["Graphic Design"],
+    "Adobe Illustrator": ["Graphic Design"],
+    "Adobe InDesign": ["Graphic Design"],
+    "Figma": ["UI Design"],
+    "Sketch": ["UI Design"],
     "Premiere Pro": ["Video Editing"],
-    "After Effects": ["Motion Graphics", "Video Editing"],
-    
-    # --- LEGAL (Tightened: removed generic 'Legal Research') ---
-    "GDPR": ["Compliance", "Privacy Law"],
-    "M&A": ["Corporate Law", "Due Diligence"],
-    "Contract Law": ["Legal", "Negotiation"],
-    
-    # --- ANALYTICAL CHEMISTRY & QC LAB (NEW) ---
-    # Tightened: removed generic inferences like "Chromatography", "QC Lab", "Analytical Chemistry"
+    "After Effects": ["Video Editing"],
+
+    # --- LEGAL ---
+    "GDPR": ["Compliance"],
+    "M&A": ["Corporate Law"],
+
+    # --- DATA & ANALYTICS ---
+    "Power BI": ["Data Visualization"],
+    "Tableau": ["Data Visualization"],
+    "Looker": ["Data Visualization"],
+    "BigQuery": ["SQL"],
+    "Snowflake": ["SQL"],
+
+    # --- LAB & SCIENCE (only direct, no cascading) ---
     "HPLC": ["Lab Skills"],
-    "Gas Chromatography": ["Lab Skills"],
-    "Spectroscopy": ["Lab Skills"],
-    "Western Blot": ["Protein Analysis", "Lab Skills", "Molecular Biology"],
-    "ELISA": ["Protein Analysis", "Lab Skills", "Immunoassay"],
-    "PCR": ["Molecular Techniques", "Lab Skills", "Molecular Biology"],
-    "qPCR": ["Molecular Techniques", "Lab Skills", "Molecular Biology", "PCR"],
-    "GMP": ["Quality Management", "Compliance", "Pharma", "Manufacturing"],
-    "GLP": ["Quality Management", "Compliance", "Lab Safety", "Research"],
-    "ISO 22716": ["Cosmetic Regulations", "Quality Management", "GMP"],
-    "Cosmetic Regulations": ["Regulatory", "Compliance"],
-    "CLP Regulation": ["Regulatory", "Compliance"],
-    "Microbiological Analysis": ["Lab Skills", "Microbiology"],
-    
-    # --- HR & RECRUITING (Tightened: removed generic 'Communication', 'HR Management' where not specific) ---
-    "Recruiting": ["Talent Acquisition", "Interviewing"],
-    "Sourcing": ["Recruiting", "Boolean Search"],
-    "Headhunting": ["Recruiting", "Executive Search"],
-    "ATS Management": ["Recruiting", "HRIS"],
-    "HR Management": ["Employee Relations", "Labor Law"],
-    "Payroll": ["Accounting", "HR Management"],
-    "Labor Law": ["HR Management", "Legal"],
-    "Compensation & Benefits": ["HR Management", "Payroll"],
-    "Training & Development": ["HR Management", "L&D"],
-    "Talent Management": ["HR Management", "Succession Planning"],
-    
-    # --- SUPPLY CHAIN & LOGISTICS (Tightened: removed circular references) ---
-    "Supply Chain Management": ["Logistics", "Procurement"],
-    "Logistics": ["Transportation", "Warehouse Management"],
-    "Fleet Management": ["Logistics", "Transportation"],
-    "Warehouse Management": ["Logistics", "Inventory Management"],
-    "Procurement": ["Negotiation", "Vendor Management"],
-    "Strategic Sourcing": ["Procurement", "Negotiation"],
-    "Vendor Management": ["Procurement"],
-    "Demand Planning": ["Forecasting", "Inventory Management"],
-    "Inventory Management": ["Logistics"],
-    "SAP": ["ERP"],
-    
-    # --- HOSPITALITY & TOURISM (Tightened: removed generic terms) ---
-    "Hotel Management": ["Hospitality", "Customer Service"],
-    "Front Office": ["Customer Service", "Hospitality"],
-    "Housekeeping Management": ["Hospitality"],
-    "F&B Management": ["Hospitality", "Food Safety"],
-    "HACCP": ["Food Safety"],
-    "Menu Engineering": ["F&B Management"],
-    "Tourism": ["Travel Planning", "Customer Service"],
-    "Ticketing": ["Travel Planning", "GDS"],
-    "GDS": ["Ticketing"],
-    
-    # --- EDUCATION & TRAINING (Tightened) ---
-    "Teaching": ["Communication", "Curriculum Development"],
-    "Training Delivery": ["Public Speaking", "Facilitation"],
-    "Curriculum Development": ["Teaching", "Instructional Design"],
-    "E-Learning": ["Instructional Design", "LMS"],
-    
-    # --- CUSTOMER SERVICE & RETAIL (Tightened) ---
-    "Customer Service": ["Communication", "Problem Solving"],
-    "Retail": ["Sales", "Customer Service"],
-    "Visual Merchandising": ["Retail", "Design"],
-    
-    # --- BIOTECH & SCIENCE (DETAILED) ---
-    "Biotechnology": ["Biology", "Chemistry", "Life Sciences", "Lab Skills"],
-    "Molecular Biology": ["Biology", "Genetics", "Lab Skills", "PCR", "Research"],
-    "PCR": ["Molecular Biology", "Lab Skills", "Genetics"],
-    "Cell Culture": ["Biology", "Lab Skills", "Sterile Technique", "Research"],
-    "Western Blot": ["Molecular Biology", "Lab Skills", "Protein Analysis"],
-    "Bioinformatics": ["Biology", "Computer Science", "Data Analysis", "Genomics", "Python", "R"],
-    "Genetics": ["Biology", "Molecular Biology", "Research"],
-    "Clinical Research": ["Healthcare", "GCP", "Data Analysis", "Regulatory Affairs"],
-    "Regulatory Affairs": ["Compliance", "Healthcare", "Legal", "Life Sciences", "FDA/EMA"],
-    "Pharmacovigilance": ["Healthcare", "Drug Safety", "Compliance"],
-    
-    # --- LANGUAGES (DETAILED) ---
-    "Translation": ["Languages", "Writing", "Intercultural Communication"],
-    "Interpretation": ["Languages", "Public Speaking", "Active Listening", "Memory"],
-    "Simultaneous Interpretation": ["Interpretation", "Concentration", "Multitasking"],
-    "CAT Tools": ["Translation", "Technology", "Localization"],
-    "Business English": ["English", "Business Communication"],
-    "Localization": ["Translation", "Cultural Adaptation", "Tech"],
-    
-    # --- ENGINEERING (SPECIALIZED) ---
-    "Mechanical Engineering": ["Engineering", "Physics", "Math", "CAD"],
-    "Energy Engineering": ["Engineering", "Sustainability", "Physics"],
-    "Renewable Energy": ["Energy Engineering", "Sustainability", "Environmental Science"],
-    "Mechatronics": ["Mechanical Engineering", "Electronics", "Computer Science", "Robotics"],
-    "Robotics": ["Mechatronics", "Automation", "Programming"],
-    "PLC Programming": ["Automation", "Electrical Engineering", "Control Systems"],
-    "PLC": ["Automation", "Industrial Engineering"],
-    "CAD": ["Design", "Engineering", "Technical Drawing", "Modeling"],
-    "SolidWorks": ["CAD", "Mechanical Engineering", "3D Modeling"],
-    "Simulation": ["Engineering", "Analysis", "Math"],
-    
-    # --- ADVANCED FINANCE & IT ---
-    "Quantitative Finance": ["Finance", "Math", "Statistics", "Programming"],
-    "Algorithmic Trading": ["Quantitative Finance", "Programming", "Data Analysis"],
-    "Stochastic Calculus": ["Math", "Quantitative Finance"],
-    "Quantum Computing": ["Computer Science", "Physics", "Math"],
-    "Cybersecurity": ["IT", "Risk Management", "System Administration"],
-    "Algorithms": ["Computer Science", "Programming", "Logic"],
-    "Accounting": ["Finance", "Math", "Compliance", "Detail Oriented"],
-    "Financial Analysis": ["Finance", "Excel", "Data Analysis"],
-    
-    # --- MARKETING & SALES (NEW) ---
-    "SEO": ["Digital Marketing", "Analytics", "Content Strategy"],
-    "SEM": ["Digital Marketing", "Advertising", "Analytics"],
-    "Content Marketing": ["Marketing", "Writing", "Creativity"],
-    "Social Media": ["Marketing", "Communication", "Community Management"],
-    "Sales": ["Communication", "Negotiation", "Customer Service"],
-    "Tech Sales": ["Sales", "Technology", "Presentation"],
-    "CRM": ["Sales", "Data Management", "Organization"],
+    "PCR": ["Lab Skills"],
+    "GMP": ["Quality Management"],
 
-    # --- LEGAL (NEW) ---
-    "Corporate Law": ["Legal", "Contract Law", "Business"],
-    "IP Law": ["Legal", "Intellectual Property", "Research"],
-    # --- CONSTRUCTION & REAL ESTATE ---
-    "Construction Management": ["Project Management", "Engineering", "Leadership"],
-    "Architecture": ["Design", "Creativity", "Engineering", "Software"],
-    "BIM": ["Architecture", "Engineering", "Software", "Construction Management"],
-    "Real Estate": ["Sales", "Negotiation", "Finance", "Customer Service"],
-    "Facility Management": ["Operations", "Maintenance", "Management"],
+    # --- ENGINEERING ---
+    "SolidWorks": ["CAD"],
+    "AutoCAD": ["CAD"],
+    "PLC": ["Automation"],
 
-    # --- INSURANCE & ACTUARIAL ---
-    "Actuarial Science": ["Math", "Statistics", "Finance", "Risk Management"],
-    "Underwriting": ["Insurance", "Risk Management", "Analysis", "Finance"],
-    "Claims": ["Insurance", "Customer Service", "Negotiation", "Problem Solving"],
-    
-    # --- CREATIVE & MEDIA ---
-    "Video Production": ["Creativity", "Technology", "Storytelling", "Art"],
-    "Audio Engineering": ["Technology", "Music", "Creativity"],
-    "Journalism": ["Writing", "Communication", "Research", "Media"],
-    
-    # --- EDUCATION ---
-    "Instructional Design": ["Education", "Technology", "Creativity", "Training"],
-    "Special Education": ["Teaching", "Patience", "Communication", "Empathy"],
-    
-    # --- MANUFACTURING ---
-    "Lean Manufacturing": ["Manufacturing", "Process Improvement", "Efficiency"],
-    "Quality Assurance": ["Compliance", "Attention to Detail"],
-    "Six Sigma": ["Process Improvement", "Statistics", "Quality Management"],
-    
-    # --- SCIENCE & QUALITY ---
-    # GMP/GLP - Reduced to prevent over-matching (was: 5 inferences each)
-    "GMP": ["Quality Management", "Compliance"],
-    "GLP": ["Quality Management", "Lab Safety"],
-    "Data Analysis": ["Statistics", "Excel", "Reporting"],
-    "Biotechnology": ["Biology", "Chemistry", "Life Sciences", "Lab Skills", "Microbiology"],
-    "Microbiology": ["Biology", "Lab Skills"],
-    "Molecular Biology": ["Biology", "Genetics", "Lab Skills"],
-    "Spectrophotometry": ["Analytical Chemistry", "Lab Skills"],
-    "Western Blot": ["Biology", "Lab Skills", "Molecular Biology"],
-    # Note: HPLC/PCR inference rules are defined above in the ANALYTICAL CHEMISTRY section
+    # --- HR ---
+    "Recruiting": ["Talent Acquisition"],
+    "ATS Management": ["Recruiting"],
 }
 
 # =============================================================================
