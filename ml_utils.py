@@ -1081,6 +1081,54 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
     except Exception as e:
         pass # Fallback to empty if NLTK fails
 
+    # =========================================================================
+    # STEP 2b: PATTERN-BASED COMPANY EXTRACTION
+    # =========================================================================
+    # NLTK often misses companies, so we use CV-specific patterns
+    
+    import re
+    
+    # Known companies database (common in Italian CVs)
+    known_companies = {
+        # Major Italian companies
+        "Randstad", "Adecco", "Manpower", "Gi Group", "Umana", "Synergie",
+        "Otreat", "Digital Agency Milano", "TechStart Italia", "StartUp Milano",
+        "Enel", "Eni", "Intesa Sanpaolo", "UniCredit", "Generali", "Poste Italiane",
+        "Telecom Italia", "TIM", "Vodafone Italia", "Wind Tre", "Fastweb",
+        "Fiat", "Ferrari", "Lamborghini", "Maserati", "Alfa Romeo", "Stellantis",
+        "Luxottica", "Barilla", "Ferrero", "Lavazza", "Pirelli", "Prada", "Gucci",
+        "Armani", "Versace", "Dolce & Gabbana", "Benetton", "Calzedonia",
+        # Tech companies
+        "Google", "Microsoft", "Amazon", "Apple", "Meta", "IBM", "Oracle", "SAP",
+        "Salesforce", "Adobe", "Spotify", "Netflix", "Uber", "Airbnb", "Stripe",
+        "Accenture", "Deloitte", "PwC", "EY", "KPMG", "McKinsey", "BCG", "Bain",
+        # Data/Marketing agencies
+        "DataDriven Corp", "Digital Agency", "Marketing Solutions", "Tech Solutions",
+    }
+    
+    # Pattern 1: "Job Title | Company Name"
+    pipe_pattern = r'\|\s*([A-Z][A-Za-z\s&\.]+?)(?:\s*\||$|\n)'
+    for match in re.finditer(pipe_pattern, text):
+        company = match.group(1).strip()
+        if company and len(company) > 2 and company.lower() not in exclusion_set:
+            # Ensure it's not a location
+            if company not in entities["Locations"] and company.lower() not in {"italy", "milan", "rome"}:
+                entities["Organizations"].append(company)
+    
+    # Pattern 2: "at Company Name" or "presso Company"
+    at_pattern = r'(?:at|presso|@)\s+([A-Z][A-Za-z\s&\.]+?)(?:\s*[\|\n,]|$)'
+    for match in re.finditer(at_pattern, text, re.IGNORECASE):
+        company = match.group(1).strip()
+        if company and len(company) > 2 and company.lower() not in exclusion_set:
+            if company not in entities["Locations"]:
+                entities["Organizations"].append(company)
+    
+    # Pattern 3: Known companies database lookup
+    for company in known_companies:
+        if company.lower() in text.lower():
+            if company not in entities["Organizations"]:
+                entities["Organizations"].append(company)
+
     # 3. Post-Processing Fixes (Known Misclassifications)
     # EXPANDED: Italian cities, European capitals, major world cities
     known_locations = {
