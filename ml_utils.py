@@ -566,6 +566,56 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
 
     try:
         # =================================================================
+        # STEP 0: PRESERVE COMPOUND TOOL NAMES
+        # =================================================================
+        # LDA splits "Google Analytics" into "google" + "analytics"
+        # We preserve compound names by replacing spaces with underscores
+        # =================================================================
+        import re
+        
+        compound_tools = {
+            # Analytics & BI
+            "Google Analytics": "Google_Analytics",
+            "Google Analytics 4": "Google_Analytics_4",
+            "Google Tag Manager": "Google_Tag_Manager",
+            "Looker Studio": "Looker_Studio",
+            "Power BI": "Power_BI",
+            "Tableau Desktop": "Tableau_Desktop",
+            "Data Studio": "Data_Studio",
+            # Cloud Platforms
+            "Google Cloud": "Google_Cloud",
+            "Google Cloud Platform": "Google_Cloud_Platform",
+            "Amazon Web Services": "Amazon_Web_Services",
+            "Microsoft Azure": "Microsoft_Azure",
+            # Programming & Data
+            "Machine Learning": "Machine_Learning",
+            "Deep Learning": "Deep_Learning",
+            "Natural Language Processing": "NLP",
+            "Data Visualization": "Data_Visualization",
+            "Data Analysis": "Data_Analysis",
+            "Data Science": "Data_Science",
+            "Big Data": "Big_Data",
+            "A/B Testing": "AB_Testing",
+            "Statistical Analysis": "Statistical_Analysis",
+            # Marketing
+            "Social Media": "Social_Media",
+            "Digital Marketing": "Digital_Marketing",
+            "Content Marketing": "Content_Marketing",
+            "Email Marketing": "Email_Marketing",
+            "SEO/SEM": "SEO_SEM",
+        }
+        
+        # Apply compound name preservation
+        processed_corpus = []
+        for doc in text_corpus:
+            processed_doc = doc
+            for original, replacement in compound_tools.items():
+                processed_doc = re.sub(re.escape(original), replacement, processed_doc, flags=re.IGNORECASE)
+            processed_corpus.append(processed_doc)
+        
+        text_corpus = processed_corpus
+
+        # =================================================================
         # STEP 1: PREPROCESSING - Stop Words
         # =================================================================
         # Riferimento corso: "Data Cleaning" (KDD Step 1)
@@ -752,7 +802,8 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
         # Extract top words for each topic and interpret them
         for topic_idx, topic in enumerate(lda.components_):
             top_features_ind = topic.argsort()[:-n_words - 1:-1]
-            top_features = [feature_names[i] for i in top_features_ind]
+            # Convert underscores back to spaces for compound names
+            top_features = [feature_names[i].replace('_', ' ') for i in top_features_ind]
             
             # Store raw for debugging
             topics_raw.append(top_features)
@@ -765,7 +816,8 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
         all_keywords = []
         for topic in lda.components_:
             top_ind = topic.argsort()[-10:][::-1]
-            all_keywords.extend([feature_names[i] for i in top_ind])
+            # Convert underscores back to spaces for compound names
+            all_keywords.extend([feature_names[i].replace('_', ' ') for i in top_ind])
         
         # Deduplicate and get most common
         from collections import Counter
