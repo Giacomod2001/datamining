@@ -1206,6 +1206,53 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
                 filtered_persons.append(person)
     
     entities["Persons"] = filtered_persons
+    
+    # =========================================================================
+    # STEP 5: NORMALIZE LOCATION SYNONYMS (merge duplicates like Milan/Milano)
+    # =========================================================================
+    location_synonyms = {
+        # Italian → English (prefer English for international CVs)
+        "Italia": "Italy",
+        "Milano": "Milan",
+        "Roma": "Rome",
+        "Torino": "Turin",
+        "Napoli": "Naples",
+        "Firenze": "Florence",
+        "Venezia": "Venice",
+        "Genova": "Genoa",
+        "Padova": "Padua",
+        "Lombardia": "Lombardy",
+        "Piemonte": "Piedmont",
+        "Toscana": "Tuscany",
+        "Sicilia": "Sicily",
+        "Sardegna": "Sardinia",
+        "Puglia": "Apulia",
+        # Other European cities
+        "Parigi": "Paris",
+        "Londra": "London",
+        "Berlino": "Berlin",
+        "Barcellona": "Barcelona",
+        "Bruxelles": "Brussels",
+        "Zurigo": "Zurich",
+        "Ginevra": "Geneva",
+        "Monaco": "Munich",
+        "Dublino": "Dublin",
+        "Lisbona": "Lisbon",
+        "Praga": "Prague",
+        "Varsavia": "Warsaw",
+        "Atene": "Athens",
+        "Stoccolma": "Stockholm",
+        "Copenaghen": "Copenhagen",
+        "Lussemburgo": "Luxembourg",
+    }
+    
+    # Normalize locations using synonym mapping
+    normalized_locations = []
+    for loc in entities["Locations"]:
+        # Check if this location has a standard form
+        normalized = location_synonyms.get(loc, loc)
+        normalized_locations.append(normalized)
+    entities["Locations"] = normalized_locations
         
     # Deduplicate and sort
     for k in entities:
