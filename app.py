@@ -993,6 +993,10 @@ def render_cv_builder():
         st.divider()
         
         st.markdown("### Builder Tools")
+
+        if st.button("Load Demo Data", use_container_width=True):
+             st.session_state["trigger_demo_load"] = True
+             st.rerun()
         
         # JD Input for Smart Suggestions (Always visible)
         with st.expander("Target Job Description", expanded=True):
@@ -1089,12 +1093,6 @@ def render_cv_builder():
     if curr_step == 1:
         st.header("1. Personal Profile")
         
-        col_demo, col_reset = st.columns([1, 4])
-        with col_demo:
-             if st.button("Load Demo Data"):
-                 st.session_state["trigger_demo_load"] = True
-                 st.rerun()
-
         col1, col2 = st.columns(2)
         with col1:
             cv_data["name"] = st.text_input("Full Name", value=cv_data.get("name", ""))
