@@ -5,7 +5,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![License](https://img.shields.io/badge/License-PolyForm--NC-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-2.0-0077B5?style=flat)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-2.1-0077B5?style=flat)](CHANGELOG.md)
 
 ---
 
@@ -13,7 +13,7 @@
 
 **[Try CareerMatch AI Now](https://dataminingiulm.streamlit.app/)**
 
-Click "Try Demo" to see the app in action with sample data.
+**New Feature**: Use the "Load Demo Data" button in the **Builder Tools** sidebar to auto-fill the CV Builder with sample data.
 
 ---
 
@@ -25,13 +25,12 @@ Click "Try Demo" to see the app in action with sample data.
 
 | Feature | Description |
 |---------|-------------|
-| **Match Score** | AI-based CV-Job compatibility score |
-| **Transferable Skills** | Automatic recognition of equivalent skills |
-| **Gap Analysis** | Identifies missing skills to develop |
-| **CV Builder** | Create professional CVs with smart skill suggestions |
-| **Cover Letter AI** | Intelligent cover letter evaluation |
+| **CV Builder (v2.0)** | Interactive wizard to build professional CVs with real-time AI suggestions |
+| **Match Score** | AI-based CV-Job compatibility score (0-100%) |
+| **Transferable Skills** | Automatic recognition of equivalent skills (e.g., Power BI ≈ Tableau) |
+| **Gap Analysis** | Identifies missing skills vs Job Description |
 | **Career Compass** | Alternative role suggestions based on your profile |
-| **Learning Path** | Action plan with learning resources |
+| **Psychometric Profile** | Silent Burnout & Resilience detection |
 
 ---
 
@@ -45,7 +44,8 @@ Try directly: **[dataminingiulm.streamlit.app](https://dataminingiulm.streamlit.
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/Giacomod2001/datamining.git && cd datamining
+git clone https://github.com/Giacomod2001/datamining.git
+cd datamining
 
 # 2. Install dependencies
 pip install -r requirements.txt
@@ -58,13 +58,24 @@ The app opens automatically at `http://localhost:8501`.
 
 ---
 
+## 🛠️ CV Builder Workflow
+
+The application features a 4-step guided process:
+
+1. **Personal Profile**: Enter details and professional summary.
+    * *Smart Feature*: Paste a Job Description to get real-time optimization scoring.
+2. **Skills & Competencies**: Select from 600+ database skills or add custom ones.
+    * *AI Insight*: System suggests skills missing from your profile but required by the JD.
+3. **Experience**: Add work history, projects, and education.
+4. **Review & Export**: Download as TXT or PDF, or send directly to the Analysis Engine.
+
+---
+
 ## Data Mining Techniques
 
-This project implements the following Data Mining and Text Analytics techniques from the university course.
+This project implements the following Data Mining and Text Analytics techniques:
 
 ### Knowledge Discovery Process (KDD)
-
-The application follows the classic KDD pipeline:
 
 | Step | Implementation |
 |------|----------------|
@@ -72,21 +83,9 @@ The application follows the classic KDD pipeline:
 | **2. Data Integration** | Merge CV + Job Description + Portfolio |
 | **3. Data Selection** | Extract relevant sections |
 | **4. Data Transformation** | TF-IDF vectorization |
-| **5. Data Mining** | Classification, Clustering, Topic Modeling |
+| **5. Data Mining** | Classification (Random Forest), Clustering (K-Means), Topic Modeling (LDA) |
 | **6. Pattern Evaluation** | Match scoring, confidence calculation |
-| **7. Knowledge Presentation** | Dashboard, charts, reports |
-
-### Machine Learning Algorithms
-
-| Technique | Algorithm | Course Reference |
-|-----------|-----------|------------------|
-| **Classification** | Random Forest (150 trees) | "Classification and Regression" |
-| **Text Vectorization** | TF-IDF (3000 features, trigrams) | "Word Vector Representation" |
-| **Partitioning Clustering** | K-Means | "Clustering Techniques" |
-| **Hierarchical Clustering** | Agglomerative (Ward linkage) | "Hierarchical Clustering" |
-| **Topic Modeling** | LDA (Latent Dirichlet Allocation) | "Topic Model" |
-| **Dimensionality Reduction** | PCA (2D visualization) | "Dimensionality Reduction" |
-| **Information Extraction** | N-gram matching + Fuzzy | "Information Extraction" |
+| **7. Knowledge Presentation** | Streamlit Dashboard & PDF Reports |
 
 ### Text Mining Pipeline
 
@@ -96,38 +95,13 @@ Input Text --> Tokenization --> N-gram Generation --> TF-IDF --> ML Model --> Ou
                 Unigrams          Bigrams/Trigrams
 ```
 
-Key techniques:
-
-- **TF-IDF**: Term Frequency-Inverse Document Frequency for text representation
-- **N-grams**: Capture compound skills like "machine learning"
-- **Fuzzy Matching**: Handle typos with 85% Levenshtein threshold
-
----
-
-## How It Works
-
-1. **Upload CV** - PDF or text
-2. **Add Job Description** - From any job board
-3. **Analyze** - AI processes the documents
-4. **Explore Results** - Match score, gap analysis, suggestions
-
-### Skill Legend
-
-| Tag | Meaning |
-|-----|---------|
-| Matched | Skill present in CV |
-| Transferable | Equivalent skill recognized |
-| Project | Verified through portfolio |
-| Missing | Gap to fill |
-| Bonus | Extra competitive advantage |
-
 ---
 
 ## Privacy
 
-- **100% Local Processing** - No data leaves your computer
-- **Zero Data Collection** - We don't collect any information
-- **Open Source** - Transparent and verifiable code
+* **100% Local Processing** - No data leaves your computer
+* **Zero Data Collection** - We don't collect any information
+* **Open Source** - Transparent and verifiable code
 
 ---
 
@@ -152,20 +126,9 @@ See [LICENSE](LICENSE) for full terms.
 
 This project was developed as a collaborative effort with the following primary responsibilities:
 
-- **Giacomo Dellacqua** - Project Design (UI/UX & Application Architecture)
-- **Luca Tallarico** - Machine Learning & NLP/Text Mining
-- **Ruben Scoletta** - Testing, Quality Assurance & Documentation
-
----
-
-## Acknowledgments
-
-- **Streamlit Team** - Rapid development framework
-- **Scikit-Learn** - ML algorithms
-- **NLTK** - Natural Language Processing
-- **Claude Opus 4 (thinking)** - Primary AI assistant for development and implementation
-- **Gemini 3 Pro High** - Additional AI support for debugging
-- **Antigravity** - Agentic development support
+* **Giacomo Dellacqua** - Project Design (UI/UX & Application Architecture)
+* **Luca Tallarico** - Machine Learning & NLP/Text Mining
+* **Ruben Scoletta** - Testing, Quality Assurance & Documentation
 
 ---
 

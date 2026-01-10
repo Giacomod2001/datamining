@@ -1111,6 +1111,21 @@ def render_cv_builder():
                             st.success("Perfect technical match!")
                 else:
                     st.caption("JD loaded. Add skills to see score.")
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        # How It Works (Clean, No Emojis)
+        with st.expander("How the AI Analysis Works", expanded=False):
+            st.markdown("""
+            **1. Keyword Extraction**
+            The system scans your text for technical terms and matches them against a database of 1500+ skills.
+            
+            **2. Context Matching**
+            It distinguishes between simple mentions and actual proficiency using natural language processing.
+            
+            **3. Gap Analysis**
+            It compares your skills against the Job Description to identify exactly what is missing.
+            """)
         
         # Nav Buttons
         col_prev, col_next = st.columns([1, 1])
