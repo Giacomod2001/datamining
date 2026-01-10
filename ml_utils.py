@@ -996,27 +996,60 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "experience", "education", "skills", "projects", "languages",
         "certifications", "interests", "references", "contacts",
         "email", "phone", "address", "date", "present", "current",
+        
+        # CV ACTION VERBS (commonly misclassified as locations/entities)
+        "built", "created", "led", "managed", "developed", "designed", "implemented",
+        "achieved", "analyzed", "conducted", "coordinated", "delivered", "directed",
+        "established", "executed", "generated", "improved", "initiated", "launched",
+        "maintained", "organized", "performed", "planned", "prepared", "produced",
+        "provided", "reduced", "researched", "resolved", "reviewed", "streamlined",
+        "supervised", "supported", "trained", "transformed", "utilized",
+        "increased", "decreased", "optimized", "automated", "integrated", "migrated",
+        "collaborated", "communicated", "negotiated", "presented", "reported",
+        
+        # CURRENCIES & UNITS (misclassified as organizations)
+        "eur", "usd", "gbp", "chf", "jpy", "cny", "inr", "aud", "cad",
+        "euro", "euros", "dollar", "dollars", "pound", "pounds",
+        "million", "billion", "thousand", "annual", "monthly", "weekly", "daily",
+        
         # Months
         "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec",
         "january", "february", "march", "april", "june", "july", "august", "september", "october", "november", "december",
+        
         # Job levels
         "page", "of", "senior", "junior", "mid", "level", "lead", "manager", "support",
+        
         # Italian CV headers
         "competenze", "esperienze", "formazione", "istruzione", "lingue", "progetti",
         "certificazioni", "interessi", "contatti", "profilo", "sommario",
+        
         # Education
         "university", "università", "school", "scuola", "college", "institute", "politecnico", "degree", "bachelor", "master", "phd",
+        
         # Technical terms
         "dataflow", "migrated", "optimized", "soft", "upper", "intermediate", "computer",
+        
+        # CERTIFICATION TERMS (misclassified as persons)
+        "certification", "certified", "certificate", "display", "search", "ads",
+        "individual", "qualification", "specialist", "associate", "professional",
+        "practitioner", "expert", "fundamental", "fundamentals", "advanced", "basic",
+        "google", "microsoft", "amazon", "meta", "facebook", "linkedin", "adobe",
+        
         # BUSINESS ACRONYMS & TERMS (often misclassified as Organizations)
         "kpi", "kpis", "roi", "roas", "ctr", "cpc", "cpm", "cpa", "ltv", "arpu", "mrr", "arr",
         "gaiq", "seo", "sem", "ppc", "crm", "erp", "b2b", "b2c", "saas", "api",
         "sql", "html", "css", "etl", "elt", "gdpr",
+        
         # Course/Subject Topics (not organizations)
         "consumer", "behavior", "behaviour", "statistics", "market", "research",
         "digital", "marketing", "analytics", "visualization", "communication",
+        
         # Certifications (acronyms)
-        "hubspot", "inbound"
+        "hubspot", "inbound",
+        
+        # CLOUD/DATA TOOLS (often misclassified as organizations)
+        "bigquery", "redshift", "snowflake", "databricks", "looker", "powerbi", "tableau",
+        "aws", "azure", "gcp", "cloud", "firebase", "supabase"
     }
     exclusion_set.update(noise_words)
     
