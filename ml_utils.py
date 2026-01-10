@@ -603,7 +603,18 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
             'full-time', 'part-time', 'contract', 'permanent', 'temporary', 'remote', 'hybrid',
             'degree', 'bachelor', 'master', 'phd', 'equivalent', 'related', 'relevant',
             'including', 'include', 'includes', 'various', 'similar', 'etc', 'suite',
-            'must', 'will', 'can', 'may', 'should', 'would', 'tools', 'environment'
+            'must', 'will', 'can', 'may', 'should', 'would', 'tools', 'environment',
+            
+            # Company/Organization Names (should not be keywords)
+            'corp', 'corporation', 'inc', 'ltd', 'llc', 'gmbh', 'spa', 'srl',
+            'datadriven', 'techstart', 'startup', 'agency', 'group', 'italia',
+            
+            # Generic Qualifiers (noise)
+            'expert', 'expertise', 'skilled', 'specialist', 'professional',
+            'advanced', 'basic', 'intermediate', 'beginner', 'native', 'fluency',
+            'platform', 'platforms', 'solution', 'solutions', 'service', 'services',
+            'system', 'systems', 'technology', 'technologies', 'technique', 'techniques',
+            'method', 'methods', 'approach', 'approaches', 'strategy', 'strategies'
         ]
 
         # Italian Stop Words
@@ -658,10 +669,42 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
         ]
 
         # =================================================================
-        # Combina tutte le stop words
+        # DYNAMIC COMPANY NAME EXTRACTION
+        # =================================================================
+        # Instead of hardcoding company names, we detect them dynamically
+        # using patterns common in job descriptions
+        # =================================================================
+        import re
+        
+        dynamic_company_words = set()
+        full_text = ' '.join(text_corpus)
+        
+        # Pattern 1: Extract words before corporate suffixes (Corp, Inc, Ltd, etc.)
+        corp_pattern = r'(\b[A-Z][a-zA-Z]+)\s+(?:Corp|Inc|Ltd|LLC|GmbH|S\.?p\.?A\.?|S\.?r\.?l\.?)\b'
+        for match in re.finditer(corp_pattern, full_text, re.IGNORECASE):
+            company_word = match.group(1).lower()
+            if len(company_word) > 2:
+                dynamic_company_words.add(company_word)
+        
+        # Pattern 2: Extract company names after pipe separator (Job Title | Company)
+        pipe_pattern = r'\|\s*([A-Z][A-Za-z]+)'
+        for match in re.finditer(pipe_pattern, full_text):
+            company_word = match.group(1).lower()
+            if len(company_word) > 2:
+                dynamic_company_words.add(company_word)
+        
+        # Pattern 3: Words right after "at" or "presso" (employment context)
+        at_pattern = r'(?:at|presso)\s+([A-Z][A-Za-z]+)\b'
+        for match in re.finditer(at_pattern, full_text, re.IGNORECASE):
+            company_word = match.group(1).lower()
+            if len(company_word) > 2 and company_word not in {'the', 'our', 'their'}:
+                dynamic_company_words.add(company_word)
+        
+        # =================================================================
+        # Combina tutte le stop words (including dynamic company names)
         # =================================================================
         from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
-        all_stop_words = list(ENGLISH_STOP_WORDS) + hr_stop_words + it_stop_words + es_stop_words + fr_stop_words + de_stop_words
+        all_stop_words = list(ENGLISH_STOP_WORDS) + hr_stop_words + it_stop_words + es_stop_words + fr_stop_words + de_stop_words + list(dynamic_company_words)
 
         # =================================================================
         # STEP 2: VECTORIZATION - Bag of Words
