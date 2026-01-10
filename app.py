@@ -994,9 +994,23 @@ def render_cv_builder():
         
         st.markdown("### Builder Tools")
 
-        if st.button("Load Demo Data", use_container_width=True):
              st.session_state["trigger_demo_load"] = True
              st.rerun()
+
+        st.markdown("<br>" * 1, unsafe_allow_html=True)
+         
+        # How It Works (Moved to Sidebar)
+        with st.expander("How AI Analysis Works", expanded=True):
+            st.markdown("""
+            **1. Keyword Extraction**
+            System scans text for technical terms (1500+ skills database).
+            
+            **2. Context Matching**
+            Distinguishes simple mentions from actual proficiency.
+            
+            **3. Gap Analysis**
+            Compares your skills vs Job Description to find missing ones.
+            """)
         
         # SPACER and DEV LINK
         st.markdown("<br>" * 10, unsafe_allow_html=True)
@@ -1112,21 +1126,6 @@ def render_cv_builder():
                 else:
                     st.caption("JD loaded. Add skills to see score.")
 
-        st.markdown("<br>", unsafe_allow_html=True)
-        
-        # How It Works (Clean, No Emojis)
-        with st.expander("How the AI Analysis Works", expanded=False):
-            st.markdown("""
-            **1. Keyword Extraction**
-            The system scans your text for technical terms and matches them against a database of 1500+ skills.
-            
-            **2. Context Matching**
-            It distinguishes between simple mentions and actual proficiency using natural language processing.
-            
-            **3. Gap Analysis**
-            It compares your skills against the Job Description to identify exactly what is missing.
-            """)
-        
         # Nav Buttons
         col_prev, col_next = st.columns([1, 1])
         with col_next:
