@@ -1104,6 +1104,10 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "Accenture", "Deloitte", "PwC", "EY", "KPMG", "McKinsey", "BCG", "Bain",
         # Data/Marketing agencies
         "DataDriven Corp", "Digital Agency", "Marketing Solutions", "Tech Solutions",
+        # Italian Universities (for education sections)
+        "Politecnico di Milano", "Università Bocconi", "Bocconi", "IULM", "Università IULM",
+        "Sapienza", "Luiss", "Cattolica", "Bicocca", "Politecnico di Torino",
+        "Università di Bologna", "Università di Padova", "Università di Firenze",
     }
     
     # Pattern 1: "Job Title | Company Name"
