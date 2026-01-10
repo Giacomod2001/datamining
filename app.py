@@ -44,10 +44,17 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import urllib.parse
+import importlib
+
+# Force reload modules to ensure latest code is used
 import constants
 import ml_utils
-import urllib.parse
 import styles
+
+importlib.reload(constants)
+importlib.reload(ml_utils)
+importlib.reload(styles)
 
 # =============================================================================
 # PULIZIA CACHE
