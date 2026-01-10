@@ -292,23 +292,6 @@ HARD_SKILLS = {
     "Derivatives": ["derivatives", "options pricing", "futures", "swaps", "structured products", "exotics"],
     "Investment Management": ["asset allocation", "portfolio construction", "factor investing", "smart beta", "esg investing"],
 
-    # ========== BIOTECHNOLOGY & LIFE SCIENCES ==========
-    # NOTE: Removed ambiguous keywords (gcp, pharma, development) to prevent false positives
-    "Biotechnology": ["biotechnology", "life sciences", "biotech"],
-    "Clinical Trials": ["clinical trials", "ich-gcp", "clinical data management", "edc", "ctms"],
-    "Regulatory": ["regulatory affairs", "fda submissions", "ema submissions", "nda submission", "medical device regulation"],
-    "Gene Editing": ["crispr", "crispr/cas9", "gene editing", "genome engineering"],
-    "Molecular Techniques": ["cloning", "plasmid design", "site-directed mutagenesis", "transfection", "qpcr"],
-    "Cell Culture": ["mammalian cell culture", "stem cells", "ipsc", "organoids"],
-    "Bioinformatics": ["bioinformatics", "computational biology", "genomics", "metagenomics"],
-
-    # ========== ANALYTICAL CHEMISTRY & QC LAB ==========
-    # NOTE: Highly specific terms only - won't match marketing/tech JDs
-    "HPLC": ["hplc", "high performance liquid chromatography", "uplc"],
-    "Gas Chromatography": ["gas chromatography", "gc-ms"],
-    "Spectroscopy": ["uv-vis spectroscopy", "ir spectroscopy", "nmr spectroscopy"],
-    "Lab Skills": ["laboratory techniques", "lab skills", "bench work", "wet lab"],
-
     # ========== ENGINEERING (DETAILED) ==========
     "Mechanical Engineering": ["mechanical engineering", "mechanics"],
     
