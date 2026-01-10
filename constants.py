@@ -292,54 +292,22 @@ HARD_SKILLS = {
     "Derivatives": ["derivatives", "options pricing", "futures", "swaps", "structured products", "exotics"],
     "Investment Management": ["asset allocation", "portfolio construction", "factor investing", "smart beta", "esg investing"],
 
-    # ========== BIOTECHNOLOGY & LIFE SCIENCES (DETAILED) ==========
-    "Biotechnology": ["biotechnology", "life sciences", "pharma"],
-    
-    # Molecular Biology (Killer Keywords)
-    "Gene Editing": ["crispr", "crispr/cas9", "gene editing", "genome engineering", "talens", "zinc finger nucleases"],
-    "Molecular Techniques": ["cloning", "plasmid design", "site-directed mutagenesis", "transfection", "rna interference", "qpcr"],
-    "Sequencing": ["ngs", "next-generation sequencing", "illumina", "sanger sequencing", "library preparation", "rna-seq", "scrna-seq"],
-    "Protein Analysis": ["western blot", "elisa", "protein purification", "chromatography", "akts", "sds-page", "mass spectrometry"],
-    
-    # Cell Biology (Killer Keywords)
-    "Cell Culture": ["mammalian cell culture", "primary cells", "stem cells", "ipsc", "organoids", "3d culture"],
-    "Cytometry": ["flow cytometry", "facs", "cell sorting", "immunophenotyping", "gating strategies"],
-    "Microscopy": ["confocal microscopy", "fluorescence microscopy", "live cell imaging", "sem", "tem", "imagej"],
-    
-    # Bioinformatics (Killer Keywords)
-    "Bioinformatics": ["bioinformatics", "computational biology", "genomics", "metagenomics", "phylogenetics"],
-    "Structural Biology": ["pymol", "chimera", "molecular docking", "molecular dynamics", "alphafold", "rosetta"],
-    "Bio-Scripting": ["biopython", "bioconductor", "r programming", "bash scripting", "pipeline development"],
+    # ========== BIOTECHNOLOGY & LIFE SCIENCES ==========
+    # NOTE: Removed ambiguous keywords (gcp, pharma, development) to prevent false positives
+    "Biotechnology": ["biotechnology", "life sciences", "biotech"],
+    "Clinical Trials": ["clinical trials", "ich-gcp", "clinical data management", "edc", "ctms"],
+    "Regulatory": ["regulatory affairs", "fda submissions", "ema submissions", "nda submission", "medical device regulation"],
+    "Gene Editing": ["crispr", "crispr/cas9", "gene editing", "genome engineering"],
+    "Molecular Techniques": ["cloning", "plasmid design", "site-directed mutagenesis", "transfection", "qpcr"],
+    "Cell Culture": ["mammalian cell culture", "stem cells", "ipsc", "organoids"],
+    "Bioinformatics": ["bioinformatics", "computational biology", "genomics", "metagenomics"],
 
-    # Pharma & Clinical
-    "Clinical Trials": ["clinical trials", "clinical development", "gcp", "ich-gcp", "clinical data management", "edc"],
-    "Regulatory": ["regulatory affairs", "fda submissions", "ema", "ind", "nda", "medical device regulation", "iso 13485"],
-
-    # ========== ANALYTICAL CHEMISTRY & QC LAB (NEW - Killer Keywords) ==========
-    # These are DISTINCT from molecular biology - required for QC/Lab Technician roles
-    
+    # ========== ANALYTICAL CHEMISTRY & QC LAB ==========
+    # NOTE: Highly specific terms only - won't match marketing/tech JDs
     "HPLC": ["hplc", "high performance liquid chromatography", "uplc"],
-    "Gas Chromatography": ["gas chromatography", "gc-ms", "gascromatografia"],
-    "Spectroscopy": ["spectroscopy", "uv-vis", "ir spectroscopy", "nmr", "mass spectrometry", "spettrometria"],
-    "Titration": ["titration", "titolazione", "volumetric analysis", "acid-base titration"],
-    "Sample Preparation": ["sample preparation", "preparazione campioni", "extraction", "filtration", "homogenization"],
-    
-    # Quality Control Lab Specific (Removed QC Lab - too generic, "controllo qualità" matches everything)
-    "Analytical Method Validation": ["method validation", "validazione metodo", "analytical validation", "icq q2"],
-    "Stability Testing": ["stability testing", "test stabilità", "accelerated stability", "shelf life"],
-    "Microbiological Analysis": ["microbiological analysis", "analisi microbiologiche", "microbial testing", "bioburden"],
-    "Raw Material Testing": ["raw material testing", "materie prime", "incoming inspection", "material qualification"],
-    
-    # Cosmetic & Detergent Industry Specific
-    "Cosmetic Regulations": ["cosmetic regulation 1223/2009", "regolamento cosmetico", "1223/2009", "cosmetic gmp"],
-    "CLP Regulation": ["clp regulation", "clp 1272/2008", "1272/2008", "classification labeling packaging", "ghs"],
-    "ISO 22716": ["iso 22716", "cosmetic gmp", "good manufacturing practice cosmetics"],
-    "Detergent Testing": ["detergent testing", "detergenza", "surfactant analysis", "cleaning validation"],
-    
-    # ISO Standards (Lab Specific)
-    "ISO 9001": ["iso 9001", "quality management system", "sistema gestione qualità"],
-    "ISO 14001": ["iso 14001", "environmental management", "gestione ambientale"],
-    "ISO 17025": ["iso 17025", "lab accreditation", "laboratory accreditation", "accreditamento laboratorio"],
+    "Gas Chromatography": ["gas chromatography", "gc-ms"],
+    "Spectroscopy": ["uv-vis spectroscopy", "ir spectroscopy", "nmr spectroscopy"],
+    "Lab Skills": ["laboratory techniques", "lab skills", "bench work", "wet lab"],
 
     # ========== ENGINEERING (DETAILED) ==========
     "Mechanical Engineering": ["mechanical engineering", "mechanics"],
