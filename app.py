@@ -982,6 +982,9 @@ def render_cv_builder():
 
     # Get CV Data
     cv_data = st.session_state["cv_builder"]
+    
+    # Initialize Global JD Text for all steps
+    jd_text = st.session_state.get("cv_builder_jd", "")
 
     # --- SIDEBAR TOOLS (Consistent across steps) ---
     with st.sidebar:
