@@ -13,7 +13,12 @@
 
 **[Try CareerMatch AI Now](https://dataminingiulm.streamlit.app/)**
 
-**New Feature**: Use the "Load Demo Data" button in the **Builder Tools** sidebar to auto-fill the CV Builder with sample data.
+**[Try CareerMatch AI Now](https://dataminingiulm.streamlit.app/)**
+
+**New Features**:
+
+- **Demo Mode**: Use "Load Demo" in the sidebar to populate the CV Builder. Click "Exit Demo" to clear data.
+- **Improved Navigation**: Switch easily between "CV Builder" and "CV Evaluation" from the sidebar.
 
 ---
 
@@ -63,9 +68,9 @@ The app opens automatically at `http://localhost:8501`.
 The application features a 4-step guided process:
 
 1. **Personal Profile**: Enter details and professional summary.
-    * *Smart Feature*: Paste a Job Description to get real-time optimization scoring.
+    - *Smart Feature*: Paste a Job Description to get real-time optimization scoring.
 2. **Skills & Competencies**: Select from 600+ database skills or add custom ones.
-    * *AI Insight*: System suggests skills missing from your profile but required by the JD.
+    - *AI Insight*: System suggests skills missing from your profile but required by the JD.
 3. **Experience**: Add work history, projects, and education.
 4. **Review & Export**: Download as TXT or PDF, or send directly to the Analysis Engine.
 
@@ -99,9 +104,9 @@ Input Text --> Tokenization --> N-gram Generation --> TF-IDF --> ML Model --> Ou
 
 ## Privacy
 
-* **100% Local Processing** - No data leaves your computer
-* **Zero Data Collection** - We don't collect any information
-* **Open Source** - Transparent and verifiable code
+- **100% Local Processing** - No data leaves your computer
+- **Zero Data Collection** - We don't collect any information
+- **Open Source** - Transparent and verifiable code
 
 ---
 
@@ -126,9 +131,9 @@ See [LICENSE](LICENSE) for full terms.
 
 This project was developed as a collaborative effort with the following primary responsibilities:
 
-* **Giacomo Dellacqua** - Project Design (UI/UX & Application Architecture)
-* **Luca Tallarico** - Machine Learning & NLP/Text Mining
-* **Ruben Scoletta** - Testing, Quality Assurance & Documentation
+- **Giacomo Dellacqua** - Project Design (UI/UX & Application Architecture)
+- **Luca Tallarico** - Machine Learning & NLP/Text Mining
+- **Ruben Scoletta** - Testing, Quality Assurance & Documentation
 
 ---
 
