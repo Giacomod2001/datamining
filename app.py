@@ -998,90 +998,8 @@ def render_cv_builder():
              st.session_state["trigger_demo_load"] = True
              st.rerun()
         
-        # JD Input for Smart Suggestions (Always visible)
-        with st.expander("Target Job Description", expanded=True):
-            st.caption("Paste JD for smart suggestions")
-            # Simplify: Direct binding to 'cv_builder_jd'
-            if "cv_builder_jd" not in st.session_state:
-                st.session_state["cv_builder_jd"] = ""
-                
-            st.text_area(
-                "Job Description",
-                height=150,
-                placeholder="Paste JD here...",
-                label_visibility="collapsed",
-                key="cv_builder_jd" 
-            )
-                
-        # Smart Score (Mini)
-        jd_text = st.session_state.get("cv_builder_jd", "")
-        if jd_text:
-            # Quick calc
-            jd_hard, jd_soft = ml_utils.extract_skills_from_text(jd_text)
-            jd_reqs = jd_hard | jd_soft
-            
-            # User skills - Aggregate from ALL sections
-            user_skills = set(cv_data.get("competencies", []))
-            
-            # Combine text from all sections for comprehensive extraction
-            parts = [
-                cv_data.get("summary", ""),
-                cv_data.get("tech_skills_text", "")
-            ]
-            
-            # Add Experience text
-            for exp in cv_data.get("experiences", []):
-                parts.append(exp.get("title", ""))
-                parts.append(exp.get("bullets", ""))
-                parts.append(exp.get("tech", ""))
-                
-            # Add Projects text
-            for proj in cv_data.get("projects", []):
-                parts.append(proj.get("description", ""))
-                
-            # Add Education text
-            for edu in cv_data.get("education", []):
-                parts.append(edu.get("details", ""))
-            
-            # Add Languages
-            for lang in cv_data.get("languages", []):
-                lang_name = lang.get("language", "").strip()
-                if lang_name:
-                    user_skills.add(lang_name)
-                    parts.append(lang_name)
-                    
-            full_cv_text = " ".join(parts)
-            
-            if full_cv_text:
-                th, ts = ml_utils.extract_skills_from_text(full_cv_text)
-                user_skills.update(th)
-                user_skills.update(ts)
-            
-            # Match against ALL JD requirements (hard + soft)
-            matches = jd_reqs.intersection(user_skills)
-            score = int((len(matches) / len(jd_reqs)) * 100) if jd_reqs else 0
-            score = min(score, 100)  # Cap at 100%
-            
-            st.markdown(f"**Optimization Score:** {score}%")
-            st.progress(score)
-            
-            if score < 100:
-                # Show missing HARD skills only (actionable items)
-                missing = jd_hard - user_skills
-                if missing:
-                    st.caption(f"Missing: {', '.join(list(missing)[:3])}")
-        
-        # How AI Works (Explanation)
-        st.markdown("<br>", unsafe_allow_html=True)
-        with st.expander("How it Works", expanded=False):
-            st.markdown("""
-            - **Skill Detection**: Analyzes your CV and matches keywords against the Job Description
-            - **Score Calculation**: Shows % of required skills you already have
-            - **Gap Analysis**: Identifies missing skills to help you optimize your CV
-            """)
-        
         # SPACER and DEV LINK
-        st.markdown("<br>" * 3, unsafe_allow_html=True)
+        st.markdown("<br>" * 10, unsafe_allow_html=True)
         st.divider()
         if st.button("Devs Console", use_container_width=True):
              st.session_state["page"] = "Debugger"
@@ -1108,6 +1026,91 @@ def render_cv_builder():
             height=150,
             placeholder="E.g. Experienced Project Manager with 5+ years..."
         )
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        # JD Input for Smart Suggestions (Optional - Moved from Sidebar)
+        # Using a distinct key suffix or logic to keep session state
+        with st.expander("Target Job Description (Optional)", expanded=False):
+            st.caption("Paste a Job Description here to get real-time optimization advice and skill gap analysis.")
+            
+            # Check initialization
+            if "cv_builder_jd" not in st.session_state:
+                st.session_state["cv_builder_jd"] = ""
+                
+            st.text_area(
+                "Job Description",
+                height=150,
+                placeholder="Paste JD content here...",
+                label_visibility="collapsed",
+                key="cv_builder_jd" 
+            )
+
+            # --- SMART SCORE LOGIC (Inlined for immediate feedback) ---
+            jd_text = st.session_state.get("cv_builder_jd", "")
+            if jd_text:
+                st.divider()
+                # 1. Extract JD Requirements
+                jd_hard, jd_soft = ml_utils.extract_skills_from_text(jd_text)
+                jd_reqs = jd_hard | jd_soft
+                
+                # 2. Extract CV Skills (from all current fields)
+                user_skills = set(cv_data.get("competencies", []))
+                
+                # Build temporary full text from current inputs
+                parts = [
+                    cv_data.get("summary", ""),
+                    cv_data.get("tech_skills_text", "")
+                ]
+                
+                # Experience
+                for exp in cv_data.get("experiences", []):
+                    parts.append(exp.get("title", ""))
+                    parts.append(exp.get("bullets", ""))
+                    parts.append(exp.get("tech", ""))
+                    
+                # Projects
+                for proj in cv_data.get("projects", []):
+                    parts.append(proj.get("description", ""))
+                    
+                # Education
+                for edu in cv_data.get("education", []):
+                    parts.append(edu.get("details", ""))
+                
+                # Languages
+                for lang in cv_data.get("languages", []):
+                    l_val = lang.get("language", "").strip()
+                    if l_val:
+                        user_skills.add(l_val)
+                        parts.append(l_val)
+                        
+                full_cv_text = " ".join(parts)
+                
+                if full_cv_text:
+                    th, ts = ml_utils.extract_skills_from_text(full_cv_text)
+                    user_skills.update(th)
+                    user_skills.update(ts)
+                
+                # 3. Calculate Score
+                if jd_reqs:
+                    matches = jd_reqs.intersection(user_skills)
+                    score = int((len(matches) / len(jd_reqs)) * 100)
+                    score = min(score, 100)
+
+                    c_score, c_info = st.columns([1, 2])
+                    with c_score:
+                        st.metric("Optimization Score", f"{score}%")
+                    with c_info:
+                        if score < 100:
+                            missing = jd_hard - user_skills
+                            if missing:
+                                st.warning(f"Missing: {', '.join(list(missing)[:3])}...")
+                            else:
+                                st.info("Good match on technical skills!")
+                        else:
+                            st.success("Perfect technical match!")
+                else:
+                    st.caption("JD loaded. Add skills to see score.")
         
         # Nav Buttons
         col_prev, col_next = st.columns([1, 1])
