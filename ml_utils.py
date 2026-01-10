@@ -873,25 +873,25 @@ try:
         ssl._create_default_https_context = _create_unverified_https_context
 
     # =============================================================================
-# NAMED ENTITY RECOGNITION (NER)
-# =============================================================================
-# Riferimento corso: "Information Extraction", "Named Entity Recognition"
-#
-# NER è una tecnica di Information Extraction che identifica e classifica
-# entità nominate nel testo in categorie predefinite:
-# - ORGANIZATION: aziende, università, istituzioni
-# - GPE (Geo-Political Entity): città, paesi, regioni
-# - PERSON: nomi di persone
-#
-# Algoritmo NLTK usato:
-# 1. Tokenizzazione: divide il testo in parole
-# 2. POS Tagging: assegna parti del discorso (noun, verb, ecc.)
-# 3. NE Chunking: raggruppa token in entità nominate
-#
-# Post-processing:
-# - Filtra parole comuni e skill (evita falsi positivi)
-# - Corregge entità note (es: "Milano" come Location, non Organization)
-# =============================================================================
+    # NAMED ENTITY RECOGNITION (NER)
+    # =============================================================================
+    # Riferimento corso: "Information Extraction", "Named Entity Recognition"
+    #
+    # NER è una tecnica di Information Extraction che identifica e classifica
+    # entità nominate nel testo in categorie predefinite:
+    # - ORGANIZATION: aziende, università, istituzioni
+    # - GPE (Geo-Political Entity): città, paesi, regioni
+    # - PERSON: nomi di persone
+    #
+    # Algoritmo NLTK usato:
+    # 1. Tokenizzazione: divide il testo in parole
+    # 2. POS Tagging: assegna parti del discorso (noun, verb, ecc.)
+    # 3. NE Chunking: raggruppa token in entità nominate
+    #
+    # Post-processing:
+    # - Filtra parole comuni e skill (evita falsi positivi)
+    # - Corregge entità note (es: "Milano" come Location, non Organization)
+    # =============================================================================
 
     # Download necessary NLTK data (cached)
     try:

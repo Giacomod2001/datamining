@@ -531,6 +531,204 @@ hr {
         visibility: visible !important;
     }
 }
+
+/* =============================================================================
+   MAC FLICKERING FIX - Reduced Motion & GPU Acceleration
+   ============================================================================= */
+
+/* Respect user motion preferences (fixes Mac flickering for sensitive users) */
+@media (prefers-reduced-motion: reduce) {
+    .pulse, .skeleton, .fade-in {
+        animation: none !important;
+        transition: none !important;
+    }
+    
+    .stButton > button,
+    .glass-card,
+    .metric-card,
+    .skill-tag-matched,
+    .skill-tag-missing,
+    .skill-tag-transferable {
+        transition: none !important;
+    }
+}
+
+/* GPU acceleration hints for smoother animations on Mac */
+.pulse, .skeleton, .fade-in {
+    will-change: opacity, transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+/* Fix for Safari/WebKit repaint issues */
+.glass-card, .metric-card {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+}
+
+/* =============================================================================
+   LIGHT MODE SUPPORT - System White/Light Theme
+   ============================================================================= */
+
+@media (prefers-color-scheme: light) {
+    /* Override CSS Variables for Light Mode */
+    :root {
+        --bg-dark: #ffffff;
+        --bg-card: #f8f9fa;
+        --bg-elevated: #e9ecef;
+        --text-primary: #1a1a2e;
+        --text-secondary: #4a4a5a;
+        --border-color: #d0d7de;
+    }
+    
+    /* Main Container - Light Background */
+    .stApp {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f8f9fa 100%) !important;
+    }
+    
+    /* Typography - Dark Text on Light */
+    h1 {
+        background: linear-gradient(90deg, #004471, #0077B5, #00A0DC) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+    }
+    
+    h2, h3, h4, h5, h6, p, span, label, div {
+        color: #1a1a2e !important;
+    }
+    
+    /* Sidebar - Light */
+    section[data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%) !important;
+        border-right: 1px solid #d0d7de !important;
+    }
+    
+    section[data-testid="stSidebar"] .stMarkdown h1,
+    section[data-testid="stSidebar"] .stMarkdown h2,
+    section[data-testid="stSidebar"] .stMarkdown h3 {
+        color: #0077B5 !important;
+        -webkit-text-fill-color: #0077B5 !important;
+    }
+    
+    /* Glass Card - Light */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.9) !important;
+        border: 1px solid #d0d7de !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+    }
+    
+    /* Metric Card - Light */
+    .metric-card {
+        background: linear-gradient(135deg, rgba(0, 119, 181, 0.08) 0%, rgba(0, 68, 113, 0.05) 100%) !important;
+        border: 1px solid #0077B5 !important;
+    }
+    
+    /* Hero Section - Light */
+    .hero-gradient {
+        background: linear-gradient(135deg, 
+            rgba(0, 119, 181, 0.08) 0%, 
+            rgba(0, 68, 113, 0.05) 50%,
+            rgba(0, 160, 220, 0.05) 100%
+        ) !important;
+        border: 1px solid rgba(0, 119, 181, 0.2) !important;
+    }
+    
+    /* Skill Tags - Adjusted for Light Mode */
+    .skill-tag-matched {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%) !important;
+        color: #155724 !important;
+        border: 1px solid #28a745 !important;
+    }
+    
+    .skill-tag-missing {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%) !important;
+        color: #721c24 !important;
+        border: 1px solid #dc3545 !important;
+    }
+    
+    .skill-tag-transferable {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%) !important;
+        color: #856404 !important;
+        border: 1px solid #ffc107 !important;
+    }
+    
+    .skill-tag-project {
+        background: linear-gradient(135deg, #cce5ff 0%, #b8daff 100%) !important;
+        color: #004085 !important;
+        border: 1px solid #007bff !important;
+    }
+    
+    .skill-tag-bonus {
+        background: linear-gradient(135deg, #e2e3e5 0%, #d6d8db 100%) !important;
+        color: #383d41 !important;
+        border: 1px solid #6c757d !important;
+    }
+    
+    /* Input Fields - Light */
+    .stTextArea textarea,
+    .stTextInput input {
+        background: #ffffff !important;
+        border: 1px solid #d0d7de !important;
+        color: #1a1a2e !important;
+    }
+    
+    .stTextArea textarea:focus,
+    .stTextInput input:focus {
+        border-color: #0077B5 !important;
+        box-shadow: 0 0 0 3px rgba(0, 119, 181, 0.15) !important;
+    }
+    
+    /* Tabs - Light */
+    .stTabs [data-baseweb="tab-list"] {
+        background: #e9ecef !important;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        color: #1a1a2e !important;
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background: #0077B5 !important;
+        color: white !important;
+    }
+    
+    /* Metric Value - Keep Gradient */
+    [data-testid="stMetricValue"] {
+        background: linear-gradient(90deg, #004471, #0077B5) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+    }
+    
+    /* Expander - Light */
+    .streamlit-expanderHeader {
+        background: #f8f9fa !important;
+        border: 1px solid #d0d7de !important;
+    }
+    
+    .streamlit-expanderHeader:hover {
+        background: rgba(0, 119, 181, 0.05) !important;
+        border-color: #0077B5 !important;
+    }
+    
+    /* Divider - Light */
+    hr {
+        background: linear-gradient(90deg, transparent, #d0d7de, #0077B5, #d0d7de, transparent) !important;
+    }
+    
+    /* File Uploader - Light */
+    .stFileUploader {
+        background: #f8f9fa !important;
+        border: 2px dashed #d0d7de !important;
+    }
+    
+    .stFileUploader:hover {
+        border-color: #0077B5 !important;
+        background: rgba(0, 119, 181, 0.03) !important;
+    }
+}
 </style>
 """
 
