@@ -856,63 +856,55 @@ def _interpret_topic_keywords(keywords: List[str]) -> str:
     INTERPRETAZIONE PAROLE CHIAVE TOPIC
     ====================================
     Converte una lista di keyword in un'interpretazione leggibile.
-    
-    Logica:
-    - Identifica il dominio tecnologico dalle keyword
-    - Genera una descrizione human-friendly
-    
-    Esempio:
-    - Input: ["aws", "data", "pipeline"]
-    - Output: "Cloud Data Engineering: Working with cloud platforms..."
     """
     
-    # Pattern di tecnologie per categoria
-    cloud_tech = {'aws', 'azure', 'gcp', 'cloud', 'kubernetes', 'docker'}
-    data_tech = {'data', 'sql', 'database', 'analytics', 'etl', 'pipeline', 'warehouse', 'bigquery'}
-    viz_tech = {'tableau', 'power', 'bi', 'powerbi', 'visualization', 'dashboard', 'looker'}
-    ml_ai = {'machine', 'learning', 'ai', 'model', 'deep', 'neural', 'nlp', 'scikit'}
-    web_tech = {'javascript', 'react', 'node', 'frontend', 'backend', 'api', 'rest'}
-    design_arch = {'design', 'architecture', 'scalable', 'distributed', 'system', 'infrastructure'}
-    business = {'business', 'strategy', 'marketing', 'sales', 'customer', 'revenue'}
+    # Format keywords for display (Title Case)
+    def format_kw(k):
+        # Handle compound names with underscores
+        if '_' in k:
+            return k.replace('_', ' ').title()
+        return k.title()
     
-    # NEW: Data Mining specific keywords (Course Aligned)
-    data_mining = {'mining', 'text', 'clustering', 'classification', 'pattern', 'extraction', 'association', 'kdd'}
+    kw_display = [format_kw(k) for k in keywords[:3]]
+    kw_lower = {k.lower().replace(' ', '_') for k in keywords}
     
-    kw_lower = {k.lower() for k in keywords}
+    # Pattern di tecnologie per categoria (including compound names)
+    analytics_tools = {'google_analytics', 'google_analytics_4', 'tag_manager', 'google_tag_manager', 'tracking', 'ga4'}
+    viz_tech = {'tableau', 'power_bi', 'looker_studio', 'data_studio', 'visualization', 'dashboard', 'looker', 'data_visualization'}
+    cloud_tech = {'aws', 'azure', 'gcp', 'cloud', 'kubernetes', 'docker', 'google_cloud'}
+    data_tech = {'data', 'sql', 'database', 'etl', 'pipeline', 'warehouse', 'bigquery', 'data_analysis'}
+    ml_ai = {'machine_learning', 'deep_learning', 'ai', 'model', 'neural', 'nlp', 'scikit', 'data_science', 'machine', 'learning'}
+    marketing = {'marketing', 'seo', 'sem', 'social_media', 'digital_marketing', 'campaign', 'advertising', 'search'}
+    programming = {'python', 'sql', 'r', 'javascript', 'programming', 'coding', 'excel'}
+    business = {'business', 'strategy', 'sales', 'customer', 'revenue', 'roi', 'kpi', 'stakeholder'}
     
-    # Determina la categoria principale basandosi sull'intersezione
-    if kw_lower & data_mining:
-        return f"Data Mining & Text Analytics: Extracting patterns and knowledge ({', '.join(kw_lower & data_mining)})"
-
-    elif kw_lower & cloud_tech:
-        if kw_lower & data_tech:
-            return f"Cloud Data Engineering: Working with cloud platforms ({', '.join(kw_lower & cloud_tech)}) to manage and process data"
-        elif kw_lower & design_arch:
-            return f"Cloud Architecture: Designing scalable systems on {', '.join(kw_lower & cloud_tech)}"
-        else:
-            return f"Cloud Infrastructure: Focus on cloud technologies like {', '.join(keywords[:3])}"
+    # Determina la categoria principale
+    if kw_lower & analytics_tools:
+        return f"Web Analytics & Tracking: Working with {', '.join(kw_display)}"
     
     elif kw_lower & viz_tech:
-        return f"Data Visualization & BI: Creating dashboards and reports with tools like {', '.join(keywords[:3])}"
+        return f"Data Visualization & BI: Creating dashboards with {', '.join(kw_display)}"
     
     elif kw_lower & ml_ai:
-        return f"Machine Learning & AI: Developing predictive models and intelligent solutions"
+        return f"Machine Learning & AI: Building models with {', '.join(kw_display)}"
     
-    elif kw_lower & web_tech:
-        return f"Web Development: Building modern web applications with {', '.join(keywords[:3])}"
+    elif kw_lower & cloud_tech:
+        return f"Cloud & Infrastructure: Managing {', '.join(kw_display)}"
+    
+    elif kw_lower & marketing:
+        return f"Digital Marketing: Driving growth with {', '.join(kw_display)}"
+    
+    elif kw_lower & programming:
+        return f"Technical Skills: Programming with {', '.join(kw_display)}"
     
     elif kw_lower & data_tech:
-        return f"Data Management: Database, ETL, and data analysis focused on {', '.join(keywords[:3])}"
-    
-    elif kw_lower & design_arch:
-        return f"System Design: Designing scalable and distributed software architectures"
+        return f"Data Engineering: Working with {', '.join(kw_display)}"
     
     elif kw_lower & business:
-        return f"Business Domain: Focus on business aspects like {', '.join(keywords[:3])}"
+        return f"Business Skills: Focus on {', '.join(kw_display)}"
     
     else:
-        # Fallback generico
-        return f"Key Competencies: {', '.join(keywords[:3])}"
+        return f"Key Focus: {', '.join(kw_display)}"
 
 
 def _generate_job_summary(keywords: List[str]) -> str:
