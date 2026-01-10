@@ -994,6 +994,7 @@ def render_cv_builder():
         
         st.markdown("### Builder Tools")
 
+        if st.button("Load Demo Data", use_container_width=True):
              st.session_state["trigger_demo_load"] = True
              st.rerun()
 
