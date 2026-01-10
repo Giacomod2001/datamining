@@ -1151,44 +1151,40 @@ def render_cv_builder():
                 st.info(f"**JD Suggestions:** Consider adding: {', '.join(list(missing)[:5])}")
         
         # Form to prevent reruns on every selection
-        with st.form("skills_form"):
-            # Competencies
-            all_skills = sorted(list(set(list(constants.HARD_SKILLS.keys()) + list(constants.SOFT_SKILLS.keys()))))
-            
-            # Pre-select existing or default empty
-            default_skills = [c for c in cv_data.get("competencies", []) if c in all_skills]
-            
-            selected_skills = st.multiselect(
-                "Core Competencies (Select from DB)", 
-                options=all_skills, 
-                default=default_skills
-            )
-            
-            # Tech Skills Text
-            st.markdown("### Technical Skills (Free Text)")
-            tech_text = st.text_area(
-                "Categorized Skills",
-                value=cv_data.get("tech_skills_text", ""),
-                height=200,
-                placeholder="Languages: Python, Java\nTools: Tableau, Git"
-            )
-            
-            # Nav Buttons inside form
-            col_prev, col_next = st.columns([1, 1])
-            submitted_back = col_prev.form_submit_button("← Back")
-            submitted_next = col_next.form_submit_button("Next: Experience →", type="primary", use_container_width=True)
-
-            if submitted_back:
-                # Update data before leaving
-                cv_data["competencies"] = selected_skills
-                cv_data["tech_skills_text"] = tech_text
+        # Competencies - Immediate update for better UX
+        all_skills = sorted(list(set(list(constants.HARD_SKILLS.keys()) + list(constants.SOFT_SKILLS.keys()))))
+        
+        # Pre-select existing or default empty
+        default_skills = [c for c in cv_data.get("competencies", []) if c in all_skills]
+        
+        selected_skills = st.multiselect(
+            "Core Competencies (Select from DB)", 
+            options=all_skills, 
+            default=default_skills
+        )
+        # Update immediately
+        cv_data["competencies"] = selected_skills
+        
+        # Tech Skills Text
+        st.markdown("### Technical Skills (Free Text)")
+        tech_text = st.text_area(
+            "Categorized Skills",
+            value=cv_data.get("tech_skills_text", ""),
+            height=200,
+            placeholder="Languages: Python, Java\nTools: Tableau, Git"
+        )
+        # Update immediately
+        cv_data["tech_skills_text"] = tech_text
+        
+        # Nav Buttons (Standard Buttons)
+        col_prev, col_next = st.columns([1, 1])
+        with col_prev:
+            if st.button("← Back"):
                 st.session_state["cv_builder_step"] = 1
                 st.rerun()
 
-            if submitted_next:
-                # Update data before proceeding
-                cv_data["competencies"] = selected_skills
-                cv_data["tech_skills_text"] = tech_text
+        with col_next:
+            if st.button("Next: Experience →", type="primary", use_container_width=True):
                 st.session_state["cv_builder_step"] = 3
                 st.rerun()
 
