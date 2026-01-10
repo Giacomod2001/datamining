@@ -1005,11 +1005,30 @@ def render_cv_builder():
         st.divider()
         
         # 3. QUICK ACTIONS
-        # Replaces "Builder Tools" header with cleaner layout
+        col_demo1, col_demo2 = st.columns(2)
+        with col_demo1:
+            if st.button("Load Demo", use_container_width=True, help="Load sample data"):
+                 st.session_state["trigger_demo_load"] = True
+                 st.session_state["cv_builder_demo_mode"] = True 
+                 st.rerun()
+        with col_demo2:
+            if st.button("CV Evaluation", use_container_width=True, help="Go to Evaluation"):
+                st.session_state["page"] = "CV Evaluation"
+                st.rerun()
         
-        if st.button("Load Demo Data", use_container_width=True):
-             st.session_state["trigger_demo_load"] = True
-             st.rerun()
+        # DEMO STATUS
+        if st.session_state.get("cv_builder_demo_mode"):
+            st.info("Demo Mode Active")
+            if st.button("Exit Demo", use_container_width=True):
+                # Reset to empty state
+                st.session_state["cv_builder"] = {
+                    "name": "", "location": "", "email": "", "phone": "", "summary": "",
+                    "competencies": [], "tech_skills": {}, "experiences": [], 
+                    "education": [], "projects": [], "languages": []
+                }
+                st.session_state["cv_builder_jd"] = ""
+                st.session_state["cv_builder_demo_mode"] = False
+                st.rerun()
 
         st.markdown("<br>" * 1, unsafe_allow_html=True)
          
