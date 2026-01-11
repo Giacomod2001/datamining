@@ -4,7 +4,7 @@
 ================================================================================
 
 Project: CareerMatch AI
-Version: 2.0
+Version: 2.1
 University: IULM University - A.Y. 2025-2026
 Course: Data Mining & Text Analytics
 Professor: Prof. Alessandro Bruno
@@ -41,6 +41,7 @@ datamining_git/
 ├── Acknowledgment      (1 KB)                - AI Tools Acknowledgments
 ├── LICENSE             (5 KB)                - PolyForm Noncommercial License 1.0.0
 ├── Demo_Candidate_DS_CV.pdf                  - Sample CV
+├── PROJECT_REPORT.txt   (23 KB)              - This Documentation
 ├── .devcontainer/                            - Dev Container Configuration
 ├── .github/                                  - GitHub Actions/Workflows
 └── .gitignore                                - Git Ignore File
@@ -314,6 +315,13 @@ Tools considered equivalent for matching:
    - Includes skill matrix, learning roadmap
    - Direct download
 
+9. CV BUILDER (NEW v2.1)
+   - 4-step guided workflow: Profile, Skills, Experience, Export
+   - Real-time JD optimization scoring
+   - Sidebar with "Load Demo" and "Exit Demo" controls
+   - PDF/TXT export with professional formatting
+   - AI suggestions for missing skills
+
 ------------------------------------------------------------------------------
 6.2 DEMO MODE
 ------------------------------------------------------------------------------
@@ -324,7 +332,7 @@ The application includes demo data for quick testing:
 - Demo Project: E-commerce Analytics Dashboard
 - Demo Cover Letter
 
-Optimized for ~73% match score.
+Optimized for ~93% match score (13/14 skills matched).
 
 ================================================================================
                           7. USER INTERFACE (UI/UX)
@@ -562,6 +570,6 @@ The modular architecture and course-aligned knowledge base enable:
 - Integration of new algorithms
 
 ================================================================================
-                    Report generated: January 7, 2026
-                    CareerMatch AI v2.0 - IULM University
+                    Report updated: January 11, 2026
+                    CareerMatch AI v2.1 - IULM University
 ================================================================================
