@@ -13,8 +13,6 @@
 
 **[Try CareerMatch AI Now](https://dataminingiulm.streamlit.app/)**
 
-**[Try CareerMatch AI Now](https://dataminingiulm.streamlit.app/)**
-
 **New Features**:
 
 - **Demo Mode**: Use "Load Demo" in the sidebar to populate the CV Builder. Click "Exit Demo" to clear data.
@@ -63,7 +61,7 @@ The app opens automatically at `http://localhost:8501`.
 
 ---
 
-## 🛠️ CV Builder Workflow
+## CV Builder Workflow
 
 The application features a 4-step guided process:
 
