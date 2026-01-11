@@ -1579,7 +1579,7 @@ def render_landing_page():
 
     with col2:
         with st.container(border=True):
-            st.markdown(card_style.format("CV Evaluation", "Unlock your career potential with deep gap analysis. Get specific, AI-driven advice on how to bridge skill gaps, optimize your profile, and ace the technical interview with confidence."), unsafe_allow_html=True)
+            st.markdown(card_style.format("CV Evaluation", "Unlock your career potential with deep gap analysis. Get AI-driven advice to bridge skill gaps and ace the technical interview with confidence."), unsafe_allow_html=True)
             if st.button("Start Evaluation", use_container_width=True):
                 st.session_state["page"] = "CV Evaluation"
                 st.rerun()
