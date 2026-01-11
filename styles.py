@@ -737,15 +737,15 @@ def get_demo_cv():
     """
     Returns sample CV text for demo mode.
     
-    CALIBRATION TARGET: ~72% match
+    CALIBRATION TARGET: ~93% match (13/14 skills matched)
     
-    Added skills to boost match:
-    - SEM/PPC (Google Ads)
-    - Project Management
-    - Tableau
-    - Data Visualization
-    - Statistical Analysis
-    - Power BI
+    CV includes these skills that match JD requirements:
+    - Python, SQL, Google Analytics 4, Google Tag Manager
+    - Tableau, Power BI, Looker Studio
+    - A/B Testing, SEO, Social Media, CRM, Excel
+    - Statistical Analysis, SEM/PPC
+    
+    Missing from JD: Machine Learning, Cloud (AWS/GCP)
     """
     return """
 MARCO BIANCHI
@@ -801,25 +801,25 @@ def get_demo_jd():
     """
     Returns sample Job Description for demo mode.
     
-    CALIBRATION TARGET: ~72% match (10 matching / 14 required = 71.4%)
+    CALIBRATION TARGET: ~93% match (13 matching / 14 required)
     
     REQUIRED SKILLS (14 total):
     1. Python              - CV HAS IT
     2. SQL                 - CV HAS IT
     3. Google Analytics 4  - CV HAS IT
     4. Google Tag Manager  - CV HAS IT
-    5. Looker Studio / BI  - CV HAS IT (Looker)
+    5. Looker Studio / BI  - CV HAS IT
     6. A/B Testing         - CV HAS IT
     7. SEO                 - CV HAS IT
     8. Social Media        - CV HAS IT
     9. CRM                 - CV HAS IT
     10. Excel              - CV HAS IT
-    11. Tableau or Power BI - CV MISSING (uses Looker, not Tableau)
-    12. Machine Learning   - CV MISSING
-    13. Cloud (AWS/GCP)    - CV MISSING
-    14. Statistical Analysis - CV MISSING
+    11. Tableau or Power BI - CV HAS IT
+    12. Statistical Analysis - CV HAS IT
+    13. SEM/PPC            - CV HAS IT
+    14. Cloud (AWS/GCP)    - CV MISSING
     
-    Result: 10/14 = 71.4% hard skill match
+    Result: 13/14 = 92.9% hard skill match
     """
     return """
 SENIOR MARKETING ANALYST
