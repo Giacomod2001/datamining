@@ -40,7 +40,6 @@ datamining_git/
 ├── README.md           (6 KB)                - Documentation
 ├── Acknowledgment      (1 KB)                - AI Tools Acknowledgments
 ├── LICENSE             (5 KB)                - PolyForm Noncommercial License 1.0.0
-├── Demo_Candidate_DS_CV.pdf                  - Sample CV
 ├── PROJECT_REPORT.txt   (23 KB)              - This Documentation
 ├── .devcontainer/                            - Dev Container Configuration
 ├── .github/                                  - GitHub Actions/Workflows
