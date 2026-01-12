@@ -699,7 +699,7 @@ def render_debug_page():
                          help="Number of sentences in CV (based on . ! ? punctuation). More sentences = more detailed descriptions.")
             with stat4:
                 st.metric("JD Sentences", jd_sentences,
-                         help="Number of sentences in Job Description. Low count may indicate bullet-point format.")
+                         help="Sentences detected via punctuation (. ! ?). Bullet-point JDs often show low counts since bullets typically lack periods.")
             
             st.markdown("")
             

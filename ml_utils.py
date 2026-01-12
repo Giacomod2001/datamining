@@ -1062,7 +1062,7 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
 
     # Explicit Tech Jargon often mistaken for People/Orgs
     tech_jargon = {
-        "python", "java", "scala", "c++", "c#", "net", "javascript", "typescript", "php", "ruby", "go", "golang",
+        "python", "java", "scala", "c++", "c#", "net", "javascript", "typescript", "php", "ruby", "go", "golang", "r",
         "sql", "mysql", "postgresql", "mongodb", "redis", "cassandra", "neo4j",
         "aws", "azure", "gcp", "docker", "kubernetes", "jenkins", "gitlab", "github", "bitbucket",
         "numpy", "pandas", "scipy", "scikit-learn", "sklearn", "matplotlib", "seaborn", "plotly", "tableau", "powerbi",
@@ -1148,6 +1148,10 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
                 label = chunk.label()
                 entity_name = " ".join(c[0] for c in chunk)
                 entity_lower = entity_name.lower()
+                
+                # Check 0: Skip very short entities (single letters like 'R')
+                if len(entity_name) < 3:
+                    continue
                 
                 # Check 1: Exact match
                 if entity_lower in exclusion_set:
