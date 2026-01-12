@@ -684,10 +684,8 @@ def render_debug_page():
             
             cv_words = len(cv_text.split())
             jd_words = len(jd_text.split())
-            # Smart sentence count: periods followed by space/newline (excludes emails/URLs)
-            import re
-            cv_sentences = len(re.findall(r'[.!?](?:\s|$)', cv_text))
-            # JD Lines: count meaningful lines (3+ words) - better for bullet-point formats
+            # Count meaningful lines (3+ words) - works for both prose and bullet points
+            cv_lines = len([line for line in cv_text.split('\n') if len(line.split()) >= 3])
             jd_lines = len([line for line in jd_text.split('\n') if len(line.split()) >= 3])
             
             stat1, stat2, stat3, stat4 = st.columns(4)
@@ -696,13 +694,13 @@ def render_debug_page():
                          help="Total word count in your CV. Optimal CVs typically have 300-600 words.")
             with stat2:
                 st.metric("JD Words", jd_words,
-                         help="Total word count in the Job Description. Longer JDs often indicate more detailed requirements.")
+                         help="Total word count in the Job Description.")
             with stat3:
-                st.metric("CV Sentences", cv_sentences,
-                         help="Number of sentences in CV (based on . ! ? punctuation). More sentences = more detailed descriptions.")
+                st.metric("CV Lines", cv_lines,
+                         help="Content lines in CV (3+ words each). Includes bullet points and paragraphs.")
             with stat4:
                 st.metric("JD Lines", jd_lines,
-                         help="Meaningful lines/bullet points in JD (3+ words each). Better metric for structured job descriptions.")
+                         help="Content lines in JD (3+ words each). Includes bullet points and paragraphs.")
             
             st.markdown("")
             
