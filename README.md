@@ -5,7 +5,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![License](https://img.shields.io/badge/License-PolyForm--NC-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-2.1-0077B5?style=flat)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-2.1-0077B5?style=flat)](README.md)
 
 ---
 
