@@ -684,9 +684,9 @@ def render_debug_page():
             
             cv_words = len(cv_text.split())
             jd_words = len(jd_text.split())
-            # Count non-empty lines (any line with content)
-            cv_lines = len([line for line in cv_text.split('\n') if line.strip()])
-            jd_lines = len([line for line in jd_text.split('\n') if line.strip()])
+            # Count ALL lines (including empty)
+            cv_lines = len(cv_text.split('\n'))
+            jd_lines = len(jd_text.split('\n'))
             
             stat1, stat2, stat3, stat4 = st.columns(4)
             with stat1:
