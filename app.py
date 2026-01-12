@@ -689,13 +689,17 @@ def render_debug_page():
             
             stat1, stat2, stat3, stat4 = st.columns(4)
             with stat1:
-                st.metric("CV Words", cv_words)
+                st.metric("CV Words", cv_words, 
+                         help="Total word count in your CV. Optimal CVs typically have 300-600 words.")
             with stat2:
-                st.metric("JD Words", jd_words)
+                st.metric("JD Words", jd_words,
+                         help="Total word count in the Job Description. Longer JDs often indicate more detailed requirements.")
             with stat3:
-                st.metric("CV Sentences", cv_sentences)
+                st.metric("CV Sentences", cv_sentences,
+                         help="Number of sentences in CV (based on . ! ? punctuation). More sentences = more detailed descriptions.")
             with stat4:
-                st.metric("JD Sentences", jd_sentences)
+                st.metric("JD Sentences", jd_sentences,
+                         help="Number of sentences in Job Description. Low count may indicate bullet-point format.")
             
             st.markdown("")
             
