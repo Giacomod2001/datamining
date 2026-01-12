@@ -685,7 +685,8 @@ def render_debug_page():
             cv_words = len(cv_text.split())
             jd_words = len(jd_text.split())
             cv_sentences = cv_text.count('.') + cv_text.count('!') + cv_text.count('?')
-            jd_sentences = jd_text.count('.') + jd_text.count('!') + jd_text.count('?')
+            # JD Lines: count meaningful lines (3+ words) - better for bullet-point formats
+            jd_lines = len([line for line in jd_text.split('\n') if len(line.split()) >= 3])
             
             stat1, stat2, stat3, stat4 = st.columns(4)
             with stat1:
@@ -698,8 +699,8 @@ def render_debug_page():
                 st.metric("CV Sentences", cv_sentences,
                          help="Number of sentences in CV (based on . ! ? punctuation). More sentences = more detailed descriptions.")
             with stat4:
-                st.metric("JD Sentences", jd_sentences,
-                         help="Sentences detected via punctuation (. ! ?). Bullet-point JDs often show low counts since bullets typically lack periods.")
+                st.metric("JD Lines", jd_lines,
+                         help="Meaningful lines/bullet points in JD (3+ words each). Better metric for structured job descriptions.")
             
             st.markdown("")
             
