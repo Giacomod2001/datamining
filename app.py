@@ -684,7 +684,9 @@ def render_debug_page():
             
             cv_words = len(cv_text.split())
             jd_words = len(jd_text.split())
-            cv_sentences = cv_text.count('.') + cv_text.count('!') + cv_text.count('?')
+            # Smart sentence count: periods followed by space/newline (excludes emails/URLs)
+            import re
+            cv_sentences = len(re.findall(r'[.!?](?:\s|$)', cv_text))
             # JD Lines: count meaningful lines (3+ words) - better for bullet-point formats
             jd_lines = len([line for line in jd_text.split('\n') if len(line.split()) >= 3])
             
