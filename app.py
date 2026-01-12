@@ -684,9 +684,9 @@ def render_debug_page():
             
             cv_words = len(cv_text.split())
             jd_words = len(jd_text.split())
-            # Count meaningful lines (3+ words) - works for both prose and bullet points
-            cv_lines = len([line for line in cv_text.split('\n') if len(line.split()) >= 3])
-            jd_lines = len([line for line in jd_text.split('\n') if len(line.split()) >= 3])
+            # Count non-empty lines (any line with content)
+            cv_lines = len([line for line in cv_text.split('\n') if line.strip()])
+            jd_lines = len([line for line in jd_text.split('\n') if line.strip()])
             
             stat1, stat2, stat3, stat4 = st.columns(4)
             with stat1:
@@ -697,10 +697,10 @@ def render_debug_page():
                          help="Total word count in the Job Description.")
             with stat3:
                 st.metric("CV Lines", cv_lines,
-                         help="Content lines in CV (3+ words each). Includes bullet points and paragraphs.")
+                         help="Non-empty lines in CV. Includes headers, bullet points, and paragraphs.")
             with stat4:
                 st.metric("JD Lines", jd_lines,
-                         help="Content lines in JD (3+ words each). Includes bullet points and paragraphs.")
+                         help="Non-empty lines in JD. Includes headers, bullet points, and paragraphs.")
             
             st.markdown("")
             
