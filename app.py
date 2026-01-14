@@ -710,7 +710,7 @@ def render_debug_page():
             st.markdown("### Skill Extraction Analysis")
             
             cv_hard, cv_soft = ml_utils.extract_skills_from_text(cv_text)
-            jd_hard, jd_soft = ml_utils.extract_skills_from_text(jd_text)
+            jd_hard, jd_soft = ml_utils.extract_skills_from_text(jd_text, is_jd=True)
             
             sk1, sk2 = st.columns(2)
             
@@ -1103,7 +1103,7 @@ def render_cv_builder():
             if jd_text:
                 st.divider()
                 # 1. Extract JD Requirements
-                jd_hard, jd_soft = ml_utils.extract_skills_from_text(jd_text)
+                jd_hard, jd_soft = ml_utils.extract_skills_from_text(jd_text, is_jd=True)
                 jd_reqs = jd_hard | jd_soft
                 
                 # 2. Extract CV Skills (from all current fields)
@@ -1177,7 +1177,7 @@ def render_cv_builder():
         
         # Smart Suggestions Logic
         if jd_text:
-            jd_hard, _ = ml_utils.extract_skills_from_text(jd_text)
+            jd_hard, _ = ml_utils.extract_skills_from_text(jd_text, is_jd=True)
             user_skills = set(cv_data.get("competencies", []))
             missing = jd_hard - user_skills
             

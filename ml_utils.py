@@ -1507,7 +1507,60 @@ except ImportError:
     fuzz = None
 
 # =============================================================================
-def extract_skills_from_text(text: str) -> Tuple[Set[str], Set[str]]:
+def preprocess_jd_text(text: str) -> str:
+    """
+    PREPROCESSING JOB DESCRIPTION
+    =============================
+    Riferimento KDD: Data Cleaning (Step 1)
+    
+    Rimuove sezioni non-skill (benefit, condizioni, salari, training) prima 
+    dell'estrazione competenze per evitare falsi positivi.
+    
+    APPROCCIO:
+    1. Rimuove intere sezioni per header (Benefits:, Condizioni:, ecc.)
+    2. Rimuove pattern individuali (€35,000, 40 ore/settimana, ecc.)
+    3. Preserva solo contenuto relativo alle competenze
+    
+    Args:
+        text: Job Description originale
+        
+    Returns:
+        str: JD preprocessata senza sezioni non-skill
+    """
+    non_skill_patterns = getattr(constants, "NON_SKILL_PATTERNS", {})
+    
+    if not non_skill_patterns:
+        return text
+    
+    cleaned = text
+    
+    # Step 1: Remove entire sections by header
+    # Pattern: header seguito da contenuto fino a prossima sezione o fine
+    for pattern in non_skill_patterns.get("section_headers", []):
+        section_regex = rf'(?:^|\n)\s*{pattern}[:\s]*.*?(?=\n\s*[A-Z]|\n\n|\Z)'
+        cleaned = re.sub(section_regex, '\n', cleaned, flags=re.IGNORECASE | re.DOTALL | re.MULTILINE)
+    
+    # Step 2: Remove individual non-skill patterns
+    categories_to_filter = [
+        "salary", "hours", "duration", "benefits", "contract", 
+        "eligibility", "training", "agency", "freelance", "volunteering", "legal"
+    ]
+    
+    for category in categories_to_filter:
+        for pattern in non_skill_patterns.get(category, []):
+            try:
+                cleaned = re.sub(pattern, ' ', cleaned, flags=re.IGNORECASE)
+            except re.error:
+                continue  # Skip invalid regex patterns
+    
+    # Step 3: Clean up whitespace
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+    
+    return cleaned
+
+
+# =============================================================================
+def extract_skills_from_text(text: str, is_jd: bool = False) -> Tuple[Set[str], Set[str]]:
     """
     ESTRAZIONE COMPETENZE DA TESTO
     ==============================
@@ -1517,6 +1570,10 @@ def extract_skills_from_text(text: str) -> Tuple[Set[str], Set[str]]:
     
     METODOLOGIA (multi-step):
     -------------------------
+    
+    STEP 0: JD PREPROCESSING (NEW)
+    Se is_jd=True, rimuove sezioni non-skill (benefit, salari, condizioni)
+    prima dell'estrazione per evitare falsi positivi.
     
     STEP 1: PREPROCESSING
     - Conversione in lowercase
@@ -1554,10 +1611,15 @@ def extract_skills_from_text(text: str) -> Tuple[Set[str], Set[str]]:
     
     Args:
         text: Testo da analizzare (CV o Job Description)
+        is_jd: Se True, preprocessa il testo per rimuovere sezioni non-skill
         
     Returns:
         Tuple[Set[str], Set[str]]: (hard_skills, soft_skills) estratti
     """
+    
+    # NEW: Preprocess JD to remove non-skill sections (benefits, salary, etc.)
+    if is_jd:
+        text = preprocess_jd_text(text)
     
     hard_found = set()
     soft_found = set()
@@ -2731,7 +2793,7 @@ def analyze_cover_letter(cover_letter_text: str, jd_text: str, cv_text: str = ""
     cl_lang = detect_language(cover_letter_text)
     
     # Extract skills from JD and Cover Letter
-    jd_hard, jd_soft = extract_skills_from_text(jd_text)
+    jd_hard, jd_soft = extract_skills_from_text(jd_text, is_jd=True)
     cl_hard, cl_soft = extract_skills_from_text(cover_letter_text)
     
     # Extract CV skills if provided
@@ -2962,7 +3024,7 @@ def suggest_semantic_improvements(user_skills: Set[str], jd_text: str) -> List[s
     suggestions = []
     
     # 1. Identify Gaps
-    jd_hard, _ = extract_skills_from_text(jd_text)
+    jd_hard, _ = extract_skills_from_text(jd_text, is_jd=True)
     missing = jd_hard - user_skills
     
     if not missing:

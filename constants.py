@@ -603,3 +603,142 @@ JOB_ARCHETYPES = {
     "Regulatory Affairs Specialist (Pharma)": {"Regulatory", "Compliance", "GMP", "Clinical Trials", "Documentation"},
     "Microbiologist": {"Microbiology", "Lab Skills", "Microbiological Analysis", "Quality Control", "GLP"},
 }
+
+# =============================================================================
+# NON-SKILL PATTERNS - Sections to filter from JD before skill extraction
+# =============================================================================
+# These patterns identify non-skill elements in Job Descriptions that should
+# NOT be extracted as missing skills (benefits, salaries, contract terms, etc.)
+# Supports: Italian, English, UK, USA, Australian terminology
+# =============================================================================
+NON_SKILL_PATTERNS = {
+    # Section headers to remove entirely
+    "section_headers": [
+        r"benefic[i]?|benefits|cosa (?:ti )?offriamo|what we offer|perks",
+        r"condizioni|conditions|termini|terms|nota (?:importante|legale)",
+        r"piano formativo|training plan|formazione|learning objectives",
+        r"chi siamo|about us|la nostra azienda|our company|about the company",
+        r"come funziona|how (?:it )?works|come candidarsi|how to apply",
+        r"vantaggi(?: per te)?|advantages|cosa non offriamo|what we don't offer",
+        r"testimonianza|testimonial|success metrics|timeline",
+        r"struttura programma|programme structure",
+    ],
+    
+    # Salary/compensation (IT/EN/UK/USA with symbols)
+    "salary": [
+        r"[€$£]\s*[\d.,]+(?:k|K)?(?:\s*/\s*(?:anno|year|mese|month|ora|hour))?",
+        r"(?:RAL|retribuzione|salary|compensation|compenso|stipendio|indennità)[\s:]*[\d€$£.,]+",
+        r"(?:lordo|gross|netto|net|all-inclusive)\b",
+        r"pagamento (?:milestone|settimanale|mensile|weekly|monthly)",
+        r"(?:invoice|fattura)\s*(?:mensile|monthly)?",
+        r"timesheet\s*(?:settimanale|weekly)?",
+    ],
+    
+    # Work hours/schedule
+    "hours": [
+        r"\d+\s*(?:ore|hours?)(?:\s*/\s*(?:settimana|week))?",
+        r"(?:full-time|part-time|tempo (?:pieno|parziale))",
+        r"(?:lunedì|monday)[\s\-–a]+(?:venerdì|friday|domenica|sunday)",
+        r"\d{1,2}[:\-\.]\d{2}\s*(?:am|pm)?(?:\s*[\-–a]\s*\d{1,2}[:\-\.]\d{2})?",
+        r"(?:turni?|shifts?)[\s\w]*(?:serali?|notturni?|weekend|flessibil[ei])?",
+        r"(?:on-call|a chiamata|zero[- ]?hour)",
+    ],
+    
+    # Duration/dates
+    "duration": [
+        r"\d+\s*(?:mesi|months?|anni|years?|settimane|weeks?|giorni|days?)",
+        r"(?:dal|from|fino al?|until|entro)\s+[\d\/\-\w]+",
+        r"(?:gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)\s+\d{4}",
+        r"(?:january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{4}",
+        r"\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}",
+    ],
+    
+    # Benefits (IT/EN/UK/USA/AU comprehensive)
+    "benefits": [
+        r"(?:ferie|vacation|holidays?|annual leave)(?:\s+(?:pagate?|paid|pro-rata))?",
+        r"(?:assicurazione|insurance)(?:\s+(?:sanitaria|health|integrativa|RC|civile))?",
+        r"(?:pensione|pension|fondo pensione|retirement|superannuation)",
+        r"(?:buoni pasto|meal vouchers?|pasti gratuiti|free meals?|mensa)",
+        r"(?:smart working|remote work|lavoro (?:da )?remoto|hybrid|home working)",
+        r"(?:tredicesima|quattordicesima|bonus|premio|performance-based)",
+        r"(?:contributi|contributions?)(?:\s+(?:previdenziali|INPS|pension|ordinari))?",
+        r"(?:housing|alloggio|residence)(?:\s+(?:gratuito|free))?",
+        r"(?:mentorato?|mentorship|mentoring|coaching)",
+        r"(?:attestato|certificate|certificato)(?:\s+(?:di stage|riconosciuto|volontariato))?",
+        r"(?:rimborso?|reimbursement)(?:\s+(?:spese?|viaggio|trasporto|expenses?))?",
+        r"(?:networking|community|coorte|cohort)",
+        r"(?:campus|access|accesso)\s+(?:technology|tecnologia)?",
+        r"(?:corsi|courses?|training)(?:\s+(?:leadership|sviluppo|development))?",
+    ],
+    
+    # Contract terms (IT/EN/UK/USA/AU)
+    "contract": [
+        r"(?:contratto|contract)\s+(?:a scadenza|rinnovabile|non rinnovabile|determinato|indeterminato|permanent|fixed)",
+        r"(?:pro-rata|prorated)",
+        r"(?:CCNL|collective agreement|at-will|employment)",
+        r"(?:trasformazione|conversion|passaggio)(?:\s+(?:a indeterminato|to permanent|automatica?|dirett[oa]))?",
+        r"(?:return offer|potential (?:hire|assunzione)|possibile assunzione)",
+        r"(?:clausola|clause)(?:\s+(?:di )?(?:esclusiva|exclusivity))?",
+        r"(?:cancellazione|cancellation)(?:\s+(?:con )?\d+\s*(?:h|ore|hours?)\s*(?:di )?preavviso)?",
+        r"(?:nessun[ao]?\s+)?(?:garanzia|obblig[oa]|guarantee|obligation)",
+        r"(?:estendibile|extendable|renewable)",
+        r"(?:limite massimo|maximum limit)\s*\d+",
+        r"400\s*(?:giorni|days?|gg)",
+    ],
+    
+    # Age/eligibility (apprenticeship, internship, graduate)
+    "eligibility": [
+        r"(?:età|age)[\s:]*(?:dai?|from)?\s*\d+\s*(?:ai?|to|\-)?\s*\d*\s*(?:anni|years?)?",
+        r"(?:studente|student|neolaureato?|graduate)(?:\s+(?:ultimo anno|entro \d+ mesi|currently enrolled))?",
+        r"(?:GPA|media)[\s:]*\d+[.,]?\d*",
+        r"(?:laurea|degree|bachelor|master|phd)(?:\s+(?:triennale|magistrale|entro))?",
+        r"(?:graduation|laureat[oi])(?:\s+(?:tra|between|entro))?",
+        r"(?:nessun[ao]?\s+)?(?:esperienza|experience)(?:\s+(?:richiesta|required))?",
+        r"(?:entry-level|junior|senior)",
+    ],
+    
+    # Training/certification context (not skills)
+    "training": [
+        r"(?:qualifica|qualification)(?:\s+(?:professionale|riconosciuta|statale))?",
+        r"(?:certificazione|certification)(?:\s+(?:ITS|professionale|europea|internazionale))?",
+        r"(?:diploma|degree)(?:\s+(?:ITS|riconosciuto|internazionalmente))?",
+        r"(?:obiettivi di apprendimento|learning objectives)",
+        r"(?:formazione)(?:\s+(?:teorica|pratica|continua|pre-servizio))?",
+        r"(?:assessment center|phone screen|final interview)",
+    ],
+    
+    # Agency/intermediary patterns
+    "agency": [
+        r"(?:agenzia|agency)[\s:]+\w+",
+        r"(?:Randstad|Adecco|Manpower|Kelly|Gi Group|Caritas)",
+        r"(?:azienda cliente|client company|presso sede)",
+        r"(?:somministrazione|staffing|temporary|tramite)",
+    ],
+    
+    # Freelance/project patterns
+    "freelance": [
+        r"(?:P\.?IVA|VAT|partita iva)(?:\s+(?:attiva|obbligatorio|required))?",
+        r"(?:milestone|deliverable)\s*\d*",
+        r"(?:progetto|project)(?:\s+(?:fisso|based))?",
+        r"(?:workspace|attrezzature|equipment)(?:\s+(?:non (?:fornit[oai]|included)))?",
+        r"(?:kick-off|jira|tracking|riunioni settimanali)",
+    ],
+    
+    # Volunteering patterns
+    "volunteering": [
+        r"(?:volontar[io]|volunteer|unpaid)",
+        r"(?:impegno minimo|minimum commitment)",
+        r"(?:impatto civile|social impact)",
+        r"(?:puoi interrompere|you can stop)",
+    ],
+    
+    # Legal/regulatory notes
+    "legal": [
+        r"(?:conversione automatica|automatic conversion)",
+        r"(?:primary beneficiary test)",
+        r"(?:legge italiana|italian law|secondo la legge|employment (?:rights )?act)",
+        r"(?:fair work act|nlra|fsla)",
+        r"(?:pari opportunità|equal opportunity|dei statement)",
+        r"(?:accommodation|disabilità|disability)",
+    ],
+}
