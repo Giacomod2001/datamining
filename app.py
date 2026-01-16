@@ -275,8 +275,8 @@ def render_debug_page():
     jd_text = st.session_state.get("last_jd_text", "")
     
     # Tab principali - nomi brevi per evitare troncamento "... and 1 more"
-    tabs = ["System Status", "Analysis Data", "Skill Clusters", "NLP Stats", "Knowledge Base", "CV Builder State"]
-    t1, t2, t3, t4, t5, t6 = st.tabs(tabs)
+    tabs = ["System Status", "Analysis Data", "Skill Clusters", "NLP Stats", "Knowledge Base", "CV Builder State", "Discovery"]
+    t1, t2, t3, t4, t5, t6, t7 = st.tabs(tabs)
     
     # =========================================================================
     # TAB 1: SYSTEM OVERVIEW - Collapsible Sections with Index
@@ -1875,8 +1875,6 @@ def render_evaluation_page():
     - Opzioni aggiuntive (Cover Letter, Portfolio)
     - Pulsante di analisi
     - Visualizzazione risultati
-    """
-    
     """
     
     render_navigation() # GLOBAL NAVBAR

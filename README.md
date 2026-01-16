@@ -34,6 +34,7 @@
 | **Education-Aware** | Smart weighting of recent education degrees for career pathing |
 | **Gap Analysis** | Identifies missing skills vs Job Description |
 | **Career Compass** | Advanced role discovery using Skills + Education + Interests (Unlimited model) |
+| **Career Discovery** | **NEW!** Explore career paths based on lifestyle & work preferences (Remote, Creative, etc.) |
 | **Psychometric Profile** | Silent Burnout & Resilience detection |
 
 ---
