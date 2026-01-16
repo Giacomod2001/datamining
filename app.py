@@ -136,12 +136,12 @@ def render_navigation():
     """
     with st.sidebar:
         # Branding
-        st.markdown(\"\"\"
+        st.markdown("""
         <div style='text-align: center; padding: 0.5rem 0;'>
             <h2 style='font-size: 1.5rem; margin: 0;'>CareerMatch AI</h2>
             <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>CAREER ASSISTANT</p>
         </div>
-        \"\"\", unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
         st.divider()
         
         # Navigation
