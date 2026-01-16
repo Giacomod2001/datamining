@@ -16,8 +16,9 @@
 **New Features**:
 
 - **Unified Navigation**: Access all tools (CV Builder, Evaluation, Discovery) from a consistent sidebar menu.
-- **Improved Demo Mode**: One-click demo toggle available globally along with "Try Demo" quick actions.
-- **Improved Navigation**: Switch easily between "CV Builder" and "CV Evaluation" from the sidebar.
+- **Career Discovery**: New module to find career paths based on lifestyle preferences.
+- **Advanced ML Engine**: Now with Seniority Detection (Junior/Senior) and LSA Semantic Matching.
+- **Improved Demo Mode**: One-click demo toggle available globally.
 
 ---
 
