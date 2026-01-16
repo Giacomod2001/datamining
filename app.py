@@ -173,13 +173,9 @@ def render_navigation():
         st.divider()
         
         # Demo Controls
-        # Demo Controls - Only visible in operational pages
+        # Demo Controls - Visible in operational pages
         if current_page not in ["Landing", "Debugger"]:
-            st.divider()
-            st.markdown("**Example Data**")
-            
             if st.session_state.get("demo_mode"):
-                st.success("Test Mode Active")
                 if st.button("Disable Test Mode", type="secondary", use_container_width=True):
                     st.session_state["demo_mode"] = False
                     st.session_state["cv_text"] = ""
@@ -190,15 +186,18 @@ def render_navigation():
             else:
                 if st.button("Load Test Data", type="primary", use_container_width=True):
                      st.session_state["demo_mode"] = True
+                     
+                     # Base Data populated for all contexts (safe fallback)
                      st.session_state["cv_text"] = styles.get_demo_cv()
                      st.session_state["jd_text"] = styles.get_demo_jd()
                      st.session_state["proj_text"] = styles.get_demo_project()
                      st.session_state["show_project_toggle"] = True
                      st.session_state["show_cover_letter"] = True
                      
-                     # Redirect to Evaluation if currently in Builder (to see result) or Discovery
+                     # Context-Specific Triggers
                      if current_page == "CV Builder":
-                         st.session_state["page"] = "CV Evaluation"
+                         st.session_state["trigger_demo_load"] = True
+                         
                      st.rerun()
              
         st.markdown("<div style='margin-top: 2rem; color: #666; font-size: 0.8em;'>v2.1 | Local Mode</div>", unsafe_allow_html=True)
