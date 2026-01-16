@@ -173,26 +173,35 @@ def render_navigation():
         st.divider()
         
         # Demo Controls
-        if st.session_state.get("demo_mode"):
-            st.info("**Demo Active**")
-            if st.button("Clear / Exit Demo", use_container_width=True):
-                st.session_state["demo_mode"] = False
-                st.session_state["cv_text"] = ""
-                st.session_state["jd_text"] = ""
-                st.session_state["proj_text"] = ""
-                st.session_state["cl_text"] = ""
-                st.rerun()
-        else:
-            if st.button("Load Demo Data", use_container_width=True, help="Populate app with sample data"):
-                 st.session_state["demo_mode"] = True
-                 st.session_state["cv_text"] = styles.get_demo_cv()
-                 st.session_state["jd_text"] = styles.get_demo_jd()
-                 st.session_state["proj_text"] = styles.get_demo_project()
-                 st.session_state["show_project_toggle"] = True
-                 st.session_state["show_cover_letter"] = True
-                 st.rerun()
+        # Demo Controls - Only visible in operational pages
+        if current_page not in ["Landing", "Debugger"]:
+            st.divider()
+            st.markdown("**Example Data**")
+            
+            if st.session_state.get("demo_mode"):
+                st.success("Test Mode Active")
+                if st.button("Disable Test Mode", type="secondary", use_container_width=True):
+                    st.session_state["demo_mode"] = False
+                    st.session_state["cv_text"] = ""
+                    st.session_state["jd_text"] = ""
+                    st.session_state["proj_text"] = ""
+                    st.session_state["cl_text"] = ""
+                    st.rerun()
+            else:
+                if st.button("Load Test Data", type="primary", use_container_width=True):
+                     st.session_state["demo_mode"] = True
+                     st.session_state["cv_text"] = styles.get_demo_cv()
+                     st.session_state["jd_text"] = styles.get_demo_jd()
+                     st.session_state["proj_text"] = styles.get_demo_project()
+                     st.session_state["show_project_toggle"] = True
+                     st.session_state["show_cover_letter"] = True
+                     
+                     # Redirect to Evaluation if currently in Builder (to see result) or Discovery
+                     if current_page == "CV Builder":
+                         st.session_state["page"] = "CV Evaluation"
+                     st.rerun()
              
-        st.caption("v2.1 | Local Mode")
+        st.markdown("<div style='margin-top: 2rem; color: #666; font-size: 0.8em;'>v2.1 | Local Mode</div>", unsafe_allow_html=True)
 
 def render_debug_page():
     """
