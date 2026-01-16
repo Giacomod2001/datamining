@@ -62,36 +62,34 @@ streamlit run app.py
 
 The app opens automatically at `http://localhost:8501`.
 
-The app opens automatically at `http://localhost:8501`.
-
 ---
 
 ## App Structure & Modules
 
 The application is composed of 4 main integrated environments, accessible via the global sidebar:
 
-### 1. 📊 CV Evaluation Engine (Home)
+### 1. CV Evaluation Engine (Home)
 
 The core of the application. It accepts a CV and a Job Description to perform a deep-dive match analysis.
 
 - **Inputs**: PDF or Text for both CV and JD.
 - **Outputs**: Match Score (0-100%), Missing Skills, Seniority warning, and AI Career Compass.
 
-### 2. 📝 Smart CV Builder
+### 2. Smart CV Builder
 
 An interactive wizard to create professional CVs from scratch.
 
 - **Features**: Real-time AI suggestions based on target job roles.
 - **Export**: Generates ATS-friendly PDF and TXT files.
 
-### 3. 🧭 Career Discovery
+### 3. Career Discovery
 
 A lifestyle-based career explorer for users without a specific target job.
 
 - **Mechanism**: Recommends roles based on preferences (e.g., Remote vs On-site, Creative vs Logical).
 - **Integration**: Direct link to external job boards with seniority filters.
 
-### 4. 🛠️ Developer Console
+### 4. Developer Console
 
 A transparent "Glass Box" interface for examiners and developers.
 

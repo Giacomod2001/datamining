@@ -173,8 +173,17 @@ def render_navigation():
         st.divider()
         
         # Demo Controls
-        if st.checkbox("Demo Mode", value=st.session_state.get("demo_mode", False), key="global_demo_toggle"):
-             if not st.session_state.get("demo_mode", False):
+        if st.session_state.get("demo_mode"):
+            st.info("**Demo Active**")
+            if st.button("Clear / Exit Demo", use_container_width=True):
+                st.session_state["demo_mode"] = False
+                st.session_state["cv_text"] = ""
+                st.session_state["jd_text"] = ""
+                st.session_state["proj_text"] = ""
+                st.session_state["cl_text"] = ""
+                st.rerun()
+        else:
+            if st.button("Load Demo Data", use_container_width=True, help="Populate app with sample data"):
                  st.session_state["demo_mode"] = True
                  st.session_state["cv_text"] = styles.get_demo_cv()
                  st.session_state["jd_text"] = styles.get_demo_jd()
@@ -182,9 +191,6 @@ def render_navigation():
                  st.session_state["show_project_toggle"] = True
                  st.session_state["show_cover_letter"] = True
                  st.rerun()
-             st.session_state["demo_mode"] = True
-        else:
-             st.session_state["demo_mode"] = False
              
         st.caption("v2.1 | Local Mode")
 
@@ -285,18 +291,6 @@ def render_debug_page():
         st.subheader("Machine Learning Models")
         st.caption("Click each section to expand/collapse. All algorithms used in this application.")
         
-        # Quick Index
-        st.markdown("""
-        <div style='background: rgba(0, 119, 181, 0.1); padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem;'>
-            <strong>Quick Index:</strong> 
-            Skill Matching | 
-            Skill Extraction | 
-            Entity Extraction |
-            Topic Discovery | 
-            Skill Grouping |
-            Why These Parameters
-        </div>
-        """, unsafe_allow_html=True)
         
         # 1. Skill Matching
         with st.expander("1. Skill Matching - Random Forest Classifier", expanded=False):
@@ -1890,7 +1884,7 @@ def render_evaluation_page():
         st.toggle("Include Cover Letter", key="show_cover_letter")
         
     if st.session_state.get("demo_mode"):
-        st.info("ℹ️ **Demo Mode Active**: Sample data loaded for testing.")
+        st.info("**Demo Mode Active**: Sample data loaded for testing.")
 
     # ==========================================================================
     # MAIN CONTENT AREA - Hero Section
@@ -2234,7 +2228,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     if cv_level == "Entry Level": query_prefix = "Junior "
     elif cv_level == "Senior Level": query_prefix = "Senior "
     
-    st.info(f"🎯 **Profile Analysis detected:** {cv_level}. Recommendations and search links are optimized for this level.")
+    st.info(f"**Profile Analysis detected:** {cv_level}. Recommendations and search links are optimized for this level.")
 
     candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
     recs = ml_utils.recommend_roles(candidate_skills, jd_text if jd_text else "", cv_text if cv_text else "")
