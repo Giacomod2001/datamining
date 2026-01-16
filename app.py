@@ -1761,7 +1761,7 @@ def render_career_discovery():
                 st.caption("Ranked by preference alignment. Upload a CV for skill-based matching.")
             
             if filtered_results:
-                render_career_discovery_results(filtered_results, has_cv=has_cv)
+                render_career_discovery_results(filtered_results, has_cv=has_cv, seniority_prefix=query_prefix)
             else:
                 st.info(f"No careers found with match score >= {min_match_discovery}%. Try lowering the filter.")
         else:
@@ -1770,7 +1770,7 @@ def render_career_discovery():
 
 
 
-def render_career_discovery_results(results: list, has_cv: bool = False):
+def render_career_discovery_results(results: list, has_cv: bool = False, seniority_prefix: str = ""):
     """
     Renders the Career Discovery results as interactive role cards.
     """
@@ -1788,10 +1788,10 @@ def render_career_discovery_results(results: list, has_cv: bool = False):
             if i + j < len(results):
                 role = results[i + j]
                 with col:
-                    render_role_card(role, has_cv)
+                    render_role_card(role, has_cv, seniority_prefix)
 
 
-def render_role_card(role: dict, has_cv: bool = False):
+def render_role_card(role: dict, has_cv: bool = False, seniority_prefix: str = ""):
     """
     Renders a single role recommendation card.
     """
@@ -1817,8 +1817,8 @@ def render_role_card(role: dict, has_cv: bool = False):
     st.caption(f"**{score:.0f}% Match** | {category}")
     
     # Job search links - prominent like Career Compass
-    role_query = urllib.parse.quote(role_name)
-    italy_query = urllib.parse.quote(f"{role_name} Italia")
+    role_query = urllib.parse.quote(f"{seniority_prefix}{role_name}")
+    italy_query = urllib.parse.quote(f"{seniority_prefix}{role_name} Italia")
     
     st.markdown(f"<a href='https://www.google.com/search?q={role_query}+jobs' target='_blank'>Google Jobs</a>", unsafe_allow_html=True)
     st.markdown(f"<a href='https://www.linkedin.com/jobs/search/?keywords={role_query}' target='_blank'>LinkedIn Jobs</a>", unsafe_allow_html=True)
@@ -2249,6 +2249,13 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     # AI Career Compass (Visible)
     st.subheader("AI Career Compass")
     st.caption("Alternative roles based on your profile and education")
+    
+    # Seniority Detection for Queries
+    cv_level, _ = ml_utils.detect_seniority(cv_text) if cv_text else ("Mid Level", 0.0)
+    query_prefix = ""
+    if cv_level == "Entry Level": query_prefix = "Junior "
+    elif cv_level == "Senior Level": query_prefix = "Senior "
+    
     candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
     recs = ml_utils.recommend_roles(candidate_skills, jd_text if jd_text else "", cv_text if cv_text else "")
     
@@ -2263,17 +2270,13 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         col1, col2 = st.columns(2)
         for i, rec in enumerate(filtered_recs):
             with col1 if i % 2 == 0 else col2:
-                role_query = urllib.parse.quote(rec['role'])
-                # edu_indicator = " (Edu Boost)" if rec.get('edu_boost') else "" # textual or hidden? User said "no mojii".
-                # Let's keep it clean or use text. "User said 'togli le mojii'". 
-                # I will just remove the emoji. Maybe use a text label or nothing?
-                # "Education Match" text maybe? Or just a refined style?
-                # Minimalist approach: maybe bold or color?
-                # I'll stick to removing the emoji first. If I want to indicate it, I can use text.
-                # But minimalist means maybe just the score is boosted.
-                # Let's try: " [Escolarità]" or similar if needed, but user probably just hates the cartoonish look.
-                # Actually, simply removing it is safest. The boost is in the score.
-                st.markdown(f"**{rec['role']}** ({rec['score']:.0f}%)")
+                # Use seniority prefix for smarter queries
+                role_query = urllib.parse.quote(f"{query_prefix}{rec['role']}")
+                display_title = f"{rec['role']}"
+                if rec.get('seniority_fit') == "Underqualified":
+                     display_title += " (Ambitious)" # Subtle hint
+                
+                st.markdown(f"**{display_title}** ({rec['score']:.0f}%)")
                 st.markdown(f"[Google](https://www.google.com/search?q={role_query}+jobs) | [LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query}) | [Indeed](https://it.indeed.com/jobs?q={role_query})")
                 st.markdown("")
     elif recs:

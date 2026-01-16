@@ -111,6 +111,50 @@ try:
 except ImportError:
     FPDF = None
 
+def detect_seniority(text: str) -> Tuple[str, float]:
+    """
+    Detects seniority level (Junior, Mid, Senior) from text.
+    Returns: (Level, Confidence)
+    """
+    if not text:
+        return "Mid Level", 0.0
+        
+    text_lower = text.lower()
+    
+    # 1. Regex for years of experience
+    import re
+    years_matches = re.findall(r'(\d+)\s*(?:\+|plus)?\s*(?:years|anni)', text_lower)
+    max_years = 0
+    if years_matches:
+        try:
+            max_years = max([int(y) for y in years_matches if int(y) < 50]) # Filter realistic
+        except ValueError:
+            max_years = 0
+    
+    # 2. Keyword counting
+    seniority_map = getattr(constants, "SENIORITY_KEYWORDS", {})
+    scores = {"Entry Level": 0, "Mid Level": 0, "Senior Level": 0}
+    
+    for level, keywords in seniority_map.items():
+        for kw in keywords:
+            if kw in text_lower: # Simple substring match is safer for now
+                scores[level] += 1
+                
+    # Logic: Explicit years overrides keywords usually
+    if max_years >= 5:
+        return "Senior Level", 0.9
+    elif max_years >= 3:
+        return "Mid Level", 0.8
+    elif max_years >= 1: # 1-3 years -> Entry/Junior (often treated as Junior)
+        return "Entry Level", 0.8
+        
+    # Keyword fallback
+    best_level = max(scores, key=scores.get)
+    if scores[best_level] > 0:
+        return best_level, 0.7
+        
+    return "Mid Level", 0.4 # Default assumption
+
 import constants  # Contiene HARD_SKILLS, SOFT_SKILLS, INFERENCE_RULES
 
 
@@ -2030,6 +2074,19 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     score_points = len(matching_hard) + (len(transferable) * 0.5)
     match_pct = score_points / len(job_hard) * 100 if job_hard else 0
 
+    # 7. Seniority Analysis
+    cv_level, _ = detect_seniority(cv_text)
+    jd_level, _ = detect_seniority(job_text)
+    
+    seniority_match = "Match"
+    if cv_level != jd_level:
+        if cv_level == "Entry Level" and jd_level == "Senior Level":
+            seniority_match = "Underqualified"
+        elif cv_level == "Senior Level" and jd_level == "Entry Level":
+            seniority_match = "Overqualified"
+        else:
+            seniority_match = "Partial Match"
+
     return {
         "match_percentage": match_pct,
         "matching_hard": matching_hard,
@@ -2038,7 +2095,12 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
         "transferable": transferable,
         "extra_hard": extra_hard,
         "matching_soft": matching_soft,
-        "missing_soft": missing_soft
+        "missing_soft": missing_soft,
+        "seniority_info": {
+            "cv_level": cv_level,
+            "jd_level": jd_level,
+            "match_status": seniority_match
+        }
     }
 
 def analyze_gap_with_project(cv_text: str, job_text: str, project_text: str) -> Dict:
@@ -2698,6 +2760,9 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
     if not cv_skills or not job_archetypes or not TfidfVectorizer:
         return []
 
+    # 0. Seniority Detection (New)
+    cv_level, _ = detect_seniority(cv_text) if cv_text else ("Mid Level", 0.0)
+
     # 1. Extract education boost from CV text
     education_boost = {}  # role_name -> boost score
     if cv_text:
@@ -2836,7 +2901,22 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
         
         # Add education boost if applicable
         edu_boost = education_boost.get(role_name, 0)
-        final_score = min(100, overlap_score + edu_boost)  # Cap at 100%
+        
+        # Seniority Scoring
+        is_senior_role = any(kw in role_name.lower() for kw in ["senior", "lead", "manager", "head", "principal", "director", "chief"])
+        is_junior_role = any(kw in role_name.lower() for kw in ["junior", "associate", "intern", "trainee", "entry"])
+        
+        seniority_penalty = 1.0
+        seniority_fit = "Match"
+        
+        if cv_level == "Entry Level" and is_senior_role:
+             seniority_penalty = 0.5 
+             seniority_fit = "Underqualified"
+        elif cv_level == "Senior Level" and is_junior_role:
+             seniority_penalty = 0.9 
+             seniority_fit = "Overqualified"
+
+        final_score = min(100, (overlap_score + edu_boost) * seniority_penalty)  # Cap at 100%
         
         # Quality Filter - Show roles with at least 10% skill match OR education boost
         if final_score < 10:
@@ -2846,7 +2926,8 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
             "role": role_name,
             "score": final_score, 
             "missing": missing_display,
-            "edu_boost": edu_boost > 0  # Flag if boosted by education
+            "edu_boost": edu_boost > 0,  # Flag if boosted by education
+            "seniority_fit": seniority_fit
         })
         
     recommendations.sort(key=lambda x: x["score"], reverse=True)
