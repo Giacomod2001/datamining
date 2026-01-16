@@ -2235,17 +2235,24 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     recs = ml_utils.recommend_roles(candidate_skills, jd_text if jd_text else "", cv_text if cv_text else "")
     
     # Optional Filter
-    st.markdown("**Minimum Match Score**")
-    min_match = st.radio(
-        "Minimum Match Score",
-        options=[0, 25, 50, 75],
-        format_func=lambda x: f">{x}%",
+    st.markdown("Score Range")
+    match_range = st.radio(
+        "Score Range",
+        options=["0-25%", "25-50%", "50-75%", "75-100%"],
         horizontal=True,
         label_visibility="collapsed",
-        key="compass_filter_radio"
+        key="compass_filter_range",
+        index=1 # Default to 25-50 to likely show something useful, or 0? 
     )
     
-    filtered_recs = [r for r in recs if r['score'] >= min_match]
+    # Range Logic
+    min_s, max_s = 0, 100
+    if match_range == "0-25%": min_s, max_s = 0, 25
+    elif match_range == "25-50%": min_s, max_s = 25, 50
+    elif match_range == "50-75%": min_s, max_s = 50, 75
+    elif match_range == "75-100%": min_s, max_s = 75, 100
+        
+    filtered_recs = [r for r in recs if min_s <= r['score'] <= max_s]
     
     if filtered_recs:
         # Display in 2 columns
@@ -2262,7 +2269,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                 st.markdown(f"[Google](https://www.google.com/search?q={role_query}+jobs) | [LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query}) | [Indeed](https://it.indeed.com/jobs?q={role_query})")
                 st.markdown("")
     elif recs:
-        st.info(f"No roles found with match score >= {min_match}%. Try lowering the filter in 'Filter Options'.")
+        st.info(f"No roles found in the {match_range} range. Try a different filter.")
     else:
         st.info("No alternative roles found based on your skills.")
     
