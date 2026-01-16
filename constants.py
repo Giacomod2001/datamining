@@ -407,35 +407,47 @@ SOFT_SKILLS = {
 # Comprehensive list covering all major career paths
 JOB_ARCHETYPES = {
     # ========== TECHNOLOGY ==========
-    "Software Developer": {"Programming", "Git", "SQL", "APIs", "Problem Solving"},
-    "Frontend Developer": {"JavaScript", "HTML", "CSS", "UI Design", "Git"},
-    "Backend Developer": {"Python", "SQL", "APIs", "Cloud Computing", "Git"},
-    "Full Stack Developer": {"JavaScript", "Python", "SQL", "Git", "DevOps"},
-    "Data Analyst": {"SQL", "Excel", "Data Visualization", "Statistics", "Power BI"},
-    "Data Scientist": {"Python", "Machine Learning", "Statistics", "SQL", "Data Analysis"},
-    "Data Engineer": {"SQL", "Python", "Cloud Computing", "BigQuery", "DevOps"},
-    "Business Intelligence Analyst": {"Power BI", "Tableau", "SQL", "Excel", "Reporting"},
-    "UX Designer": {"UX Design", "Figma", "Research", "Prototyping"},
-    "UI Designer": {"UI Design", "Figma", "Adobe Creative Suite", "Typography"},
-    "DevOps Engineer": {"DevOps", "Cloud Computing", "Docker", "Git", "Networking"},
-    "Cybersecurity Analyst": {"Cybersecurity", "Networking", "Compliance", "Risk Management"},
-    "IT Support Specialist": {"IT Support", "Networking", "Troubleshooting", "Customer Service"},
-    "System Administrator": {"Networking", "Cloud Computing", "IT Support", "Cybersecurity"},
-    "Product Manager": {"Project Management", "Agile", "Business Analysis", "UX Design", "Data Analysis"},
+    "Software Engineer": {"Programming", "Git", "System Design", "Algorithms", "Testing"}, # Renamed from Software Developer for prestige
+    "Frontend Developer": {"JavaScript", "React", "HTML", "CSS", "UI Design", "Git"}, # Added React
+    "Backend Developer": {"Python", "Java", "SQL", "APIs", "Microservices", "Cloud Computing"}, # Added Java/Microservices
+    "Full Stack Developer": {"JavaScript", "Python", "React", "SQL", "Git", "DevOps"}, # Added React
+    "Data Analyst": {"SQL", "Excel", "Data Visualization", "Python", "Statistics"}, # Added Python
+    "Data Scientist": {"Python", "Machine Learning", "Deep Learning", "Statistics", "SQL"},
+    "Data Engineer": {"SQL", "Python", "Spark", "Cloud Computing", "ETL", "BigQuery"}, # Added Spark/ETL
+    "Business Intelligence Analyst": {"Power BI", "Tableau", "SQL", "Data Modelling", "Reporting"},
+    "Machine Learning Engineer": {"Python", "Machine Learning", "TensorFlow", "MLOps", "Cloud Computing"}, # New
+    "AI Business Analyst": {"Artificial Intelligence", "Business Analysis", "Strategy", "Data Analysis", "Python"}, # New Hybrid
+    "UX Designer": {"UX Design", "Figma", "User Research", "Prototyping", "Wireframing"},
+    "UI Designer": {"UI Design", "Figma", "Adobe Creative Suite", "Typography", "Visual Design"},
+    "DevOps Engineer": {"DevOps", "CI/CD", "Docker", "Kubernetes", "Cloud Computing"},
+    "Cybersecurity Analyst": {"Cybersecurity", "Network Security", "Compliance", "Risk Management", "Incident Response"},
+    "IT Support Specialist": {"IT Support", "Troubleshooting", "Hardware", "Windows", "Customer Service"},
+    "System Administrator": {"Linux", "Windows Server", "Networking", "Cloud Computing", "Scripting"},
+    "Product Manager": {"Product Management", "Agile", "User Stories", "Roadmap", "Data Analysis"},
+    
+    # ========== TECHNOLOGY & DATA (HYBRID) ==========
+    "Analytics Engineer": {"SQL", "dbt", "Python", "Data Modeling", "BigQuery", "Snowflake", "Git"},
+    "Solutions Architect": {"Cloud Computing", "System Design", "Communication", "Sales", "AWS", "Azure"},
+    "Technical Product Manager": {"Product Management", "APIs", "System Design", "Agile", "Data Analysis"},
+    "Growth Engineer": {"JavaScript", "Python", "A/B Testing", "Marketing", "Data Analysis", "Automation"},
+    "MLOps Engineer": {"Machine Learning", "DevOps", "Docker", "Kubernetes", "Python", "CI/CD"},
+    "Legal Tech Specialist": {"Law", "Technology", "Automation", "Legal Research", "Project Management"},
+    "FinTech Specialist": {"Finance", "Technology", "Blockchain", "Python", "Data Analysis"},
     
     # ========== MARKETING & COMMUNICATIONS ==========
-    "Marketing Manager": {"Marketing", "Strategic Planning", "Digital Marketing", "Brand Management", "Budgeting"},
-    "Digital Marketing Specialist": {"Digital Marketing", "SEO", "Google Analytics", "Social Media Marketing", "Google Ads"},
-    "Social Media Manager": {"Social Media Marketing", "Content Marketing", "Copywriting", "Photography"},
-    "Content Marketing Manager": {"Content Marketing", "SEO", "Copywriting", "Marketing"},
-    "SEO Specialist": {"SEO", "Google Analytics", "Content Marketing", "Data Analysis"},
-    "PPC Specialist": {"SEM", "Google Ads", "Facebook Ads", "Data Analysis", "Excel"},
-    "Email Marketing Specialist": {"Email Marketing", "Marketing Automation", "Copywriting", "Data Analysis"},
-    "Brand Manager": {"Brand Management", "Marketing", "Strategic Planning", "Market Research"},
-    "PR Manager": {"Public Relations", "Communication", "Event Marketing", "Writing"},
-    "Communications Manager": {"Communication", "Public Relations", "Content Marketing", "Presentation"},
-    "Marketing Analyst": {"Marketing", "Data Analysis", "Excel", "Google Analytics", "Reporting"},
-    "Growth Marketing Manager": {"Digital Marketing", "Data Analysis", "Marketing Automation", "SEO", "SEM"},
+    "Marketing Manager": {"Marketing Strategy", "Campaign Management", "Budgeting", "Leadership", "Analytics"},
+    "Product Marketing Manager": {"Product Management", "Marketing Strategy", "Go-to-Market", "Messaging", "Sales Enablement"},
+    "Digital Marketing Specialist": {"Digital Marketing", "SEO", "SEM", "Google Analytics", "Content Marketing"},
+    "Marketing Data Analyst": {"Digital Marketing", "Google Analytics", "SQL", "Python", "Data Visualization"}, # New Hybrid
+    "Social Media Manager": {"Social Media Marketing", "Content Creation", "Community Management", "Copywriting", "Analytics"},
+    "Content Marketing Manager": {"Content Marketing", "SEO", "Copywriting", "Storytelling", "Strategy"},
+    "SEO Specialist": {"SEO", "Keyword Research", "Technical SEO", "Google Search Console", "Content Strategy"},
+    "PPC Specialist": {"Google Ads", "Facebook Ads", "SEM", "Data Analysis", "ROI Optimization"},
+    "Email Marketing Specialist": {"Email Marketing", "Automation", "Copywriting", "A/B Testing", "Segmentation"},
+    "Brand Manager": {"Brand Strategy", "Marketing", "Market Research", "Identity", "Communication"},
+    "PR Manager": {"Public Relations", "Media Relations", "Press Releases", "Crisis Communication", "Events"},
+    "Communications Manager": {"Corporate Communication", "Internal Communication", "PR", "Writing", "Strategy"},
+    "Growth Marketing Manager": {"Growth Hacking", "Experimentation", "Data Analysis", "Funnel Optimization", "SEO"},
     
     # ========== BUSINESS & MANAGEMENT ==========
     "Project Manager": {"Project Management", "Agile", "Stakeholder Management", "Budgeting", "Leadership"},

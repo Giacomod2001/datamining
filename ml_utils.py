@@ -2664,27 +2664,28 @@ def generate_cv_pdf(text_content: str) -> bytes:
 EDUCATION_TO_ROLES = {
     # Business & Economics
     "economia": ["Business Analyst", "Financial Analyst", "Data Analyst", "Marketing Manager", "Consultant"],
-    "business": ["Business Analyst", "Marketing Manager", "Consultant", "Product Manager"],
-    "marketing": ["Marketing Manager", "Digital Marketing Specialist", "Brand Manager", "Growth Hacker"],
+    "business": ["Business Analyst", "Marketing Manager", "Consultant", "Product Manager", "AI Business Analyst"],
+    "marketing": ["Marketing Manager", "Digital Marketing Specialist", "Brand Manager", "Growth Marketing Manager", "Marketing Data Analyst"],
     "finanza": ["Financial Analyst", "Investment Analyst", "Risk Analyst", "Quantitative Analyst"],
     "management": ["Product Manager", "Project Manager", "Business Analyst", "Consultant"],
     # Tech & Engineering
     "informatica": ["Software Engineer", "Backend Developer", "Full Stack Developer", "Data Engineer", "DevOps Engineer"],
-    "ingegneria": ["Software Engineer", "Backend Developer", "Data Engineer", "DevOps Engineer", "Systems Architect"],
-    "computer science": ["Software Engineer", "Backend Developer", "Full Stack Developer", "Machine Learning Engineer"],
-    "data science": ["Data Scientist", "Machine Learning Engineer", "Data Analyst", "AI Engineer"],
+    "ingegneria": ["Software Engineer", "Backend Developer", "Data Engineer", "DevOps Engineer", "Machine Learning Engineer", "Solutions Architect", "MLOps Engineer"],
+    "computer science": ["Software Engineer", "Backend Developer", "Full Stack Developer", "Machine Learning Engineer", "Analytics Engineer", "Growth Engineer"],
+    "data science": ["Data Scientist", "Machine Learning Engineer", "Data Analyst", "AI Business Analyst", "Marketing Data Analyst", "Analytics Engineer"],
+    "artificial intelligence": ["Machine Learning Engineer", "Data Scientist", "AI Business Analyst", "MLOps Engineer"], # New
     # Sciences
-    "matematica": ["Data Scientist", "Quantitative Analyst", "Machine Learning Engineer", "Financial Analyst"],
-    "statistica": ["Data Scientist", "Data Analyst", "Statistician", "Machine Learning Engineer"],
+    "matematica": ["Data Scientist", "Quantitative Analyst", "Machine Learning Engineer", "Financial Analyst", "FinTech Specialist"],
+    "statistica": ["Data Scientist", "Data Analyst", "Statistician", "Machine Learning Engineer", "Marketing Data Analyst"],
     "fisica": ["Data Scientist", "Quantitative Analyst", "Machine Learning Engineer"],
     # Creative & Communication
-    "comunicazione": ["Marketing Manager", "Digital Marketing Specialist", "Content Manager", "UX Designer"],
+    "comunicazione": ["Marketing Manager", "Digital Marketing Specialist", "Content Marketing Manager", "UX Designer", "Product Marketing Manager"],
     "design": ["UX Designer", "UI Designer", "Product Designer", "Frontend Developer"],
-    "giornalismo": ["Content Manager", "Digital Marketing Specialist", "Copywriter"],
+    "giornalismo": ["Content Marketing Manager", "Digital Marketing Specialist", "Copywriter", "Technical Writer"],
     # Other
-    "psicologia": ["UX Researcher", "HR Manager", "Product Manager"],
-    "giurisprudenza": ["Compliance Analyst", "Legal Tech", "Business Analyst"],
-    "lingue": ["Content Manager", "International Business", "Marketing Manager"],
+    "psicologia": ["UX Researcher", "HR Manager", "Product Manager", "HR Tech Specialist"],
+    "giurisprudenza": ["Compliance Analyst", "Legal Tech Specialist", "Business Analyst"],
+    "lingue": ["Content Marketing Manager", "International Business", "Marketing Manager"],
 }
 
 def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -> List[Tuple[str, float, List[str]]]:

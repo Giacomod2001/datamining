@@ -1740,12 +1740,22 @@ def render_career_discovery():
             if results:
                 st.divider()
                 st.subheader(f"Found {len(results)} Career Matches")
+                
+                # Filter Expander
+                with st.expander("Filter Options", expanded=False):
+                    min_match_discovery = st.slider("Minimum Match Score", 0, 100, 10, key="discovery_min_match")
+                
+                filtered_results = [r for r in results if r['score'] >= min_match_discovery]
+                
                 if final_cv_text:
-                    st.caption("Ranked by skill match (60%) + preference alignment (40%)")
+                    st.caption("Ranked by skill match (60%) + preference alignment (40%) + education boost")
                 else:
                     st.caption("Ranked by preference alignment. Upload a CV for skill-based matching.")
                 
-                render_career_discovery_results(results, has_cv=bool(final_cv_text))
+                if filtered_results:
+                    render_career_discovery_results(filtered_results, has_cv=bool(final_cv_text))
+                else:
+                    st.info(f"No careers found with match score >= {min_match_discovery}%. Try lowering the filter.")
             else:
                 st.info("No strong matches found. Try broadening your preferences.")
 
@@ -2228,10 +2238,16 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
     recs = ml_utils.recommend_roles(candidate_skills, jd_text if jd_text else "", cv_text if cv_text else "")
     
-    if recs:
+    # Optional Filter
+    with st.expander("Filter Options", expanded=False):
+        min_match = st.slider("Minimum Match Score", 0, 100, 10, key="compass_min_match")
+    
+    filtered_recs = [r for r in recs if r['score'] >= min_match]
+    
+    if filtered_recs:
         # Display in 2 columns
         col1, col2 = st.columns(2)
-        for i, rec in enumerate(recs):
+        for i, rec in enumerate(filtered_recs):
             with col1 if i % 2 == 0 else col2:
                 role_query = urllib.parse.quote(rec['role'])
                 # edu_indicator = " (Edu Boost)" if rec.get('edu_boost') else "" # textual or hidden? User said "no mojii".
@@ -2246,8 +2262,10 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                 st.markdown(f"**{rec['role']}** ({rec['score']:.0f}%)")
                 st.markdown(f"[Google](https://www.google.com/search?q={role_query}+jobs) | [LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query}) | [Indeed](https://it.indeed.com/jobs?q={role_query})")
                 st.markdown("")
+    elif recs:
+        st.info(f"No roles found with match score >= {min_match}%. Try lowering the filter in 'Filter Options'.")
     else:
-        st.info("No alternative roles found.")
+        st.info("No alternative roles found based on your skills.")
     
     st.divider()
     with st.expander("Export Report"):
