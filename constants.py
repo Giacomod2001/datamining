@@ -131,6 +131,71 @@ INFERENCE_RULES = {
     # --- HR ---
     "Recruiting": ["Talent Acquisition"],
     "ATS Management": ["Recruiting"],
+
+    # --- FASHION & LUXURY (NEW) ---
+    "Fashion Design": ["Sketching"],
+    "Textile Design": ["Fabric Knowledge"],
+    "Visual Merchandising": ["Retail Design"],
+    "CLO3D": ["3D Fashion Design"],
+    "Gerber": ["Pattern Making"],
+    "Lectra": ["Pattern Making"],
+    "Luxury Retail": ["Clienteling"],
+
+    # --- FOOD, BEVERAGE & AGRITECH (NEW) ---
+    "HACCP": ["Food Safety"],
+    "ISO 22000": ["Food Safety"],
+    "Enology": ["Winemaking"],
+    "Sensory Analysis": ["Food Quality"],
+    "Menu Engineering": ["F&B Management"],
+
+    # --- MANUFACTURING 4.0 (NEW) ---
+    "CNC Programming": ["Machining"],
+    "Fanuc": ["Robotics"],
+    "Siemens PLC": ["Automation"],
+    "Predictive Maintenance": ["Maintenance Management"],
+    "Lean Manufacturing": ["Process Improvement"],
+    "Six Sigma": ["Quality Management"],
+
+    # --- DESIGN & ARCHITECTURE (NEW) ---
+    "Revit": ["BIM"],
+    "ArchiCAD": ["BIM"],
+    "SketchUp": ["3D Modeling"],
+    "V-Ray": ["Rendering"],
+    "AutoCAD": ["CAD"],
+    
+    # --- BANKING & INSURANCE (NEW) ---
+    "MiFID II": ["Compliance"],
+    "Anti-Money Laundering": ["Compliance"],
+    "Credit Risk": ["Risk Management"],
+    "Wealth Management": ["Financial Planning"],
+
+    # --- ENGINEERING DEEP DIVE (NEW) ---
+    "SolidWorks": ["CAD"],
+    "CATIA": ["CAD"],
+    "Ansys": ["Simulation"],
+    "Altium Designer": ["PCB Design"],
+    "Revit": ["BIM"],
+    "Navisworks": ["BIM"],
+    "Embedded C": ["Embedded Systems"],
+    "PLC Programming": ["Automation"],
+
+    # --- BIOTECH & PHARMA (NEW) ---
+    "PCR": ["Lab Skills"],
+    "ELISA": ["Lab Skills"],
+    "Clinical Trials": ["GCP"],
+    "GMP": ["Quality Assurance"],
+    "Regulatory Affairs": ["Compliance"],
+
+    # --- LANGUAGES (NEW) ---
+    "Trados Studio": ["Translation Tech"],
+    "MemoQ": ["Translation Tech"],
+    "Simultaneous Interpreting": ["Interpreting"],
+    
+    # --- ECONOMICS (NEW) ---
+    "IFRS": ["Accounting"],
+    "GAAP": ["Accounting"],
+    "Audit": ["Compliance"],
+    "Transfer Pricing": ["Taxation"],
 }
 
 # =============================================================================
@@ -354,6 +419,68 @@ HARD_SKILLS = {
     "Visualization": ["power bi", "tableau", "looker", "qlik", "domo", "google data studio", "looker studio", "google looker studio", "data visualization"],
     "Big Data": ["hadoop", "spark", "hive", "databricks", "snowflake", "redshift", "bigquery"],
     "Google Analytics": ["google analytics", "ga4", "google analytics 4", "universal analytics", "web analytics"],
+
+    # ========== FASHION & LUXURY (DETAILED) ==========
+    "Fashion Design": ["fashion design", "stilista", "fashion sketching", "moodboard", "modellistica", "draping"],
+    "Textile Knowledge": ["textile", "tessuti", "merciologia tessile", "fabric knowledge", "yarns", "filati", "leather"],
+    "Pattern Making": ["pattern making", "modellista", "cartamodello", "lectra", "gerber", "clo3d", "cad fashion"],
+    "Visual Merchandising": ["visual merchandising", "vetrinista", "store layout", "display design", "in-store experience"],
+    "Luxury Retail": ["luxury retail", "vendita assistita", "luxury sales", "clienteling", "vic", "very important client"],
+    "Buying": ["buying", "buyer", "acquisti moda", "budgeting", "assortment planning", "oted"],
+    "Merchandising": ["merchandising", "allocator", "stock management", "sales analysis", "open to buy"],
+
+    # ========== FOOD & BEVERAGE & ARGITECH (DETAILED) ==========
+    "Food Safety": ["haccp", "iso 22000", "brc", "ifs", "sicurezza alimentare", "food defense"],
+    "Food Technology": ["food technology", "tecnologie alimentari", "processo produttivo", "scienza degli alimenti", "shelf life"],
+    "Enology": ["enology", "enologia", "winemaking", "vinificazione", "sommelier", "degustazione", "cantina"],
+    "Agronomy": ["agronomy", "agronomia", "coltivazioni", "crop management", "precision agriculture", "agritech"],
+    "F&B Management": ["food & beverage", "f&b", "food cost", "menu engineering", "gestione sala", "ristorazione"],
+
+    # ========== MANUFACTURING 4.0 (DETAILED) ==========
+    "CNC Machining": ["cnc", "macchine utensili", "tornitura", "fresatura", "fanuc", "siemens sinumerik", "heidenhain"],
+    "Industrial Automation": ["automazione industriale", "plc", "scada", "hmi", "robotics", "kuka", "abb", "yaskawa"],
+    "Lean Manufacturing": ["lean manufacturing", "kaizen", "5s", "tpm", "smed", "continuous improvement", "toyota production system"],
+    "Maintenance Management": ["manutenzione", "maintenance", "gmaw", "tig", "mig", "saldatura", "elettromeccanica"],
+    "Quality Management": ["quality management", "sistema qualità", "iso 9001", "iatf 16949", "audit", "non conformity"],
+
+    # ========== DESIGN & ARCHITECTURE (DETAILED) ==========
+    "Interior Design": ["interior design", "architettura d'interni", "arredamento", "space planning", "homestaging"],
+    "BIM & CAD": ["bim", "revit", "archicad", "autocad", "2d drawing", "technical drawing", "disegno tecnico"],
+    "3D Modeling & Rendering": ["3d modeling", "rendering", "sketchup", "rhino", "3ds max", "v-ray", "corona renderer", "lumion"],
+    "Restoration": ["restoration", "restauro", "conservazione", "beni culturali", "history of architecture"],
+
+    # ========== BANKING & INSURANCE (DETAILED) ==========
+    "Wealth Management": ["wealth management", "gestione patrimoni", "private banking", "portafogli", "asset allocation"],
+    "Banking Compliance": ["compliance bancaria", "mifid", "antiriciclaggio", "aml", "kyc", "basel"],
+    "Credit Analysis": ["analisi del credito", "credit risk", "rischio di credito", "fidi", "istruttoria"],
+    "Insurance Products": ["assicurazioni", "polizze", "ramo danni", "ramo vita", "insurance underwriting", "claims"],
+
+    # ========== ENGINEERING DEEP DIVE (DETAILED) ==========
+    "Mechanical Design": ["catia", "solidworks", "creo", "nx", "gd&t", "meccanica", "disegno meccanico"],
+    "Simulation (FEA/CFD)": ["ansys", "abaqus", "fem", "cfd", "nastran", "hypermesh", "simulazione"],
+    "Automotive Engineering": ["automotive", "powertrain", "chassis", "nvh", "ecu", "calibrazione", "adas", "iso 26262"],
+    "Electrical Engineering": ["electrical engineering", "elettrotecnica", "schema elettrico", "medium voltage", "high voltage", "cabine"],
+    "Embedded Systems": ["embedded c", "microcontrollers", "stm32", "pic", "fpga", "vhdl", "verilog", "rtos", "firmware"],
+    "Civil Engineering": ["ingegneria civile", "strutture", "calcolo strutturale", "direzione lavori", "computo metrico", "primus"],
+    "BIM": ["bim", "revit", "navisworks", "archicad", "tekla", "building information modeling"],
+    "Energy & Renewables": ["rinnovabili", "fotovoltaico", "eolico", "efficienza energetica", "energy manager", "pvsyst", "high voltage"],
+
+    # ========== BIOTECH, PHARMA & SCIENCE (DETAILED) ==========
+    "Clinical Research": ["clinical trials", "studi clinici", "gcp", "good clinical practice", "cra", "ich-gcp"],
+    "Regulatory Affairs": ["regulatory affairs", "aifa", "ema", "fda", "dossier", "market access"],
+    "Quality Assurance (Pharma)": ["gmp", "good manufacturing practice", "glp", "capa", "change control", "data integrity"],
+    "Lab Techniques": ["pcr", "elisa", "westem blot", "hplc", "cell culture", "biologia molecolare", "chromatography"],
+    "R&D (Science)": ["ricerca e sviluppo", "r&d", "protocolli", "sperimentazione", "formulazione"],
+
+    # ========== LANGUAGES & TRANSLATION (DETAILED) ==========
+    "Translation": ["translation", "traduzione", "trados", "memoq", "post-editing", "mtpe", "localization"],
+    "Interpreting": ["interpreting", "interpretariato", "simultanea", "consecutiva", "chuchotage"],
+    "Teaching": ["teaching", "insegnamento", "didattica", "docenza", "esl", "tefl"],
+
+    # ========== ECONOMICS & FINANCE (DETAILED) ==========
+    "Auditing": ["audit", "revisione legale", "internal audit", "big 4", "isa", "controllo di gestione"],
+    "Taxation": ["tax", "fiscalità", "dichiarazione redditi", "transfer pricing", "iva", "vat"],
+    "Economics": ["econometrics", "stata", "eviews", "macroeconomics", "economic policy", "antitrust"],
 }
 
 # =============================================================================
@@ -624,6 +751,76 @@ JOB_ARCHETYPES = {
     "Cosmetic Chemist": {"Chemistry", "Cosmetic Regulations", "ISO 22716", "Formulation", "Quality Control"},
     "Regulatory Affairs Specialist (Pharma)": {"Regulatory", "Compliance", "GMP", "Clinical Trials", "Documentation"},
     "Microbiologist": {"Microbiology", "Lab Skills", "Microbiological Analysis", "Quality Control", "GLP"},
+
+    # ========== FASHION & LUXURY (NEW) ==========
+    "Fashion Designer": {"Fashion Design", "Textile Knowledge", "Sketching", "Adobe Creative Suite", "Creativity"},
+    "Textile Designer": {"Textile Knowledge", "Fashion Design", "Adobe Creative Suite", "Creativity", "Technical Drawing"},
+    "Pattern Maker": {"Pattern Making", "Lectra", "Gerber", "Attention to Detail", "Textile Knowledge"},
+    "Merchandiser": {"Merchandising", "Data Analysis", "Excel", "Fashion Knowledge", "Detailed Oriented"},
+    "Fashion Buyer": {"Buying", "Negotiation", "Trend Analysis", "Fashion Knowledge", "Budgeting"},
+    "Visual Merchandiser": {"Visual Merchandising", "Creativity", "Retail Design", "Fashion Knowledge"},
+    "Store Manager": {"Retail Management", "Leadership", "Sales", "KPI Analysis", "Customer Service"},
+    "Luxury Sales Associate": {"Luxury Retail", "Sales", "Communication", "Clienteling", "Languages"},
+
+    # ========== FOOD & BEVERAGE (NEW) ==========
+    "Food Technologist": {"Food Technology", "HACCP", "Quality Control", "R&D", "Lab Skills"},
+    "Enologist": {"Enology", "Chemistry", "Sensory Analysis", "Viticulture", "Lab Skills"},
+    "Sommelier": {"Enology", "Sensory Analysis", "Communication", "Sales", "Customer Service"},
+    "Agronomist": {"Agronomy", "Technical Knowledge", "Project Management", "Sustainability"},
+    "F&B Manager": {"F&B Management", "Food Cost", "Leadership", "Budgeting", "Customer Service"},
+    "Executive Chef": {"Cooking", "Kitchen Management", "Food Cost", "Leadership", "Creativity"},
+    "Quality Manager (Food)": {"Quality Management", "HACCP", "ISO 22000", "Auditing", "Compliance"},
+
+    # ========== MANUFACTURING 4.0 (NEW) ==========
+    "Plant Manager": {"Manufacturing", "Leadership", "Lean Manufacturing", "Budgeting", "Operations"},
+    "Production Planner": {"Production Planning", "Excel", "Supply Chain", "ERP", "Organization"},
+    "Maintenance Manager": {"Maintenance Management", "Leadership", "Problem Solving", "Technical Knowledge"},
+    "Process Engineer": {"Process Engineering", "Lean Manufacturing", "Six Sigma", "Data Analysis"},
+    "Automation Engineer": {"Industrial Automation", "PLC", "Robotics", "SCADA", "Programming"},
+    "CNC Programmer": {"CNC Machining", "Technical Drawing", "CAD/CAM", "Precision"},
+    "Quality Manager": {"Quality Management", "ISO 9001", "Auditing", "Continuous Improvement"},
+
+    # ========== DESIGN & ARCHITECTURE (NEW) ==========
+    "Interior Designer": {"Interior Design", "AutoCAD", "SketchUp", "Rendering", "Creativity"},
+    "Architect": {"Architecture", "BIM", "Revit", "AutoCAD", "Project Management"},
+    "Landscape Architect": {"Architecture", "Botany", "AutoCAD", "Design", "Sustainability"},
+    "Restoration Architect": {"Restoration", "Architecture", "History", "Materials Science"},
+    
+    # ========== BANKING & FINANCE (NEW) ==========
+    "Private Banker": {"Wealth Management", "Sales", "Financial Analysis", "Relationship Management", "Regulations"},
+    "Branch Manager": {"Banking", "Leadership", "Sales", "Operations", "Customer Service"},
+    "Credit Risk Analyst": {"Credit Analysis", "Risk Management", "Financial Analysis", "Excel", "Compliance"},
+    "Insurance Underwriter": {"Insurance Products", "Risk Analysis", "Data Analysis", "Decision Making"},
+
+    # ========== ENGINEERING DEEP DIVE (NEW ARCHETYPES) ==========
+    "Mechanical Engineer (Auto)": {"Mechanical Design", "Automotive Engineering", "CATIA", "Simulink", "Problem Solving"},
+    "NVH Engineer": {"Automotive Engineering", "Simulation (FEA/CFD)", "Matlab", "Testing", "Data Analysis"},
+    "Embedded Software Engineer": {"Embedded Systems", "C++", "Electronics", "Debugging", "RTOS"},
+    "Firmware Engineer": {"Embedded Systems", "C", "Microcontrollers", "Hardware", "Testing"},
+    "Electrical Design Engineer": {"Electrical Engineering", "AutoCAD", "Eplan", "Project Management"},
+    "Renewable Energy Engineer": {"Energy & Renewables", "Project Management", "AutoCAD", "Sustainability"},
+    "Civil Structural Engineer": {"Civil Engineering", "Structural Analysis", "AutoCAD", "Revit", "Attention to Detail"},
+    "BIM Manager": {"BIM", "Revit", "Navisworks", "Coordination", "Project Management"},
+    "Site Manager": {"Civil Engineering", "Construction Management", "Leadership", "Safety", "Problem Solving"},
+
+    # ========== BIOTECH & PHARMA (NEW ARCHETYPES) ==========
+    "Clinical Research Associate (CRA)": {"Clinical Research", "GCP", "Organization", "Travel", "Medical Terminology"},
+    "Regulatory Affairs Specialist": {"Regulatory Affairs", "Documentation", "Attention to Detail", "Legal Knowledge"},
+    "QC Micro Analyst": {"Quality Assurance (Pharma)", "Lab Techniques", "Microbiology", "GMP", "Precision"},
+    "R&D Scientist": {"R&D (Science)", "Lab Techniques", "Data Analysis", "Innovation", "Problem Solving"},
+    "Medical Science Liaison": {"Medical Knowledge", "Communication", "Presentation", "Relationship Building"},
+
+    # ========== LANGUAGES & TRANSLATION (NEW ARCHETYPES) ==========
+    "Translator": {"Translation", "Writing", "Attention to Detail", "Cultural Knowledge", "CAT Tools"},
+    "Interpreter": {"Interpreting", "Public Speaking", "Stress Management", "Active Listening", "Memory"},
+    "Localization Specialist": {"Translation", "Tech Savvy", "Project Management", "Cultural Knowledge"},
+    "Language Teacher": {"Teaching", "Communication", "Patience", "Creativity", "Empathy"},
+
+    # ========== ECONOMICS & FINANCE (NEW ARCHETYPES) ==========
+    "Auditor (Big 4)": {"Auditing", "Accounting", "Excel", "Attention to Detail", "Teamwork"},
+    "Tax Consultant": {"Taxation", "Law", "Problem Solving", "Attention to Detail", "Communication"},
+    "Transfer Pricing Specialist": {"Taxation", "Economics", "Writing", "Data Analysis", "Excel"},
+    "Economist": {"Economics", "Data Analysis", "Statistics", "Research", "Writing"},
 }
 
 # =============================================================================
@@ -955,6 +1152,56 @@ JOB_ROLE_METADATA = {
     "Lab Technician": {"category": "Healthcare", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": False},
     "QC Analyst": {"category": "Healthcare", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": False},
     "Research Scientist": {"category": "Healthcare", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
+    
+    # ========== FASHION & LUXURY (NEW) ==========
+    "Fashion Designer": {"category": "Fashion", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": True, "creative": True},
+    "Merchandiser": {"category": "Fashion", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
+    "Fashion Buyer": {"category": "Fashion", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": True},
+    "Store Manager": {"category": "Fashion", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Luxury Sales Associate": {"category": "Fashion", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    
+    # ========== FOOD & BEVERAGE (NEW) ==========
+    "Food Technologist": {"category": "Food & Beverage", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
+    "Enologist": {"category": "Food & Beverage", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
+    "F&B Manager": {"category": "Food & Beverage", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Agronomist": {"category": "Food & Beverage", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+
+    # ========== MANUFACTURING & INDUSTRY (NEW) ==========
+    "Plant Manager": {"category": "Manufacturing", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Maintenance Manager": {"category": "Manufacturing", "client_facing": False, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "Automation Engineer": {"category": "Manufacturing", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
+    "Quality Manager": {"category": "Manufacturing", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": False, "creative": False},
+
+    # ========== DESIGN & ARCHITECTURE (NEW) ==========
+    "Interior Designer": {"category": "Design", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
+    "Architect": {"category": "Design", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
+    
+    # ========== BANKING (NEW) ==========
+    "Private Banker": {"category": "Finance", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Branch Manager": {"category": "Finance", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    
+    # ========== ENGINEERING DEEP DIVE (NEW METADATA) ==========
+    "Mechanical Engineer (Auto)": {"category": "Engineering", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": True, "creative": True},
+    "NVH Engineer": {"category": "Engineering", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
+    "Embedded Software Engineer": {"category": "Engineering", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "Firmware Engineer": {"category": "Engineering", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
+    "Renewable Energy Engineer": {"category": "Engineering", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "BIM Manager": {"category": "Engineering", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    
+    # ========== BIOTECH & PHARMA (NEW METADATA) ==========
+    "Clinical Research Associate (CRA)": {"category": "Healthcare", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
+    "Regulatory Affairs Specialist": {"category": "Healthcare", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "R&D Scientist": {"category": "Healthcare", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": True, "creative": True},
+    
+    # ========== LANGUAGES (NEW METADATA) ==========
+    "Translator": {"category": "Languages", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "Interpreter": {"category": "Languages", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": True},
+    "Localization Specialist": {"category": "Languages", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
+    
+    # ========== ECONOMICS (NEW METADATA) ==========
+    "Auditor (Big 4)": {"category": "Finance", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Tax Consultant": {"category": "Finance", "client_facing": True, "remote_friendly": True, "international": False, "dynamic": False, "creative": False},
+    "Economist": {"category": "Finance", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
 }
 
 # Career Discovery Categories with descriptions
@@ -974,4 +1221,8 @@ CAREER_CATEGORIES = {
     "Education": "Teaching, training, instructional design, and academia",
     "Customer Service": "Support, call centers, and client relations",
     "Administration": "Office management, data entry, and executive assistance",
+    "Fashion": "Design, merchandising, buying, and luxury retail",
+    "Food & Beverage": "Food tech, enology, Horeca management, and agronomy",
+    "Manufacturing": "Industry 4.0, automation, quality, and plant management",
+    "Languages": "Translation, interpreting, localization, and teaching",
 }

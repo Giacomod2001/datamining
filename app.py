@@ -1857,9 +1857,15 @@ def render_role_card(role: dict, has_cv: bool = False, seniority_prefix: str = "
         role_query = urllib.parse.quote(f"{seniority_prefix}{role_name}")
         italy_query = urllib.parse.quote(f"{seniority_prefix}{role_name} Italia")
         
-        st.markdown(f"<a href='https://www.google.com/search?q={role_query}+jobs' target='_blank'>Google Jobs</a>", unsafe_allow_html=True)
-        st.markdown(f"<a href='https://www.linkedin.com/jobs/search/?keywords={role_query}' target='_blank'>LinkedIn Jobs</a>", unsafe_allow_html=True)
-        st.markdown(f"<a href='https://it.indeed.com/jobs?q={italy_query}' target='_blank'>Indeed Italia</a>", unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style="display: flex; gap: 10px; font-size: 0.9em; margin-top: 12px; margin-bottom: 4px;">
+            <a href='https://www.google.com/search?q={role_query}+jobs' target='_blank' style="text-decoration: none;">Google</a>
+            <span style="color: #30363d;">|</span>
+            <a href='https://www.linkedin.com/jobs/search/?keywords={role_query}' target='_blank' style="text-decoration: none;">LinkedIn</a>
+            <span style="color: #30363d;">|</span>
+            <a href='https://it.indeed.com/jobs?q={italy_query}' target='_blank' style="text-decoration: none;">Indeed</a>
+        </div>
+        """, unsafe_allow_html=True)
         
         # Skills in expander
         skills_required = role.get("skills_required", [])
@@ -2298,7 +2304,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                     # Links
                     role_query = urllib.parse.quote(f"{query_prefix}{rec['role']}")
                     st.markdown(f"""
-                    <div style="display: flex; gap: 10px; font-size: 0.9em;">
+                    <div style="display: flex; gap: 10px; font-size: 0.9em; margin-top: 12px; margin-bottom: 4px;">
                         <a href="https://www.google.com/search?q={role_query}+jobs" target="_blank" style="text-decoration: none;">Google</a>
                         <span style="color: #30363d;">|</span>
                         <a href="https://www.linkedin.com/jobs/search/?keywords={role_query}" target="_blank" style="text-decoration: none;">LinkedIn</a>
