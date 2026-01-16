@@ -742,3 +742,214 @@ NON_SKILL_PATTERNS = {
         r"(?:accommodation|disabilità|disability)",
     ],
 }
+
+# =============================================================================
+# CAREER DISCOVERY - Role Metadata for Smart Matching
+# =============================================================================
+# Maps job roles to preferences for the Career Discovery questionnaire
+# Categories: Technology, Marketing, Business, Finance, HR, Sales, Legal, 
+#             Design, Engineering, Supply Chain, Healthcare, Hospitality, Education
+
+JOB_ROLE_METADATA = {
+    # ========== TECHNOLOGY ==========
+    "Software Developer": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Frontend Developer": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "Backend Developer": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Full Stack Developer": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Data Analyst": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Data Scientist": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Data Engineer": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Business Intelligence Analyst": {"category": "Technology", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "UX Designer": {"category": "Design", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    "UI Designer": {"category": "Design", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "DevOps Engineer": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Cybersecurity Analyst": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
+    "IT Support Specialist": {"category": "Technology", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "System Administrator": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Product Manager": {"category": "Business", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    
+    # ========== MARKETING & COMMUNICATIONS ==========
+    "Marketing Manager": {"category": "Marketing", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    "Digital Marketing Specialist": {"category": "Marketing", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    "Social Media Manager": {"category": "Marketing", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    "Content Marketing Manager": {"category": "Marketing", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "SEO Specialist": {"category": "Marketing", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "PPC Specialist": {"category": "Marketing", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
+    "Email Marketing Specialist": {"category": "Marketing", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "Brand Manager": {"category": "Marketing", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    "PR Manager": {"category": "Marketing", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": True},
+    "Communications Manager": {"category": "Marketing", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    "Marketing Analyst": {"category": "Marketing", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Growth Marketing Manager": {"category": "Marketing", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    
+    # ========== BUSINESS & MANAGEMENT ==========
+    "Project Manager": {"category": "Business", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
+    "Business Analyst": {"category": "Business", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Management Consultant": {"category": "Business", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": True},
+    "Operations Manager": {"category": "Business", "client_facing": False, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "General Manager": {"category": "Business", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "Strategy Analyst": {"category": "Business", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "Business Development Manager": {"category": "Sales", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": True},
+    "Program Manager": {"category": "Business", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
+    "Office Manager": {"category": "Business", "client_facing": False, "remote_friendly": False, "international": False, "dynamic": False, "creative": False},
+    "Executive Assistant": {"category": "Business", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    
+    # ========== FINANCE & ACCOUNTING ==========
+    "Financial Analyst": {"category": "Finance", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Accountant": {"category": "Finance", "client_facing": False, "remote_friendly": True, "international": False, "dynamic": False, "creative": False},
+    "Senior Accountant": {"category": "Finance", "client_facing": False, "remote_friendly": True, "international": False, "dynamic": False, "creative": False},
+    "Controller": {"category": "Finance", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "CFO": {"category": "Finance", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": True},
+    "Auditor": {"category": "Finance", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": False, "creative": False},
+    "Tax Specialist": {"category": "Finance", "client_facing": True, "remote_friendly": True, "international": False, "dynamic": False, "creative": False},
+    "Treasury Analyst": {"category": "Finance", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Investment Analyst": {"category": "Finance", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
+    "Credit Analyst": {"category": "Finance", "client_facing": True, "remote_friendly": True, "international": False, "dynamic": False, "creative": False},
+    "Risk Analyst": {"category": "Finance", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Financial Planner": {"category": "Finance", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    
+    # ========== HUMAN RESOURCES ==========
+    "HR Manager": {"category": "HR", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
+    "HR Business Partner": {"category": "HR", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
+    "Recruiter": {"category": "HR", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
+    "Talent Acquisition Specialist": {"category": "HR", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
+    "Training Manager": {"category": "HR", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": True},
+    "Compensation & Benefits Specialist": {"category": "HR", "client_facing": False, "remote_friendly": True, "international": False, "dynamic": False, "creative": False},
+    "HR Generalist": {"category": "HR", "client_facing": True, "remote_friendly": True, "international": False, "dynamic": True, "creative": False},
+    "People Operations Manager": {"category": "HR", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    
+    # ========== SALES ==========
+    "Sales Representative": {"category": "Sales", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "Account Executive": {"category": "Sales", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Sales Manager": {"category": "Sales", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Account Manager": {"category": "Sales", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Business Development Representative": {"category": "Sales", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
+    "Key Account Manager": {"category": "Sales", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Sales Director": {"category": "Sales", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": True},
+    "Inside Sales Representative": {"category": "Sales", "client_facing": True, "remote_friendly": True, "international": False, "dynamic": True, "creative": False},
+    "E-commerce Manager": {"category": "Sales", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    "Retail Manager": {"category": "Sales", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "Export Manager": {"category": "Sales", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    
+    # ========== LEGAL ==========
+    "Lawyer": {"category": "Legal", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Corporate Lawyer": {"category": "Legal", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
+    "Legal Counsel": {"category": "Legal", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Compliance Officer": {"category": "Legal", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Paralegal": {"category": "Legal", "client_facing": False, "remote_friendly": True, "international": False, "dynamic": False, "creative": False},
+    "Contract Manager": {"category": "Legal", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Privacy Officer": {"category": "Legal", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    
+    # ========== DESIGN & CREATIVE ==========
+    "Graphic Designer": {"category": "Design", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "Senior Graphic Designer": {"category": "Design", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "Art Director": {"category": "Design", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    "Creative Director": {"category": "Design", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    "UX/UI Designer": {"category": "Design", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    "Product Designer": {"category": "Design", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    "Web Designer": {"category": "Design", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "Motion Designer": {"category": "Design", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "Video Editor": {"category": "Design", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "Photographer": {"category": "Design", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": True},
+    "Copywriter": {"category": "Design", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "Content Creator": {"category": "Design", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    
+    # ========== ENGINEERING ==========
+    "Mechanical Engineer": {"category": "Engineering", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
+    "Electrical Engineer": {"category": "Engineering", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
+    "Civil Engineer": {"category": "Engineering", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": False, "creative": False},
+    "Industrial Engineer": {"category": "Engineering", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
+    "Chemical Engineer": {"category": "Engineering", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
+    "Process Engineer": {"category": "Engineering", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
+    "Quality Engineer": {"category": "Engineering", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": False},
+    "Maintenance Engineer": {"category": "Engineering", "client_facing": False, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "HSE Manager": {"category": "Engineering", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Production Manager": {"category": "Engineering", "client_facing": False, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "R&D Engineer": {"category": "Engineering", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
+    
+    # ========== SUPPLY CHAIN & LOGISTICS ==========
+    "Supply Chain Manager": {"category": "Supply Chain", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Logistics Manager": {"category": "Supply Chain", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Procurement Manager": {"category": "Supply Chain", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": False, "creative": False},
+    "Supply Chain Analyst": {"category": "Supply Chain", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Logistics Coordinator": {"category": "Supply Chain", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Warehouse Manager": {"category": "Supply Chain", "client_facing": False, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "Purchasing Specialist": {"category": "Supply Chain", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Import/Export Specialist": {"category": "Supply Chain", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Demand Planner": {"category": "Supply Chain", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    
+    # ========== HEALTHCARE & PHARMA ==========
+    "Clinical Research Associate": {"category": "Healthcare", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Regulatory Affairs Specialist": {"category": "Healthcare", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Medical Science Liaison": {"category": "Healthcare", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Pharmacovigilance Specialist": {"category": "Healthcare", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Medical Sales Representative": {"category": "Healthcare", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "Quality Assurance (Pharma)": {"category": "Healthcare", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": False},
+    "Healthcare Administrator": {"category": "Healthcare", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "Clinical Data Manager": {"category": "Healthcare", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Nurse": {"category": "Healthcare", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    
+    # ========== HOSPITALITY & TOURISM ==========
+    "Hotel Manager": {"category": "Hospitality", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Front Office Manager": {"category": "Hospitality", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Revenue Manager": {"category": "Hospitality", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Event Manager": {"category": "Hospitality", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": True},
+    "Restaurant Manager": {"category": "Hospitality", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "Tour Manager": {"category": "Hospitality", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": True},
+    "Concierge": {"category": "Hospitality", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Guest Relations Manager": {"category": "Hospitality", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "F&B Manager": {"category": "Hospitality", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": True},
+    
+    # ========== EDUCATION ==========
+    "Teacher": {"category": "Education", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": True},
+    "University Professor": {"category": "Education", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "Corporate Trainer": {"category": "Education", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    "Instructional Designer": {"category": "Education", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "Academic Coordinator": {"category": "Education", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    
+    # ========== CUSTOMER SERVICE ==========
+    "Customer Service Representative": {"category": "Customer Service", "client_facing": True, "remote_friendly": True, "international": False, "dynamic": True, "creative": False},
+    "Customer Service Manager": {"category": "Customer Service", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
+    "Call Center Agent": {"category": "Customer Service", "client_facing": True, "remote_friendly": True, "international": False, "dynamic": True, "creative": False},
+    "Technical Support Specialist": {"category": "Technology", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
+    
+    # ========== ADMINISTRATION ==========
+    "Administrative Assistant": {"category": "Administration", "client_facing": False, "remote_friendly": True, "international": False, "dynamic": False, "creative": False},
+    "Receptionist": {"category": "Administration", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "Data Entry Specialist": {"category": "Administration", "client_facing": False, "remote_friendly": True, "international": False, "dynamic": False, "creative": False},
+    "Personal Assistant": {"category": "Administration", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    
+    # ========== OTHER ==========
+    "Construction Manager": {"category": "Engineering", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "Architect": {"category": "Design", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "Real Estate Agent": {"category": "Sales", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "Property Manager": {"category": "Business", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "Facility Manager": {"category": "Business", "client_facing": False, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "Actuary": {"category": "Finance", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Underwriter": {"category": "Finance", "client_facing": True, "remote_friendly": True, "international": False, "dynamic": False, "creative": False},
+    "Claims Adjuster": {"category": "Finance", "client_facing": True, "remote_friendly": True, "international": False, "dynamic": True, "creative": False},
+    "Insurance Broker": {"category": "Finance", "client_facing": True, "remote_friendly": False, "international": False, "dynamic": True, "creative": False},
+    "Journalist": {"category": "Design", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
+    "Lab Technician": {"category": "Healthcare", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": False},
+    "QC Analyst": {"category": "Healthcare", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": False},
+    "Research Scientist": {"category": "Healthcare", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
+}
+
+# Career Discovery Categories with descriptions
+CAREER_CATEGORIES = {
+    "Technology": "Software, data, IT, cybersecurity, and digital infrastructure",
+    "Marketing": "Digital marketing, branding, communications, and growth",
+    "Business": "Management, consulting, operations, and strategy",
+    "Finance": "Accounting, financial analysis, investment, and risk",
+    "HR": "Recruiting, talent management, training, and people operations",
+    "Sales": "B2B/B2C sales, account management, and business development",
+    "Legal": "Corporate law, compliance, contracts, and regulatory",
+    "Design": "UX/UI, graphic design, creative direction, and content",
+    "Engineering": "Mechanical, electrical, industrial, and process engineering",
+    "Supply Chain": "Logistics, procurement, warehouse, and demand planning",
+    "Healthcare": "Clinical research, pharma, medical sales, and quality",
+    "Hospitality": "Hotels, events, tourism, and food & beverage",
+    "Education": "Teaching, training, instructional design, and academia",
+    "Customer Service": "Support, call centers, and client relations",
+    "Administration": "Office management, data entry, and executive assistance",
+}
