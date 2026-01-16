@@ -2657,17 +2657,64 @@ def generate_cv_pdf(text_content: str) -> bytes:
 
 
 # =============================================================================
-# JOB RECOMMENDER (Career Compass) - v1.24
+# JOB RECOMMENDER (Career Compass) - v1.25
 # =============================================================================
-def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, float, List[str]]]:
+
+# Education fields to job roles mapping
+EDUCATION_TO_ROLES = {
+    # Business & Economics
+    "economia": ["Business Analyst", "Financial Analyst", "Data Analyst", "Marketing Manager", "Consultant"],
+    "business": ["Business Analyst", "Marketing Manager", "Consultant", "Product Manager"],
+    "marketing": ["Marketing Manager", "Digital Marketing Specialist", "Brand Manager", "Growth Hacker"],
+    "finanza": ["Financial Analyst", "Investment Analyst", "Risk Analyst", "Quantitative Analyst"],
+    "management": ["Product Manager", "Project Manager", "Business Analyst", "Consultant"],
+    # Tech & Engineering
+    "informatica": ["Software Engineer", "Backend Developer", "Full Stack Developer", "Data Engineer", "DevOps Engineer"],
+    "ingegneria": ["Software Engineer", "Backend Developer", "Data Engineer", "DevOps Engineer", "Systems Architect"],
+    "computer science": ["Software Engineer", "Backend Developer", "Full Stack Developer", "Machine Learning Engineer"],
+    "data science": ["Data Scientist", "Machine Learning Engineer", "Data Analyst", "AI Engineer"],
+    # Sciences
+    "matematica": ["Data Scientist", "Quantitative Analyst", "Machine Learning Engineer", "Financial Analyst"],
+    "statistica": ["Data Scientist", "Data Analyst", "Statistician", "Machine Learning Engineer"],
+    "fisica": ["Data Scientist", "Quantitative Analyst", "Machine Learning Engineer"],
+    # Creative & Communication
+    "comunicazione": ["Marketing Manager", "Digital Marketing Specialist", "Content Manager", "UX Designer"],
+    "design": ["UX Designer", "UI Designer", "Product Designer", "Frontend Developer"],
+    "giornalismo": ["Content Manager", "Digital Marketing Specialist", "Copywriter"],
+    # Other
+    "psicologia": ["UX Researcher", "HR Manager", "Product Manager"],
+    "giurisprudenza": ["Compliance Analyst", "Legal Tech", "Business Analyst"],
+    "lingue": ["Content Manager", "International Business", "Marketing Manager"],
+}
+
+def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -> List[Tuple[str, float, List[str]]]:
     """
     Identifies the best fitting job roles excluding the one described in the JD.
+    Now also considers education from CV text with recency weighting.
     """
     job_archetypes = getattr(constants, "JOB_ARCHETYPES", {})
     if not cv_skills or not job_archetypes or not TfidfVectorizer:
         return []
 
-    # 1. Prepare Corpus
+    # 1. Extract education boost from CV text
+    education_boost = {}  # role_name -> boost score
+    if cv_text:
+        cv_lower = cv_text.lower()
+        
+        # Find education keywords and boost related roles
+        for edu_keyword, related_roles in EDUCATION_TO_ROLES.items():
+            if edu_keyword in cv_lower:
+                # Check if it's recent (appears early in CV = more recent)
+                position = cv_lower.find(edu_keyword)
+                # Weight: earlier position = more recent = higher weight (max 15%, min 5%)
+                recency_weight = max(5, 15 - (position / len(cv_lower)) * 10)
+                
+                for role in related_roles:
+                    if role in job_archetypes:
+                        current_boost = education_boost.get(role, 0)
+                        education_boost[role] = max(current_boost, recency_weight)
+
+    # 2. Prepare Corpus
     archetype_names = list(job_archetypes.keys())
     archetype_docs = [" ".join(job_archetypes[name]) for name in archetype_names]
     
@@ -2764,18 +2811,23 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
         else:
             overlap_score = 0
         
-        # Quality Filter - Only show roles with at least 20% skill match
-        if overlap_score < 20:
+        # Add education boost if applicable
+        edu_boost = education_boost.get(role_name, 0)
+        final_score = min(100, overlap_score + edu_boost)  # Cap at 100%
+        
+        # Quality Filter - Show roles with at least 10% skill match OR education boost
+        if final_score < 10:
             continue
             
         recommendations.append({
             "role": role_name,
-            "score": overlap_score, 
-            "missing": missing_display
+            "score": final_score, 
+            "missing": missing_display,
+            "edu_boost": edu_boost > 0  # Flag if boosted by education
         })
         
     recommendations.sort(key=lambda x: x["score"], reverse=True)
-    return recommendations[:3]
+    return recommendations[:6]
 
 
 # =============================================================================

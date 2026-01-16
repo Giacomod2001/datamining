@@ -2208,31 +2208,39 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                 q = urllib.parse.quote(skill)
                 st.markdown(f"**{skill}:** [Coursera](https://www.coursera.org/search?query={q}) | [YouTube](https://www.youtube.com/results?search_query={q}+tutorial)")
     
-    # Job Context
+    # Job Context (Visible)
     if jd_text:
-        with st.expander("Job Context Analysis"):
-            jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
-            if len(jd_corpus) > 5:
-                result = ml_utils.perform_topic_modeling(jd_corpus)
-                if result:
-                    st.info(result['summary'])
-                    st.markdown("**Key areas:** " + " | ".join(result['topics']))
-            else:
-                st.info("Job Description too brief for analysis.")
-    
-    # AI Career Compass
-    with st.expander("AI Career Compass"):
-        candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
-        recs = ml_utils.recommend_roles(candidate_skills, jd_text if jd_text else "")
-        
-        if recs:
-            for rec in recs:
-                role_query = urllib.parse.quote(rec['role'])
-                st.markdown(f"**{rec['role']}** ({rec['score']:.0f}%) - [Google](https://www.google.com/search?q={role_query}+jobs) | [LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query})")
+        st.subheader("Job Context Analysis")
+        jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
+        if len(jd_corpus) > 5:
+            result = ml_utils.perform_topic_modeling(jd_corpus)
+            if result:
+                st.info(result['summary'])
+                st.markdown("**Key areas:** " + " | ".join(result['topics']))
         else:
-            st.info("No alternative roles found.")
+            st.info("Job Description too brief for analysis.")
     
-    # Export
+    st.divider()
+    
+    # AI Career Compass (Visible)
+    st.subheader("AI Career Compass")
+    st.caption("Alternative roles based on your profile")
+    candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
+    recs = ml_utils.recommend_roles(candidate_skills, jd_text if jd_text else "")
+    
+    if recs:
+        # Display in 2 columns
+        col1, col2 = st.columns(2)
+        for i, rec in enumerate(recs):
+            with col1 if i % 2 == 0 else col2:
+                role_query = urllib.parse.quote(rec['role'])
+                st.markdown(f"**{rec['role']}** ({rec['score']:.0f}%)")
+                st.markdown(f"[Google](https://www.google.com/search?q={role_query}+jobs) | [LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query}) | [Indeed](https://it.indeed.com/jobs?q={role_query})")
+                st.markdown("")
+    else:
+        st.info("No alternative roles found.")
+    
+    st.divider()
     with st.expander("Export Report"):
         report_text = ml_utils.generate_detailed_report_text(res, jd_text if jd_text else "", cl_analysis)
         report_pdf = ml_utils.generate_pdf_report(res, jd_text if jd_text else "", cl_analysis)
