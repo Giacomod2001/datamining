@@ -2921,7 +2921,7 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
         seniority_fit = "Match"
         
         if cv_level == "Entry Level" and is_senior_role:
-             seniority_penalty = 0.5 
+             seniority_penalty = 0.75 # Was 0.5 (too harsh)
              seniority_fit = "Underqualified"
         elif cv_level == "Senior Level" and is_junior_role:
              seniority_penalty = 0.9 
