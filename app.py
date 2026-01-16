@@ -1739,13 +1739,13 @@ def render_career_discovery():
                 # Store in Session State
                 st.session_state['discovery_results'] = results
                 st.session_state['discovery_has_cv'] = bool(final_cv_text)
-                st.session_state['discovery_cv_text'] = final_cv_text
+                st.session_state['processed_cv_text'] = final_cv_text
                 
     # --- RENDER RESULTS (from Session State) ---
     if 'discovery_results' in st.session_state:
         results = st.session_state['discovery_results']
         has_cv = st.session_state.get('discovery_has_cv', False)
-        cv_text_session = st.session_state.get('discovery_cv_text', "")
+        cv_text_session = st.session_state.get('processed_cv_text', "")
 
         # Seniority for Discovery
         cv_level, _ = ml_utils.detect_seniority(cv_text_session) if cv_text_session else ("Mid Level", 0.0)
