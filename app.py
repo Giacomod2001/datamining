@@ -191,6 +191,9 @@ def render_navigation():
                      # Context-Specific Triggers
                      if current_page == "CV Builder":
                          st.session_state["trigger_demo_load"] = True
+                     elif current_page == "Career Discovery":
+                         st.session_state["discovery_free_text"] = "I am an analytical thinker looking for a role in Data Science or Engineering. I enjoy problem-solving and working with international teams."
+                         st.session_state["discovery_cv_text"] = st.session_state["cv_text"]
                          
                      st.rerun()
              
