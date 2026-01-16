@@ -1882,31 +1882,7 @@ def render_role_card(role: dict, has_cv: bool = False, seniority_prefix: str = "
                 st.markdown("**Missing:** " + ", ".join(list(missing_skills)[:5]))
             elif not has_cv:
                 st.markdown(", ".join(skills_required[:5]))
-    # Role header with score
-    st.markdown(f"##### {role_name}")
-    st.progress(int(min(score, 100)))
-    st.caption(f"**{score:.0f}% Match** | {category}")
-    
-    # Job search links - prominent like Career Compass
-    role_query = urllib.parse.quote(f"{seniority_prefix}{role_name}")
-    italy_query = urllib.parse.quote(f"{seniority_prefix}{role_name} Italia")
-    
-    st.markdown(f"<a href='https://www.google.com/search?q={role_query}+jobs' target='_blank'>Google Jobs</a>", unsafe_allow_html=True)
-    st.markdown(f"<a href='https://www.linkedin.com/jobs/search/?keywords={role_query}' target='_blank'>LinkedIn Jobs</a>", unsafe_allow_html=True)
-    st.markdown(f"<a href='https://it.indeed.com/jobs?q={italy_query}' target='_blank'>Indeed Italia</a>", unsafe_allow_html=True)
-    
-    # Skills in expander
-    skills_required = role.get("skills_required", [])
-    skills_matched = set(role.get("skills_matched", []))
-    missing_skills = role.get("missing_skills", [])
-    
-    with st.expander("Required Skills"):
-        if has_cv and skills_matched:
-            st.markdown("**You have:** " + ", ".join(skills_matched))
-        if has_cv and missing_skills:
-            st.markdown("**Missing:** " + ", ".join(missing_skills[:5]))
-        elif not has_cv:
-            st.markdown(", ".join(skills_required[:5]))
+
 
 
 def render_evaluation_page():
