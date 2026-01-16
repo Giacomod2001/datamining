@@ -1752,6 +1752,9 @@ def render_career_discovery():
         query_prefix = ""
         if cv_level == "Entry Level": query_prefix = "Junior "
         elif cv_level == "Senior Level": query_prefix = "Senior "
+        
+        if has_cv:
+             st.info(f"🎯 **Profile Analysis detected:** {cv_level}. Search links are optimized for this level.")
 
         if results:
             st.divider()
@@ -2170,6 +2173,21 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         
         if res["missing_hard"]:
             st.markdown(f"**Priority:** Learn **{', '.join(list(res['missing_hard'])[:3])}**")
+            
+        # SENIORITY CHECK
+        seniority = res.get('seniority_info', {})
+        if seniority:
+            match_status = seniority.get('match_status')
+            cv_lvl = seniority.get('cv_level')
+            jd_lvl = seniority.get('jd_level')
+            
+            if match_status == "Underqualified":
+                st.error(f"⚠️ **Seniority Mismatch**: Role seems **{jd_lvl}**, but your profile matches **{cv_lvl}**.")
+            elif match_status == "Overqualified":
+                st.warning(f"⚠️ **Seniority Mismatch**: You appear **Overqualified** ({cv_lvl}) for this **{jd_lvl}** role.")
+            else:
+                 st.caption(f"🎯 **Seniority Analysis**: Your level ({cv_lvl}) aligns with the role requirements ({jd_lvl}).")
+
     
     st.divider()
     
