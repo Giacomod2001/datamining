@@ -1763,17 +1763,33 @@ def render_career_discovery():
         elif cv_level == "Senior Level": query_prefix = "Senior "
         
         if has_cv:
-             st.info(f"🎯 **Profile Analysis detected:** {cv_level}. Search links are optimized for this level.")
+             st.info(f"**Profile Analysis detected:** {cv_level}. Search links are optimized for this level.")
 
         if results:
             st.divider()
             st.subheader(f"Found {len(results)} Career Matches")
             
-            # Filter Expander
-            with st.expander("Filter Options", expanded=False):
-                min_match_discovery = st.slider("Minimum Match Score", 0, 100, 10, key="discovery_min_match")
+            # Filter Expander - Removed, use visible radio
+            st.markdown("Score Range")
+            match_range = st.radio(
+                "Score Range",
+                options=["0-25%", "25-50%", "50-75%", "75-100%"],
+                horizontal=True,
+                label_visibility="collapsed",
+                key="discovery_filter_range",
+                index=0 # Start with 0-25 to ensure results are seen? Or 0 for wider. 
+                #Actually defaults usually 25, so maybe index 0 or 1. Let's stick with 0 or 1.
+                # If I put 0-25, users might see low scores.
+                # Let's set index=1 (25-50) or 0.
+            )
             
-            filtered_results = [r for r in results if r['score'] >= min_match_discovery]
+            min_s, max_s = 0, 100
+            if match_range == "0-25%": min_s, max_s = 0, 25
+            elif match_range == "25-50%": min_s, max_s = 25, 50
+            elif match_range == "50-75%": min_s, max_s = 50, 75
+            elif match_range == "75-100%": min_s, max_s = 75, 100
+            
+            filtered_results = [r for r in results if min_s <= r['score'] <= max_s]
             
             if has_cv:
                 st.caption("Ranked by skill match (60%) + preference alignment (40%) + education boost")
@@ -1783,7 +1799,7 @@ def render_career_discovery():
             if filtered_results:
                 render_career_discovery_results(filtered_results, has_cv=has_cv, seniority_prefix=query_prefix)
             else:
-                st.info(f"No careers found with match score >= {min_match_discovery}%. Try lowering the filter.")
+                st.info(f"No careers found in the {match_range} range. Try a different filter.")
         else:
             st.info("No strong matches found. Try broadening your preferences.")
 
