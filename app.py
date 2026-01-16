@@ -2293,8 +2293,8 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         st.divider()
         st.markdown("<div id='section-projects'></div>", unsafe_allow_html=True)
         st.subheader("Project Interview Coaching")
-        st.caption("How to present your portfolio in interviews for this role")
-        
+        st.caption("How to present your portfolio in interviews")
+
         verified_skills = res.get('project_verified', set())
         missing_skills = res.get('missing_hard', set())
         matching_skills = res.get('matching_hard', set())
