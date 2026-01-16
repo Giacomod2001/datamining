@@ -1611,15 +1611,9 @@ def render_landing_page():
 
 def render_career_discovery():
     """
-    CAREER DISCOVERY PAGE
-    =====================
-    Helps users explore job opportunities based on their preferences
-    and background. Works with or without a CV.
-    
-    Input Modes:
-    - Questionnaire: Work style preferences
-    - Free Text: Natural language description of aspirations
-    - CV (Optional): Upload for skill-based matching
+    CAREER DISCOVERY PAGE - Premium UI
+    ===================================
+    Helps users explore job opportunities based on preferences.
     """
     
     # --- SIDEBAR ---
@@ -1632,169 +1626,198 @@ def render_career_discovery():
         
         st.markdown("""
         <div style='text-align: center;'>
-            <h2 style='font-size: 1.3rem; margin: 0;'>Career Discovery</h2>
-            <p style='color: #00A0DC; font-size: 0.75rem;'>EXPLORE YOUR PATH</p>
+            <h2 style='font-size: 1.3rem; margin: 0; background: linear-gradient(135deg, #00A0DC, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>Career Discovery</h2>
+            <p style='color: #8b949e; font-size: 0.75rem; margin-top: 0.3rem;'>AI-Powered Career Matching</p>
         </div>
         """, unsafe_allow_html=True)
         
         st.divider()
         
-        # Quick navigation
-        st.markdown("**Quick Actions**")
-        if st.button("CV Builder", use_container_width=True):
+        # Quick navigation with icons
+        st.markdown("**Navigate**")
+        if st.button("📝 CV Builder", use_container_width=True):
             st.session_state["page"] = "CV Builder"
             st.rerun()
-        if st.button("CV Evaluation", use_container_width=True):
+        if st.button("📊 CV Evaluation", use_container_width=True):
             st.session_state["page"] = "CV Evaluation"
             st.rerun()
         
-        st.divider()
+        st.markdown("<br><br>", unsafe_allow_html=True)
         
-        # How it works
-        with st.expander("How It Works", expanded=False):
-            st.markdown("""
-            1. **Tell us about yourself** - Upload CV or describe your background
-            2. **Set your preferences** - Work style, interests, goals
-            3. **Get recommendations** - AI matches you to career paths
-            4. **Explore further** - See required skills and job links
-            """)
+        # Steps indicator
+        st.markdown("""
+        <div style='background: rgba(0, 160, 220, 0.1); padding: 1rem; border-radius: 10px; border-left: 3px solid #00A0DC;'>
+            <p style='margin: 0 0 0.5rem 0; font-weight: 600; color: #00A0DC;'>How It Works</p>
+            <p style='margin: 0; font-size: 0.8rem; color: #8b949e;'>1. Describe yourself<br>2. Set preferences<br>3. Get matched roles</p>
+        </div>
+        """, unsafe_allow_html=True)
     
-    # --- MAIN CONTENT ---
+    # --- HERO HEADER ---
     st.markdown("""
-    <div style='text-align: center; padding: 1rem 0 2rem 0;'>
-        <h1 style='font-size: 2rem; margin-bottom: 0.5rem;'>Career Discovery</h1>
-        <p style='color: #8b949e; font-size: 1rem;'>Find the perfect career path based on your preferences and skills</p>
+    <div style='text-align: center; padding: 2rem 0; background: linear-gradient(135deg, rgba(0,160,220,0.1) 0%, rgba(0,200,83,0.05) 100%); border-radius: 16px; margin-bottom: 2rem;'>
+        <h1 style='font-size: 2.5rem; margin: 0; background: linear-gradient(135deg, #00A0DC, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>
+            🧭 Career Discovery
+        </h1>
+        <p style='color: #8b949e; font-size: 1.1rem; margin-top: 0.5rem;'>Find your perfect career path in 3 simple steps</p>
     </div>
     """, unsafe_allow_html=True)
     
-    # --- INPUT SECTION ---
-    st.subheader("Tell Us About Yourself")
+    # --- STEP 1: BACKGROUND ---
+    st.markdown("""
+    <div style='display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;'>
+        <span style='background: linear-gradient(135deg, #00A0DC, #0077B5); color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: 600;'>Step 1</span>
+        <span style='font-size: 1.1rem; font-weight: 500;'>Tell us about yourself</span>
+    </div>
+    """, unsafe_allow_html=True)
     
-    # Two columns: Left = CV/Text, Right = Preferences
-    col_input, col_prefs = st.columns([1, 1])
+    col_text, col_cv = st.columns(2)
     
-    with col_input:
-        st.markdown("#### Your Background")
-        
-        input_tab1, input_tab2 = st.tabs(["📝 Free Text", "📄 Upload CV"])
-        
-        with input_tab1:
-            free_text = st.text_area(
-                "Describe your background and aspirations",
-                height=200,
-                placeholder="Example: I'm studying Marketing and I'd love a dynamic job where I can talk to international clients. I'm creative and prefer working in a team...",
-                key="discovery_free_text"
-            )
-        
-        with input_tab2:
-            st.markdown("*Optional: Upload your CV for skill-based matching*")
-            cv_file = st.file_uploader("Upload CV (PDF)", type=["pdf"], key="discovery_cv")
-            cv_text = ""
-            if cv_file:
-                try:
-                    cv_text = ml_utils.extract_text_from_pdf(cv_file)
-                    st.success(f"CV loaded: {len(cv_text.split())} words extracted")
-                except Exception as e:
-                    st.error(f"Error reading PDF: {e}")
-            
-            # Also allow text paste
-            cv_text_input = st.text_area(
-                "Or paste your CV text here",
-                height=150,
-                key="discovery_cv_text",
-                placeholder="Paste your CV content..."
-            )
-            if cv_text_input and not cv_text:
-                cv_text = cv_text_input
-    
-    with col_prefs:
-        st.markdown("#### Your Preferences")
-        st.caption("Select what matters to you (leave blank if no preference)")
-        
-        # Category Selection
-        career_categories = getattr(constants, "CAREER_CATEGORIES", {})
-        selected_categories = st.multiselect(
-            "Interesting sectors",
-            options=list(career_categories.keys()),
-            help="Select one or more sectors you're interested in",
-            key="discovery_categories"
+    with col_text:
+        st.markdown("""
+        <div style='background: rgba(30, 37, 43, 0.8); padding: 0.5rem 1rem; border-radius: 10px; border: 1px solid #30363d; margin-bottom: 0.5rem;'>
+            <p style='margin: 0; font-weight: 500;'>💭 Describe Your Aspirations</p>
+        </div>
+        """, unsafe_allow_html=True)
+        free_text = st.text_area(
+            "What kind of work excites you?",
+            height=180,
+            placeholder="Example: I want a dynamic job where I can work with international clients. I'm creative, love solving problems, and prefer flexible work arrangements...",
+            key="discovery_free_text",
+            label_visibility="collapsed"
         )
+    
+    with col_cv:
+        st.markdown("""
+        <div style='background: rgba(30, 37, 43, 0.8); padding: 0.5rem 1rem; border-radius: 10px; border: 1px solid #30363d; margin-bottom: 0.5rem;'>
+            <p style='margin: 0; font-weight: 500;'>📄 Upload CV <span style='color: #8b949e; font-weight: normal;'>(optional)</span></p>
+        </div>
+        """, unsafe_allow_html=True)
+        cv_file = st.file_uploader("Upload CV", type=["pdf"], key="discovery_cv", label_visibility="collapsed")
+        cv_text = ""
+        if cv_file:
+            try:
+                cv_text = ml_utils.extract_text_from_pdf(cv_file)
+                st.success(f"✓ CV loaded: {len(cv_text.split())} words")
+            except Exception as e:
+                st.error(f"Error: {e}")
         
-        # Show category descriptions
-        if selected_categories:
-            for cat in selected_categories:
-                st.caption(f"*{cat}*: {career_categories.get(cat, '')}")
-        
-        st.markdown("")
-        
-        # Work style preferences
-        pref_cols = st.columns(2)
-        
-        with pref_cols[0]:
-            client_facing = st.radio(
-                "People interaction",
-                options=["No preference", "Client-facing", "Behind the scenes"],
-                key="pref_client",
-                horizontal=False
-            )
-            
-            remote_pref = st.radio(
-                "Work location",
-                options=["No preference", "Remote-friendly", "On-site"],
-                key="pref_remote",
-                horizontal=False
-            )
-        
-        with pref_cols[1]:
-            international = st.radio(
-                "International scope",
-                options=["No preference", "International", "Local"],
-                key="pref_intl",
-                horizontal=False
-            )
-            
-            dynamic = st.radio(
-                "Work pace",
-                options=["No preference", "Dynamic & varied", "Stable & routine"],
-                key="pref_dynamic",
-                horizontal=False
-            )
-        
+        cv_text_input = st.text_area(
+            "Or paste CV text",
+            height=100,
+            key="discovery_cv_text",
+            placeholder="Paste your CV content here...",
+            label_visibility="collapsed"
+        )
+        if cv_text_input and not cv_text:
+            cv_text = cv_text_input
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # --- STEP 2: PREFERENCES ---
+    st.markdown("""
+    <div style='display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;'>
+        <span style='background: linear-gradient(135deg, #00C853, #00A0DC); color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: 600;'>Step 2</span>
+        <span style='font-size: 1.1rem; font-weight: 500;'>Set your preferences</span>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Categories in a styled container
+    st.markdown("""
+    <div style='background: rgba(30, 37, 43, 0.8); padding: 0.5rem 1rem; border-radius: 10px; border: 1px solid #30363d; margin-bottom: 0.5rem;'>
+        <p style='margin: 0; font-weight: 500;'>🎯 Industries you're interested in</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    career_categories = getattr(constants, "CAREER_CATEGORIES", {})
+    selected_categories = st.multiselect(
+        "Select sectors",
+        options=list(career_categories.keys()),
+        help="Select one or more sectors",
+        key="discovery_categories",
+        label_visibility="collapsed"
+    )
+    
+    # Work style grid
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    pref_cols = st.columns(5)
+    
+    with pref_cols[0]:
+        st.markdown("**👥 Interaction**")
+        client_facing = st.radio(
+            "client",
+            options=["Any", "Client-facing", "Behind scenes"],
+            key="pref_client",
+            label_visibility="collapsed"
+        )
+    
+    with pref_cols[1]:
+        st.markdown("**🏠 Location**")
+        remote_pref = st.radio(
+            "remote",
+            options=["Any", "Remote", "On-site"],
+            key="pref_remote",
+            label_visibility="collapsed"
+        )
+    
+    with pref_cols[2]:
+        st.markdown("**🌍 Scope**")
+        international = st.radio(
+            "intl",
+            options=["Any", "International", "Local"],
+            key="pref_intl",
+            label_visibility="collapsed"
+        )
+    
+    with pref_cols[3]:
+        st.markdown("**⚡ Pace**")
+        dynamic = st.radio(
+            "dynamic",
+            options=["Any", "Dynamic", "Stable"],
+            key="pref_dynamic",
+            label_visibility="collapsed"
+        )
+    
+    with pref_cols[4]:
+        st.markdown("**🎨 Style**")
         creative = st.radio(
-            "Creativity",
-            options=["No preference", "Creative role", "Structured role"],
+            "creative",
+            options=["Any", "Creative", "Structured"],
             key="pref_creative",
-            horizontal=True
+            label_visibility="collapsed"
         )
     
-    # --- DISCOVER BUTTON ---
-    st.markdown("")
-    discover_clicked = st.button("🔍 Discover Career Paths", type="primary", use_container_width=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # --- STEP 3: DISCOVER ---
+    st.markdown("""
+    <div style='display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;'>
+        <span style='background: linear-gradient(135deg, #FFB300, #FF6D00); color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: 600;'>Step 3</span>
+        <span style='font-size: 1.1rem; font-weight: 500;'>Discover your matches</span>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    discover_clicked = st.button("🚀 Find My Career Paths", type="primary", use_container_width=True)
     
     # --- RESULTS ---
     if discover_clicked:
         # Build preferences dict
         preferences = {
             "categories": selected_categories if selected_categories else None,
-            "client_facing": True if client_facing == "Client-facing" else (False if client_facing == "Behind the scenes" else None),
-            "remote_friendly": True if remote_pref == "Remote-friendly" else (False if remote_pref == "On-site" else None),
+            "client_facing": True if client_facing == "Client-facing" else (False if client_facing == "Behind scenes" else None),
+            "remote_friendly": True if remote_pref == "Remote" else (False if remote_pref == "On-site" else None),
             "international": True if international == "International" else (False if international == "Local" else None),
-            "dynamic": True if dynamic == "Dynamic & varied" else (False if dynamic == "Stable & routine" else None),
-            "creative": True if creative == "Creative role" else (False if creative == "Structured role" else None),
+            "dynamic": True if dynamic == "Dynamic" else (False if dynamic == "Stable" else None),
+            "creative": True if creative == "Creative" else (False if creative == "Structured" else None),
         }
         
-        # Get CV text (from upload or paste)
         final_cv_text = cv_text if cv_text else ""
-        
-        # Get free text
         final_free_text = free_text if free_text else ""
         
-        # Validate input
         if not final_cv_text and not final_free_text and not selected_categories and all(v is None for k, v in preferences.items() if k != "categories"):
-            st.warning("Please provide some information about yourself - either upload a CV, describe your aspirations, or set some preferences.")
+            st.warning("⚠️ Please provide some information - describe yourself, upload a CV, or select preferences.")
         else:
-            # Run discovery
-            with st.spinner("Analyzing your profile and matching career paths..."):
+            with st.spinner("🔍 Analyzing your profile..."):
                 results = ml_utils.discover_careers(
                     cv_text=final_cv_text,
                     free_text=final_free_text,
@@ -1802,13 +1825,19 @@ def render_career_discovery():
                 )
             
             if results:
-                st.success(f"Found **{len(results)}** matching career paths!")
                 st.markdown("---")
+                st.markdown(f"""
+                <div style='text-align: center; padding: 1rem; background: linear-gradient(135deg, rgba(0,200,83,0.1) 0%, rgba(0,160,220,0.1) 100%); border-radius: 12px; margin-bottom: 1rem;'>
+                    <h2 style='margin: 0; color: #00C853;'>✨ Found {len(results)} Career Matches!</h2>
+                    <p style='color: #8b949e; margin: 0.3rem 0 0 0;'>{'Ranked by skill match + preferences' if final_cv_text else 'Ranked by preference alignment'}</p>
+                </div>
+                """, unsafe_allow_html=True)
                 
-                # Display results
                 render_career_discovery_results(results, has_cv=bool(final_cv_text))
             else:
-                st.info("No strong matches found. Try adjusting your preferences or providing more information about your background.")
+                st.info("No strong matches found. Try broadening your preferences.")
+
+
 
 
 def render_career_discovery_results(results: list, has_cv: bool = False):
