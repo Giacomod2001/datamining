@@ -15,7 +15,8 @@
 
 **New Features**:
 
-- **Demo Mode**: Use "Load Demo" in the sidebar to populate the CV Builder. Click "Exit Demo" to clear data.
+- **Unified Navigation**: Access all tools (CV Builder, Evaluation, Discovery) from a consistent sidebar menu.
+- **Improved Demo Mode**: One-click demo toggle available globally along with "Try Demo" quick actions.
 - **Improved Navigation**: Switch easily between "CV Builder" and "CV Evaluation" from the sidebar.
 
 ---
@@ -107,7 +108,7 @@ Analyzes CV context (years of experience, keywords like "Head", "Junior") to det
 
 ### Text Mining Pipeline
 
-```
+```text
 Input Text --> Tokenization --> N-gram Generation --> TF-IDF --> ML Model --> Output
                    |                 |
                 Unigrams          Bigrams/Trigrams

@@ -127,6 +127,67 @@ if "cv_builder" not in st.session_state:
 # - Esplorare la Knowledge Base
 # =============================================================================
 
+# =============================================================================
+# NAVIGATION
+# =============================================================================
+def render_navigation():
+    """
+    Renders the global sidebar navigation menu.
+    """
+    with st.sidebar:
+        # Branding
+        st.markdown(\"\"\"
+        <div style='text-align: center; padding: 0.5rem 0;'>
+            <h2 style='font-size: 1.5rem; margin: 0;'>CareerMatch AI</h2>
+            <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>CAREER ASSISTANT</p>
+        </div>
+        \"\"\", unsafe_allow_html=True)
+        st.divider()
+        
+        # Navigation
+        current_page = st.session_state.get("page", "Landing")
+        
+        nav_map = {
+            "Home": "Landing",
+            "CV Analysis": "CV Evaluation",
+            "CV Builder": "CV Builder",
+            "Career Discovery": "Career Discovery",
+            "Dev Console": "Debugger"
+        }
+        
+        # Determine index
+        options = list(nav_map.keys())
+        default_idx = 0
+        for i, (label, target) in enumerate(nav_map.items()):
+            if target == current_page:
+                default_idx = i
+                break
+        
+        selected = st.radio("Navigation", options, index=default_idx, label_visibility="collapsed")
+        
+        target_page = nav_map[selected]
+        if target_page != current_page:
+            st.session_state["page"] = target_page
+            st.rerun()
+            
+        st.divider()
+        
+        # Demo Controls
+        if st.checkbox("Demo Mode", value=st.session_state.get("demo_mode", False), key="global_demo_toggle"):
+             if not st.session_state.get("demo_mode", False):
+                 st.session_state["demo_mode"] = True
+                 st.session_state["cv_text"] = styles.get_demo_cv()
+                 st.session_state["jd_text"] = styles.get_demo_jd()
+                 st.session_state["proj_text"] = styles.get_demo_project()
+                 st.session_state["show_project_toggle"] = True
+                 st.session_state["show_cover_letter"] = True
+                 st.rerun()
+             st.session_state["demo_mode"] = True
+        else:
+             st.session_state["demo_mode"] = False
+             
+        st.caption("v2.1 | Local Mode")
+
 def render_debug_page():
     """
     CONSOLE SVILUPPATORE
@@ -140,6 +201,7 @@ def render_debug_page():
     4. NLP - Statistiche estrazione testo
     5. Knowledge - Database skill e regole
     """
+    render_navigation() # GLOBAL NAVBAR
     
     # =========================================================================
     # SIDEBAR - Navigation & Controls (Consistent with App)
@@ -933,6 +995,7 @@ def render_cv_builder():
     Step 3: Experience (Lavoro e Formazione)
     Step 4: Review (Anteprima e Export)
     """
+    render_navigation() # GLOBAL NAVBAR
     
     # Initialize basic session state for wizard
     if "cv_builder_step" not in st.session_state:
@@ -1504,29 +1567,8 @@ def render_landing_page():
     ============
     Nuova pagina principale che funge da hub di navigazione.
     """
+    render_navigation() # GLOBAL NAVBAR
     
-    # 1. SIDEBAR (Consistent Layout)
-    with st.sidebar:
-        # BRANDING (Centered) - Same as other pages
-        st.markdown("""
-        <div style='text-align: center; padding: 0.5rem 0;'>
-            <h2 style='font-size: 1.5rem; margin: 0;'>CareerMatch AI</h2>
-            <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>CAREER ASSISTANT</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.divider()
-        
-        # Navigation/Information
-        st.info("Welcome to your AI Career Assistant. Choose a tool to get started.")
-        
-        # SPACER to push Dev Console to bottom (approximate)
-        st.markdown("<br>" * 15, unsafe_allow_html=True)
-        
-        if st.button("Devs Console", use_container_width=True):
-             st.session_state["page"] = "Debugger"
-             st.rerun()
-
     # 2. HERO SECTION
     # Reduced top padding (4rem -> 2rem)
     st.markdown("""
@@ -1616,38 +1658,10 @@ def render_career_discovery():
     Helps users explore job opportunities based on preferences.
     Styled consistently with CV Builder and Evaluation pages.
     """
+    render_navigation() # GLOBAL NAVBAR
     
-    # --- SIDEBAR (Same pattern as other pages) ---
-    with st.sidebar:
-        if st.button("Home", use_container_width=True):
-            st.session_state["page"] = "Landing"
-            st.rerun()
-        
-        st.divider()
-        
-        # Branding (consistent with other pages)
-        st.markdown("""
-        <div style='text-align: center; padding: 0.5rem 0;'>
-            <h2 style='font-size: 1.5rem; margin: 0;'>CareerMatch AI</h2>
-            <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>CAREER DISCOVERY</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.divider()
-        
-        # Navigation
-        st.markdown("**Navigate**")
-        if st.button("CV Builder", use_container_width=True):
-            st.session_state["page"] = "CV Builder"
-            st.rerun()
-        if st.button("CV Evaluation", use_container_width=True):
-            st.session_state["page"] = "CV Evaluation"
-            st.rerun()
-        
-        st.markdown("<br>" * 5, unsafe_allow_html=True)
-        
-        # Info box
-        st.info("Describe your aspirations or upload a CV to discover matching career paths.")
+    
+    # --- HEADER (Same pattern as CV Builder) ---
     
     # --- HEADER (Same pattern as CV Builder) ---
     st.markdown("""
@@ -1863,82 +1877,22 @@ def render_evaluation_page():
     - Visualizzazione risultati
     """
     
-    # =========================================================================
-    # SIDEBAR - Controlli e Navigazione
-    # =========================================================================
+    """
+    
+    render_navigation() # GLOBAL NAVBAR
+    
+    # Rest of Layout (Main Area)
+    # Removed Local Sidebar logic to avoid duplication
+
+    # Local Page Options (Extra Analysis)
     with st.sidebar:
-        if st.button("Home", use_container_width=True):
-            st.session_state["page"] = "Landing"
-            st.rerun()
-            
         st.divider()
-
-        # 2. BRANDING (Centered)
-        st.markdown("""
-        <div style='text-align: center; padding: 0.5rem 0;'>
-            <h2 style='font-size: 1.5rem; margin: 0;'>CareerMatch AI</h2>
-            <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>CAREER ASSISTANT</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.caption("Page Settings")
+        st.toggle("Include Project Portfolio", key="show_project_toggle")
+        st.toggle("Include Cover Letter", key="show_cover_letter")
         
-        st.divider()
-        
-        # 3. QUICK ACTIONS
-        col_demo1, col_demo2 = st.columns(2)
-        with col_demo1:
-            if st.button("Try Demo", use_container_width=True, help="Load sample data"):
-                st.session_state["demo_mode"] = True
-                st.session_state["cv_text"] = styles.get_demo_cv()
-                st.session_state["jd_text"] = styles.get_demo_jd()
-                st.session_state["proj_text"] = styles.get_demo_project()
-                st.session_state["cl_text"] = styles.get_demo_cover_letter()
-                st.session_state["show_project_toggle"] = True
-                st.session_state["show_cover_letter"] = True
-                st.rerun()
-        with col_demo2:
-            if st.button("CV Builder", use_container_width=True, help="Create a CV"):
-                st.session_state["page"] = "CV Builder"
-                st.rerun()
-        
-        if st.session_state.get("demo_mode"):
-            st.info("Demo Mode Active")
-            if st.button("Exit Demo", use_container_width=True):
-                st.session_state["demo_mode"] = False
-                st.session_state["cv_text"] = ""
-                st.session_state["jd_text"] = ""
-                st.session_state["proj_text"] = ""
-                st.session_state["cl_text"] = ""
-                st.rerun()
-        
-        st.divider()
-        
-        # 4. OPTIONAL ANALYSIS - in expander
-        if "show_project_toggle" not in st.session_state:
-            st.session_state["show_project_toggle"] = False
-        if "show_cover_letter" not in st.session_state:
-             st.session_state["show_cover_letter"] = False
-
-        with st.expander("Extra Analysis (optional)", expanded=False):
-            st.toggle("Include Project Portfolio", key="show_project_toggle")
-            st.toggle("Include Cover Letter", key="show_cover_letter")
-        
-        st.markdown("<br>" * 3, unsafe_allow_html=True)
-            
-        # SPACER to push Dev Console to bottom
-        st.markdown("<br>" * 5, unsafe_allow_html=True)
-        
-        # 6. DEVS CONSOLE (Bottom Left)
-        st.divider()
-        if st.button("Devs Console", use_container_width=True):
-             st.session_state["page"] = "Debugger"
-             st.rerun()
-             
-        # Footer
-        st.markdown("""
-        <div style='text-align: center; color: #8b949e; font-size: 0.7rem; margin-top: 1rem;'>
-            v2.1 | <a href='#' style='color: #00A0DC;'>GitHub</a>
-        </div>
-        """, unsafe_allow_html=True)
+    if st.session_state.get("demo_mode"):
+        st.info("ℹ️ **Demo Mode Active**: Sample data loaded for testing.")
 
     # ==========================================================================
     # MAIN CONTENT AREA - Hero Section
