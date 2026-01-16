@@ -2085,35 +2085,49 @@ def render_evaluation_page():
 
 def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     """
-    MINIMAL RESULTS VIEW
-    ====================
-    Only essential info visible, details in expanders.
+    BALANCED RESULTS VIEW
+    =====================
+    Score + Skills visible, extras in expanders.
     """
     st.divider()
     pct = res["match_percentage"]
     
-    # --- MAIN SCORE (Always Visible) ---
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        # Simple large percentage
+    # --- SCORE SECTION (Visible) ---
+    col_gauge, col_stats = st.columns([1.5, 2.5])
+    
+    with col_gauge:
+        # Gauge Chart
+        fig = go.Figure(go.Indicator(
+            mode="gauge+number",
+            value=pct,
+            number={'suffix': '%', 'font': {'size': 40, 'color': '#ffffff'}},
+            gauge={
+                'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "#30363d"},
+                'bar': {'color': "#00A0DC"},
+                'bgcolor': "rgba(0,0,0,0)",
+                'borderwidth': 0,
+                'steps': [{'range': [0, 100], 'color': '#0d1117'}],
+                'threshold': {'line': {'color': "#00A0DC", 'width': 4}, 'thickness': 0.75, 'value': pct}
+            }
+        ))
+        fig.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            margin=dict(t=30, b=10, l=30, r=30),
+            height=180,
+        )
+        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+        
+        # Assessment
         if pct >= 80:
-            color = "#00C853"
-            label = "Excellent Match"
+            st.markdown("<div style='text-align: center;'><h3 style='margin:0; color:#00C853;'>Excellent Match</h3></div>", unsafe_allow_html=True)
         elif pct >= 60:
-            color = "#00A0DC"
-            label = "Good Potential"
+            st.markdown("<div style='text-align: center;'><h3 style='margin:0; color:#00A0DC;'>Good Potential</h3></div>", unsafe_allow_html=True)
         else:
-            color = "#FFB300"
-            label = "Growth Opportunity"
-        
-        st.markdown(f"""
-        <div style='text-align: center; padding: 1rem;'>
-            <h1 style='font-size: 4rem; margin: 0; color: {color};'>{pct:.0f}%</h1>
-            <p style='color: #8b949e; font-size: 1.2rem; margin: 0;'>{label}</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Quick stats
+            st.markdown("<div style='text-align: center;'><h3 style='margin:0; color:#FFB300;'>Growth Opportunity</h3></div>", unsafe_allow_html=True)
+
+    with col_stats:
+        st.subheader("Analysis Overview")
         m1, m2, m3 = st.columns(3)
         with m1:
             st.metric("Matched", len(res["matching_hard"]))
@@ -2121,49 +2135,55 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
             st.metric("Missing", len(res["missing_hard"]))
         with m3:
             st.metric("Bonus", len(res["extra_hard"]))
+        
+        if res["missing_hard"]:
+            st.markdown(f"**Priority:** Learn **{', '.join(list(res['missing_hard'])[:3])}**")
     
     st.divider()
     
-    # --- SKILLS ANALYSIS (Expander) ---
-    with st.expander("Skills Analysis", expanded=True):
-        if res["matching_hard"]:
-            st.markdown("**Matched:**")
-            matched_html = " ".join([f"<span class='skill-tag-matched'>{s}</span>" for s in sorted(res["matching_hard"])])
-            st.markdown(matched_html, unsafe_allow_html=True)
-        
-        transferable = res.get("transferable", {})
-        if transferable:
-            st.markdown("**Transferable:**")
-            transfer_html = " ".join([f"<span class='skill-tag-transferable'>{m} ← {p}</span>" for m, p in transferable.items()])
-            st.markdown(transfer_html, unsafe_allow_html=True)
-        
-        if res["missing_hard"]:
-            st.markdown("**Missing:**")
-            missing_html = " ".join([f"<span class='skill-tag-missing'>{s}</span>" for s in sorted(res["missing_hard"])])
-            st.markdown(missing_html, unsafe_allow_html=True)
-        
-        if res["extra_hard"]:
-            st.markdown("**Bonus:**")
-            bonus_html = " ".join([f"<span class='skill-tag-bonus'>+ {s}</span>" for s in sorted(res["extra_hard"])])
-            st.markdown(bonus_html, unsafe_allow_html=True)
+    # --- SKILLS (Visible) ---
+    st.subheader("Skills Analysis")
     
-    # --- PROJECT COACHING (Expander, if available) ---
+    if res["matching_hard"]:
+        st.markdown("**Matched:**")
+        matched_html = " ".join([f"<span class='skill-tag-matched'>{s}</span>" for s in sorted(res["matching_hard"])])
+        st.markdown(matched_html, unsafe_allow_html=True)
+    
+    transferable = res.get("transferable", {})
+    if transferable:
+        st.markdown("**Transferable:**")
+        transfer_html = " ".join([f"<span class='skill-tag-transferable'>{m} ← {p}</span>" for m, p in transferable.items()])
+        st.markdown(transfer_html, unsafe_allow_html=True)
+    
+    if res["missing_hard"]:
+        st.markdown("**Missing:**")
+        missing_html = " ".join([f"<span class='skill-tag-missing'>{s}</span>" for s in sorted(res["missing_hard"])])
+        st.markdown(missing_html, unsafe_allow_html=True)
+    
+    if res["extra_hard"]:
+        st.markdown("**Bonus:**")
+        bonus_html = " ".join([f"<span class='skill-tag-bonus'>+ {s}</span>" for s in sorted(res["extra_hard"])])
+        st.markdown(bonus_html, unsafe_allow_html=True)
+    
+    st.divider()
+    
+    # --- EXTRAS IN EXPANDERS ---
+    
+    # Project Tips
     if "project_verified" in res and res["project_verified"]:
-        with st.expander("Project Interview Tips"):
+        with st.expander("Project Interview Coaching"):
             verified = res.get('project_verified', set())
             matching = res.get('matching_hard', set())
             missing = res.get('missing_hard', set())
             
             st.markdown("**Highlight:** " + ", ".join(list(verified)[:3]))
-            
             overlap = verified & matching
             if overlap:
-                st.markdown("**Star projects:** " + ", ".join(list(overlap)[:2]) + " (verified + required)")
-            
+                st.markdown("**Star projects:** " + ", ".join(list(overlap)[:2]))
             if missing:
                 st.markdown("**Don't claim without proof:** " + ", ".join(list(missing)[:2]))
     
-    # --- COVER LETTER ANALYSIS (Expander, if available) ---
+    # Cover Letter
     if cl_analysis:
         with st.expander("Cover Letter Analysis"):
             m1, m2, m3, m4 = st.columns(4)
@@ -2181,14 +2201,14 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
             if cl_analysis.get('improvements'):
                 st.markdown("**Improve:** " + "; ".join(cl_analysis['improvements'][:2]))
     
-    # --- LEARNING PATH (Expander, if missing skills) ---
+    # Learning Resources
     if res["missing_hard"]:
         with st.expander("Learning Resources"):
             for skill in list(res["missing_hard"])[:5]:
                 q = urllib.parse.quote(skill)
-                st.markdown(f"**{skill}:** [Coursera](https://www.coursera.org/search?query={q}) | [YouTube](https://www.youtube.com/results?search_query={q}+tutorial) | [Udemy](https://www.udemy.com/courses/search/?q={q})")
+                st.markdown(f"**{skill}:** [Coursera](https://www.coursera.org/search?query={q}) | [YouTube](https://www.youtube.com/results?search_query={q}+tutorial)")
     
-    # --- JOB CONTEXT (Expander, if JD provided) ---
+    # Job Context
     if jd_text:
         with st.expander("Job Context Analysis"):
             jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
@@ -2200,8 +2220,8 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
             else:
                 st.info("Job Description too brief for analysis.")
     
-    # --- AI CAREER COMPASS (Expander) ---
-    with st.expander("AI Career Compass (Alternative Roles)"):
+    # AI Career Compass
+    with st.expander("AI Career Compass"):
         candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
         recs = ml_utils.recommend_roles(candidate_skills, jd_text if jd_text else "")
         
@@ -2210,9 +2230,9 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                 role_query = urllib.parse.quote(rec['role'])
                 st.markdown(f"**{rec['role']}** ({rec['score']:.0f}%) - [Google](https://www.google.com/search?q={role_query}+jobs) | [LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query})")
         else:
-            st.info("No alternative roles found above threshold.")
+            st.info("No alternative roles found.")
     
-    # --- EXPORT (Expander) ---
+    # Export
     with st.expander("Export Report"):
         report_text = ml_utils.generate_detailed_report_text(res, jd_text if jd_text else "", cl_analysis)
         report_pdf = ml_utils.generate_pdf_report(res, jd_text if jd_text else "", cl_analysis)
@@ -2223,9 +2243,6 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         with col_dl2:
             if report_pdf:
                 st.download_button("Download PDF", report_pdf, file_name="Report.pdf", mime="application/pdf", use_container_width=True)
-            else:
-                st.warning("PDF unavailable")
-
 
 if __name__ == "__main__":
     if st.session_state["page"] == "Debugger":
