@@ -2259,8 +2259,6 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
 
     filtered_recs = [r for r in recs if min_score <= r['score'] <= max_score]
     
-    filtered_recs = [r for r in recs if min_score <= r['score'] <= max_score]
-    
     if filtered_recs:
         # Display in 2 columns
         col1, col2 = st.columns(2)
