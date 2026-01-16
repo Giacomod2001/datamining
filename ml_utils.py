@@ -1148,6 +1148,9 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "provided", "reduced", "researched", "resolved", "reviewed", "streamlined",
         "supervised", "supported", "trained", "transformed", "utilized",
         "increased", "decreased", "optimized", "automated", "integrated", "migrated",
+        "analyze", "implement", "monitor", "manage", "collaborate", "ensure", # Present tense
+        "match", "gap", "missing", "learn", "digital", # Noise words from Demo/UI
+        "futuretech", "solutions", # Demo Company tokens
         "collaborated", "communicated", "negotiated", "presented", "reported",
         
         # CURRENCIES & UNITS (misclassified as organizations)

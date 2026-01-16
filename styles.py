@@ -828,22 +828,22 @@ Key Responsibilities:
 - Collaborate with the marketing team to implement data-driven campaigns.
 
 Required Technical Skills:
-- Proficiency in Google Analytics 4 (GA4) and Google Tag Manager (GTM). (MATCH)
-- Strong programming skills in Python (pandas, scikit-learn). (MATCH)
-- Experience with SQL for data querying and manipulation. (MATCH)
-- Knowledge of Data Visualization tools (Tableau, Looker Studio). (MATCH)
-- Basic understanding of Machine Learning concepts. (MATCH)
-- Experience with Cloud Platforms (AWS or Azure). (PARTIAL/MISSING - CV has GCP)
+- Proficiency in Google Analytics 4 (GA4) and Google Tag Manager (GTM).
+- Strong programming skills in Python (pandas, scikit-learn).
+- Experience with SQL for data querying and manipulation.
+- Knowledge of Data Visualization tools (Tableau, Looker Studio).
+- Basic understanding of Machine Learning concepts.
+- Experience with Cloud Platforms (AWS or Azure). 
 
 Required Soft Skills:
 - Strong analytical mindset and problem-solving skills.
 - Ability to explain complex technical concepts to non-technical stakeholders.
 - Proactivity and desire to learn new technologies.
 
-Nice to Have (The "Gap"):
-- 3+ years of experience in a similar role. (GAP - CV is Intern/Junior)
-- Experience with Big Data frameworks (Spark/Hadoop). (MISSING)
-- Knowledge of DevOps practices (Docker/Kubernetes). (MISSING)
+Nice to Have:
+- 3+ years of experience in a similar role.
+- Experience with Big Data frameworks (Spark/Hadoop).
+- Knowledge of DevOps practices (Docker/Kubernetes).
 
 Languages:
 - Italian (Native)
