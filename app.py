@@ -1713,7 +1713,7 @@ def render_career_discovery():
 
     discover_clicked = st.button("Find My Career Paths", type="primary", use_container_width=True)
     
-    # --- RESULTS ---
+    # --- LOGIC: Calculate or Retrieve Results ---
     if discover_clicked:
         preferences = {
             "categories": selected_categories if selected_categories else None,
@@ -1736,28 +1736,36 @@ def render_career_discovery():
                     free_text=final_free_text,
                     preferences=preferences
                 )
+                # Store in Session State
+                st.session_state['discovery_results'] = results
+                st.session_state['discovery_has_cv'] = bool(final_cv_text)
+                
+    # --- RENDER RESULTS (from Session State) ---
+    if 'discovery_results' in st.session_state:
+        results = st.session_state['discovery_results']
+        has_cv = st.session_state.get('discovery_has_cv', False)
+
+        if results:
+            st.divider()
+            st.subheader(f"Found {len(results)} Career Matches")
             
-            if results:
-                st.divider()
-                st.subheader(f"Found {len(results)} Career Matches")
-                
-                # Filter Expander
-                with st.expander("Filter Options", expanded=False):
-                    min_match_discovery = st.slider("Minimum Match Score", 0, 100, 10, key="discovery_min_match")
-                
-                filtered_results = [r for r in results if r['score'] >= min_match_discovery]
-                
-                if final_cv_text:
-                    st.caption("Ranked by skill match (60%) + preference alignment (40%) + education boost")
-                else:
-                    st.caption("Ranked by preference alignment. Upload a CV for skill-based matching.")
-                
-                if filtered_results:
-                    render_career_discovery_results(filtered_results, has_cv=bool(final_cv_text))
-                else:
-                    st.info(f"No careers found with match score >= {min_match_discovery}%. Try lowering the filter.")
+            # Filter Expander
+            with st.expander("Filter Options", expanded=False):
+                min_match_discovery = st.slider("Minimum Match Score", 0, 100, 10, key="discovery_min_match")
+            
+            filtered_results = [r for r in results if r['score'] >= min_match_discovery]
+            
+            if has_cv:
+                st.caption("Ranked by skill match (60%) + preference alignment (40%) + education boost")
             else:
-                st.info("No strong matches found. Try broadening your preferences.")
+                st.caption("Ranked by preference alignment. Upload a CV for skill-based matching.")
+            
+            if filtered_results:
+                render_career_discovery_results(filtered_results, has_cv=has_cv)
+            else:
+                st.info(f"No careers found with match score >= {min_match_discovery}%. Try lowering the filter.")
+        else:
+            st.info("No strong matches found. Try broadening your preferences.")
 
 
 
@@ -2059,7 +2067,7 @@ def render_evaluation_page():
         # Stage 3: Generazione insights
         progress_bar.progress(80, text="Generating career insights...")
         
-        # Salva risultati in session_state per il debugger
+        # Salva risultati in session_state per persistenza
         st.session_state["last_results"] = res
         st.session_state["last_cv_text"] = cv
         st.session_state["last_jd_text"] = jd
@@ -2076,8 +2084,14 @@ def render_evaluation_page():
         # Messaggio di successo
         st.success("Analysis complete. Scroll down to see your personalized career insights.")
              
-        # Mostra risultati
-        render_results(res, jd, cv, cl_analysis)
+    # Mostra risultati (recuperati dalla session state per persistenza durante interaction)
+    if st.session_state.get("last_results") is not None:
+        render_results(
+            st.session_state["last_results"], 
+            st.session_state.get("last_jd_text"), 
+            st.session_state.get("last_cv_text"), 
+            st.session_state.get("last_cl_analysis")
+        )
 
 # =============================================================================
 # VISUALIZZAZIONE RISULTATI ANALISI
