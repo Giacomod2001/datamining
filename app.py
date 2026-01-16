@@ -2234,8 +2234,16 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         for i, rec in enumerate(recs):
             with col1 if i % 2 == 0 else col2:
                 role_query = urllib.parse.quote(rec['role'])
-                edu_indicator = " 🎓" if rec.get('edu_boost') else ""
-                st.markdown(f"**{rec['role']}** ({rec['score']:.0f}%){edu_indicator}")
+                # edu_indicator = " (Edu Boost)" if rec.get('edu_boost') else "" # textual or hidden? User said "no mojii".
+                # Let's keep it clean or use text. "User said 'togli le mojii'". 
+                # I will just remove the emoji. Maybe use a text label or nothing?
+                # "Education Match" text maybe? Or just a refined style?
+                # Minimalist approach: maybe bold or color?
+                # I'll stick to removing the emoji first. If I want to indicate it, I can use text.
+                # But minimalist means maybe just the score is boosted.
+                # Let's try: " [Escolarità]" or similar if needed, but user probably just hates the cartoonish look.
+                # Actually, simply removing it is safest. The boost is in the score.
+                st.markdown(f"**{rec['role']}** ({rec['score']:.0f}%)")
                 st.markdown(f"[Google](https://www.google.com/search?q={role_query}+jobs) | [LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query}) | [Indeed](https://it.indeed.com/jobs?q={role_query})")
                 st.markdown("")
     else:
