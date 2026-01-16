@@ -1691,9 +1691,10 @@ def render_career_discovery():
     with st.expander("Filters (optional)", expanded=False):
         career_categories = getattr(constants, "CAREER_CATEGORIES", {})
         selected_categories = st.multiselect(
-            "Industries",
+            "Industries (leave empty for Any)",
             options=list(career_categories.keys()),
-            key="discovery_categories"
+            key="discovery_categories",
+            placeholder="Any / All Industries"
         )
         
         col1, col2, col3 = st.columns(3)
@@ -1882,37 +1883,17 @@ def render_evaluation_page():
         
         st.divider()
         
-        # 4. CONFIGURATION
-        st.markdown("<div style='text-align: center; font-weight: bold; margin-bottom: 0.5rem;'>Analysis Options</div>", unsafe_allow_html=True)
-        
+        # 4. OPTIONAL ANALYSIS - in expander
         if "show_project_toggle" not in st.session_state:
             st.session_state["show_project_toggle"] = False
-        if "show_cover_letter" not in st.session_state: # Fixed key consistency
+        if "show_cover_letter" not in st.session_state:
              st.session_state["show_cover_letter"] = False
 
-        st.toggle("Include Project Portfolio", key="show_project_toggle")
-        st.toggle("Include Cover Letter", key="show_cover_letter")
+        with st.expander("Extra Analysis (optional)", expanded=False):
+            st.toggle("Include Project Portfolio", key="show_project_toggle")
+            st.toggle("Include Cover Letter", key="show_cover_letter")
         
-        st.divider()
-        
-        # How it Works
-        st.markdown("<br>", unsafe_allow_html=True)
-        with st.expander("How it Works", expanded=False):
-            st.markdown("""
-            - **Upload**: Provide your CV and the Job Description
-            - **Analyze**: AI compares your profile against requirements
-            - **Review**: Get a detailed score, gap analysis, and interview tips
-            """)
-            
-        # 5. LEGEND
-        with st.expander("Result Legend", expanded=False):
-            st.markdown("""
-            <div style='font-size: 0.8rem;'>
-                <span class='skill-tag-matched'>Matched</span> Good<br>
-                <span class='skill-tag-transferable'>Transferable</span> OK<br>
-                <span class='skill-tag-missing'>Gap</span> Needs Focus
-            </div>
-            """, unsafe_allow_html=True)
+        st.markdown("<br>" * 3, unsafe_allow_html=True)
             
         # SPACER to push Dev Console to bottom
         st.markdown("<br>" * 5, unsafe_allow_html=True)
