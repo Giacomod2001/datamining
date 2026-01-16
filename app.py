@@ -2224,9 +2224,9 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     
     # AI Career Compass (Visible)
     st.subheader("AI Career Compass")
-    st.caption("Alternative roles based on your profile")
+    st.caption("Alternative roles based on your profile and education")
     candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
-    recs = ml_utils.recommend_roles(candidate_skills, jd_text if jd_text else "")
+    recs = ml_utils.recommend_roles(candidate_skills, jd_text if jd_text else "", cv_text if cv_text else "")
     
     if recs:
         # Display in 2 columns
@@ -2234,7 +2234,8 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         for i, rec in enumerate(recs):
             with col1 if i % 2 == 0 else col2:
                 role_query = urllib.parse.quote(rec['role'])
-                st.markdown(f"**{rec['role']}** ({rec['score']:.0f}%)")
+                edu_indicator = " 🎓" if rec.get('edu_boost') else ""
+                st.markdown(f"**{rec['role']}** ({rec['score']:.0f}%){edu_indicator}")
                 st.markdown(f"[Google](https://www.google.com/search?q={role_query}+jobs) | [LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query}) | [Indeed](https://it.indeed.com/jobs?q={role_query})")
                 st.markdown("")
     else:

@@ -26,13 +26,13 @@
 
 ### Key Features
 
-| Feature | Description |
+| **Feature** | **Description** |
 |---------|-------------|
 | **CV Builder (v2.0)** | Interactive wizard to build professional CVs with real-time AI suggestions |
 | **Match Score** | AI-based CV-Job compatibility score (0-100%) |
-| **Transferable Skills** | Automatic recognition of equivalent skills (e.g., Power BI ≈ Tableau) |
+| **Education-Aware** | Smart weighting of recent education degrees for career pathing |
 | **Gap Analysis** | Identifies missing skills vs Job Description |
-| **Career Compass** | Alternative role suggestions based on your profile |
+| **Career Compass** | Advanced role discovery using Skills + Education + Interests (Unlimited model) |
 | **Psychometric Profile** | Silent Burnout & Resilience detection |
 
 ---

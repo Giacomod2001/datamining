@@ -2960,16 +2960,32 @@ def discover_careers(
             if len(role_skills) > 0:
                 skill_match = (len(matched) / len(role_skills)) * 100
         
+        # --- EDUCATION BOOST (Weighted) ---
+        edu_boost = 0
+        if cv_text:
+            cv_lower = cv_text.lower()
+            # Find education keywords and boost related roles
+            for edu_keyword, related_roles in EDUCATION_TO_ROLES.items():
+                if edu_keyword in cv_lower:
+                    if role_name in related_roles:
+                        # Check if it's recent (appears early in CV = more recent)
+                        position = cv_lower.find(edu_keyword)
+                        # Weight: earlier position = more recent = higher weight (max 15%, min 5%)
+                        recency_weight = max(5, 15 - (position / len(cv_lower)) * 10)
+                        edu_boost = max(edu_boost, recency_weight)
+
         # --- FINAL SCORE ---
-        # If CV provided: 60% skills, 40% preferences
-        # If no CV: 100% preferences
+        # If CV provided: Base (60% skills + 40% preferences) + Education Boost
+        # If no CV: Preferences + Education Boost (if any, though unlikely without CV text context here, but passed via cv_text arg)
         if cv_skills:
-            final_score = (skill_match * 0.6) + (preference_match * 0.4)
+            base_score = (skill_match * 0.6) + (preference_match * 0.4)
         else:
-            final_score = preference_match
+            base_score = preference_match
+            
+        final_score = min(100, base_score + edu_boost)
         
-        # Apply minimum threshold
-        if final_score < 15:
+        # Apply minimum threshold (keep permissive)
+        if final_score < 10:
             continue
         
         recommendations.append({
@@ -2981,13 +2997,14 @@ def discover_careers(
             "missing_skills": list(missing_skills),
             "preference_match": preference_match,
             "skill_match": skill_match if cv_skills else None,
+            "edu_boost": edu_boost,
             "pref_details": pref_details,
             "metadata": metadata
         })
     
     # Sort by score descending
     recommendations.sort(key=lambda x: x["score"], reverse=True)
-    return recommendations[:15]  # Return top 15
+    return recommendations  # Return all results (NO LIMIT)
 
 
 def _parse_intent_signals(text: str) -> dict:
