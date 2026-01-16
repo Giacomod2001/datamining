@@ -2214,6 +2214,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     st.divider()
     
     # --- AI CAREER COMPASS (Moved Up) ---
+    # AI Career Compass (Visible)
     st.subheader("AI Career Compass")
     st.caption("Alternative roles based on your profile and education")
     
@@ -2223,45 +2224,61 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     if cv_level == "Entry Level": query_prefix = "Junior "
     elif cv_level == "Senior Level": query_prefix = "Senior "
     
-    st.info(f"**Profile Analysis detected:** {cv_level}. Recommendations and search links are optimized for this level.")
+    # Subtle seniority indicator
+    st.caption(f"Profile Analysis: **{cv_level}**. Recommendations optimized for this level.")
 
     candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
     recs = ml_utils.recommend_roles(candidate_skills, jd_text if jd_text else "", cv_text if cv_text else "")
     
     # Optional Filter
-    st.markdown("Score Range")
     match_range = st.radio(
         "Score Range",
         options=["0-25%", "25-50%", "50-75%", "75-100%"],
         horizontal=True,
         label_visibility="collapsed",
         key="compass_filter_range",
-        index=1 # Default to 25-50 to likely show something useful, or 0? 
+        index=1 
     )
     
-    # Range Logic
-    min_s, max_s = 0, 100
-    if match_range == "0-25%": min_s, max_s = 0, 25
-    elif match_range == "25-50%": min_s, max_s = 25, 50
-    elif match_range == "50-75%": min_s, max_s = 50, 75
-    elif match_range == "75-100%": min_s, max_s = 75, 100
-        
-    filtered_recs = [r for r in recs if min_s <= r['score'] <= max_s]
+    # Filter logic
+    min_score, max_score = 0, 100
+    if match_range == "0-25%": min_score, max_score = 0, 25
+    elif match_range == "25-50%": min_score, max_score = 25, 50
+    elif match_range == "50-75%": min_score, max_score = 50, 75
+    elif match_range == "75-100%": min_score, max_score = 75, 100
+
+    filtered_recs = [r for r in recs if min_score <= r['score'] <= max_score]
     
     if filtered_recs:
         # Display in 2 columns
         col1, col2 = st.columns(2)
         for i, rec in enumerate(filtered_recs):
             with col1 if i % 2 == 0 else col2:
-                # Use seniority prefix for smarter queries
-                role_query = urllib.parse.quote(f"{query_prefix}{rec['role']}")
-                display_title = f"{rec['role']}"
-                if rec.get('seniority_fit') == "Underqualified":
-                     display_title += " (Ambitious)" # Subtle hint
-                
-                st.markdown(f"**{display_title}** ({rec['score']:.0f}%)")
-                st.markdown(f"[Google](https://www.google.com/search?q={role_query}+jobs) | [LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query}) | [Indeed](https://it.indeed.com/jobs?q={role_query})")
-                st.markdown("")
+                with st.container(border=True):
+                    # Header: Role + Score Badge
+                    c_head, c_badge = st.columns([3, 1])
+                    with c_head:
+                        role_title = rec['role']
+                        if rec.get('seniority_fit') == "Underqualified":
+                             role_title += " (Ambitious)"
+                        st.markdown(f"**{role_title}**")
+                    with c_badge:
+                        st.markdown(f"<div style='text-align: right; font-weight: bold;'>{rec['score']:.0f}%</div>", unsafe_allow_html=True)
+                    
+                    # Visual Progress Bar
+                    st.progress(int(rec['score']))
+                    
+                    # Links
+                    role_query = urllib.parse.quote(f"{query_prefix}{rec['role']}")
+                    st.markdown(f"""
+                    <div style="display: flex; gap: 10px; font-size: 0.9em;">
+                        <a href="https://www.google.com/search?q={role_query}+jobs" target="_blank" style="text-decoration: none;">Google</a>
+                        <span style="color: #30363d;">|</span>
+                        <a href="https://www.linkedin.com/jobs/search/?keywords={role_query}" target="_blank" style="text-decoration: none;">LinkedIn</a>
+                        <span style="color: #30363d;">|</span>
+                        <a href="https://it.indeed.com/jobs?q={role_query}" target="_blank" style="text-decoration: none;">Indeed</a>
+                    </div>
+                    """, unsafe_allow_html=True)
     elif recs:
         st.info(f"No roles found in the {match_range} range. Try a different filter.")
     else:
