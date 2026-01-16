@@ -2085,555 +2085,147 @@ def render_evaluation_page():
 
 def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     """
-    RENDERING RISULTATI ANALISI
-    ============================
-    Riferimento corso: "Knowledge Presentation" (KDD Step 7)
-    
-    Visualizza i pattern estratti dal Data Mining in modo comprensibile:
-    - Grafici interattivi (Plotly)
-    - Tag colorati per skill
-    - Metriche percentuali
-    - Suggerimenti azionabili
+    MINIMAL RESULTS VIEW
+    ====================
+    Only essential info visible, details in expanders.
     """
     st.divider()
     pct = res["match_percentage"]
     
-    # =========================================================================
-    # NAVIGAZIONE SEZIONI
-    # =========================================================================
-    # Indice cliccabile per saltare alle sezioni - UX improvement
-    
-    nav_items = [
-        ("Match Score", "section-score"),
-        ("Skills Analysis", "section-skills"),
-    ]
-    
-    # Conditional sections
-    if cl_analysis:
-        nav_items.append(("Cover Letter", "section-cover"))
-    if res["missing_hard"]:
-        nav_items.append(("Learning Path", "section-learning"))
-    if jd_text:
-        nav_items.append(("Job Context", "section-context"))
-    
-    nav_items.append(("AI Compass", "section-compass"))
-    nav_items.append(("Export", "section-export"))
-    
-    # Build navigation HTML
-    nav_links = " | ".join([f"<a href='#{anchor}' style='color: #00A0DC; text-decoration: none;'>{name}</a>" for name, anchor in nav_items])
-    
-    # Quick Navigation - Only shows when sidebar is collapsed
-    # Uses CSS to detect sidebar state
-    st.markdown(f"""
-    <style>
-    /* Hide in-content nav when sidebar is expanded */
-    section[data-testid="stSidebar"][aria-expanded="true"] ~ section .quick-nav-inline {{
-        display: none !important;
-    }}
-    /* Also hide when sidebar is in default expanded state */
-    @media (min-width: 768px) {{
-        .quick-nav-inline {{
-            display: none !important;
-        }}
-    }}
-    /* Show only on mobile or when sidebar collapsed */
-    @media (max-width: 767px) {{
-        .quick-nav-inline {{
-            display: block !important;
-        }}
-    }}
-    </style>
-    <div class='quick-nav-inline' style='background: rgba(0, 119, 181, 0.1); padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: center;'>
-        <strong>Quick Navigation:</strong> {nav_links}
-    </div>
-    """, unsafe_allow_html=True)
-
-    # --- MAIN SCORE SECTION ---
-    st.markdown("<div id='section-score'></div>", unsafe_allow_html=True)
-    
-    # Custom CSS for cards
-    st.markdown("""
-    <style>
-    .dashboard-card {
-        background-color: #1E252B;
-        padding: 20px;
-        border-radius: 10px;
-        border: 1px solid #30363d;
-        margin-bottom: 20px;
-    }
-    .metric-value {
-        font-size: 32px;
-        font-weight: bold;
-        color: #00A0DC;
-    }
-    .metric-label {
-        font-size: 14px;
-        color: #8b949e;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-    
-    # Layout: Score Gauge (Left) + Stats (Right)
-    col_gauge, col_stats = st.columns([1.5, 2.5])
-    
-    with col_gauge:
-        # Gauge Chart
-        fig = go.Figure(go.Indicator(
-            mode="gauge+number",
-            value=pct,
-            number={'suffix': '%', 'font': {'size': 40, 'color': '#ffffff'}},
-            gauge={
-                'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "#30363d"},
-                'bar': {'color': "#00A0DC"},
-                'bgcolor': "rgba(0,0,0,0)",
-                'borderwidth': 0,
-                'steps': [
-                    {'range': [0, 100], 'color': '#0d1117'}
-                ],
-                'threshold': {
-                    'line': {'color': "#00A0DC", 'width': 4},
-                    'thickness': 0.75,
-                    'value': pct
-                }
-            }
-        ))
-        fig.update_layout(
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            margin=dict(t=30, b=10, l=30, r=30),
-            height=180,
-        )
-        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
-        
-        # Match Assessment Text below gauge
+    # --- MAIN SCORE (Always Visible) ---
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        # Simple large percentage
         if pct >= 80:
-            assessment = "Excellent Match"
-            desc = "Highly aligned profile."
+            color = "#00C853"
+            label = "Excellent Match"
         elif pct >= 60:
-            assessment = "Good Potential"
-            desc = "Solid foundation."
+            color = "#00A0DC"
+            label = "Good Potential"
         else:
-            assessment = "Growth Opportunity"
-            desc = "Significant gaps."
-            
-        st.markdown(f"<div style='text-align: center; margin-top: -20px;'><h3 style='margin:0;'>{assessment}</h3><p style='color: #8b949e;'>{desc}</p></div>", unsafe_allow_html=True)
-
-    with col_stats:
-        st.subheader("Analysis Overview")
-        st.markdown("")
+            color = "#FFB300"
+            label = "Growth Opportunity"
         
-        # Key Metrics Row
+        st.markdown(f"""
+        <div style='text-align: center; padding: 1rem;'>
+            <h1 style='font-size: 4rem; margin: 0; color: {color};'>{pct:.0f}%</h1>
+            <p style='color: #8b949e; font-size: 1.2rem; margin: 0;'>{label}</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Quick stats
         m1, m2, m3 = st.columns(3)
         with m1:
-            st.metric("Matched Skills", len(res["matching_hard"]), delta=None)
+            st.metric("Matched", len(res["matching_hard"]))
         with m2:
-            st.metric("Missing Skills", len(res["missing_hard"]), delta_color="inverse")
+            st.metric("Missing", len(res["missing_hard"]))
         with m3:
-            st.metric("Bonus Skills", len(res["extra_hard"]))
-            
-        st.divider()
+            st.metric("Bonus", len(res["extra_hard"]))
+    
+    st.divider()
+    
+    # --- SKILLS ANALYSIS (Expander) ---
+    with st.expander("Skills Analysis", expanded=True):
+        if res["matching_hard"]:
+            st.markdown("**Matched:**")
+            matched_html = " ".join([f"<span class='skill-tag-matched'>{s}</span>" for s in sorted(res["matching_hard"])])
+            st.markdown(matched_html, unsafe_allow_html=True)
         
-        # Next Best Action
+        transferable = res.get("transferable", {})
+        if transferable:
+            st.markdown("**Transferable:**")
+            transfer_html = " ".join([f"<span class='skill-tag-transferable'>{m} ← {p}</span>" for m, p in transferable.items()])
+            st.markdown(transfer_html, unsafe_allow_html=True)
+        
         if res["missing_hard"]:
-            top_missing = list(res["missing_hard"])[:3]
-            st.markdown(f"**Priority Focus:** Learn **{', '.join(top_missing)}**")
-        elif pct >= 90:
-            st.markdown("**Ready to Apply:** Your profile is very strong!")
-    
-    # Row 2: Portfolio & Cover Letter Cards
-    if ("project_verified" in res and res["project_verified"]) or cl_analysis:
-        st.markdown("")
-        c1, c2 = st.columns(2)
-        idx = 0
+            st.markdown("**Missing:**")
+            missing_html = " ".join([f"<span class='skill-tag-missing'>{s}</span>" for s in sorted(res["missing_hard"])])
+            st.markdown(missing_html, unsafe_allow_html=True)
         
-        # Portfolio Card
-        if "project_verified" in res and res["project_verified"]:
-            with c1 if idx == 0 else c2:
-                st.markdown("""
-                <div class="dashboard-card">
-                    <h4 style="margin-top:0;">Portfolio Intelligence</h4>
-                """, unsafe_allow_html=True)
-                
-                qual = res.get('portfolio_quality', 0)
-                st.metric("Portfolio Score", f"{qual:.0f}%")
-                st.caption(f"{len(res['project_verified'])} verified skills")
-                
-                if res.get('talking_points'):
-                    st.markdown("**Talking Points:**")
-                    for tp in res['talking_points'][:2]:
-                        st.markdown(f"- {tp}")
-                
-                st.markdown("</div>", unsafe_allow_html=True)
-                idx += 1
-        
-        # Cover Letter Card
-        if cl_analysis:
-            with c1 if idx == 0 else c2:
-                st.markdown("""
-                <div class="dashboard-card">
-                    <h4 style="margin-top:0;">Cover Letter Assessment</h4>
-                """, unsafe_allow_html=True)
-                
-                cl_score = cl_analysis.get("overall_score", 0)
-                st.metric("Cover Letter Score", f"{cl_score:.0f}%")
-                st.caption(f"{cl_analysis.get('word_count', 0)} words | {cl_analysis.get('language', 'Unknown')}")
-                
-                if cl_analysis.get("strengths"):
-                     st.markdown("**Top Strength:**")
-                     strength = cl_analysis['strengths'][0].replace("**", "")
-                     st.markdown(f"_{strength}_")
-                
-                st.markdown("</div>", unsafe_allow_html=True)
-                idx += 1
-
-    # --- MAIN SCORE SECTION ---
+        if res["extra_hard"]:
+            st.markdown("**Bonus:**")
+            bonus_html = " ".join([f"<span class='skill-tag-bonus'>+ {s}</span>" for s in sorted(res["extra_hard"])])
+            st.markdown(bonus_html, unsafe_allow_html=True)
     
-    # --- DEDICATED PROJECT COACHING SECTION ---
+    # --- PROJECT COACHING (Expander, if available) ---
     if "project_verified" in res and res["project_verified"]:
-        st.divider()
-        st.markdown("<div id='section-projects'></div>", unsafe_allow_html=True)
-        st.subheader("Project Interview Coaching")
-        st.caption("How to present your portfolio in interviews")
-
-        verified_skills = res.get('project_verified', set())
-        missing_skills = res.get('missing_hard', set())
-        matching_skills = res.get('matching_hard', set())
-        
-        pc1, pc2, pc3 = st.columns(3)
-        
-        # Build focus points
-        focus_points = []
-        if verified_skills:
-            focus_points.append(f"Highlight: **{', '.join(list(verified_skills)[:3])}**")
-        if matching_skills:
-            overlap = verified_skills & matching_skills
+        with st.expander("Project Interview Tips"):
+            verified = res.get('project_verified', set())
+            matching = res.get('matching_hard', set())
+            missing = res.get('missing_hard', set())
+            
+            st.markdown("**Highlight:** " + ", ".join(list(verified)[:3]))
+            
+            overlap = verified & matching
             if overlap:
-                focus_points.append(f"Emphasize overlap: **{', '.join(list(overlap)[:2])}**")
-        focus_points.append("Quantify impact with metrics")
-        focus_points.append("Explain your role & decisions")
-        focus_points.append("Discuss challenges overcome")
-        
-        # Column 1: FOCUS ON - Personalized based on analysis
-        with pc1:
-            st.markdown("**FOCUS ON**", help="Specific strengths to highlight")
-            focus_points = []
+                st.markdown("**Star projects:** " + ", ".join(list(overlap)[:2]) + " (verified + required)")
             
-            # Highlight verified skills that match job requirements (most valuable!)
-            overlap = verified_skills & matching_skills
-            if overlap:
-                focus_points.append(f"**Star projects**: {', '.join(list(overlap)[:2])} (verified + required)")
-            
-            # Skills verified by projects
-            if verified_skills:
-                other_verified = verified_skills - overlap if overlap else verified_skills
-                if other_verified:
-                    focus_points.append(f"Demonstrate: **{', '.join(list(other_verified)[:2])}**")
-            
-            # Specific advice based on match quality
-            if res.get('match_percentage', 0) >= 70:
-                focus_points.append("Lead with your strongest matching project")
-            else:
-                focus_points.append("Show learning trajectory and growth")
-            
-            # Add transferable skills angle
-            transferable = res.get('transferable', {})
-            if transferable:
-                focus_points.append(f"Leverage transferable: **{list(transferable.keys())[0]}**")
-            
-            for point in focus_points[:4]:
-                st.markdown(f"<span style='color: #00C853;'>•</span> {point}", unsafe_allow_html=True)
-        
-        # Column 2: AVOID - Personalized based on analysis
-        with pc2:
-            st.markdown("**AVOID**", help="Specific pitfalls for your situation")
-            avoid_points = []
-            
-            # Personalized warnings based on analysis
-            if missing_skills:
-                top_missing = list(missing_skills)[:2]
-                avoid_points.append(f"Don't claim **{', '.join(top_missing)}** without proof")
-            
-            # Check for skills in CV but not verified by projects
-            unverified = matching_skills - verified_skills
-            if unverified:
-                avoid_points.append(f"Be ready to demo: **{', '.join(list(unverified)[:2])}**")
-            
-            # If match is low, warn about overselling
-            if res.get('match_percentage', 0) < 50:
-                avoid_points.append("Don't oversell - focus on learning ability")
-            
-            # Generic but useful if no specific issues
-            if len(avoid_points) < 3:
-                avoid_points.append("Vague descriptions without metrics")
-            if len(avoid_points) < 4:
-                avoid_points.append("Ignoring skill gaps - address them proactively")
-            
-            for point in avoid_points[:4]:
-                st.markdown(f"<span style='color: #E53935;'>•</span> {point}", unsafe_allow_html=True)
-        
-        # Column 3: CONSIDER ADDING - Personalized project suggestions
-        with pc3:
-            st.markdown("**CONSIDER ADDING**", help="Specific projects to build")
-            add_suggestions = []
-            
-            if missing_skills:
-                for skill in list(missing_skills)[:3]:
-                    # Specific project ideas per skill type
-                    if skill in ["Machine Learning", "Deep Learning"]:
-                        add_suggestions.append(f"Kaggle competition using **{skill}**")
-                    elif skill in ["Data Science", "Statistics"]:
-                        add_suggestions.append(f"End-to-end analysis project (**{skill}**)")
-                    elif skill in ["Power BI", "Tableau", "Looker Studio"]:
-                        add_suggestions.append(f"Public dashboard on **{skill}**")
-                    elif skill in ["Python", "SQL", "R"]:
-                        add_suggestions.append(f"GitHub repo with **{skill}** scripts")
-                    elif skill in ["AWS", "GCP", "Azure"]:
-                        add_suggestions.append(f"Deploy an app on **{skill}**")
-                    elif skill in ["Docker", "Kubernetes"]:
-                        add_suggestions.append(f"Containerize existing project (**{skill}**)")
-                    else:
-                        add_suggestions.append(f"Mini-project: **{skill}**")
-            
-            if not add_suggestions:
-                # No missing skills - suggest enhancement
-                add_suggestions.append("Add quantified case studies")
-                add_suggestions.append("Document architecture decisions")
-                if verified_skills:
-                    add_suggestions.append(f"Deep-dive on **{list(verified_skills)[0]}**")
-            
-            for sugg in add_suggestions[:4]:
-                st.markdown(f"<span style='color: #FFB300;'>•</span> {sugg}", unsafe_allow_html=True)
-        
-
-
-    st.divider()
-    st.markdown("<div id='section-skills'></div>", unsafe_allow_html=True)
-    st.subheader("Technical Skills Analysis")
-    st.caption("Breakdown of your skill alignment with this position")
-    st.markdown("")  # Spacing
-
-    # ==========================================================================
-    # SKILL DISPLAY - Simple tag-based layout (no radar chart)
-    # ==========================================================================
+            if missing:
+                st.markdown("**Don't claim without proof:** " + ", ".join(list(missing)[:2]))
     
-    # Matched Skills - Green tags
-    if res["matching_hard"]:
-        st.markdown("**Matched Skills:**")
-        matched_html = " ".join([f"<span class='skill-tag-matched'>{skill}</span>" for skill in sorted(res["matching_hard"])])
-        st.markdown(matched_html, unsafe_allow_html=True)
-        st.markdown("")
-    
-    # Transferable Skills - Yellow tags with source
-    transferable = res.get("transferable", {})
-    if transferable:
-        st.markdown("**Transferable Skills:**")
-        st.caption("You have equivalent skills that match these requirements")
-        transfer_tags = []
-        for missing, present in transferable.items():
-            transfer_tags.append(f"<span class='skill-tag-transferable'>{missing} ← <em>{present}</em></span>")
-        st.markdown(" ".join(transfer_tags), unsafe_allow_html=True)
-        st.markdown("")
-    
-    # Project-Verified Skills - Blue tags (FIXED: was using wrong key 'project_review')
-    project_verified = res.get("project_verified", set())
-    if project_verified:
-        st.markdown("**Project-Verified Skills:**")
-        st.caption("Skills demonstrated in your portfolio - highlight these in interviews")
-        project_html = " ".join([f"<span class='skill-tag-project'>{skill}</span>" for skill in sorted(project_verified)])
-        st.markdown(project_html, unsafe_allow_html=True)
-        st.markdown("")
-    
-    # Missing Skills - Red tags
-    if res["missing_hard"]:
-        st.markdown("**Focus Areas to Bridge the Gap:**")
-        missing_html = " ".join([f"<span class='skill-tag-missing'>{skill}</span>" for skill in sorted(res["missing_hard"])])
-        st.markdown(missing_html, unsafe_allow_html=True)
-    else:
-        st.success("All Key Requirements Met - You are ready!")
-    
-    st.markdown("")
-    
-    # Bonus Skills - Gray tags
-    if res["extra_hard"]:
-        st.markdown("**Bonus Skills:**")
-        st.caption("Additional skills that give you competitive advantage")
-        bonus_html = " ".join([f"<span class='skill-tag-bonus'>+ {skill}</span>" for skill in sorted(res["extra_hard"])])
-        st.markdown(bonus_html, unsafe_allow_html=True)
-
-    st.divider()
-    
-    # --- COVER LETTER DETAILED ANALYSIS ---
+    # --- COVER LETTER ANALYSIS (Expander, if available) ---
     if cl_analysis:
-        st.markdown("<div id='section-cover'></div>", unsafe_allow_html=True)
-        st.subheader("Cover Letter Analysis")
-        
-        # Metrics Row
-        m1, m2, m3, m4 = st.columns(4)
-        with m1:
-            st.metric("Keyword Coverage", f"{cl_analysis['hard_coverage']:.0f}%", 
-                     help="Technical skills from JD mentioned in your cover letter")
-        with m2:
-            st.metric("Soft Skills", f"{cl_analysis['soft_coverage']:.0f}%",
-                     help="Soft skills from JD mentioned")
-        with m3:
-            st.metric("Structure", f"{cl_analysis['structure_score']:.0f}%",
-                     help="Professional formatting (greeting, closing, paragraphs)")
-        with m4:
-            st.metric("Personalization", f"{cl_analysis['personalization_score']:.0f}%",
-                     help="Specific examples and personal touch")
-        
-        # Feedback Columns
-        fc1, fc2 = st.columns(2)
-        
-        with fc1:
-            st.markdown("#### Strengths")
-            if cl_analysis['strengths']:
-                for strength in cl_analysis['strengths']:
-                    st.markdown(strength)
-            else:
-                st.info("No specific strengths identified yet")
-        
-        with fc2:
-            st.markdown("#### Improvements")
-            if cl_analysis['improvements']:
-                for improvement in cl_analysis['improvements']:
-                    st.markdown(improvement)
-            else:
-                st.success("Great job! No major improvements needed")
-        
-        # Keywords Coverage Detail
-        if cl_analysis['hard_mentioned'] or cl_analysis['hard_missing']:
-            st.markdown("#### Technical Keywords Status")
+        with st.expander("Cover Letter Analysis"):
+            m1, m2, m3, m4 = st.columns(4)
+            with m1:
+                st.metric("Keywords", f"{cl_analysis['hard_coverage']:.0f}%")
+            with m2:
+                st.metric("Soft Skills", f"{cl_analysis['soft_coverage']:.0f}%")
+            with m3:
+                st.metric("Structure", f"{cl_analysis['structure_score']:.0f}%")
+            with m4:
+                st.metric("Personal", f"{cl_analysis['personalization_score']:.0f}%")
             
-            # Mentioned keywords as rounded tags (matching skill tag style)
-            if cl_analysis['hard_mentioned']:
-                st.markdown("**Mentioned in Cover Letter:**")
-                mentioned_html = " ".join([f"<span class='skill-tag-matched'>{skill}</span>" for skill in sorted(cl_analysis['hard_mentioned'])])
-                st.markdown(mentioned_html, unsafe_allow_html=True)
-                st.markdown("")
-            
-            # Missing keywords as rounded tags
-            if cl_analysis['hard_missing']:
-                st.markdown("**Consider Adding:**")
-                missing_list = sorted(list(cl_analysis['hard_missing'])[:15])
-                missing_html = " ".join([f"<span class='skill-tag-transferable'>{skill}</span>" for skill in missing_list])
-                st.markdown(missing_html, unsafe_allow_html=True)
-                if len(cl_analysis['hard_missing']) > 15:
-                    st.caption(f"... and {len(cl_analysis['hard_missing']) - 15} more")
-
-    st.divider()
-
-    # LEARNING PLAN
+            if cl_analysis.get('strengths'):
+                st.markdown("**Strengths:** " + "; ".join(cl_analysis['strengths'][:2]))
+            if cl_analysis.get('improvements'):
+                st.markdown("**Improve:** " + "; ".join(cl_analysis['improvements'][:2]))
+    
+    # --- LEARNING PATH (Expander, if missing skills) ---
     if res["missing_hard"]:
-        st.markdown("<div id='section-learning'></div>", unsafe_allow_html=True)
-        st.subheader("Learning Actions")
-        
-        for skill in res["missing_hard"]:
-            with st.expander(f"Action Plan: **{skill}**", expanded=len(res["missing_hard"]) == 1):
-                q_skill = urllib.parse.quote(skill)
-                
-                lc1, lc2, lc3, lc4 = st.columns(4)
-                with lc1:
-                    st.markdown(f"<a href='https://www.coursera.org/search?query={q_skill}' target='_blank'><b>Coursera</b></a>", unsafe_allow_html=True)
-                    st.caption("Free courses")
-                with lc2:
-                    st.markdown(f"<a href='https://www.udemy.com/courses/search/?q={q_skill}' target='_blank'><b>Udemy</b></a>", unsafe_allow_html=True)
-                    st.caption("Paid courses")
-                with lc3:
-                    st.markdown(f"<a href='https://www.youtube.com/results?search_query=learn+{q_skill}+tutorial' target='_blank'><b>YouTube</b></a>", unsafe_allow_html=True)
-                    st.caption("Free tutorials")
-                with lc4:
-                    st.markdown(f"<a href='https://www.linkedin.com/learning/search?keywords={q_skill}' target='_blank'><b>LinkedIn Learning</b></a>", unsafe_allow_html=True)
-                    st.caption("Professional")
-
-    # --- ADVANCED MINING MOVED TO DEBUGGER ---
-    # The 'Advanced Data Mining', 'Topic Modeling', and 'NER' sections have been moved 
-    # to the 'render_debug_page' function as requested to clean up the main view.
-
-    # --- JOB CONTEXT ANALYSIS ---
+        with st.expander("Learning Resources"):
+            for skill in list(res["missing_hard"])[:5]:
+                q = urllib.parse.quote(skill)
+                st.markdown(f"**{skill}:** [Coursera](https://www.coursera.org/search?query={q}) | [YouTube](https://www.youtube.com/results?search_query={q}+tutorial) | [Udemy](https://www.udemy.com/courses/search/?q={q})")
+    
+    # --- JOB CONTEXT (Expander, if JD provided) ---
     if jd_text:
-        st.divider()
-        st.markdown("<div id='section-context'></div>", unsafe_allow_html=True)
-        st.subheader("What Does This Position Really Need?")
+        with st.expander("Job Context Analysis"):
+            jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
+            if len(jd_corpus) > 5:
+                result = ml_utils.perform_topic_modeling(jd_corpus)
+                if result:
+                    st.info(result['summary'])
+                    st.markdown("**Key areas:** " + " | ".join(result['topics']))
+            else:
+                st.info("Job Description too brief for analysis.")
+    
+    # --- AI CAREER COMPASS (Expander) ---
+    with st.expander("AI Career Compass (Alternative Roles)"):
+        candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
+        recs = ml_utils.recommend_roles(candidate_skills, jd_text if jd_text else "")
         
-        jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
-        
-        if len(jd_corpus) > 5:
-            result = ml_utils.perform_topic_modeling(jd_corpus)
-            
-            if result:
-                # Show summary prominently
-                st.info(result['summary'])
-                
-                # Show interpretations in columns
-                st.markdown("#### Key Areas Required:")
-                cols_topic = st.columns(len(result['topics']))
-                for idx, (col, topic) in enumerate(zip(cols_topic, result['topics'])):
-                    with col:
-                        st.markdown(f"**Area {idx+1}**")
-                        st.write(topic)
-                
-                # Show keywords as tags (rounded like other skill tags)
-                st.markdown("#### Main Keywords:")
-                keyword_html = " ".join([f"<span class='skill-tag-bonus'>{kw}</span>" for kw in result['keywords']])
-                st.markdown(keyword_html, unsafe_allow_html=True)
+        if recs:
+            for rec in recs:
+                role_query = urllib.parse.quote(rec['role'])
+                st.markdown(f"**{rec['role']}** ({rec['score']:.0f}%) - [Google](https://www.google.com/search?q={role_query}+jobs) | [LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query})")
         else:
-            st.info("Job Description too brief for contextual analysis.")
+            st.info("No alternative roles found above threshold.")
     
-    # --- JOB RECOMMENDER (AI Career Compass) ---
-    st.divider()
-    st.markdown("<div id='section-compass'></div>", unsafe_allow_html=True)
-    st.subheader("AI Career Compass (Alternative Paths)")
-    st.info("Based on your skill vector, here are the market roles that fit you best.")
-    
-    # Use all skills found in CV (Matched, Missing, Extra) to define the candidate vector
-    candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
-    
-    # Pass JD Text to filter out the target role is redundant
-    recs = ml_utils.recommend_roles(candidate_skills, jd_text if jd_text else "")
-    
-    if recs:
-        rc1, rc2, rc3 = st.columns(3)
-        cols = [rc1, rc2, rc3]
-        for i, rec in enumerate(recs):
-             with cols[i]:
-                 st.markdown(f"##### {i+1}. {rec['role']}")
-                 st.progress(int(rec['score']))
-                 st.caption(f"**{rec['score']:.0f}% Similarity**")
-                 
-                 # Dynamic Links - Working Job Boards Only
-                 role_query = urllib.parse.quote(rec['role'])
-                 italy_query = urllib.parse.quote(f"{rec['role']} Italia")
-                 
-                 st.markdown(f"<a href='https://www.google.com/search?q={role_query}+jobs' target='_blank'>Google Jobs</a>", unsafe_allow_html=True)
-                 st.markdown(f"<a href='https://www.linkedin.com/jobs/search/?keywords={role_query}' target='_blank'>LinkedIn Jobs</a>", unsafe_allow_html=True)
-                 st.markdown(f"<a href='https://it.indeed.com/jobs?q={italy_query}' target='_blank'>Indeed Italia</a>", unsafe_allow_html=True)
-                 
-                 with st.expander("Missing Skills"):
-                     for s in rec['missing'][:5]:
-                         st.markdown(f"- {s}")
-    else:
-        st.info("**Quality Mode**: No alternative roles met the confidence threshold (>30%). Your profile is uniquely specialized.")
+    # --- EXPORT (Expander) ---
+    with st.expander("Export Report"):
+        report_text = ml_utils.generate_detailed_report_text(res, jd_text if jd_text else "", cl_analysis)
+        report_pdf = ml_utils.generate_pdf_report(res, jd_text if jd_text else "", cl_analysis)
+        
+        col_dl1, col_dl2 = st.columns(2)
+        with col_dl1:
+            st.download_button("Download TXT", report_text, file_name="Report.txt", mime="text/plain", use_container_width=True)
+        with col_dl2:
+            if report_pdf:
+                st.download_button("Download PDF", report_pdf, file_name="Report.pdf", mime="application/pdf", use_container_width=True)
+            else:
+                st.warning("PDF unavailable")
 
-    # --- EXPORT REPORT ---
-    st.divider()
-    st.markdown("<div id='section-export'></div>", unsafe_allow_html=True)
-    st.subheader("Export Comprehensive Report")
-    st.caption("Download your complete analysis including CV match, skills, and cover letter evaluation")
-    
-    # Generate Detailed Content
-    report_text = ml_utils.generate_detailed_report_text(res, jd_text if jd_text else "", cl_analysis)
-    # Use styled PDF with res Dict (first overload), not simple text version
-    report_pdf = ml_utils.generate_pdf_report(res, jd_text if jd_text else "", cl_analysis)
-    
-    col_dl1, col_dl2 = st.columns(2)
-    with col_dl1:
-        st.download_button("Download Text Report", report_text, file_name="Job_Seeker_Report.txt", mime="text/plain", use_container_width=True)
-    with col_dl2:
-        if report_pdf:
-            st.download_button("Download PDF Report", report_pdf, file_name="Job_Seeker_Report.pdf", mime="application/pdf", use_container_width=True)
-        else:
-            st.warning("PDF Generation unavailable (fpdf missing).")
 
 if __name__ == "__main__":
     if st.session_state["page"] == "Debugger":
