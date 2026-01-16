@@ -2264,6 +2264,8 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     if cv_level == "Entry Level": query_prefix = "Junior "
     elif cv_level == "Senior Level": query_prefix = "Senior "
     
+    st.info(f"🎯 **Profile Analysis detected:** {cv_level}. Recommendations and search links are optimized for this level.")
+
     candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
     recs = ml_utils.recommend_roles(candidate_skills, jd_text if jd_text else "", cv_text if cv_text else "")
     

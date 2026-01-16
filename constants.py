@@ -204,9 +204,9 @@ PROJECT_BASED_SKILLS = {
 # SENIORITY KEYWORDS
 # =============================================================================
 SENIORITY_KEYWORDS = {
-    "Entry Level": ["entry level", "junior", "intern", "internship", "trainee", "graduate", "associate", "stage", "tirocinio"],
-    "Mid Level": ["mid level", "mid-level", "experienced", "specialist", "analyst", "consultant"],
-    "Senior Level": ["senior", "lead", "principal", "expert", "manager", "head", "director", "vp", "executive", "chief"],
+    "Entry Level": ["entry level", "junior", "intern", "internship", "trainee", "graduate", "associate", "stage", "tirocinio", "student", "studente", "laureando", "neo-laureato", "apprentice"],
+    "Mid Level": ["mid level", "mid-level", "experienced", "specialist", "analyst", "consultant", "manager", "gestion"],
+    "Senior Level": ["senior", "lead", "principal", "head of", "director", "vp", "executive", "chief", "partner", "founder"],
 }
 
 # =============================================================================

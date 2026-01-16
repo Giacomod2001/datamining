@@ -131,29 +131,40 @@ def detect_seniority(text: str) -> Tuple[str, float]:
         except ValueError:
             max_years = 0
     
-    # 2. Keyword counting
+    # 2. Keyword counting with Regex Boundaries
     seniority_map = getattr(constants, "SENIORITY_KEYWORDS", {})
     scores = {"Entry Level": 0, "Mid Level": 0, "Senior Level": 0}
     
     for level, keywords in seniority_map.items():
         for kw in keywords:
-            if kw in text_lower: # Simple substring match is safer for now
+            # Use regex to find whole words only (avoids "management" matching "manage")
+            # Escape keyword to handle special chars if any
+            if re.search(r'\b' + re.escape(kw) + r'\b', text_lower):
                 scores[level] += 1
                 
     # Logic: Explicit years overrides keywords usually
     if max_years >= 5:
         return "Senior Level", 0.9
-    elif max_years >= 3:
+        
+    # Student/Intern override (Strong signal for Entry Level)
+    if scores["Entry Level"] > 0 and max_years < 3:
+        return "Entry Level", 0.85
+
+    # Years check for Mid/Entry
+    if max_years >= 3:
         return "Mid Level", 0.8
-    elif max_years >= 1: # 1-3 years -> Entry/Junior (often treated as Junior)
+    elif max_years >= 1:
         return "Entry Level", 0.8
         
     # Keyword fallback
     best_level = max(scores, key=scores.get)
     if scores[best_level] > 0:
+        # If Senior is detected by keyword but no years, be skeptical?
+        if best_level == "Senior Level" and max_years == 0:
+             return "Mid Level", 0.5 # Downgrade to Mid if no years proof
         return best_level, 0.7
         
-    return "Mid Level", 0.4 # Default assumption
+    return "Mid Level", 0.3 # Default assumption
 
 import constants  # Contiene HARD_SKILLS, SOFT_SKILLS, INFERENCE_RULES
 
