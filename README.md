@@ -90,6 +90,21 @@ This project implements the following Data Mining and Text Analytics techniques:
 | **6. Pattern Evaluation** | Match scoring, confidence calculation |
 | **7. Knowledge Presentation** | Streamlit Dashboard & PDF Reports |
 
+### Advanced Machine Learning (v2.1)
+
+#### 1. Hybrid Semantic Matching (TF-IDF + LSA)
+
+Combines **Keyword Frequency (TF-IDF)** with **Latent Semantic Analysis (SVD)** to understand context.
+
+- *Benefit*: Recognizes that "Data Analysis" matches "Business Intelligence" conceptually, even if words differ.
+- *Weighting*: 70% Precision (Keywords) + 30% Context (Semantics).
+
+#### 2. Automatic Seniority Detection
+
+Analyzes CV context (years of experience, keywords like "Head", "Junior") to determine the candidate's level.
+
+- *Application*: Penalizes mismatches (e.g. Junior applying for Director) and filters external job searches automatically (e.g. searching for "Junior Data Scientist").
+
 ### Text Mining Pipeline
 
 ```
