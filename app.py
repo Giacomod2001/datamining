@@ -1809,7 +1809,7 @@ def render_career_discovery():
 
 def render_career_discovery_results(results: list, has_cv: bool = False, seniority_prefix: str = ""):
     """
-    Renders the Career Discovery results as an interactive Data Grid.
+    Renders the Career Discovery results as interactive role cards.
     """
     st.subheader("Your Career Matches")
     
@@ -1817,46 +1817,62 @@ def render_career_discovery_results(results: list, has_cv: bool = False, seniori
         st.caption("Scores are based on your skill match (60%) and preference alignment (40%)")
     else:
         st.caption("Scores are based on preference alignment. Upload a CV for skill-based matching.")
+    
+    # Display in rows of 3
+    for i in range(0, len(results), 3):
+        cols = st.columns(3)
+        for j, col in enumerate(cols):
+            if i + j < len(results):
+                role = results[i + j]
+                with col:
+                    render_role_card(role, has_cv, seniority_prefix)
 
-    # Prepare Data for Grid
-    grid_data = []
-    for r in results:
-        role_name = r["role"]
-        # Create a Google Search link for the role
-        q = urllib.parse.quote(f"{seniority_prefix}{role_name} jobs")
-        search_url = f"https://www.google.com/search?q={q}"
+
+def render_role_card(role: dict, has_cv: bool = False, seniority_prefix: str = ""):
+    """
+    Renders a single role recommendation card.
+    """
+    score = role["score"]
+    role_name = role["role"]
+    category = role["category"]
+    
+    # Color based on score
+    if score >= 70:
+        score_color = "#00C853"  # Green
+        score_label = "Strong Match"
+    elif score >= 50:
+        score_color = "#FFB300"  # Amber
+        score_label = "Good Potential"
+    else:
+        score_color = "#00A0DC"  # Blue
+        score_label = "Worth Exploring"
+    
+    # Card container
+    with st.container(border=True):
+        st.markdown(f"##### {role_name}")
+        st.progress(int(min(score, 100)))
+        st.caption(f"**{score:.0f}% Match** | {category}")
         
-        grid_data.append({
-            "Role": role_name,
-            "Category": r.get("category", "General"),
-            "Match": r["score"] / 100.0, # Normalize for ProgressColumn
-            "Search": search_url
-        })
-    
-    import pandas as pd
-    df = pd.DataFrame(grid_data)
-    
-    st.dataframe(
-        df,
-        column_config={
-            "Role": st.column_config.TextColumn("Role", width="medium"),
-            "Category": st.column_config.TextColumn("Category", width="small"),
-            "Match": st.column_config.ProgressColumn(
-                "Match Score",
-                help="Relevance score based on your profile",
-                format="%.0f%%",
-                min_value=0,
-                max_value=1,
-            ),
-            "Search": st.column_config.LinkColumn(
-                "Actions",
-                help="Search for this job",
-                display_text="🔍 Search Jobs"
-            )
-        },
-        use_container_width=True,
-        hide_index=True
-    )
+        # Job search links - prominent like Career Compass
+        role_query = urllib.parse.quote(f"{seniority_prefix}{role_name}")
+        italy_query = urllib.parse.quote(f"{seniority_prefix}{role_name} Italia")
+        
+        st.markdown(f"<a href='https://www.google.com/search?q={role_query}+jobs' target='_blank'>Google Jobs</a>", unsafe_allow_html=True)
+        st.markdown(f"<a href='https://www.linkedin.com/jobs/search/?keywords={role_query}' target='_blank'>LinkedIn Jobs</a>", unsafe_allow_html=True)
+        st.markdown(f"<a href='https://it.indeed.com/jobs?q={italy_query}' target='_blank'>Indeed Italia</a>", unsafe_allow_html=True)
+        
+        # Skills in expander
+        skills_required = role.get("skills_required", [])
+        skills_matched = set(role.get("skills_matched", []))
+        missing_skills = role.get("missing_skills", [])
+        
+        with st.expander("Required Skills"):
+            if has_cv and skills_matched:
+                st.markdown("**You have:** " + ", ".join(list(skills_matched)))
+            if has_cv and missing_skills:
+                st.markdown("**Missing:** " + ", ".join(list(missing_skills)[:5]))
+            elif not has_cv:
+                st.markdown(", ".join(skills_required[:5]))
     # Role header with score
     st.markdown(f"##### {role_name}")
     st.progress(int(min(score, 100)))
@@ -2258,50 +2274,38 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
 
     filtered_recs = [r for r in recs if min_score <= r['score'] <= max_score]
     
+    filtered_recs = [r for r in recs if min_score <= r['score'] <= max_score]
+    
     if filtered_recs:
-        # Prepare Data for Grid
-        grid_data = []
-        for rec in filtered_recs:
-            role_name = rec["role"]
-            seniority_status = "Match"
-            if rec.get('seniority_fit') == "Underqualified":
-                 seniority_status = "Ambitious"
-            elif rec.get('seniority_fit') == "Overqualified":
-                 seniority_status = "Overqualified"
-            
-            # Create link
-            q = urllib.parse.quote(f"{query_prefix}{role_name} jobs")
-            search_url = f"https://www.google.com/search?q={q}"
-
-            grid_data.append({
-                "Role": role_name,
-                "Match": rec["score"] / 100.0,
-                "Seniority Alignment": seniority_status,
-                "Search": search_url
-            })
-            
-        import pandas as pd
-        df = pd.DataFrame(grid_data)
-        
-        st.dataframe(
-            df,
-            column_config={
-                "Role": st.column_config.TextColumn("Role", width="medium"),
-                "Match": st.column_config.ProgressColumn(
-                    "Match Score",
-                    format="%.0f%%",
-                    min_value=0,
-                    max_value=1,
-                ),
-                "Seniority Alignment": st.column_config.TextColumn("Seniority", width="small"),
-                "Search": st.column_config.LinkColumn(
-                    "Actions",
-                    display_text="🔍 Google Search"
-                )
-            },
-            use_container_width=True,
-            hide_index=True
-        )
+        # Display in 2 columns
+        col1, col2 = st.columns(2)
+        for i, rec in enumerate(filtered_recs):
+            with col1 if i % 2 == 0 else col2:
+                with st.container(border=True):
+                    # Header: Role + Score Badge
+                    c_head, c_badge = st.columns([3, 1])
+                    with c_head:
+                        role_title = rec['role']
+                        if rec.get('seniority_fit') == "Underqualified":
+                             role_title += " (Ambitious)"
+                        st.markdown(f"**{role_title}**")
+                    with c_badge:
+                        st.markdown(f"<div style='text-align: right; font-weight: bold;'>{rec['score']:.0f}%</div>", unsafe_allow_html=True)
+                    
+                    # Visual Progress Bar
+                    st.progress(int(rec['score']))
+                    
+                    # Links
+                    role_query = urllib.parse.quote(f"{query_prefix}{rec['role']}")
+                    st.markdown(f"""
+                    <div style="display: flex; gap: 10px; font-size: 0.9em;">
+                        <a href="https://www.google.com/search?q={role_query}+jobs" target="_blank" style="text-decoration: none;">Google</a>
+                        <span style="color: #30363d;">|</span>
+                        <a href="https://www.linkedin.com/jobs/search/?keywords={role_query}" target="_blank" style="text-decoration: none;">LinkedIn</a>
+                        <span style="color: #30363d;">|</span>
+                        <a href="https://it.indeed.com/jobs?q={role_query}" target="_blank" style="text-decoration: none;">Indeed</a>
+                    </div>
+                    """, unsafe_allow_html=True)
     elif recs:
         st.info(f"No roles found in the {match_range} range. Try a different filter.")
     else:
