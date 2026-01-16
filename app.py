@@ -2185,17 +2185,37 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     
     # Project Tips
     if "project_verified" in res and res["project_verified"]:
-        with st.expander("Project Interview Coaching"):
+        with st.expander("🚀 Project Interview Coaching", expanded=True):
             verified = res.get('project_verified', set())
             matching = res.get('matching_hard', set())
             missing = res.get('missing_hard', set())
             
-            st.markdown("**Highlight:** " + ", ".join(list(verified)[:3]))
+            c1, c2 = st.columns(2)
+            
+            with c1:
+                st.markdown("##### 🌟 Highlights")
+                st.caption("Skills you've proven in projects")
+                if verified:
+                    # Create badges
+                    html_tags = " ".join([f"<span class='skill-tag-matched'>{s}</span>" for s in list(verified)[:5]])
+                    st.markdown(html_tags, unsafe_allow_html=True)
+                else:
+                    st.caption("No verified skills found.")
+
+            with c2:
+                st.markdown("##### ⚠️ Caution Areas")
+                st.caption("Required skills not in your projects")
+                if missing:
+                    html_tags = " ".join([f"<span class='skill-tag-missing'>{s}</span>" for s in list(missing)[:3]])
+                    st.markdown(html_tags, unsafe_allow_html=True)
+                else:
+                    st.caption("No major gaps!")
+
+            st.divider()
+            
             overlap = verified & matching
             if overlap:
-                st.markdown("**Star projects:** " + ", ".join(list(overlap)[:2]))
-            if missing:
-                st.markdown("**Don't claim without proof:** " + ", ".join(list(missing)[:2]))
+                 st.markdown(f"**💡 Pro Tip:** Use your experience with **{', '.join(list(overlap)[:2])}** to answer behavioral questions.")
     
     # Cover Letter
     if cl_analysis:
@@ -2223,16 +2243,33 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                 st.markdown(f"**{skill}:** [Coursera](https://www.coursera.org/search?query={q}) | [YouTube](https://www.youtube.com/results?search_query={q}+tutorial)")
     
     # Job Context (Visible)
+    # Job Context (Visible)
     if jd_text:
         st.subheader("Job Context Analysis")
         jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
         if len(jd_corpus) > 5:
             result = ml_utils.perform_topic_modeling(jd_corpus)
             if result:
-                st.info(result['summary'])
-                st.markdown("**Key areas:** " + " | ".join(result['topics']))
+                # Use a cleaner card layout
+                with st.container():
+                     c_summary, c_topics = st.columns([2, 1])
+                     with c_summary:
+                         st.markdown("##### 📋 Role Summary")
+                         st.info(result['summary'], icon="ℹ️")
+                     
+                     with c_topics:
+                         st.markdown("##### 🔑 Key Themes")
+                         for topic in result['topics'][:3]:
+                             # Extract just the title part before ":"
+                             if ":" in topic:
+                                 short_topic = topic.split(":")[0]
+                                 desc = topic.split(":")[1]
+                                 st.markdown(f"**{short_topic}**")
+                                 st.caption(desc.strip())
+                             else:
+                                 st.markdown(f"- {topic}")
         else:
-            st.info("Job Description too brief for analysis.")
+            st.caption("Job Description too brief for deep analysis.")
     
     st.divider()
     
