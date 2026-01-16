@@ -1154,6 +1154,7 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "increased", "decreased", "optimized", "automated", "integrated", "migrated",
         "analyze", "implement", "monitor", "manage", "collaborate", "ensure", # Present tense
         "match", "gap", "missing", "learn", "digital", "programming", "futuretech", "solutions",
+        "italia spa", "italia s.p.a.", "italy spa", # False positive exclusions
         "collaborated", "communicated", "negotiated", "presented", "reported",
         
         # CURRENCIES & UNITS (misclassified as organizations)
