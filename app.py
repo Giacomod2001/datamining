@@ -144,31 +144,24 @@ def render_navigation():
         """, unsafe_allow_html=True)
         st.divider()
         
-        # Navigation
+        # Navigation Buttons
         current_page = st.session_state.get("page", "Landing")
         
-        nav_map = {
-            "Home": "Landing",
-            "CV Analysis": "CV Evaluation",
-            "CV Builder": "CV Builder",
-            "Career Discovery": "Career Discovery",
-            "Dev Console": "Debugger"
-        }
+        nav_items = [
+            ("Home", "Landing"),
+            ("CV Analysis", "CV Evaluation"),
+            ("CV Builder", "CV Builder"),
+            ("Career Discovery", "Career Discovery"),
+            ("Dev Console", "Debugger")
+        ]
         
-        # Determine index
-        options = list(nav_map.keys())
-        default_idx = 0
-        for i, (label, target) in enumerate(nav_map.items()):
-            if target == current_page:
-                default_idx = i
-                break
-        
-        selected = st.radio("Navigation", options, index=default_idx, label_visibility="collapsed")
-        
-        target_page = nav_map[selected]
-        if target_page != current_page:
-            st.session_state["page"] = target_page
-            st.rerun()
+        for label, page_key in nav_items:
+            # Active page gets primary style
+            btn_type = "primary" if current_page == page_key else "secondary"
+            
+            if st.button(label, key=f"nav_{page_key}", type=btn_type, use_container_width=True):
+                st.session_state["page"] = page_key
+                st.rerun()
             
         st.divider()
         
@@ -2242,8 +2235,15 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     recs = ml_utils.recommend_roles(candidate_skills, jd_text if jd_text else "", cv_text if cv_text else "")
     
     # Optional Filter
-    with st.expander("Filter Options", expanded=False):
-        min_match = st.select_slider("Minimum Match Score", options=[0, 25, 50, 75, 100], value=25, key="compass_min_match")
+    st.markdown("**Minimum Match Score**")
+    min_match = st.radio(
+        "Minimum Match Score",
+        options=[0, 25, 50, 75],
+        format_func=lambda x: f">{x}%",
+        horizontal=True,
+        label_visibility="collapsed",
+        key="compass_filter_radio"
+    )
     
     filtered_recs = [r for r in recs if r['score'] >= min_match]
     
