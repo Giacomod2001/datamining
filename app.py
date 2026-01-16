@@ -2241,7 +2241,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     
     # Optional Filter
     with st.expander("Filter Options", expanded=False):
-        min_match = st.slider("Minimum Match Score", 0, 100, 10, key="compass_min_match")
+        min_match = st.select_slider("Minimum Match Score", options=[0, 25, 50, 75, 100], value=25, key="compass_min_match")
     
     filtered_recs = [r for r in recs if r['score'] >= min_match]
     

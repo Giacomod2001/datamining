@@ -62,6 +62,42 @@ streamlit run app.py
 
 The app opens automatically at `http://localhost:8501`.
 
+The app opens automatically at `http://localhost:8501`.
+
+---
+
+## App Structure & Modules
+
+The application is composed of 4 main integrated environments, accessible via the global sidebar:
+
+### 1. 📊 CV Evaluation Engine (Home)
+
+The core of the application. It accepts a CV and a Job Description to perform a deep-dive match analysis.
+
+- **Inputs**: PDF or Text for both CV and JD.
+- **Outputs**: Match Score (0-100%), Missing Skills, Seniority warning, and AI Career Compass.
+
+### 2. 📝 Smart CV Builder
+
+An interactive wizard to create professional CVs from scratch.
+
+- **Features**: Real-time AI suggestions based on target job roles.
+- **Export**: Generates ATS-friendly PDF and TXT files.
+
+### 3. 🧭 Career Discovery
+
+A lifestyle-based career explorer for users without a specific target job.
+
+- **Mechanism**: Recommends roles based on preferences (e.g., Remote vs On-site, Creative vs Logical).
+- **Integration**: Direct link to external job boards with seniority filters.
+
+### 4. 🛠️ Developer Console
+
+A transparent "Glass Box" interface for examiners and developers.
+
+- **Purpose**: Inspect the exact ML logic (TF-IDF vectors, Clustering, NLP tokens) behind every decision.
+- **Access**: Available under "Dev Console" in the sidebar.
+
 ---
 
 ## CV Builder Workflow
@@ -74,6 +110,23 @@ The application features a 4-step guided process:
     - *AI Insight*: System suggests skills missing from your profile but required by the JD.
 3. **Experience**: Add work history, projects, and education.
 4. **Review & Export**: Download as TXT or PDF, or send directly to the Analysis Engine.
+
+### CV Evaluation Workflow
+
+1. **Upload Data**: Paste your CV check (or use the one from Builder) and optionally a Target Job Description.
+2. **Analysis**: The AI Engine performs gap analysis, keyword extraction, and seniority check.
+3. **Results**:
+   - **Match Score**: Gauge chart showing compatibility.
+   - **Gap Analysis**: List of missing hard skills with learning resources.
+   - **Seniority Fit**: Warning if you are Over/Underqualified.
+4. **Compass**: Scroll down to see efficient alternative roles based on your skills.
+
+### Career Discovery Workflow
+
+1. **Dashboard**: Navigate to "Career Discovery" from the sidebar.
+2. **Preferences**: Set your working style (Remote/Hybrid, Creative vs Logic, Team Size).
+3. **Discovery**: The system recommends career paths that fit your lifestyle, not just your skills.
+4. **Action**: Explore recommended roles and access direct search links filtered by your seniority.
 
 ---
 
