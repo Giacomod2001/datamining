@@ -1852,57 +1852,31 @@ def render_role_card(role: dict, has_cv: bool = False):
         score_label = "Worth Exploring"
     
     # Card container
-    st.markdown(f"""
-    <div style='background: #1E252B; border-radius: 12px; padding: 1.2rem; border: 1px solid #30363d; margin-bottom: 1rem;'>
-        <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;'>
-            <span style='color: #8b949e; font-size: 0.75rem;'>{category}</span>
-            <span style='background: {score_color}22; color: {score_color}; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 600;'>{score:.0f}%</span>
-        </div>
-        <h4 style='margin: 0 0 0.3rem 0; color: #ffffff;'>{role_name}</h4>
-        <p style='color: {score_color}; font-size: 0.75rem; margin: 0;'>{score_label}</p>
-    </div>
-    """, unsafe_allow_html=True)
+    # Role header with score
+    st.markdown(f"##### {role_name}")
+    st.progress(int(min(score, 100)))
+    st.caption(f"**{score:.0f}% Match** | {category}")
     
-    # Skills section
-    with st.expander("Skills Required", expanded=False):
-        skills_required = role.get("skills_required", [])
-        skills_matched = set(role.get("skills_matched", []))
-        missing_skills = role.get("missing_skills", [])
-        
-        if has_cv and skills_matched:
-            st.markdown("**You have:**")
-            matched_html = " ".join([f"<span class='skill-tag-matched'>{s}</span>" for s in skills_matched])
-            st.markdown(matched_html, unsafe_allow_html=True)
-        
-        if has_cv and missing_skills:
-            st.markdown("**To learn:**")
-            missing_html = " ".join([f"<span class='skill-tag-missing'>{s}</span>" for s in missing_skills[:5]])
-            st.markdown(missing_html, unsafe_allow_html=True)
-            if len(missing_skills) > 5:
-                st.caption(f"... and {len(missing_skills) - 5} more")
-        elif not has_cv:
-            st.markdown("**Key skills:**")
-            skills_html = " ".join([f"<span class='skill-tag-bonus'>{s}</span>" for s in skills_required[:5]])
-            st.markdown(skills_html, unsafe_allow_html=True)
-    
-    # Preference match details
-    pref_details = role.get("pref_details", [])
-    if pref_details:
-        with st.expander("Why this match", expanded=False):
-            for detail in pref_details:
-                st.markdown(f"✓ {detail}")
-    
-    # Job search links
+    # Job search links - prominent like Career Compass
     role_query = urllib.parse.quote(role_name)
     italy_query = urllib.parse.quote(f"{role_name} Italia")
     
-    link_cols = st.columns(3)
-    with link_cols[0]:
-        st.markdown(f"[LinkedIn](https://www.linkedin.com/jobs/search/?keywords={role_query})")
-    with link_cols[1]:
-        st.markdown(f"[Indeed](https://it.indeed.com/jobs?q={italy_query})")
-    with link_cols[2]:
-        st.markdown(f"[Google](https://www.google.com/search?q={role_query}+jobs)")
+    st.markdown(f"<a href='https://www.google.com/search?q={role_query}+jobs' target='_blank'>Google Jobs</a>", unsafe_allow_html=True)
+    st.markdown(f"<a href='https://www.linkedin.com/jobs/search/?keywords={role_query}' target='_blank'>LinkedIn Jobs</a>", unsafe_allow_html=True)
+    st.markdown(f"<a href='https://it.indeed.com/jobs?q={italy_query}' target='_blank'>Indeed Italia</a>", unsafe_allow_html=True)
+    
+    # Skills in expander
+    skills_required = role.get("skills_required", [])
+    skills_matched = set(role.get("skills_matched", []))
+    missing_skills = role.get("missing_skills", [])
+    
+    with st.expander("Required Skills"):
+        if has_cv and skills_matched:
+            st.markdown("**You have:** " + ", ".join(skills_matched))
+        if has_cv and missing_skills:
+            st.markdown("**Missing:** " + ", ".join(missing_skills[:5]))
+        elif not has_cv:
+            st.markdown(", ".join(skills_required[:5]))
 
 
 def render_evaluation_page():
