@@ -1659,24 +1659,17 @@ def render_career_discovery():
     
     st.divider()
     
-    # --- YOUR BACKGROUND ---
-    st.subheader("Your Background")
+    # --- INPUT: Just one text area ---
+    free_text = st.text_area(
+        "Describe what you're looking for",
+        height=120,
+        placeholder="Example: I want a dynamic job with international clients, creative work, remote-friendly...",
+        key="discovery_free_text"
+    )
     
-    col_text, col_cv = st.columns(2)
-    
-    with col_text:
-        st.markdown("**Describe your aspirations**")
-        free_text = st.text_area(
-            "What kind of work excites you?",
-            height=150,
-            placeholder="Example: I want a dynamic job where I can work with international clients. I'm creative, love solving problems, and prefer flexible work...",
-            key="discovery_free_text",
-            label_visibility="collapsed"
-        )
-    
-    with col_cv:
-        st.markdown("**Upload CV** *(optional)*")
-        cv_file = st.file_uploader("Upload CV (PDF)", type=["pdf"], key="discovery_cv", label_visibility="collapsed")
+    # Optional CV upload in expander
+    with st.expander("Upload CV (optional)", expanded=False):
+        cv_file = st.file_uploader("Upload CV (PDF)", type=["pdf"], key="discovery_cv")
         cv_text = ""
         if cv_file:
             try:
@@ -1687,71 +1680,36 @@ def render_career_discovery():
         
         cv_text_input = st.text_area(
             "Or paste CV text",
-            height=80,
+            height=100,
             key="discovery_cv_text",
-            placeholder="Paste your CV content here...",
-            label_visibility="collapsed"
+            placeholder="Paste your CV content here..."
         )
         if cv_text_input and not cv_text:
             cv_text = cv_text_input
     
-    st.divider()
+    # Optional filters in expander
+    with st.expander("Filters (optional)", expanded=False):
+        career_categories = getattr(constants, "CAREER_CATEGORIES", {})
+        selected_categories = st.multiselect(
+            "Industries",
+            options=list(career_categories.keys()),
+            key="discovery_categories"
+        )
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            client_facing = st.selectbox("Interaction", ["Any", "Client-facing", "Behind scenes"], key="pref_client")
+            remote_pref = st.selectbox("Location", ["Any", "Remote", "On-site"], key="pref_remote")
+        with col2:
+            international = st.selectbox("Scope", ["Any", "International", "Local"], key="pref_intl")
+            dynamic = st.selectbox("Pace", ["Any", "Dynamic", "Stable"], key="pref_dynamic")
+        with col3:
+            creative = st.selectbox("Style", ["Any", "Creative", "Structured"], key="pref_creative")
     
-    # --- PREFERENCES ---
-    st.subheader("Your Preferences")
-    st.caption("Select what matters to you, or leave as 'Any' for no preference")
-    
-    # Industry selection
-    career_categories = getattr(constants, "CAREER_CATEGORIES", {})
-    selected_categories = st.multiselect(
-        "Industries of interest",
-        options=list(career_categories.keys()),
-        help="Select one or more sectors you're interested in",
-        key="discovery_categories"
-    )
-    
-    # Work preferences in columns
     st.markdown("")
-    pref_cols = st.columns(5)
-    
-    with pref_cols[0]:
-        client_facing = st.selectbox(
-            "Interaction",
-            options=["Any", "Client-facing", "Behind scenes"],
-            key="pref_client"
-        )
-    
-    with pref_cols[1]:
-        remote_pref = st.selectbox(
-            "Location",
-            options=["Any", "Remote", "On-site"],
-            key="pref_remote"
-        )
-    
-    with pref_cols[2]:
-        international = st.selectbox(
-            "Scope",
-            options=["Any", "International", "Local"],
-            key="pref_intl"
-        )
-    
-    with pref_cols[3]:
-        dynamic = st.selectbox(
-            "Pace",
-            options=["Any", "Dynamic", "Stable"],
-            key="pref_dynamic"
-        )
-    
-    with pref_cols[4]:
-        creative = st.selectbox(
-            "Style",
-            options=["Any", "Creative", "Structured"],
-            key="pref_creative"
-        )
-    
-    st.divider()
     
     # --- DISCOVER BUTTON ---
+
     discover_clicked = st.button("Find My Career Paths", type="primary", use_container_width=True)
     
     # --- RESULTS ---
