@@ -2181,69 +2181,9 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     
     st.divider()
     
-    # --- EXTRAS IN EXPANDERS ---
-    
-    # Project Tips
-    if "project_verified" in res and res["project_verified"]:
-        with st.expander("🚀 Project Interview Coaching", expanded=True):
-            verified = res.get('project_verified', set())
-            matching = res.get('matching_hard', set())
-            missing = res.get('missing_hard', set())
-            
-            c1, c2 = st.columns(2)
-            
-            with c1:
-                st.markdown("##### 🌟 Highlights")
-                st.caption("Skills you've proven in projects")
-                if verified:
-                    # Create badges
-                    html_tags = " ".join([f"<span class='skill-tag-matched'>{s}</span>" for s in list(verified)[:5]])
-                    st.markdown(html_tags, unsafe_allow_html=True)
-                else:
-                    st.caption("No verified skills found.")
+    st.divider()
 
-            with c2:
-                st.markdown("##### ⚠️ Caution Areas")
-                st.caption("Required skills not in your projects")
-                if missing:
-                    html_tags = " ".join([f"<span class='skill-tag-missing'>{s}</span>" for s in list(missing)[:3]])
-                    st.markdown(html_tags, unsafe_allow_html=True)
-                else:
-                    st.caption("No major gaps!")
-
-            st.divider()
-            
-            overlap = verified & matching
-            if overlap:
-                 st.markdown(f"**💡 Pro Tip:** Use your experience with **{', '.join(list(overlap)[:2])}** to answer behavioral questions.")
-    
-    # Cover Letter
-    if cl_analysis:
-        with st.expander("Cover Letter Analysis"):
-            m1, m2, m3, m4 = st.columns(4)
-            with m1:
-                st.metric("Keywords", f"{cl_analysis['hard_coverage']:.0f}%")
-            with m2:
-                st.metric("Soft Skills", f"{cl_analysis['soft_coverage']:.0f}%")
-            with m3:
-                st.metric("Structure", f"{cl_analysis['structure_score']:.0f}%")
-            with m4:
-                st.metric("Personal", f"{cl_analysis['personalization_score']:.0f}%")
-            
-            if cl_analysis.get('strengths'):
-                st.markdown("**Strengths:** " + "; ".join(cl_analysis['strengths'][:2]))
-            if cl_analysis.get('improvements'):
-                st.markdown("**Improve:** " + "; ".join(cl_analysis['improvements'][:2]))
-    
-    # Learning Resources
-    if res["missing_hard"]:
-        with st.expander("Learning Resources"):
-            for skill in list(res["missing_hard"])[:5]:
-                q = urllib.parse.quote(skill)
-                st.markdown(f"**{skill}:** [Coursera](https://www.coursera.org/search?query={q}) | [YouTube](https://www.youtube.com/results?search_query={q}+tutorial)")
-    
-    # Job Context (Visible)
-    # Job Context (Visible)
+    # --- JOB CONTEXT ANALYSIS (Moved Up) ---
     if jd_text:
         st.subheader("Job Context Analysis")
         jd_corpus = [line for line in jd_text.split('\n') if len(line.split()) > 3]
@@ -2254,11 +2194,11 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                 with st.container():
                      c_summary, c_topics = st.columns([2, 1])
                      with c_summary:
-                         st.markdown("##### 📋 Role Summary")
-                         st.info(result['summary'], icon="ℹ️")
+                         st.markdown("##### Role Summary")
+                         st.info(result['summary'])
                      
                      with c_topics:
-                         st.markdown("##### 🔑 Key Themes")
+                         st.markdown("##### Key Themes")
                          for topic in result['topics'][:3]:
                              # Extract just the title part before ":"
                              if ":" in topic:
@@ -2273,7 +2213,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     
     st.divider()
     
-    # AI Career Compass (Visible)
+    # --- AI CAREER COMPASS (Moved Up) ---
     st.subheader("AI Career Compass")
     st.caption("Alternative roles based on your profile and education")
     
@@ -2326,6 +2266,69 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         st.info(f"No roles found in the {match_range} range. Try a different filter.")
     else:
         st.info("No alternative roles found based on your skills.")
+    
+    st.divider()
+
+    # --- EXTRAS IN EXPANDERS (Moved Down) ---
+    
+    # Project Tips
+    if "project_verified" in res and res["project_verified"]:
+        with st.expander("Project Interview Coaching", expanded=False):
+            verified = res.get('project_verified', set())
+            matching = res.get('matching_hard', set())
+            missing = res.get('missing_hard', set())
+            
+            c1, c2 = st.columns(2)
+            
+            with c1:
+                st.markdown("##### Highlights")
+                st.caption("Skills you've proven in projects")
+                if verified:
+                    # Create badges
+                    html_tags = " ".join([f"<span class='skill-tag-matched'>{s}</span>" for s in list(verified)[:5]])
+                    st.markdown(html_tags, unsafe_allow_html=True)
+                else:
+                    st.caption("No verified skills found.")
+
+            with c2:
+                st.markdown("##### Caution Areas")
+                st.caption("Required skills not in your projects")
+                if missing:
+                    html_tags = " ".join([f"<span class='skill-tag-missing'>{s}</span>" for s in list(missing)[:3]])
+                    st.markdown(html_tags, unsafe_allow_html=True)
+                else:
+                    st.caption("No major gaps!")
+
+            st.divider()
+            
+            overlap = verified & matching
+            if overlap:
+                 st.markdown(f"**Pro Tip:** Use your experience with **{', '.join(list(overlap)[:2])}** to answer behavioral questions.")
+    
+    # Cover Letter
+    if cl_analysis:
+        with st.expander("Cover Letter Analysis"):
+            m1, m2, m3, m4 = st.columns(4)
+            with m1:
+                st.metric("Keywords", f"{cl_analysis['hard_coverage']:.0f}%")
+            with m2:
+                st.metric("Soft Skills", f"{cl_analysis['soft_coverage']:.0f}%")
+            with m3:
+                st.metric("Structure", f"{cl_analysis['structure_score']:.0f}%")
+            with m4:
+                st.metric("Personal", f"{cl_analysis['personalization_score']:.0f}%")
+            
+            if cl_analysis.get('strengths'):
+                st.markdown("**Strengths:** " + "; ".join(cl_analysis['strengths'][:2]))
+            if cl_analysis.get('improvements'):
+                st.markdown("**Improve:** " + "; ".join(cl_analysis['improvements'][:2]))
+    
+    # Learning Resources
+    if res["missing_hard"]:
+        with st.expander("Learning Resources"):
+            for skill in list(res["missing_hard"])[:5]:
+                q = urllib.parse.quote(skill)
+                st.markdown(f"**{skill}:** [Coursera](https://www.coursera.org/search?query={q}) | [YouTube](https://www.youtube.com/results?search_query={q}+tutorial)")
     
     st.divider()
     with st.expander("Export Report"):
