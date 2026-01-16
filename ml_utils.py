@@ -720,7 +720,11 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
             'advanced', 'basic', 'intermediate', 'beginner', 'native', 'fluency',
             'platform', 'platforms', 'solution', 'solutions', 'service', 'services',
             'system', 'systems', 'technology', 'technologies', 'technique', 'techniques',
-            'method', 'methods', 'approach', 'approaches', 'strategy', 'strategies'
+            'method', 'methods', 'approach', 'approaches', 'strategy', 'strategies',
+            
+            # Action Verbs (Noise for Topic Modeling)
+            'programming', 'coding', 'developing', 'match', 'matching', 'gap', 'missing', 
+            'learn', 'learning', 'use', 'using', 'scikit', 'pandas', 'numpy', 'matplotlib', 'seaborn'
         ]
 
         # Italian Stop Words
@@ -827,7 +831,7 @@ def perform_topic_modeling(text_corpus: List[str], n_topics=3, n_words=5):
             max_df=0.90,              # Ignora termini in >90% dei doc
             min_df=1,                 # Almeno 1 occorrenza
             stop_words=all_stop_words,
-            ngram_range=(1, 2)        # Unigram e bigram
+            ngram_range=(1, 1)        # Unigrams only (cleaner topics)
         )
         tf = tf_vectorizer.fit_transform(text_corpus)
 
@@ -1149,9 +1153,7 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "supervised", "supported", "trained", "transformed", "utilized",
         "increased", "decreased", "optimized", "automated", "integrated", "migrated",
         "analyze", "implement", "monitor", "manage", "collaborate", "ensure", # Present tense
-        "match", "gap", "missing", "learn", "digital", "programming", # Noise words from Demo/UI
-        "giacomo", "dellacqua", # User Name (exclude from Org/Loc)
-        "futuretech", "solutions", # Demo Company tokens
+        "match", "gap", "missing", "learn", "digital", "programming", "futuretech", "solutions",
         "collaborated", "communicated", "negotiated", "presented", "reported",
         
         # CURRENCIES & UNITS (misclassified as organizations)
@@ -1347,7 +1349,11 @@ def extract_entities_ner(text: str) -> Dict[str, List[str]]:
         "Marco", "Luca", "Alessandro", "Andrea", "Francesco", "Giuseppe", "Giovanni",
         "Antonio", "Matteo", "Lorenzo", "Stefano", "Roberto", "Paolo", "Davide", "Simone",
         "Maria", "Anna", "Giulia", "Francesca", "Chiara", "Sara", "Laura", "Valentina",
-        "Alessia", "Martina", "Giorgia", "Federica", "Elisa", "Silvia", "Paola"
+        "Alessia", "Martina", "Giorgia", "Federica", "Elisa", "Silvia", "Paola",
+        # Added for robustness
+        "Giacomo", "Luigi", "Pietro", "Alberto", "Claudio", "Giorgio", "Enrico", 
+        "Fabio", "Massimo", "Michele", "Nicola", "Piero", "Vincenzo", "Emanuele", 
+        "Daniele", "Federico", "Gabriele", "Riccardo", "Tommaso", "Edoardo", "Leonardo"
     }
     
     # Known organization patterns (suffixes and keywords) - CALIBRATED FOR DEMO
