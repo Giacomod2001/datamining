@@ -748,52 +748,42 @@ def get_demo_cv():
     Missing from JD: Machine Learning, Cloud (AWS/GCP)
     """
     return """
-MARCO BIANCHI
-Senior Marketing Data Analyst
-Milan, Italy | marco.bianchi@email.com | +39 333 1234567
+GIACOMO DELLACQUA
+Digital Marketing Data Analyst
+Milan, Italy | dellacquagiacomo@gmail.com | +39 351 930 1321
 
 PROFESSIONAL SUMMARY
-Results-driven Marketing Analyst with 5 years of experience in digital analytics, 
-SEM campaign management, and business intelligence. Expert in Google Analytics, 
-Tableau, and statistical analysis. Strong foundation in Python, SQL, and project management.
+Results-driven Digital Marketing Data Analyst with expertise in AI-powered business solutions and data-driven decision-making. Currently pursuing Master's in Artificial Intelligence for Business while gaining hands-on experience in marketing analytics, tracking implementation, and performance optimization at Randstad Group Italia.
 
 TECHNICAL SKILLS
-- Analytics: Google Analytics 4, Google Tag Manager, Looker Studio, Tableau, Power BI
-- Programming: Python, SQL, R, Excel (Advanced), Statistical Analysis
-- Marketing: SEO, SEM, PPC, Google Ads, Social Media Marketing, A/B Testing
-- Data: Data Visualization, ETL, Data Warehousing, BigQuery
-- Management: Project Management, Agile, Stakeholder Communication
-- Tools: CRM Platforms (HubSpot, Salesforce), Marketing Automation
+- Analytics: Google Analytics 4, Google Tag Manager, Looker Studio, Tableau
+- Programming: Python, SQL, BigQuery, Machine Learning (scikit-learn)
+- Marketing: Digital Marketing, Marketing Automation, CRM, Performance Marketing
+- Cloud: Google Cloud Platform (GCP), Data Warehousing
 
 PROFESSIONAL EXPERIENCE
 
-Senior Marketing Data Analyst | Digital Agency Milano | 2022 - Present
-- Lead data analytics projects using Python, SQL, and Tableau for 20+ enterprise clients
-- Managed SEM/PPC campaigns with EUR 500K+ annual budget across Google Ads platforms
-- Built statistical analysis models to predict campaign performance and ROI
-- Created executive dashboards in Tableau and Power BI for C-level stakeholders
-- Implemented Google Tag Manager tracking and Google Analytics 4 configurations
-- Led cross-functional project management initiatives using Agile methodologies
+Digital Marketing Data Analyst Intern | Randstad Group Italia SPA | Nov 2025 – Present
+- Implement and maintain online tracking ecosystems using Google Tag Manager
+- Analyze website performance and user behavior using Google Analytics 4
+- Design interactive dashboards with Google Looker Studio for stakeholder reporting
+- Support paid performance campaigns and conduct A/B testing for optimization
 
-Marketing Analyst | TechStart Italia | 2020 - 2022
-- Developed SEO strategies and managed social media marketing campaigns
-- Conducted A/B testing and statistical analysis for landing page optimization
-- Built data visualization reports using Tableau and Looker Studio
-- Managed CRM database and marketing automation workflows
-
-Junior Digital Specialist | StartUp Milano | 2019 - 2020
-- Supported Google Ads and Facebook Ads campaign execution
-- Created performance reports using Python and SQL for stakeholder insights
+Junior Digital Marketing Specialist | Otreat | Jan 2024 – Mar 2024
+- Managed multi-platform social media presence and executed performance-driven marketing strategies
+- Developed advertising campaigns and email newsletters
+- Operated CRM systems and e-commerce platforms
+- Conducted quantitative analysis of campaign metrics
 
 EDUCATION
-Master in Data Analytics | Politecnico di Milano | 2022
-Bachelor in Marketing & Communication | Università Bocconi | 2019
+Master's Degree in AI for Business and Society | Università IULM | 2024 - 2026
+- Focus: Machine Learning, Predictive Analytics, Big Data Management
 
-CERTIFICATIONS
-- Google Analytics Individual Qualification (GAIQ)
-- Google Ads Search & Display Certification
-- Tableau Desktop Specialist
-- HubSpot Inbound Marketing
+Bachelor's Degree in Corporate Communication | Università IULM | 2021 - 2024
+
+PROJECTS
+Dropout Predictor AI | GitHub
+- Designed and developed a cloud-native ML platform to predict university dropout risk using Python.
 """
 
 
@@ -822,94 +812,65 @@ def get_demo_jd():
     Result: 13/14 = 92.9% hard skill match
     """
     return """
-SENIOR MARKETING ANALYST
-DataDriven Corp | Milan, Italy (Hybrid)
+DIGITAL MARKETING & AI ANALYST
+FutureTech Solutions | Milan, Italy (Hybrid)
 
 About Us:
-DataDriven Corp is a leading marketing technology company looking for a Senior 
-Marketing Analyst to join our growing Analytics team.
+FutureTech Solutions is innovating the digital landscape by integrating Artificial Intelligence 
+into marketing strategies. We are looking for a hybrid professional who bridges the gap 
+between data analytics and digital marketing.
+
+Key Responsibilities:
+- Manage and optimize digital tracking infrastructure using Google Tag Manager.
+- Analyze complex user behavior datasets to drive business decisions using Python and SQL.
+- Develop predictive models for customer churn and lifetime value (CLV).
+- Create automated reporting dashboards in Tableau or Looker Studio.
+- Collaborate with the marketing team to implement data-driven campaigns.
 
 Required Technical Skills:
-- Expert proficiency in Google Analytics 4 and Google Tag Manager
-- Strong SQL skills for data extraction and querying
-- Proficiency in Python for data analysis and automation
-- Experience with Tableau or Power BI for business intelligence reporting
-- Advanced Excel skills including pivot tables and macros
-- Experience with A/B testing and statistical analysis methodologies
-- Knowledge of cloud platforms (AWS or GCP) for data pipelines
+- Proficiency in Google Analytics 4 (GA4) and Google Tag Manager (GTM). (MATCH)
+- Strong programming skills in Python (pandas, scikit-learn). (MATCH)
+- Experience with SQL for data querying and manipulation. (MATCH)
+- Knowledge of Data Visualization tools (Tableau, Looker Studio). (MATCH)
+- Basic understanding of Machine Learning concepts. (MATCH)
+- Experience with Cloud Platforms (AWS or Azure). (PARTIAL/MISSING - CV has GCP)
 
-Required Marketing Skills:
-- Deep understanding of SEO and organic search optimization
-- Experience with SEM and paid advertising campaigns
-- Social media marketing and analytics expertise
-- Proficiency with CRM platforms (Salesforce, HubSpot)
+Required Soft Skills:
+- Strong analytical mindset and problem-solving skills.
+- Ability to explain complex technical concepts to non-technical stakeholders.
+- Proactivity and desire to learn new technologies.
 
-Nice to Have:
-- Machine Learning experience for predictive marketing models
-- Experience with marketing attribution modeling
-- Knowledge of data warehousing concepts
-
-Soft Skills:
-- Excellent analytical and problem-solving abilities
-- Strong communication skills
-- Detail-oriented with project management skills
+Nice to Have (The "Gap"):
+- 3+ years of experience in a similar role. (GAP - CV is Intern/Junior)
+- Experience with Big Data frameworks (Spark/Hadoop). (MISSING)
+- Knowledge of DevOps practices (Docker/Kubernetes). (MISSING)
 
 Languages:
-- English (Required)
-- Italian (Preferred)
+- Italian (Native)
+- English (B2/C1)
 """
 
 
 def get_demo_project():
     """Returns sample project description for demo mode."""
     return """
-E-COMMERCE ANALYTICS DASHBOARD
-Personal Project | 2023
+UNIVERSITY GRAVITY PREDICTOR (Dropout Analysis)
+Academic Project | 2024
 
 OBJECTIVE
-Developed a comprehensive analytics solution to track customer journey and revenue 
-attribution across marketing channels for an e-commerce platform.
+Developed a Machine Learning model to predict student dropout risk, enabling 
+institutions to intervene proactively and improve retention rates.
 
 TECHNICAL IMPLEMENTATION
-- Built data pipeline using Python and BigQuery to process 1M+ daily events
-- Created interactive dashboards in Looker Studio with 15+ KPIs
-- Implemented Google Tag Manager tracking for enhanced e-commerce events
-- Used SQL for complex attribution modeling and cohort analysis
-- Applied A/B testing framework for landing page optimization
+- Data Engineering: Built a pipeline to preprocess demographic and academic data using Python (Pandas).
+- Modeling: Trained and evaluated multiple classifiers (Random Forest, XGBoost) to maximize recall on at-risk students.
+- Analysis: Identified key factors contributing to dropout (commute time, initial test scores) using SHAP values.
+- Deployment: Designed a conceptual cloud architecture for real-time inference.
 
 TECHNOLOGIES USED
-- Languages: Python, SQL
-- Data: BigQuery, Google Cloud Platform
-- Visualization: Looker Studio, Data Visualization
-- Analytics: Google Analytics 4, Google Tag Manager
-- Marketing: Attribution Modeling, Campaign Tracking
-
-RESULTS
-- Reduced data processing time by 60% with optimized queries
-- Increased conversion rate by 25% through data-driven optimization
-- Automated weekly reporting saving 10+ hours of manual work
-
----
-
-SOCIAL MEDIA SENTIMENT ANALYZER
-University Project | 2022
-
-OBJECTIVE
-Built a machine learning pipeline to analyze brand sentiment from Twitter data.
-
-TECHNICAL IMPLEMENTATION
-- Collected tweets using Twitter API with Python
-- Preprocessed text data with NLP techniques
-- Trained sentiment classification model with scikit-learn
-- Created visualization dashboard with Plotly
-
-TECHNOLOGIES USED
-- Python, SQL, NLP, Machine Learning
-- Data Visualization, Statistical Analysis
-
-RESULTS
-- Achieved 85% accuracy in sentiment classification
-- Processed 50,000+ tweets for brand analysis
+- Python, scikit-learn, Pandas, NumPy
+- Machine Learning, Predictive Modelling
+- Data Visualization (Matplotlib/Seaborn)
 """
 
 
@@ -918,40 +879,19 @@ def get_demo_cover_letter():
     return """
 Dear Hiring Manager,
 
-I am writing to express my strong interest in the Senior Marketing Analyst position 
-at DataDriven Corp. With 4 years of experience in data-driven marketing and business 
-intelligence, I am confident that my skills align perfectly with your requirements.
+I am writing to express my enthusiastic interest in the Digital Marketing & AI Analyst position at FutureTech Solutions. As a Digital Marketing Data Analyst currently pursuing a Master's in AI for Business, I find your mission to bridge the gap between marketing and artificial intelligence perfectly aligned with my professional path.
 
-In my current role at Digital Agency Milano, I have developed expertise in the exact 
-tools you require. I use Google Analytics 4 and Google Tag Manager daily to implement 
-tracking systems across 50+ client websites. My proficiency in SQL and BigQuery enables 
-me to extract actionable insights from large datasets, while my experience with Looker 
-Studio has allowed me to create dashboards that increased client ROI by 25%.
+In my current role at Randstad Group Italia, I have honed the technical skills essential for this position. I manage tracking ecosystems using Google Tag Manager and analyze performance via Google Analytics 4, ensuring data quality for decision-making. My daily work involves using SQL to query datasets and Python to automate reporting processes, directly addressing your core technical requirements.
 
-What excites me most about this opportunity is your focus on data-informed decision 
-making. At Digital Agency Milano, I led the implementation of attribution modeling 
-that helped clients understand their marketing channel effectiveness. This directly 
-aligns with your need for campaign tracking and statistical analysis expertise.
+My academic background in Artificial Intelligence provides me with the theoretical foundation to contribute to your predictive modeling initiatives. I have applied Machine Learning concepts in projects like my "Dropout Predictor," where I trained models to identify risks—a logic I am eager to transfer to customer churn prediction.
 
-I have hands-on experience with A/B testing programs, having designed and analyzed 
-tests for landing pages and email campaigns. My background in Python for data analysis 
-and automation complements my marketing analytics skills, enabling me to build 
-efficient reporting pipelines.
+While I am early in my career, my hybrid profile allows me to communicate effectively with both technical data teams and marketing stakeholders, ensuring that data insights translate into actionable business strategies. I am particularly excited about the opportunity to deepen my knowledge of Cloud Platforms within your innovative environment.
 
-While I am still developing my Tableau and Power BI skills, my strong foundation in 
-Looker Studio and data visualization principles means I can quickly adapt to new 
-BI tools. I am particularly interested in expanding my knowledge of cloud platforms, 
-which aligns with your GCP requirements.
-
-The hybrid work arrangement and learning budget you offer are valuable benefits that 
-would support my professional development goals. I am excited about the opportunity 
-to contribute to DataDriven Corp's analytics team.
-
-Thank you for considering my application. I would welcome the opportunity to discuss 
-how my experience in marketing analytics can contribute to your team's success.
+Thank you for considering my application. I look forward to the possibility of discussing how my unique blend of digital marketing experience and AI training can contribute to FutureTech Solutions.
 
 Best regards,
-Marco Bianchi
+
+Giacomo Dellacqua
 """
 
 
