@@ -86,7 +86,7 @@ try:
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.pipeline import Pipeline
     from sklearn.cluster import KMeans, AgglomerativeClustering
-    from sklearn.decomposition import PCA
+    from sklearn.decomposition import PCA, TruncatedSVD # Added LSA
     from sklearn.metrics.pairwise import cosine_similarity
     import scipy.cluster.hierarchy as sch  # Per dendrogrammi (Hierarchical Clustering)
     import matplotlib.pyplot as plt
@@ -97,6 +97,7 @@ except ImportError:
     KMeans = None
     AgglomerativeClustering = None
     PCA = None
+    TruncatedSVD = None # Handle missing LSA
     sch = None
     plt = None
 
@@ -2707,8 +2708,8 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
             if edu_keyword in cv_lower:
                 # Check if it's recent (appears early in CV = more recent)
                 position = cv_lower.find(edu_keyword)
-                # Weight: earlier position = more recent = higher weight (max 15%, min 5%)
-                recency_weight = max(5, 15 - (position / len(cv_lower)) * 10)
+                # Weight: earlier position = more recent = higher weight (max 30%, min 10%)
+                recency_weight = max(10, 30 - (position / len(cv_lower)) * 15)
                 
                 for role in related_roles:
                     if role in job_archetypes:
@@ -2732,6 +2733,17 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
     # 2. Vectorization - Use word-based matching for accurate skill comparison
     vectorizer = TfidfVectorizer(analyzer='word', ngram_range=(1, 2), min_df=1, lowercase=True)
     tfidf_matrix = vectorizer.fit_transform(corpus)
+    
+    # 2b. LSA Semantic Analysis (New Model) - Captures latent relationships
+    try:
+        if TruncatedSVD:
+            n_components = min(15, len(corpus)-1) # Avoid error if corpus is small
+            lsa_model = TruncatedSVD(n_components=n_components, random_state=42)
+            lsa_matrix = lsa_model.fit_transform(tfidf_matrix)
+        else:
+            lsa_matrix = None
+    except Exception:
+        lsa_matrix = None
     
     # 3. Identify Target Role from JD (if redundant)
     excluded_roles = set()
@@ -2769,7 +2781,17 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
     # CV is at index 0
     cv_vector = tfidf_matrix[0:1]
     arch_vectors_final = tfidf_matrix[len(corpus)-len(archetype_names):]
-    similarities = cosine_similarity(cv_vector, arch_vectors_final).flatten()
+    tfidf_similarities = cosine_similarity(cv_vector, arch_vectors_final).flatten()
+    
+    # Hybrid Score: Combine TF-IDF (keyword intensity) with LSA (semantic meaning)
+    if lsa_matrix is not None:
+        cv_lsa = lsa_matrix[0:1]
+        arch_lsa = lsa_matrix[len(corpus)-len(archetype_names):]
+        lsa_similarities = cosine_similarity(cv_lsa, arch_lsa).flatten()
+        # Weighting: 70% direct keywords, 30% semantic context
+        similarities = (0.7 * tfidf_similarities) + (0.3 * lsa_similarities)
+    else:
+        similarities = tfidf_similarities
     
     # Build expanded CV skills set (including cluster equivalents)
     cv_norm = {s.lower() for s in cv_skills}
@@ -2971,8 +2993,8 @@ def discover_careers(
                     if role_name in related_roles:
                         # Check if it's recent (appears early in CV = more recent)
                         position = cv_lower.find(edu_keyword)
-                        # Weight: earlier position = more recent = higher weight (max 15%, min 5%)
-                        recency_weight = max(5, 15 - (position / len(cv_lower)) * 10)
+                        # Weight: earlier position = more recent = higher weight (max 30%, min 10%)
+                        recency_weight = max(10, 30 - (position / len(cv_lower)) * 15)
                         edu_boost = max(edu_boost, recency_weight)
 
         # --- FINAL SCORE ---

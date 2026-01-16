@@ -342,8 +342,9 @@ HARD_SKILLS = {
 
     # ========== DATA & ANALTYICS (STANDARD) ==========
     "Data Analysis": ["data analysis", "pandas", "numpy", "excel", "power query"],
-    "Visualization": ["power bi", "tableau", "looker", "qlik", "domo", "google data studio"],
-    "Big Data": ["hadoop", "spark", "hive", "databricks", "snowflake", "redshift"],
+    "Visualization": ["power bi", "tableau", "looker", "qlik", "domo", "google data studio", "looker studio", "google looker studio", "data visualization"],
+    "Big Data": ["hadoop", "spark", "hive", "databricks", "snowflake", "redshift", "bigquery"],
+    "Google Analytics": ["google analytics", "ga4", "google analytics 4", "universal analytics", "web analytics"],
 }
 
 # =============================================================================
@@ -409,8 +410,8 @@ JOB_ARCHETYPES = {
     # ========== TECHNOLOGY ==========
     "Software Engineer": {"Programming", "Git", "System Design", "Algorithms", "Testing"}, # Renamed from Software Developer for prestige
     "Frontend Developer": {"JavaScript", "React", "HTML", "CSS", "UI Design", "Git"}, # Added React
-    "Backend Developer": {"Python", "Java", "SQL", "APIs", "Microservices", "Cloud Computing"}, # Added Java/Microservices
-    "Full Stack Developer": {"JavaScript", "Python", "React", "SQL", "Git", "DevOps"}, # Added React
+    "Backend Developer": {"Python", "Java", "SQL", "Microservices", "System Design", "Redis", "Docker"}, # Removed generic APIs/Cloud to allow specificity
+    "Full Stack Developer": {"JavaScript", "Python", "React", "SQL", "Git", "DevOps", "Node.js"}, # Added Node
     "Data Analyst": {"SQL", "Excel", "Data Visualization", "Python", "Statistics"}, # Added Python
     "Data Scientist": {"Python", "Machine Learning", "Deep Learning", "Statistics", "SQL"},
     "Data Engineer": {"SQL", "Python", "Spark", "Cloud Computing", "ETL", "BigQuery"}, # Added Spark/ETL
