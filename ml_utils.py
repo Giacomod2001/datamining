@@ -2777,9 +2777,238 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "") -> List[Tuple[str, f
     recommendations.sort(key=lambda x: x["score"], reverse=True)
     return recommendations[:3]
 
+
 # =============================================================================
-# COVER LETTER ANALYSIS
+# CAREER DISCOVERY - Preference-Based Job Matching
 # =============================================================================
+def discover_careers(
+    cv_text: str = "",
+    free_text: str = "",
+    preferences: dict = None
+) -> List[dict]:
+    """
+    CAREER DISCOVERY ENGINE
+    =======================
+    Recommends job roles based on user preferences AND optional CV skills.
+    
+    This function implements a hybrid matching approach:
+    1. Preference Matching: Filters roles by user's work style preferences
+    2. Skill Matching (if CV provided): Scores roles by skill overlap
+    3. Intent Parsing: Extracts signals from free text descriptions
+    
+    Args:
+        cv_text: Optional CV text for skill extraction
+        free_text: User's description of what they want (e.g., "dynamic job with international clients")
+        preferences: Dict with keys:
+            - categories: List of interested categories (e.g., ["Technology", "Marketing"])
+            - client_facing: True/False/None (None = no preference)
+            - remote_friendly: True/False/None
+            - international: True/False/None
+            - dynamic: True/False/None
+            - creative: True/False/None
+    
+    Returns:
+        List of dicts with: role, category, score, skills_required, skills_matched, 
+                           preference_match, missing_skills
+    """
+    job_archetypes = getattr(constants, "JOB_ARCHETYPES", {})
+    role_metadata = getattr(constants, "JOB_ROLE_METADATA", {})
+    
+    if not job_archetypes or not role_metadata:
+        return []
+    
+    preferences = preferences or {}
+    
+    # --- 1. EXTRACT CV SKILLS (if provided) ---
+    cv_skills = set()
+    if cv_text:
+        cv_hard, cv_soft = extract_skills_from_text(cv_text)
+        cv_skills = cv_hard | cv_soft
+    
+    # --- 2. PARSE FREE TEXT FOR INTENT SIGNALS ---
+    intent_signals = _parse_intent_signals(free_text)
+    
+    # Merge intent signals with explicit preferences (explicit wins)
+    for key in ["client_facing", "international", "dynamic", "creative", "remote_friendly"]:
+        if preferences.get(key) is None and intent_signals.get(key) is not None:
+            preferences[key] = intent_signals[key]
+    
+    # Merge detected categories
+    if not preferences.get("categories") and intent_signals.get("categories"):
+        preferences["categories"] = intent_signals["categories"]
+    
+    # --- 3. SCORE EACH ROLE ---
+    recommendations = []
+    
+    for role_name, role_skills in job_archetypes.items():
+        # Get role metadata (skip if not defined)
+        metadata = role_metadata.get(role_name)
+        if not metadata:
+            continue
+        
+        # --- PREFERENCE MATCHING ---
+        pref_score = 0
+        pref_max = 0
+        pref_details = []
+        
+        # Category filter (if specified)
+        selected_categories = preferences.get("categories", [])
+        if selected_categories:
+            if metadata["category"] in selected_categories:
+                pref_score += 30
+                pref_details.append(f"Category: {metadata['category']}")
+            else:
+                # Category mismatch - heavy penalty but don't exclude
+                pref_score -= 20
+            pref_max += 30
+        
+        # Boolean preference matching
+        pref_keys = ["client_facing", "remote_friendly", "international", "dynamic", "creative"]
+        for key in pref_keys:
+            user_pref = preferences.get(key)
+            if user_pref is not None:
+                pref_max += 15
+                if metadata.get(key) == user_pref:
+                    pref_score += 15
+                    pref_details.append(f"{key.replace('_', ' ').title()}: ✓")
+                else:
+                    # Small penalty for mismatch
+                    pref_score -= 5
+        
+        # Normalize preference score (0-100)
+        if pref_max > 0:
+            preference_match = max(0, (pref_score / pref_max) * 100)
+        else:
+            preference_match = 50  # Neutral if no preferences specified
+        
+        # --- SKILL MATCHING (if CV provided) ---
+        skill_match = 0
+        skills_matched = set()
+        missing_skills = set()
+        
+        if cv_skills:
+            role_skills_normalized = {s.lower() for s in role_skills}
+            cv_skills_normalized = {s.lower() for s in cv_skills}
+            
+            # Apply skill clusters for transferable matching
+            cv_expanded = set(cv_skills_normalized)
+            skill_clusters = getattr(constants, "SKILL_CLUSTERS", {})
+            for cluster_name, cluster_skills in skill_clusters.items():
+                cluster_lower = {s.lower() for s in cluster_skills}
+                if cv_skills_normalized & cluster_lower:
+                    cv_expanded.update(cluster_lower)
+            
+            # Calculate overlap
+            matched = cv_expanded & role_skills_normalized
+            missing = role_skills_normalized - cv_expanded
+            
+            skills_matched = {s for s in role_skills if s.lower() in matched}
+            missing_skills = {s for s in role_skills if s.lower() in missing}
+            
+            if len(role_skills) > 0:
+                skill_match = (len(matched) / len(role_skills)) * 100
+        
+        # --- FINAL SCORE ---
+        # If CV provided: 60% skills, 40% preferences
+        # If no CV: 100% preferences
+        if cv_skills:
+            final_score = (skill_match * 0.6) + (preference_match * 0.4)
+        else:
+            final_score = preference_match
+        
+        # Apply minimum threshold
+        if final_score < 15:
+            continue
+        
+        recommendations.append({
+            "role": role_name,
+            "category": metadata["category"],
+            "score": final_score,
+            "skills_required": list(role_skills),
+            "skills_matched": list(skills_matched),
+            "missing_skills": list(missing_skills),
+            "preference_match": preference_match,
+            "skill_match": skill_match if cv_skills else None,
+            "pref_details": pref_details,
+            "metadata": metadata
+        })
+    
+    # Sort by score descending
+    recommendations.sort(key=lambda x: x["score"], reverse=True)
+    return recommendations[:15]  # Return top 15
+
+
+def _parse_intent_signals(text: str) -> dict:
+    """
+    Parses free text to extract career intent signals.
+    
+    Examples:
+    - "dynamic job" → dynamic: True
+    - "work from home" → remote_friendly: True
+    - "international clients" → international: True, client_facing: True
+    """
+    if not text:
+        return {}
+    
+    text_lower = text.lower()
+    signals = {}
+    
+    # Dynamic/fast-paced signals
+    dynamic_keywords = ["dynamic", "dinamico", "fast-paced", "variety", "varietà", 
+                       "challenging", "sfidante", "never boring", "non noioso"]
+    if any(kw in text_lower for kw in dynamic_keywords):
+        signals["dynamic"] = True
+    
+    # Client-facing signals
+    client_keywords = ["client", "clienti", "customer", "stakeholder", 
+                      "people", "persone", "relazioni", "relationships", "talk to", "parlare con"]
+    if any(kw in text_lower for kw in client_keywords):
+        signals["client_facing"] = True
+    
+    # International signals
+    intl_keywords = ["international", "internazionale", "global", "globale", 
+                    "abroad", "estero", "english", "inglese", "multilingual"]
+    if any(kw in text_lower for kw in intl_keywords):
+        signals["international"] = True
+    
+    # Remote signals
+    remote_keywords = ["remote", "remoto", "smart working", "home", "casa", 
+                      "flexible", "flessibile", "anywhere", "ovunque"]
+    if any(kw in text_lower for kw in remote_keywords):
+        signals["remote_friendly"] = True
+    
+    # Creative signals
+    creative_keywords = ["creative", "creativo", "design", "art", "innovative", 
+                        "innovativo", "ideas", "idee", "brand", "visual"]
+    if any(kw in text_lower for kw in creative_keywords):
+        signals["creative"] = True
+    
+    # Category detection
+    category_keywords = {
+        "Technology": ["tech", "software", "data", "it ", "developer", "programmazione", "coding"],
+        "Marketing": ["marketing", "social media", "brand", "advertising", "pubblicità", "comunicazione"],
+        "Finance": ["finance", "finanza", "accounting", "contabilità", "investment", "banking"],
+        "Sales": ["sales", "vendite", "commercial", "commerciale", "business development"],
+        "Design": ["design", "creative", "grafica", "ux", "ui", "art direction"],
+        "HR": ["hr ", "human resources", "recruiting", "talent", "risorse umane"],
+        "Legal": ["legal", "legale", "law", "diritto", "compliance"],
+        "Engineering": ["engineering", "ingegneria", "mechanical", "electrical", "produzione"],
+        "Healthcare": ["pharma", "medical", "clinical", "healthcare", "sanità"],
+        "Hospitality": ["hotel", "tourism", "turismo", "event", "hospitality"],
+    }
+    
+    detected_categories = []
+    for category, keywords in category_keywords.items():
+        if any(kw in text_lower for kw in keywords):
+            detected_categories.append(category)
+    
+    if detected_categories:
+        signals["categories"] = detected_categories
+    
+    return signals
+
+
+
 def analyze_cover_letter(cover_letter_text: str, jd_text: str, cv_text: str = "") -> Dict:
     """
     Analyzes a cover letter against a job description.
