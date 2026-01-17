@@ -147,9 +147,17 @@ def render_navigation():
         # Navigation Buttons
         current_page = st.session_state.get("page", "Landing")
         
-        # Main Navigation Group
+        # Home Button (Separated)
+        btn_type = "primary" if current_page == "Landing" else "secondary"
+        if st.button("Home", key="nav_Landing", type=btn_type, use_container_width=True):
+            st.session_state["page"] = "Landing"
+            st.rerun()
+
+        # Spacer
+        st.markdown("<div style='height: 0.5rem;'></div>", unsafe_allow_html=True)
+
+        # Main Tools Group
         nav_items = [
-            ("Home", "Landing"),
             ("Career Discovery", "Career Discovery"),
             ("CV Builder", "CV Builder"),
             ("CV Analysis", "CV Evaluation")
@@ -163,7 +171,7 @@ def render_navigation():
                 st.session_state["page"] = page_key
                 st.rerun()
 
-        # Spacer
+        # Spacer (Large)
         st.markdown("<div style='height: 1.5rem;'></div>", unsafe_allow_html=True)
 
         # Dev Console (Separated)
