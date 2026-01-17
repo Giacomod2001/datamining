@@ -3216,15 +3216,12 @@ def discover_careers(
             role_skills_normalized = {s.lower() for s in role_skills}
             cv_skills_normalized = {s.lower() for s in cv_skills}
             
-            # Apply skill clusters for transferable matching
+            # Apply skill clusters for transferable matching  
             cv_expanded = expand_skills_with_clusters(cv_skills_normalized)
             
-            # CRITICAL FIX: Also expand role skills for fair matching
-            role_expanded = expand_skills_with_clusters(role_skills_normalized)
-            
-            # Calculate overlap (using EXPANDED sets)
-            matched = cv_expanded & role_expanded
-            missing = role_expanded - cv_expanded
+            # Calculate overlap - keep it simple, just expand CV side
+            matched = cv_expanded & role_skills_normalized
+            missing = role_skills_normalized - cv_expanded
             
             skills_matched = {s for s in role_skills if s.lower() in matched}
             missing_skills = {s for s in role_skills if s.lower() in missing}
@@ -3256,9 +3253,10 @@ def discover_careers(
             
         final_score = min(100, base_score + edu_boost)
         
-        # Apply minimum threshold (keep permissive)
-        if final_score < 10:
-            continue
+        # REMOVED THRESHOLD - Show all roles
+        # if final_score < 10:
+        #     continue
+        
         
         recommendations.append({
             "role": role_name,
