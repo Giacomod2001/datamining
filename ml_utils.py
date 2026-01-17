@@ -1802,6 +1802,24 @@ def extract_skills_from_text(text: str, is_jd: bool = False) -> Tuple[Set[str], 
     # 2. Apprendere nuovi pattern dalle skill trovate con alta confidenza
     # =========================================================================
     
+    # =========================================================================
+    # STEP 6: JOB ARCHETYPE FALLBACK (NEW)
+    # =========================================================================
+    # Se is_jd=True e abbiamo trovato poche skill, cerchiamo se il testo
+    # contiene nomi di ruoli (es: "Energy Trader") e estraiamo le skill
+    # richieste dall'archetype corrispondente.
+    # =========================================================================
+    if is_jd and len(hard_found) < 3:
+        job_archetypes = getattr(constants, "JOB_ARCHETYPES", {})
+        text_lower_cleaned = text_lower.replace(",", " ").replace(";", " ")
+        
+        for role_name, role_skills in job_archetypes.items():
+            role_lower = role_name.lower()
+            # Check if role name appears in the JD text
+            if role_lower in text_lower_cleaned or role_lower.replace(" ", "") in text_lower_cleaned.replace(" ", ""):
+                # Add all skills from this archetype as required
+                for skill in role_skills:
+                    hard_found.add(skill)
 
     return hard_found, soft_found
 
