@@ -1575,18 +1575,18 @@ def render_landing_page():
     </div>
     """, unsafe_allow_html=True)
 
-    # Metrics Row - HTML Flexbox for perfect centering
+    # Metrics Row - HTML Flexbox + Grid for absolute centering
     st.markdown("""
     <div style="display: flex; justify-content: center; gap: 6rem; margin-bottom: 2rem; flex-wrap: wrap;">
-        <div style="display: flex; flex-direction: column; align-items: center;">
+        <div style="display: grid; place-items: center; text-align: center;">
             <h2 style="color: #00f2c3; margin: 0; padding: 0; font-size: 2.5rem; line-height: 1.2;">1500+</h2>
             <p style="color: #a0a0a0; font-size: 14px; margin: 0;">Killer Keywords</p>
         </div>
-        <div style="display: flex; flex-direction: column; align-items: center;">
+        <div style="display: grid; place-items: center; text-align: center;">
             <h2 style="color: #00f2c3; margin: 0; padding: 0; font-size: 2.5rem; line-height: 1.2;">120+</h2>
             <p style="color: #a0a0a0; font-size: 14px; margin: 0;">Job Archetypes</p>
         </div>
-        <div style="display: flex; flex-direction: column; align-items: center;">
+        <div style="display: grid; place-items: center; text-align: center;">
             <h2 style="color: #ffdb4d; margin: 0; padding: 0; font-size: 2.5rem; line-height: 1.2;">25+</h2>
             <p style="color: #a0a0a0; font-size: 14px; margin: 0;">Sectors Covered</p>
         </div>
