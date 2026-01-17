@@ -2302,52 +2302,22 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
         "cv_skills": list(cv_hard),
         "job_skills": list(job_hard)
     }
-        # STEP 2: INFERRED MATCH (Green)
-        # Check if user has a "child" skill that implies this "parent" skill
-        # e.g., JD wants "Programming" -> User has "Python" (Inference: Python -> Programming)
-        inferred_match = False
-        for cv_skill in cv_hard:
-            parents = INFERENCE_RULES.get(cv_skill, [])
-            if any(p.lower() == jd_norm for p in parents):
-                matched.add(jd_skill) # Mark as matched (Green)
-                score_points += 1.0
-                inferred_match = True
-                break
-        if inferred_match:
-            continue
-            
-        # STEP 3: TRANSFERABLE MATCH (Yellow)
-        # Check if user has an "equivalent" skill in the same cluster
-        # e.g., JD wants "Power BI" -> User has "Tableau"
-        trans_match = False
-        for cluster_name, cluster_data in SKILL_CLUSTERS.items():
-            # Support both V1 (simple list/set) and V2 (dict with 'skills' key)
-            if isinstance(cluster_data, dict) and "skills" in cluster_data:
-                cluster_set = cluster_data["skills"]
-            else:
-                cluster_set = cluster_data
-                
-            cluster_lower = {s.lower() for s in cluster_set}
-            
-            # If JD skill is in this cluster
-            if jd_norm in cluster_lower:
-                # Check if user has ANY other skill from this cluster
-                user_cluster_skills = cv_hard_lower.intersection(cluster_lower)
-                if user_cluster_skills:
-                    # Found a transferable skill!
-                    # Map back to original casing for display
-                    found_skills = {s for s in cv_hard if s.lower() in user_cluster_skills}
-                    transferable[jd_skill] = list(found_skills)
-                    score_points += 0.5
-                    trans_match = True
-                    break
-        if trans_match:
-            continue
-            
-        # STEP 4: MISSING (Red)
-        missing.add(jd_skill)
-
     # 4. Extra Skills (Gray)
+    extra_hard = cv_hard - matched
+    for s in transferable:
+        if s in extra_hard: extra_hard.remove(s)
+        
+    return {
+        "match_percentage": match_percentage,
+        "matching_hard": list(matched),
+        "transferable": transferable,
+        "missing_hard": list(missing),
+        "extra_hard": list(extra_hard),
+        "matching_soft": list(cv_soft.intersection(job_soft)),
+        "missing_soft": list(job_soft - cv_soft),
+        "cv_skills": list(cv_hard),
+        "job_skills": list(job_hard)
+    }
     # Skills in CV that were not used for any match
     # Note: determining "used" skills strictly is complex, so we fallback to simple set diff for "extra"
     # This is purely informational.
