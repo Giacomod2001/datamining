@@ -3199,12 +3199,7 @@ def discover_careers(
             cv_skills_normalized = {s.lower() for s in cv_skills}
             
             # Apply skill clusters for transferable matching
-            cv_expanded = set(cv_skills_normalized)
-            skill_clusters = getattr(constants, "SKILL_CLUSTERS", {})
-            for cluster_name, cluster_skills in skill_clusters.items():
-                cluster_lower = {s.lower() for s in cluster_skills}
-                if cv_skills_normalized & cluster_lower:
-                    cv_expanded.update(cluster_lower)
+            cv_expanded = expand_skills_with_clusters(cv_skills_normalized)
             
             # Calculate overlap
             matched = cv_expanded & role_skills_normalized
