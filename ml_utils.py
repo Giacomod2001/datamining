@@ -3038,10 +3038,14 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
         
         if not role_norm:
             continue
+        
+        # CRITICAL FIX: Expand role skills with same logic as CV skills
+        # This ensures "Analytics" matches "Business Analysis", etc.
+        role_norm_expanded = expand_skills_with_clusters(role_norm)
             
-        # Jaccard Index: Intersection / Union
-        intersection = len(cv_norm.intersection(role_norm))
-        union = len(cv_norm.union(role_norm))
+        # Jaccard Index: Intersection / Union (using EXPANDED sets)
+        intersection = len(cv_norm.intersection(role_norm_expanded))
+        union = len(cv_norm.union(role_norm_expanded))
         jaccard_score = intersection / union if union > 0 else 0.0
         
         # Boost with TF-IDF/LSA semantic score (from previous step)
@@ -3054,9 +3058,10 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
         # Combined Score: 60% Jaccard (Direct Skill Match) + 30% Semantic + 10% Ed Boost
         final_score = (0.6 * jaccard_score) + (0.3 * semantic_score) + (0.1 * edu_boost)
         
-        # Penalize if score is too low
-        if final_score > 0.15: # Threshold
-             missing = role_norm - cv_norm
+        # Lower threshold from 0.15 to 0.05 to ensure results are shown
+        if final_score > 0.05: # Threshold (was 0.15)
+             # Use expanded sets for missing calculation
+             missing = role_norm_expanded - cv_norm
              recommendations.append({
                  "role": name,
                  "score": final_score,
