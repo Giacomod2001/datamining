@@ -225,42 +225,23 @@ def render_navigation():
                     st.session_state["cl_text"] = ""
                     st.rerun()
             else:
-                st.markdown("**Load Demo Data**")
-                c1, c2 = st.columns(2)
-                with c1:
-                    if st.button("Marketing", type="primary", use_container_width=True, help="93% Match Case Study"):
-                        st.session_state["demo_mode"] = True
-                        st.session_state["cv_text"] = styles.get_demo_cv()
-                        st.session_state["jd_text"] = styles.get_demo_jd()
-                        st.session_state["proj_text"] = styles.get_demo_project()
-                        st.session_state["cl_text"] = styles.get_demo_cover_letter()
-                        st.session_state["cv_input"] = "Text"
-                        st.session_state["jd_input"] = "Text"
-                        st.session_state["proj_input"] = "Text"
-                        st.session_state["cl_input"] = "Text"
-                        st.session_state["show_project_toggle"] = True
-                        st.session_state["show_cover_letter"] = True
-                        st.session_state["last_results"] = None # Clear results to force refresh
-                        if current_page == "CV Builder":
-                            st.session_state["trigger_demo_load"] = True
-                        st.rerun()
-                with c2:
-                    if st.button("Energy", type="primary", use_container_width=True, help="100% Match Case Study"):
-                        st.session_state["demo_mode"] = True
-                        st.session_state["cv_text"] = styles.get_energy_demo_cv()
-                        st.session_state["jd_text"] = styles.get_energy_demo_jd()
-                        st.session_state["proj_text"] = styles.get_energy_demo_project()
-                        st.session_state["cl_text"] = styles.get_energy_demo_cover_letter()
-                        st.session_state["cv_input"] = "Text"
-                        st.session_state["jd_input"] = "Text"
-                        st.session_state["proj_input"] = "Text"
-                        st.session_state["cl_input"] = "Text"
-                        st.session_state["show_project_toggle"] = True
-                        st.session_state["show_cover_letter"] = True
-                        st.session_state["last_results"] = None # Clear results to force refresh
-                        if current_page == "CV Builder":
-                            st.session_state["trigger_demo_load"] = True
-                        st.rerun()
+                if st.button("Load Test Data", type="primary", use_container_width=True):
+                    st.session_state["demo_mode"] = True
+                    st.session_state["cv_text"] = styles.get_demo_cv()
+                    st.session_state["jd_text"] = styles.get_demo_jd()
+                    st.session_state["proj_text"] = styles.get_demo_project()
+                    st.session_state["cl_text"] = styles.get_demo_cover_letter()
+                    st.session_state["cv_input"] = "Text"
+                    st.session_state["jd_input"] = "Text"
+                    st.session_state["proj_input"] = "Text"
+                    st.session_state["cl_input"] = "Text"
+                    st.session_state["show_project_toggle"] = True
+                    st.session_state["show_cover_letter"] = True
+                    st.session_state["last_results"] = None # Clear results to force refresh
+                    if current_page == "CV Builder":
+                        st.session_state["trigger_demo_load"] = True
+                    st.rerun()
+
 
         st.markdown("<div style='margin-top: 2rem; color: #666; font-size: 0.8em;'>v2.1 | Local Mode</div>", unsafe_allow_html=True)
 
