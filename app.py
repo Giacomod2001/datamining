@@ -675,8 +675,24 @@ def render_debug_page():
                 if res.get("transferable"):
                     with st.expander(f"Transferable Mappings ({transfer_count})", expanded=False):
                         st.caption("Equivalent skills that count as partial matches")
+                        # Use HTML chips for better visualization
+                        html_content = '<div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">'
                         for missing, present in res["transferable"].items():
-                            st.markdown(f"**{missing}** ← *{present}*")
+                            tooltip = f"Covered by: {', '.join(present)}"
+                            html_content += f'''
+                            <div title="{tooltip}" style="
+                                background-color: rgba(255, 179, 0, 0.15); 
+                                color: #FFB300; 
+                                border: 1px solid rgba(255, 179, 0, 0.3);
+                                padding: 2px 10px; 
+                                border-radius: 12px; 
+                                font-size: 0.9em;
+                                cursor: help;">
+                                {missing} <span style="opacity: 0.7; font-size: 0.8em;">(Transferable)</span>
+                            </div>
+                            '''
+                        html_content += '</div>'
+                        st.markdown(html_content, unsafe_allow_html=True)
             
             # JSON Export
             st.divider()

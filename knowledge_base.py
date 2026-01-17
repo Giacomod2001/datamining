@@ -883,7 +883,13 @@ HARD_SKILLS = {
     "MATLAB": ["matlab", "simulink", "matlab/simulink", "mathworks"],
 
     # ========== LANGUAGES & TRANSLATION (DETAILED) ==========
-    "Languages": ["english", "italian", "french", "german", "spanish", "chinese", "japanese", "inglese", "italiano", "francese", "tedesco", "spagnolo", "cinese", "giapponese", "lingue estere"],
+    "English": ["english", "inglese"],
+    "Italian": ["italian", "italiano"],
+    "French": ["french", "francese"],
+    "German": ["german", "tedesco"],
+    "Spanish": ["spanish", "spagnolo"],
+    "Chinese": ["chinese", "cinese"],
+    "Japanese": ["japanese", "giapponese"],
     
     # Translation (Killer Keywords)
     "Translation Tech": ["cat tools", "trados studio", "memoq", "memsource", "wordfast", "terminology management"],
