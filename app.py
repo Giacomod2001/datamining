@@ -1648,7 +1648,7 @@ def render_landing_page():
 
     # Footer with beta note and contact
     st.markdown("---")
-    st.markdown("<div style='text-align: center; color: #666; font-size: 0.85rem;'>App in Continuous Development (0% match = sector not yet covered) | Questions? <a href='mailto:dellacquagiacomo@gmail.com' style='color: #00A0DC;'>dellacquagiacomo@gmail.com</a></div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #666; font-size: 0.85rem;'>App in Continuous Development (0% match may indicate sector not yet covered) | Questions, missing sectors, bugs or feedback? Contact <a href='mailto:dellacquagiacomo@gmail.com?subject=CareerMatch%20AI%20Feedback' style='color: #00A0DC;'>dellacquagiacomo@gmail.com</a> (subject: CareerMatch AI)</div>", unsafe_allow_html=True)
 
 
 
