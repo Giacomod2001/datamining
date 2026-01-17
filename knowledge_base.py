@@ -1145,7 +1145,9 @@ HARD_SKILLS = {
     "Project Management": ["project management", "pmp", "prince2"],
     "Agile Frameworks": ["agile", "scrum", "kanban", "safe", "less", "sprint planning"],
     "Product Management": ["product management", "product roadmap", "user stories", "product lifecycle", "mvp"],
-    "Business Analysis": ["business analysis", "requirements gathering", "bpmn", "process mapping", "gap analysis"],
+    "Business Analysis": ["business analysis", "requirements gathering", "bpmn", "process mapping", "gap analysis", "analisi funzionale", "analisi di business", "analisi processi"],
+    "Budgeting": ["budgeting", "budget management", "gestione budget", "budgetary control", "forecasting expenses"],
+    "Strategy": ["strategy", "strategia", "business strategy", "strategia aziendale", "strategic planning", "pianificazione strategica"],
 
     # ========== FINANCE & ECONOMICS (DETAILED) ==========
     "Accounting": ["accounting", "financial statements", "ifrs", "gaap", "bookkeeping", "general ledger"],
@@ -1189,7 +1191,7 @@ HARD_SKILLS = {
     "MATLAB": ["matlab", "simulink", "matlab/simulink", "mathworks"],
 
     # ========== LANGUAGES & TRANSLATION (DETAILED) ==========
-    "Languages": ["english", "italian", "french", "german", "spanish", "chinese", "japanese"],
+    "Languages": ["english", "italian", "french", "german", "spanish", "chinese", "japanese", "inglese", "italiano", "francese", "tedesco", "spagnolo", "cinese", "giapponese", "lingue estere"],
     
     # Translation (Killer Keywords)
     "Translation Tech": ["cat tools", "trados studio", "memoq", "memsource", "wordfast", "terminology management"],
@@ -1218,8 +1220,10 @@ HARD_SKILLS = {
     "Logistics (Killer Keywords)": ["freight forwarding", "incoterms 2020", "last mile delivery", "fleet telematics", "reverse logistics", "wms configuration"],
 
     # ========== DATA & ANALTYICS (STANDARD) ==========
-    "Excel": ["excel", "microsoft excel", "advanced excel", "excel advanced", "vba", "pivot table", "vlookup", "xlookup"],
-    "Data Analysis": ["data analysis", "pandas", "numpy", "power query"],
+    "Excel": ["excel", "microsoft excel", "advanced excel", "excel advanced", "vba", "pivot table", "vlookup", "xlookup", "fogli di calcolo", "spreadsheet"],
+    "Reporting": ["reporting", "reportistica", "business reporting", "data reporting", "generazione report", "reports", "dashboarding"],
+    "Statistics": ["statistics", "statistica", "statistical analysis", "analisi statistica", "probabilità", "inferenza statistica"],
+    "Data Analysis": ["data analysis", "pandas", "numpy", "power query", "analytics", "analisi dati", "analisi dei dati"],
     "Artificial Intelligence": ["artificial intelligence", "ai", "machine intelligence", "computational intelligence", "cognitive computing", "generative ai", "llm", "large language models"],
     "Machine Learning": ["machine learning", "ml", "deep learning", "neural networks", "predictive modeling", "tensorflow", "pytorch", "scikit-learn", "xgboost", "automl"],
     "Visualization": ["power bi", "looker", "qlik", "domo", "google data studio", "looker studio", "google looker studio", "data visualization"],
@@ -1299,7 +1303,7 @@ SOFT_SKILLS = {
     
     # Teamwork & Leadership
     "Teamwork": ["teamwork", "lavoro di squadra", "team player", "collaboration", "collaborazione"],
-    "Leadership": ["leadership", "guida team", "team leading", "people management"],
+    "Leadership": ["leadership", "guida team", "team leading", "people management", "gestione team", "gestione risorse", "supervisione"],
     "Mentoring": ["mentoring", "coaching", "sviluppo persone"],
     "Conflict Resolution": ["conflict resolution", "risoluzione conflitti", "mediation"],
     
