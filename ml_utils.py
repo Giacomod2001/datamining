@@ -167,6 +167,7 @@ def detect_seniority(text: str) -> Tuple[str, float]:
     return "Mid Level", 0.3 # Default assumption
 
 import knowledge_base  # Contiene HARD_SKILLS, SOFT_SKILLS, INFERENCE_RULES
+import constants
 
 
 # =============================================================================
@@ -2239,15 +2240,68 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     # 3. Step-by-Step Matching
     score_points = 0.0
     
+    # Pre-calculate fallback skills from CV for faster lookup
+    # Expand CV skills with inferences for matching
+    cv_expanded = set(cv_hard_lower)
+    for s in cv_hard:
+        if s in INFERENCE_RULES:
+            cv_expanded.update({p.lower() for p in INFERENCE_RULES[s]})
+
     for jd_skill in job_hard:
         jd_norm = jd_skill.lower()
         
         # STEP 1: DIRECT MATCH (Green)
-        if jd_norm in cv_hard_lower:
+        if jd_norm in cv_expanded:
             matched.add(jd_skill)
             score_points += 1.0
             continue
-            
+
+        # STEP 2: INFERRED MATCH (Green) - JD skill is a parent of a CV skill
+        # (This is already covered by cv_expanded if we think about it, 
+        # but let's be explicit for "Inferred" logic if JD skill is a parent)
+        inferred = False
+        for cv_s in cv_hard:
+            if cv_s in INFERENCE_RULES and jd_skill in INFERENCE_RULES[cv_s]:
+                matched.add(jd_skill)
+                score_points += 1.0
+                inferred = True
+                break
+        if inferred: continue
+
+        # STEP 3: TRANSFERABLE MATCH (Yellow) - Cluster match
+        # If JD skill and a CV skill are in the same cluster
+        found_transferable = False
+        for cluster_id, cluster_data in SKILL_CLUSTERS.items():
+            cluster_skills = {s.lower() for s in cluster_data.get("skills", [])}
+            if jd_norm in cluster_skills:
+                # Check if user has ANY skill from this cluster
+                common = cv_hard_lower.intersection(cluster_skills)
+                if common:
+                    transferable[jd_skill] = f"Transferable from {', '.join(list(common)[:2])}"
+                    score_points += 0.7  # Increased from 0.5 to improve match %
+                    found_transferable = True
+                    break
+        
+        if found_transferable: continue
+
+        # STEP 4: MISSING (Red)
+        missing.add(jd_skill)
+
+    # 4. Calculate final score (Capped at 100%)
+    total_jd = len(job_hard)
+    if total_jd > 0:
+        match_percentage = min(100, (score_points / total_jd) * 100)
+    else:
+        match_percentage = 100 if cv_hard else 0
+
+    return {
+        "match_percentage": match_percentage,
+        "matching_hard": list(matched),
+        "transferable": transferable,
+        "missing_hard": list(missing),
+        "cv_skills": list(cv_hard),
+        "job_skills": list(job_hard)
+    }
         # STEP 2: INFERRED MATCH (Green)
         # Check if user has a "child" skill that implies this "parent" skill
         # e.g., JD wants "Programming" -> User has "Python" (Inference: Python -> Programming)
