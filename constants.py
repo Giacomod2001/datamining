@@ -437,7 +437,8 @@ HARD_SKILLS = {
     "Logistics (Killer Keywords)": ["freight forwarding", "incoterms 2020", "last mile delivery", "fleet telematics", "reverse logistics", "wms configuration"],
 
     # ========== DATA & ANALTYICS (STANDARD) ==========
-    "Data Analysis": ["data analysis", "pandas", "numpy", "excel", "power query"],
+    "Excel": ["excel", "microsoft excel", "advanced excel", "excel advanced", "vba", "pivot table", "vlookup", "xlookup"],
+    "Data Analysis": ["data analysis", "pandas", "numpy", "power query"],
     "Visualization": ["power bi", "tableau", "looker", "qlik", "domo", "google data studio", "looker studio", "google looker studio", "data visualization"],
     "Big Data": ["hadoop", "spark", "hive", "databricks", "snowflake", "redshift", "bigquery"],
     "Google Analytics": ["google analytics", "ga4", "google analytics 4", "universal analytics", "web analytics"],
@@ -847,7 +848,7 @@ JOB_ARCHETYPES = {
     # ========== ENERGY ENGINEERING & TRADING (NEW ARCHETYPES) ==========
     "Energy Engineer": {"Thermodynamics", "Energy & Renewables", "MATLAB", "Simulation", "Excel", "Python"},
     "Energy Analyst": {"Energy Markets", "Data Analysis", "Python", "Excel", "Energy Forecasting", "SQL"},
-    "Energy Trader": {"Energy Trading", "Energy Markets", "Python", "Financial Analysis", "Risk Management", "Excel"},
+    "Energy Trader": {"Energy Trading", "Energy Markets", "Python", "Data Analysis", "Excel", "Energy Forecasting", "MATLAB"},
     "Power Market Analyst": {"Energy Markets", "Grid Operators", "Python", "Energy Forecasting", "Data Analysis", "Statistics"},
     "Energy Consultant": {"Energy & Renewables", "Data Analysis", "Excel", "Project Management", "Communication", "Sustainability"},
     "Aerospace Engineer": {"Aerospace Propulsion", "MATLAB", "Thermodynamics", "Simulation", "CAD", "Python"},
