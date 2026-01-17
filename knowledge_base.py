@@ -567,23 +567,6 @@ JOB_ARCHETYPES_EXTENDED = {
         "learning_time": "6-12 months onboarding"
     },
     
-    'Renewable Energy Engineer': {
-        "primary_skills": [
-            "Solar PV Technology", "PVsyst", "Energy Modeling", 
-            "Project Management", "GIS", "Environmental Assessment",
-            "HOMER", "AutoCAD", "Electrical Engineering"
-        ],
-        "soft_skills": ["Sustainability mindset", "Project management", "Stakeholder engagement"],
-        "market_demand": "high",
-        "salary_range_italy": "€35k-65k",
-        "career_path": "Junior Engineer → Senior Engineer → Project Manager → Director",
-        "geographic_focus": ["Southern EU", "MENA"],
-        "remote_friendly": True,
-        "typical_employer": ["Enel Green Power", "Terna", "EPC firms", "Consultancies"],
-        "transition_from": ["Civil Engineering", "Mechanical Engineering", "Environmental Science"],
-        "prerequisite_skills": ["Engineering fundamentals", "Energy basics"],
-        "learning_time": "3-6 months specialization"
-    },
     
     'Manufacturing Data Scientist': {
         "primary_skills": [
@@ -1411,13 +1394,29 @@ JOB_ROLE_METADATA = {
     "Embedded Software Engineer": {"category": "Engineering", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
     "Firmware Engineer": {"category": "Engineering", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
     "Renewable Energy Engineer": {
-        "hard_skills": ["Energy Markets", "PVSyst", "AutoCAD", "Matlab", "Simulink", "Solar Energy", "Wind Energy", "Energy Efficiency", "Project Management", "Python"],
+        "hard_skills": ["Energy Efficiency", "Renewable Energy", "AutoCAD", "Thermodynamics", "Excel", "Project Management", "Power Systems"],
         "soft_skills": ["Problem Solving", "Teamwork", "Sustainability Awareness"],
         "description": "Designs and implements renewable energy solutions.",
         "market_demand": "High",
         "salary_range": "35k-55k",
         "career_path": ["Senior Engineer", "Energy Consultant", "Project Manager"]
     },
+    
+    # ... (other roles) ...
+
+    # Energy & Engineering Inferences (User Requested)
+    "Energy Engineering": ["Thermodynamics", "Power Systems", "Energy Efficiency", "Physics", "Mathematics"],
+    "Ingegneria Energetica": ["Energy Engineering", "Thermodynamics", "Power Systems", "Energy Efficiency"],
+    "Ing. Energetico": ["Energy Engineering"],
+    "Renewable Energy": ["Solar Energy", "Wind Energy", "Sustainability"],
+    "Energiewende": ["Renewable Energy"],
+    "Photovoltaics": ["Solar Energy"],
+    "PV": ["Solar Energy"],
+    "Solar Energy": ["Renewable Energy"],
+    "Matlab": ["Simulink", "Programming"],
+    "PVSyst": ["Solar Energy"],
+    "AutoCAD": ["CAD", "Technical Drawing"],
+}
     "BIM Manager": {"category": "Engineering", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
     
     # ========== BIOTECH & PHARMA (NEW METADATA) ==========
