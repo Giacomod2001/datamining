@@ -3113,6 +3113,100 @@ def discover_careers(
     preferences: dict = None
 ) -> List[dict]:
     """
+    SIMPLIFIED CAREER DISCOVERY ENGINE
+    ===================================
+    Recommends job roles based primarily on skill matching.
+    
+    Args:
+        cv_text: Optional CV text for skill extraction
+        free_text: User's description (currently not used in simplified version)
+        preferences: Dict with categories and preferences (optional filtering)
+    
+    Returns:
+        List of dicts with: role, category, score, skills_required, skills_matched, missing_skills
+    """
+    job_archetypes = getattr(constants, "JOB_ARCHETYPES", {})
+    role_metadata = getattr(constants, "JOB_ROLE_METADATA", {})
+    
+    if not job_archetypes:
+        return []
+    
+    preferences = preferences or {}
+    
+    # --- 1. EXTRACT CV SKILLS (if provided) ---
+    cv_skills = set()
+    if cv_text:
+        cv_hard, cv_soft = extract_skills_from_text(cv_text)
+        cv_skills = cv_hard | cv_soft
+    
+    # --- 2. SCORE EACH ROLE (SIMPLIFIED) ---
+    recommendations = []
+    
+    for role_name, role_skills in job_archetypes.items():
+        # Get role metadata (use defaults if not defined)
+        metadata = role_metadata.get(role_name, {
+            "category": "Other",
+            "client_facing": None,
+            "remote_friendly": None,
+            "international": None,
+            "dynamic": None,
+            "creative": None
+        })
+        
+        # --- CATEGORY FILTER (if specified) ---
+        selected_categories = preferences.get("categories", [])
+        if selected_categories:
+            if metadata.get("category", "Other") not in selected_categories:
+                continue  # Skip roles not in selected categories
+        
+        # --- SKILL MATCHING ---
+        skill_match = 0
+        skills_matched = set()
+        missing_skills = set()
+        
+        if cv_skills and role_skills:
+            role_skills_normalized = {s.lower() for s in role_skills}
+            cv_skills_normalized = {s.lower() for s in cv_skills}
+            
+            # Apply skill clusters for transferable matching  
+            cv_expanded = expand_skills_with_clusters(cv_skills_normalized)
+            
+            # Calculate overlap
+            matched = cv_expanded & role_skills_normalized
+            missing = role_skills_normalized - cv_expanded
+            
+            skills_matched = {s for s in role_skills if s.lower() in matched}
+            missing_skills = {s for s in role_skills if s.lower() in missing}
+            
+            if len(role_skills) > 0:
+                skill_match = (len(matched) / len(role_skills)) * 100
+        else:
+            # No CV or no role skills → default neutral score
+            skill_match = 50
+            missing_skills = set(role_skills)
+        
+        # --- FINAL SCORE (SIMPLE) ---
+        final_score = skill_match
+        
+        recommendations.append({
+            "role": role_name,
+            "category": metadata.get("category", "Other"),
+            "score": final_score,
+            "skills_required": list(role_skills),
+            "skills_matched": list(skills_matched),
+            "missing_skills": list(missing_skills),
+            "preference_match": None,  # Not used in simplified version
+            "skill_match": skill_match,
+            "edu_boost": 0,
+            "pref_details": [],
+            "metadata": metadata
+        })
+    
+    # Sort by score descending
+    recommendations.sort(key=lambda x: x["score"], reverse=True)
+    return recommendations
+
+    """
     CAREER DISCOVERY ENGINE
     =======================
     Recommends job roles based on user preferences AND optional CV skills.
