@@ -1738,16 +1738,17 @@ def extract_skills_from_text(text: str, is_jd: bool = False) -> Tuple[Set[str], 
                     matched = True
                     break
 
-        # Third try: fuzzy matching (lower threshold for better recall)
-        if not matched and fuzz:
+        # Third try: fuzzy matching (only for skills with 5+ chars to avoid false positives)
+        # Short skills like SEO, SQL, CSS require exact match only
+        if not matched and fuzz and len(skill) >= 5:
             for word in text_words:
-                if len(word) > 3 and fuzz.ratio(word, skill.lower()) > 85:
+                if len(word) > 4 and fuzz.ratio(word, skill.lower()) > 88:
                     hard_found.add(skill)
                     break
             # Also check bigrams for compound skills
             if not matched:
                 for bigram in bigrams:
-                    if fuzz.ratio(bigram, skill.lower()) > 85:
+                    if fuzz.ratio(bigram, skill.lower()) > 88:
                         hard_found.add(skill)
                         break
 
@@ -1771,10 +1772,10 @@ def extract_skills_from_text(text: str, is_jd: bool = False) -> Tuple[Set[str], 
                     matched = True
                     break
 
-        # Fuzzy fallback
-        if not matched and fuzz:
+        # Fuzzy fallback (only for skills with 5+ chars)
+        if not matched and fuzz and len(skill) >= 5:
             for word in text_words:
-                if len(word) > 3 and fuzz.ratio(word, skill.lower()) > 85:
+                if len(word) > 4 and fuzz.ratio(word, skill.lower()) > 88:
                     soft_found.add(skill)
                     break
 
@@ -1805,21 +1806,42 @@ def extract_skills_from_text(text: str, is_jd: bool = False) -> Tuple[Set[str], 
     # =========================================================================
     # STEP 6: JOB ARCHETYPE FALLBACK (NEW)
     # =========================================================================
-    # Se is_jd=True e abbiamo trovato poche skill, cerchiamo se il testo
-    # contiene nomi di ruoli (es: "Energy Trader") e estraiamo le skill
+    # Se is_jd=True, cerchiamo se il testo contiene nomi di ruoli
+    # (es: "Energy Trader", "energy engineer") e estraiamo le skill
     # richieste dall'archetype corrispondente.
+    # Questo permette di matchare JD che contengono solo nomi di ruoli.
     # =========================================================================
-    if is_jd and len(hard_found) < 3:
+    if is_jd:
         job_archetypes = getattr(constants, "JOB_ARCHETYPES", {})
-        text_lower_cleaned = text_lower.replace(",", " ").replace(";", " ")
+        # Normalize text: remove punctuation and extra spaces
+        text_normalized = re.sub(r'[,;:\.\-\(\)]', ' ', text_lower)
+        text_normalized = ' '.join(text_normalized.split())  # Normalize whitespace
+        text_words = set(text_normalized.split())
         
         for role_name, role_skills in job_archetypes.items():
             role_lower = role_name.lower()
-            # Check if role name appears in the JD text
-            if role_lower in text_lower_cleaned or role_lower.replace(" ", "") in text_lower_cleaned.replace(" ", ""):
-                # Add all skills from this archetype as required
+            role_words = role_lower.split()
+            
+            # Method 1: Exact phrase match
+            if role_lower in text_normalized:
                 for skill in role_skills:
                     hard_found.add(skill)
+                continue
+            
+            # Method 2: All words of role name present in JD
+            if len(role_words) > 1 and all(w in text_words for w in role_words):
+                for skill in role_skills:
+                    hard_found.add(skill)
+                continue
+            
+            # Method 3: Fuzzy match for role names (handle typos/variations)
+            if fuzz and len(role_lower) > 5:
+                # Check against original text segments
+                for segment in text_normalized.split():
+                    if len(segment) > 5 and fuzz.ratio(segment, role_lower.replace(" ", "")) > 85:
+                        for skill in role_skills:
+                            hard_found.add(skill)
+                        break
 
     return hard_found, soft_found
 
