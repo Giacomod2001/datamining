@@ -166,6 +166,7 @@ def detect_seniority(text: str) -> Tuple[str, float]:
         
     return "Mid Level", 0.3 # Default assumption
 
+import knowledge_base
 import constants
 
 
