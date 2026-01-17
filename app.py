@@ -1568,11 +1568,10 @@ def render_landing_page():
     """
     render_navigation() # GLOBAL NAVBAR
     
-    # HERO SECTION with beta note as subtitle
+    # HERO SECTION
     st.markdown("""
     <div style='text-align: center; padding: 2rem 2rem 1rem 2rem;'>
-        <h1 style='font-size: 3.5rem; font-weight: 800; margin-bottom: 0.5rem; background: -webkit-linear-gradient(45deg, #0077B5, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>CareerMatch AI</h1>
-        <p style='font-size: 0.9rem; color: #ffc107; margin-bottom: 1.5rem;'>App in Continuous Development - A 0% match may indicate the model doesn't yet cover your sector</p>
+        <h1 style='font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; background: -webkit-linear-gradient(45deg, #0077B5, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>CareerMatch AI</h1>
     </div>
     """, unsafe_allow_html=True)
 
@@ -1647,9 +1646,9 @@ def render_landing_page():
                 st.session_state["page"] = "CV Evaluation"
                 st.rerun()
 
-    # Footer with contact
+    # Footer with beta note and contact
     st.markdown("---")
-    st.markdown("<div style='text-align: center; color: #666; font-size: 0.85rem;'>Questions? Contact <a href='mailto:dellacquagiacomo@gmail.com' style='color: #00A0DC;'>dellacquagiacomo@gmail.com</a></div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #666; font-size: 0.85rem;'>App in Continuous Development (0% match = sector not yet covered) | Questions? <a href='mailto:dellacquagiacomo@gmail.com' style='color: #00A0DC;'>dellacquagiacomo@gmail.com</a></div>", unsafe_allow_html=True)
 
 
 
