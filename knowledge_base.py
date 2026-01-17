@@ -1429,3 +1429,4 @@ JOB_ROLE_METADATA = {
     "Tax Consultant": {"category": "Finance", "client_facing": True, "remote_friendly": True, "international": False, "dynamic": False, "creative": False},
     "Economist": {"category": "Finance", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
 }
+ML_MODELS = {}

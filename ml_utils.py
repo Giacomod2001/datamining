@@ -2180,7 +2180,7 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     - Transferable: 0.5 points
     - Max Score: 100%
     """
-    from .knowledge_base import SKILL_CLUSTERS, INFERENCE_RULES
+    from knowledge_base import SKILL_CLUSTERS, INFERENCE_RULES
     
     # 1. Extract skills
     cv_hard, cv_soft = extract_skills_from_text(cv_text)

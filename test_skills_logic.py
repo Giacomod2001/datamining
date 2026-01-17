@@ -1,63 +1,93 @@
-import sys
-import os
 
-# Add local path to sys to import modules
-sys.path.append(os.getcwd())
-
+import unittest
 from ml_utils import analyze_gap
 from knowledge_base import SKILL_CLUSTERS, INFERENCE_RULES
 
-def test_matching_logic():
-    print("Testing Matching Logic...")
-    
-    # Test 1: Direct Match
-    # User: Python, JD: Python
-    cv_text_1 = "I have experience with Python."
-    jd_text_1 = "Check for Python skills."
-    
-    result_1 = analyze_gap(cv_text_1, jd_text_1)
-    print("\n--- Test 1: Direct Match (Python vs Python) ---")
-    print(f"Matched Hard: {result_1['matching_hard']}")
-    print(f"Transferable: {result_1['transferable']}")
-    print(f"Missing: {result_1['missing_hard']}")
-    print(f"Score: {result_1['match_percentage']}%")
-    
-    # Test 2: Inferred Match (Hierarchy)
-    # User: Python (Child), JD: Programming (Parent)
-    cv_text_2 = "I have experience with Python."
-    jd_text_2 = "Must know Programming."
-    
-    result_2 = analyze_gap(cv_text_2, jd_text_2)
-    print("\n--- Test 2: Inferred Match (Python -> Programming) ---")
-    print(f"Matched Hard: {result_2['matching_hard']}")
-    print(f"Transferable: {result_2['transferable']}")
-    print(f"Missing: {result_2['missing_hard']}")
-    print(f"Score: {result_2['match_percentage']}%")
+class TestSkillGapLogic(unittest.TestCase):
+    def test_direct_match(self):
+        """Test Case 1: Direct Match (Green)"""
+        # User has Python, JD needs Python
+        cv_text = "I have experience with Python."
+        jd_text = "Required: Python."
+        
+        result = analyze_gap(cv_text, jd_text)
+        
+        self.assertIn("Python", result["matching_hard"])
+        self.assertNotIn("Python", result["missing_hard"])
+        # Score calculation: 1 skill required, 1 matched direct = 1.0/1.0 = 100%
+        self.assertAlmostEqual(result["match_percentage"], 100.0)
 
-    # Test 3: Transferable Match (Cluster)
-    # User: Looker Studio, JD: Tableau
-    cv_text_3 = "I use Looker Studio for reports."
-    jd_text_3 = "Experience with Tableau is required."
-    
-    result_3 = analyze_gap(cv_text_3, jd_text_3)
-    print("\n--- Test 3: Transferable Match (Looker Studio -> Tableau) ---")
-    print(f"Matched Hard: {result_3['matching_hard']}")
-    # Transferable should have { 'Tableau': ['Looker Studio'] }
-    print(f"Transferable: {result_3['transferable']}") 
-    print(f"Missing: {result_3['missing_hard']}")
-    print(f"Score: {result_3['match_percentage']}%")
+    def test_inferred_match(self):
+        """Test Case 2: Inferred Match (Green) - Hierarchy"""
+        # User has Python (Child), JD needs Programming (Parent)
+        # Verify Rule exists: Python -> Programming
+        
+        cv_text = "I know Python."
+        jd_text = "Must understand Programming concepts."
+        
+        result = analyze_gap(cv_text, jd_text)
+        
+        # Should match "Programming" because Python implies Programming
+        self.assertIn("Programming", result["matching_hard"])
+        self.assertNotIn("Programming", result["missing_hard"])
+        self.assertAlmostEqual(result["match_percentage"], 100.0)
 
-    # Test 4: Missing
-    # User: Python, JD: Cooking
-    cv_text_4 = "Python developer."
-    jd_text_4 = "Must know Cooking."
-    
-    result_4 = analyze_gap(cv_text_4, jd_text_4)
-    print("\n--- Test 4: Missing (Python vs Cooking) ---")
-    print(f"Matched Hard: {result_4['matching_hard']}")
-    print(f"Transferable: {result_4['transferable']}")
-    print(f"Missing: {result_4['missing_hard']}")
-    print(f"Score: {result_4['match_percentage']}%")
+    def test_transferable_match(self):
+        """Test Case 3: Transferable Match (Yellow) - Cluster"""
+        # User has Looker Studio, JD needs Tableau
+        # Both in "BI Tools" cluster
+        
+        cv_text = "Proficient in Looker Studio."
+        jd_text = "Experience with Tableau is required."
+        
+        result = analyze_gap(cv_text, jd_text)
+        
+        # Tableau is technically "missing" as a direct skill, BUT handled as transferable
+        # The current analyze_gap implementation puts it in 'transferable' dict, NOT 'matching_hard'
+        # and excludes it from 'missing_hard'.
+        
+        self.assertNotIn("Tableau", result["matching_hard"]) 
+        self.assertIn("Tableau", result["transferable"])
+        self.assertNotIn("Tableau", result["missing_hard"])
+        
+        # Score: 1 required. Transferable = 0.5. Total 0.5/1.0 = 50%
+        self.assertAlmostEqual(result["match_percentage"], 50.0)
 
-if __name__ == "__main__":
-    test_matching_logic()
+    def test_missing_match(self):
+        """Test Case 4: Missing (Red)"""
+        cv_text = "I know Cooking."
+        jd_text = "Required: Java."
+        
+        result = analyze_gap(cv_text, jd_text)
+        
+        self.assertIn("Java", result["missing_hard"])
+        self.assertEqual(result["match_percentage"], 0.0)
+
+    def test_mixed_scenario(self):
+        """Test Case 5: Complex Scenario"""
+        # CV: Python (Direct), Looker Studio (Transferable for Tableau), Cooking (Extra)
+        # JD: Python, Tableau, Java (Missing)
+        
+        cv_text = "Skills: Python, Looker Studio, Cooking."
+        jd_text = "Requirements: Python, Tableau, Java."
+        
+        result = analyze_gap(cv_text, jd_text)
+        
+        self.assertIn("Python", result["matching_hard"]) # 1.0
+        self.assertIn("Tableau", result["transferable"]) # 0.5
+        self.assertIn("Java", result["missing_hard"])    # 0.0
+        
+        # Score: (1.0 + 0.5 + 0.0) / 3 = 1.5/3 = 50%
+        self.assertAlmostEqual(result["match_percentage"], 50.0)
+        
+    def test_score_cap(self):
+        """Test Case 6: Score Capped at 100%"""
+        # Edge case where logic might double count or something (though current logic sums / total_required)
+        # If I have Python and JD needs Python.
+        cv_text = "Python"
+        jd_text = "Python"
+        result = analyze_gap(cv_text, jd_text)
+        self.assertLessEqual(result["match_percentage"], 100.0)
+
+if __name__ == '__main__':
+    unittest.main()
