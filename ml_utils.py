@@ -3138,17 +3138,11 @@ def discover_careers(
     if cv_text:
         cv_hard, cv_soft = extract_skills_from_text(cv_text)
         cv_skills = cv_hard | cv_soft
-        print(f"DEBUG: Extracted {len(cv_skills)} skills from CV: {list(cv_skills)[:5]}...")
-    else:
-        print("DEBUG: No CV text provided")
     
     # --- 2. SCORE EACH ROLE (SIMPLIFIED) ---
     recommendations = []
     
     for role_name, role_skills in job_archetypes.items():
-        # DEBUG PRINT FOR FIRST ROLE ONLY
-        if role_name == "Data Analyst":
-            print(f"DEBUG: Processing Data Analyst. Role Skills: {role_skills}")
         # Get role metadata (use defaults if not defined)
         metadata = role_metadata.get(role_name, {
             "category": "Other",
@@ -3163,8 +3157,9 @@ def discover_careers(
         selected_categories = preferences.get("categories", [])
         if selected_categories:
             if metadata.get("category", "Other") not in selected_categories:
-                continue  # Skip roles not in selected categories
-        
+                # If category is strictly filtered, we skip
+                pass 
+                
         # --- SKILL MATCHING ---
         skill_match = 0
         skills_matched = set()
@@ -3186,18 +3181,36 @@ def discover_careers(
             
             if len(role_skills) > 0:
                 skill_match = (len(matched) / len(role_skills)) * 100
-                if role_name == "Data Analyst":
-                    print(f"DEBUG: Data Analyst Match: Matched={len(matched)}, Total={len(role_skills)}, Score={skill_match}")
-        else:
-            # No CV or no role skills → default neutral score
+        elif not cv_skills:
+            # No CV → default neutral score
             skill_match = 50
             missing_skills = set(role_skills)
-        
+            
         # --- FINAL SCORE (SIMPLE) ---
-        final_score = skill_match
+        # Ensure non-zero score for UX purposes (Potential Score)
+        final_score = max(5.0, skill_match)
+        
+        # Boost if category matches user preference (even without skills)
+        if selected_categories and metadata.get("category") in selected_categories:
+             final_score += 10
         
         recommendations.append({
             "role": role_name,
+            "category": metadata.get("category", "Other"),
+            "score": final_score,
+            "skills_required": list(role_skills),
+            "skills_matched": list(skills_matched),
+            "missing_skills": list(missing_skills),
+            "preference_match": None, 
+            "skill_match": skill_match,
+            "edu_boost": 0,
+            "pref_details": [],
+            "metadata": metadata
+        })
+    
+    # Sort by score descending
+    recommendations.sort(key=lambda x: x["score"], reverse=True)
+    return recommendations
             "category": metadata.get("category", "Other"),
             "score": final_score,
             "skills_required": list(role_skills),
