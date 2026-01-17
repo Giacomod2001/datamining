@@ -135,6 +135,9 @@ def render_navigation():
     Renders the global sidebar navigation menu.
     """
     with st.sidebar:
+        # Get Current Page First
+        current_page = st.session_state.get("page", "Landing")
+
         # Branding
         # Determine Sidebar Title
         page_titles = {
@@ -179,7 +182,7 @@ def render_navigation():
         st.divider()
         
         # Navigation Buttons
-        current_page = st.session_state.get("page", "Landing")
+        # (current_page already defined above)
         
         # Home Button (Separated) with Marler
         st.markdown('<span id="home-btn-marker"></span>', unsafe_allow_html=True)
@@ -269,38 +272,10 @@ def render_debug_page():
     4. NLP - Statistiche estrazione testo
     5. Knowledge - Database skill e regole
     """
-    render_navigation() # GLOBAL NAVBAR
+    render_navigation() # GLOBAL NAVBAR: Handles Branding, Home, Tools, and Load Data logic.
     
-    # =========================================================================
-    # SIDEBAR - Navigation & Controls (Consistent with App)
-    # =========================================================================
-    with st.sidebar:
-        # BRANDING (Centered)
-        st.markdown(f"""
-        <div style='text-align: center; padding: 0.5rem 0;'>
-            <h2 style='font-size: 1.5rem; margin: 0;'>CareerMatch AI</h2>
-            <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>DEBUGGER CONSOLE</p>
-        </div>
-        <style>
-            /* TARGETING: Use the marker span to find the immediately following button container */
-            div:has(span#dev-home-marker) + div button {
-                background-color: #00f2c3 !important;
-                color: #FFFFFF !important;
-                border: none !important;
-            }
-            div:has(span#dev-home-marker) + div button:hover {
-                background-color: #00c8a0 !important;
-                color: #FFFFFF !important;
-            }
-        </style>
-        """, unsafe_allow_html=True)
-        
-        st.divider()
-        
-        st.markdown('<span id="dev-home-marker"></span>', unsafe_allow_html=True)
-        if st.button("Home", key="dev_home_btn", use_container_width=True):
-             st.session_state["page"] = "Landing"
-             st.rerun()
+    # Debug page specific content continues below...
+    # (No extra sidebar code needed here to avoid duplication)
 
     # =========================================================================
     # SECURITY ASSERTION
