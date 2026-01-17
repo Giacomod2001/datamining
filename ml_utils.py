@@ -3216,46 +3216,64 @@ def discover_careers(
     # --- 2. SCORE EACH ROLE (SIMPLIFIED) ---
     recommendations = []
     
-    for role_name, role_skills in job_archetypes.items():
+    for role_name, role_data in job_archetypes.items():
         # Get role metadata (use defaults if not defined)
-        metadata = role_metadata.get(role_name, {
-            "category": "Other",
-            "client_facing": None,
-            "remote_friendly": None,
-            "international": None,
-            "dynamic": None,
-            "creative": None
-        })
-        
+        # Handle both Legacy (list) and New (dict) formats
+        if isinstance(role_data, dict):
+            # V2 Format
+            metadata = role_data
+            # Extract skills from various possible keys
+            role_skills = set(metadata.get("primary_skills", []) + metadata.get("hard_skills", []))
+            # Merge defaults if missing
+            category = metadata.get("category", "Other")
+        else:
+            # V1 Format (List of strings)
+            role_skills = set(role_data)
+            category = "Other"
+            # Try to look up metadata separately if available?
+            # For now, use defaults
+            metadata = role_metadata.get(role_name, {
+                "category": category,
+                "client_facing": None,
+                "remote_friendly": None,
+                "international": None,
+                "dynamic": None,
+                "creative": None
+            })
+
         # --- CATEGORY FILTER (if specified) ---
         selected_categories = preferences.get("categories", [])
         if selected_categories:
-            if metadata.get("category", "Other") not in selected_categories:
+            if category not in selected_categories:
                 # If category is strictly filtered, we skip
-                pass 
+                continue
                 
         # --- SKILL MATCHING ---
         skill_match = 0
         skills_matched = set()
         missing_skills = set()
         
-        if cv_skills and role_skills:
+        # Ensure we have skills to match against
+        if not role_skills:
+            continue
+            
+        if cv_skills:
             role_skills_normalized = {s.lower() for s in role_skills}
-            cv_skills_normalized = {s.lower() for s in cv_skills}
             
             # Apply skill clusters for transferable matching  
-            cv_expanded = expand_skills_with_clusters(cv_skills_normalized)
+            cv_expanded = expand_skills_with_clusters(cv_skills)
+            cv_expanded_lower = {s.lower() for s in cv_expanded}
             
             # Calculate overlap
-            matched = cv_expanded & role_skills_normalized
-            missing = role_skills_normalized - cv_expanded
+            matched_lower = cv_expanded_lower & role_skills_normalized
+            missing_lower = role_skills_normalized - cv_expanded_lower
             
-            skills_matched = {s for s in role_skills if s.lower() in matched}
-            missing_skills = {s for s in role_skills if s.lower() in missing}
+            # Reconstruct original casing
+            skills_matched = {s for s in role_skills if s.lower() in matched_lower}
+            missing_skills = {s for s in role_skills if s.lower() in missing_lower}
             
-            if len(role_skills) > 0:
-                skill_match = (len(matched) / len(role_skills)) * 100
-        elif not cv_skills:
+            skill_match = (len(matched_lower) / len(role_skills_normalized)) * 100
+        else:
             # No CV → default neutral score
             skill_match = 50
             missing_skills = set(role_skills)
@@ -3265,12 +3283,21 @@ def discover_careers(
         final_score = max(5.0, skill_match)
         
         # Boost if category matches user preference (even without skills)
-        if selected_categories and metadata.get("category") in selected_categories:
+        if selected_categories and category in selected_categories:
              final_score += 10
         
+        relevant_metadata = {
+            "category": category,
+            "client_facing": metadata.get("client_facing"),
+            "remote_friendly": metadata.get("remote_friendly"),
+            "international": metadata.get("international"),
+            "dynamic": metadata.get("dynamic"),
+            "creative": metadata.get("creative")
+        }
+
         recommendations.append({
             "role": role_name,
-            "category": metadata.get("category", "Other"),
+            "category": category,
             "score": final_score,
             "skills_required": list(role_skills),
             "skills_matched": list(skills_matched),
@@ -3279,7 +3306,7 @@ def discover_careers(
             "skill_match": skill_match,
             "edu_boost": 0,
             "pref_details": [],
-            "metadata": metadata
+            "metadata": relevant_metadata
         })
     
     # Sort by score descending
