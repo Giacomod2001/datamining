@@ -2368,22 +2368,26 @@ def analyze_gap_with_project(cv_text: str, job_text: str, project_text: str) -> 
     
     # 8. Update Skills if Project Fills Gaps
     # Note: Project verification is separate from "Transferable" logic
-    newly_found_in_project = res["missing_hard"].intersection(proj_hard)
+    missing_set = set(res["missing_hard"])
+    matching_set = set(res["matching_hard"])
+    
+    newly_found_in_project = missing_set.intersection(proj_hard)
     if newly_found_in_project:
-        res["matching_hard"].update(newly_found_in_project)
-        res["missing_hard"] = res["missing_hard"] - newly_found_in_project
+        matching_set.update(newly_found_in_project)
+        missing_set = missing_set - newly_found_in_project
+        
+        # Update res with new results
+        res["matching_hard"] = list(matching_set)
+        res["missing_hard"] = list(missing_set)
         
         # Recalculate Match Score with new findings
-        # Score = (Direct + Inferred) + (Transferable * 0.5) + (Project Verified * 0.3 bonus)
-        # Note: newly_found_in_project are now considered "Matched" (Direct) effectively via Project
-        
         total_jd = len(job_hard)
         if total_jd > 0:
             direct_points = len(res["matching_hard"]) * 1.0
             trans_points = len(res["transferable"]) * 0.7
-            # Add small bonus for project context if desired, or keep simple
             total_points = direct_points + trans_points
             res["match_percentage"] = min(100.0, (total_points / total_jd) * 100)
+            res["match_pct"] = res["match_percentage"]
 
     
     # 9. Add Portfolio Intelligence to Results

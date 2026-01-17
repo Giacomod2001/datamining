@@ -223,21 +223,32 @@ def render_navigation():
                     st.session_state["jd_text"] = ""
                     st.session_state["proj_text"] = ""
                     st.session_state["cl_text"] = ""
+                    st.session_state["last_results"] = None
                     st.rerun()
             else:
                 if st.button("Load Test Data", type="primary", use_container_width=True):
                     st.session_state["demo_mode"] = True
+                    # Set text inputs
                     st.session_state["cv_text"] = styles.get_demo_cv()
                     st.session_state["jd_text"] = styles.get_demo_jd()
                     st.session_state["proj_text"] = styles.get_demo_project()
                     st.session_state["cl_text"] = styles.get_demo_cover_letter()
+                    
+                    # Force Text mode
                     st.session_state["cv_input"] = "Text"
                     st.session_state["jd_input"] = "Text"
                     st.session_state["proj_input"] = "Text"
                     st.session_state["cl_input"] = "Text"
+                    
+                    # Clear PDF inputs to avoid collisions
+                    for key in ["cv_pdf", "jd_pdf", "proj_pdf", "cl_pdf"]:
+                        if key in st.session_state:
+                            st.session_state[key] = None
+                    
                     st.session_state["show_project_toggle"] = True
                     st.session_state["show_cover_letter"] = True
-                    st.session_state["last_results"] = None # Clear results to force refresh
+                    st.session_state["last_results"] = None # Force refresh
+                    
                     if current_page == "CV Builder":
                         st.session_state["trigger_demo_load"] = True
                     st.rerun()
@@ -2058,6 +2069,10 @@ def render_evaluation_page():
         if st.button("Clear All", use_container_width=True):
             st.session_state["demo_mode"] = False
             st.session_state["last_results"] = None
+            # Clear all text and files
+            for key in ["cv_text", "jd_text", "proj_text", "cl_text", "cv_pdf", "jd_pdf", "proj_pdf", "cl_pdf"]:
+                if key in st.session_state:
+                    st.session_state[key] = "" if "text" in key else None
             st.rerun()
     
     if analyze_clicked:
