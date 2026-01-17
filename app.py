@@ -47,23 +47,14 @@ import plotly.graph_objects as go
 import urllib.parse
 import importlib
 
-# Force reload modules to ensure latest code is used
-import knowledge_base  # NEW: Force reload to pick up INFERENCE_RULES
+# Force reload modules (disabled for performance, enable only in dev)
+import knowledge_base
 import ml_utils
 import styles
 
-importlib.reload(knowledge_base) # NEW: Force reload
-importlib.reload(ml_utils)
-importlib.reload(styles)
-
-# =============================================================================
-# PULIZIA CACHE
-# =============================================================================
-# Puliamo la cache all'avvio per garantire che le costanti siano ricaricate
-# Questo è importante quando constants.py viene aggiornato
-
-st.cache_data.clear()
-st.cache_resource.clear()
+# Puliamo la cache all'avvio solo se necessario
+# st.cache_data.clear()
+# st.cache_resource.clear()
 
 # =============================================================================
 # CONFIGURAZIONE PAGINA - CareerMatch AI v2.0

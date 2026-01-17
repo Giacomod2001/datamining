@@ -82,35 +82,45 @@ import urllib.parse
 # - cosine_similarity: Metrica di similarità per Vector Space Model
 
 try:
-    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.pipeline import Pipeline
     from sklearn.cluster import KMeans, AgglomerativeClustering
-    from sklearn.decomposition import PCA, TruncatedSVD # Added LSA
+    from sklearn.decomposition import PCA, TruncatedSVD
     from sklearn.metrics.pairwise import cosine_similarity
-    import scipy.cluster.hierarchy as sch  # Per dendrogrammi (Hierarchical Clustering)
+    from sklearn.model_selection import train_test_split
+    import scipy.cluster.hierarchy as sch
     import matplotlib.pyplot as plt
+    from wordcloud import WordCloud
 except ImportError:
+    # Fallback to None if not installed (though requirements.txt should cover it)
     RandomForestClassifier = None
     TfidfVectorizer = None
     Pipeline = None
     KMeans = None
-    AgglomerativeClustering = None
-    PCA = None
-    TruncatedSVD = None # Handle missing LSA
-    sch = None
-    plt = None
+    WordCloud = None
+    TrancatedSVD = None
 
 try:
-    from PyPDF2 import PdfReader  # Per estrazione testo da PDF
+    from PyPDF2 import PdfReader
 except ImportError:
     PdfReader = None
 
 try:
-    from fpdf import FPDF  # Per generazione report PDF
+    from fpdf import FPDF
 except ImportError:
     FPDF = None
 
+import nltk
+try:
+    nltk.data.find('tokenizers/punkt')
+except (LookupError, AttributeError):
+    pass # Managed in separate function if needed
+
+# =============================================================================
+import knowledge_base
+import constants
+# =============================================================================
 def detect_seniority(text: str) -> Tuple[str, float]:
     """
     Detects seniority level (Junior, Mid, Senior) from text.
