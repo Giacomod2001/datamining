@@ -2180,7 +2180,9 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     - Transferable: 0.5 points
     - Max Score: 100%
     """
-    from knowledge_base import SKILL_CLUSTERS, INFERENCE_RULES, JOB_ARCHETYPES_EXTENDED
+    SKILL_CLUSTERS = knowledge_base.SKILL_CLUSTERS
+    INFERENCE_RULES = knowledge_base.INFERENCE_RULES
+    JOB_ARCHETYPES_EXTENDED = knowledge_base.JOB_ARCHETYPES_EXTENDED
     import difflib
 
     # 1. Extract skills
