@@ -1455,6 +1455,15 @@ INFERENCE_RULES = {
     "Google Cloud": ["Cloud Computing"],
     "Docker": ["Containerization", "DevOps"],
     "Kubernetes": ["Containerization", "Orchestration", "DevOps"],
+    
+    # Energy & Engineering Inferences (User Requested)
+    "Energy Engineering": ["Electrical Engineering", "Energy Modeling", "Thermodynamics", "Power Systems", "Energy Efficiency"],
+    "Renewable Energy": ["Solar PV Technology", "Wind Energy", "Energy Modeling", "Sustainability"],
+    "Photovoltaics": ["Solar PV Technology", "Solar Energy"],
+    "PV": ["Solar PV Technology"],
+    "Solar Energy": ["Solar PV Technology"],
+    "Matlab": ["Simulink", "Programming"],
+    "PVSyst": ["Energy Modeling", "Solar PV Technology"],
     "Terraform": ["IaC", "DevOps", "Cloud Computing"],
     "Ansible": ["Configuration Management", "DevOps"],
     "Jenkins": ["CI/CD", "DevOps"],
