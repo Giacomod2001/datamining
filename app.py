@@ -142,20 +142,20 @@ def render_navigation():
             <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>CAREER ASSISTANT</p>
         </div>
         <style>
-            /* Custom Style for Home (Button 1) and Dev Console (Button 5) in Sidebar */
-            section[data-testid="stSidebar"] .stButton:nth-of-type(1) button {
+            /* TARGETING: Use the marker span to find the immediately following button container */
+            div:has(span#home-btn-marker) + div button {
                 background-color: #00f2c3 !important;
                 color: #FFFFFF !important;
                 border: none !important;
             }
-            section[data-testid="stSidebar"] .stButton:nth-of-type(5) button {
+            div:has(span#dev-btn-marker) + div button {
                 background-color: #00f2c3 !important;
                 color: #FFFFFF !important;
                 border: none !important;
             }
-            /* Hover effect override */
-            section[data-testid="stSidebar"] .stButton:nth-of-type(1) button:hover,
-            section[data-testid="stSidebar"] .stButton:nth-of-type(5) button:hover {
+            /* Hover effects */
+            div:has(span#home-btn-marker) + div button:hover,
+            div:has(span#dev-btn-marker) + div button:hover {
                 background-color: #00c8a0 !important;
                 color: #FFFFFF !important;
             }
@@ -166,7 +166,8 @@ def render_navigation():
         # Navigation Buttons
         current_page = st.session_state.get("page", "Landing")
         
-        # Home Button (Separated)
+        # Home Button (Separated) with Marler
+        st.markdown('<span id="home-btn-marker"></span>', unsafe_allow_html=True)
         btn_type = "primary" if current_page == "Landing" else "secondary"
         if st.button("Home", key="nav_Landing", type=btn_type, use_container_width=True):
             st.session_state["page"] = "Landing"
@@ -193,7 +194,8 @@ def render_navigation():
         # Spacer (Large)
         st.markdown("<div style='height: 1.5rem;'></div>", unsafe_allow_html=True)
 
-        # Dev Console (Separated)
+        # Dev Console (Separated) with Marker
+        st.markdown('<span id="dev-btn-marker"></span>', unsafe_allow_html=True)
         btn_type = "primary" if current_page == "Debugger" else "secondary"
         if st.button("Dev Console", key="nav_Debugger", type=btn_type, use_container_width=True):
             st.session_state["page"] = "Debugger"
@@ -261,28 +263,22 @@ def render_debug_page():
             <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>DEBUGGER CONSOLE</p>
         </div>
         <style>
-            /* Custom Style for Home (Button 1) and Dev Console (Button 5) in Sidebar */
-            section[data-testid="stSidebar"] .stButton:nth-of-type(1) button {{
+            /* TARGETING: Use the marker span to find the immediately following button container */
+            div:has(span#dev-home-marker) + div button {
                 background-color: #00f2c3 !important;
                 color: #FFFFFF !important;
                 border: none !important;
-            }}
-            section[data-testid="stSidebar"] .stButton:nth-of-type(5) button {{
-                background-color: #00f2c3 !important;
-                color: #FFFFFF !important;
-                border: none !important;
-            }}
-            /* Hover effect override */
-            section[data-testid="stSidebar"] .stButton:nth-of-type(1) button:hover,
-            section[data-testid="stSidebar"] .stButton:nth-of-type(5) button:hover {{
+            }
+            div:has(span#dev-home-marker) + div button:hover {
                 background-color: #00c8a0 !important;
                 color: #FFFFFF !important;
-            }}
+            }
         </style>
         """, unsafe_allow_html=True)
         
         st.divider()
         
+        st.markdown('<span id="dev-home-marker"></span>', unsafe_allow_html=True)
         if st.button("Home", key="dev_home_btn", use_container_width=True):
              st.session_state["page"] = "Landing"
              st.rerun()
