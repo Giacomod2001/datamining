@@ -883,13 +883,7 @@ HARD_SKILLS = {
     "MATLAB": ["matlab", "simulink", "matlab/simulink", "mathworks"],
 
     # ========== LANGUAGES & TRANSLATION (DETAILED) ==========
-    "English": ["english", "inglese"],
-    "Italian": ["italian", "italiano"],
-    "French": ["french", "francese"],
-    "German": ["german", "tedesco"],
-    "Spanish": ["spanish", "spagnolo"],
-    "Chinese": ["chinese", "cinese"],
-    "Japanese": ["japanese", "giapponese"],
+    "Languages": ["english", "italian", "french", "german", "spanish", "chinese", "japanese", "inglese", "italiano", "francese", "tedesco", "spagnolo", "cinese", "giapponese", "lingue estere"],
     
     # Translation (Killer Keywords)
     "Translation Tech": ["cat tools", "trados studio", "memoq", "memsource", "wordfast", "terminology management"],
@@ -924,12 +918,7 @@ HARD_SKILLS = {
     "Data Analysis": ["data analysis", "pandas", "numpy", "power query", "analytics", "analisi dati", "analisi dei dati"],
     "Artificial Intelligence": ["artificial intelligence", "ai", "machine intelligence", "computational intelligence", "cognitive computing", "generative ai", "llm", "large language models"],
     "Machine Learning": ["machine learning", "ml", "deep learning", "neural networks", "predictive modeling", "tensorflow", "pytorch", "scikit-learn", "xgboost", "automl"],
-    "Power BI": ["power bi", "microsoft power bi"],
-    "Looker": ["looker"],
-    "Looker Studio": ["looker studio", "google data studio", "google looker studio"],
-    "Qlik": ["qlik", "qlikview", "qliksense"],
-    "Domo": ["domo"],
-    "Data Visualization": ["data visualization", "visualization", "visualizzazione dati"],
+    "Visualization": ["power bi", "looker", "qlik", "domo", "google data studio", "looker studio", "google looker studio", "data visualization"],
     "Tableau": ["tableau", "tableau desktop", "tableau server", "tableau prep", "tableau public"],
     "Big Data": ["hadoop", "spark", "hive", "databricks", "snowflake", "redshift", "bigquery"],
     "Google Analytics": ["google analytics", "ga4", "google analytics 4", "universal analytics", "web analytics"],
@@ -1440,4 +1429,47 @@ JOB_ROLE_METADATA = {
     "Tax Consultant": {"category": "Finance", "client_facing": True, "remote_friendly": True, "international": False, "dynamic": False, "creative": False},
     "Economist": {"category": "Finance", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
 }
-ML_MODELS = {}
+ML_MODELS = {
+    "Authorization": ["oauth", "jwt", "sso", "saml", "openid connect", "auth0", "okta"],
+    
+    # ========== LANGUAGES & TRANSLATION (DETAILED) ==========
+    "Languages": ["english", "italian", "french", "german", "spanish", "chinese", "japanese", "inglese", "italiano", "francese", "tedesco", "spagnolo", "cinese", "giapponese", "lingue estere"],
+    
+    # Translation (Killer Keywords)
+    "Translation Tech": ["cat tools", "trados studio", "memoq", "memsource", "wordfast", "terminology management"],
+    "Specialized Translation": ["legal translation", "biomedical translation", "patent translation", "technical translation", "financial translation"],
+    "Localization": ["localization", "l10n", "internationalization", "i18n", "software localization", "game localization", "transcreation"],
+    "Post-Editing": ["mtpe", "machine translation post-editing", "neural machine translation"],
+
+    # Interpreting (Killer Keywords)
+    "Interpreting Modes": ["simultaneous interpreting", "consecutive interpreting", "chuchotage", "liaison interpreting"],
+    "Remote Interpreting": ["rsi", "remote simultaneous interpreting", "kudo", "interpretfy", "zoom interpretation"],
+    
+    # ========== HUMAN RESOURCES (DETAILED) ==========
+    # Talent Acquisition (Killer Keywords)
+    "Sourcing": ["boolean search", "x-ray search", "github sourcing", "stackoverflow sourcing", "talent mapping"],
+    "Recruitment Marketing": ["employer branding", "career page optimization", "recruitment analytics", "candidate experience"],
+    "Assessment": ["psychometric testing", "assessment centers", "behavioral interviewing", "star method", "coding challenges"],
+    
+    # Comp & Ben (Killer Keywords)
+    "Compensation": ["salary benchmarking", "job grading", "hay method", "mercer", "towers watson", "executive compensation"],
+    "Benefits": ["benefits administration", "welfare plans", "pension schemes", "health insurance", "total rewards"],
+
+    # ========== SUPPLY CHAIN & LOGISTICS (DETAILED) ==========
+    "Supply Chain": ["supply chain management", "scm"],
+    "Planning (Killer Keywords)": ["demand planning", "s&op", "sales and operations planning", "mrp ii", "inventory optimization", "safety stock analysis"],
+    "Procurement (Killer Keywords)": ["strategic sourcing", "category management", "rfq/rfp management", "supplier relationship management", "srm", "contract negotiation"],
+    "Logistics (Killer Keywords)": ["freight forwarding", "incoterms 2020", "last mile delivery", "fleet telematics", "reverse logistics", "wms configuration"],
+
+    # ========== DATA & ANALTYICS (STANDARD) ==========
+    "Excel": ["excel", "microsoft excel", "advanced excel", "excel advanced", "vba", "pivot table", "vlookup", "xlookup", "fogli di calcolo", "spreadsheet"],
+    "Reporting": ["reporting", "reportistica", "business reporting", "data reporting", "generazione report", "reports", "dashboarding"],
+    "Statistics": ["statistics", "statistica", "statistical analysis", "analisi statistica", "probabilità", "inferenza statistica"],
+    "Data Analysis": ["data analysis", "pandas", "numpy", "power query", "analytics", "analisi dati", "analisi dei dati"],
+    "Artificial Intelligence": ["artificial intelligence", "ai", "machine intelligence", "computational intelligence", "cognitive computing", "generative ai", "llm", "large language models"],
+    "Machine Learning": ["machine learning", "ml", "deep learning", "neural networks", "predictive modeling", "tensorflow", "pytorch", "scikit-learn", "xgboost", "automl"],
+    "Visualization": ["power bi", "looker", "qlik", "domo", "google data studio", "looker studio", "google looker studio", "data visualization"],
+    "Tableau": ["tableau", "tableau desktop", "tableau server", "tableau prep", "tableau public"],
+    "Big Data": ["hadoop", "spark", "hive", "databricks", "snowflake", "redshift", "bigquery"],
+    "Google Analytics": ["google analytics", "ga4", "google analytics 4", "universal analytics", "web analytics"],
+}

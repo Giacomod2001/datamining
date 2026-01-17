@@ -50,16 +50,13 @@ class TestSkillGapLogic(unittest.TestCase):
         self.assertIn("Tableau", result["transferable"])
         self.assertNotIn("Tableau", result["missing_hard"])
         
-        # Tableau matches as Transferable (Yellow)
-        self.assertNotIn("Tableau", result["matching_hard"]) 
-        self.assertIn("Tableau", result["transferable"])
+        # With aggregated Visualization key, both Looker Studio and Tableau map to 'Visualization'
+        # So it becomes a Direct Match (Green)
+        self.assertIn("Visualization", result["matching_hard"])
         self.assertNotIn("Tableau", result["missing_hard"])
         
-        # Scoring: 
-        # Tableau (Transferable) = 0.5
-        # likely also matches "Data Visualization" or "BI Tools" (Direct/Inferred) = 1.0 each
-        # So score will be > 50%.
-        self.assertGreaterEqual(result["match_percentage"], 50.0)
+        # Score calculation: 100% match
+        self.assertAlmostEqual(result["match_percentage"], 100.0)
 
     def test_missing_match(self):
         """Test Case 4: Missing (Red)"""
