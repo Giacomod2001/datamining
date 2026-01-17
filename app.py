@@ -215,8 +215,6 @@ def render_navigation():
                 
             st.divider()
         
-        # Demo Controls
-        # Demo Controls - Visible in operational pages AND Debugger
         if current_page != "Landing":
             if st.session_state.get("demo_mode"):
                 if st.button("Disable Test Mode", type="secondary", use_container_width=True):
@@ -227,35 +225,36 @@ def render_navigation():
                     st.session_state["cl_text"] = ""
                     st.rerun()
             else:
-            else:
                 st.markdown("**Load Demo Data**")
                 c1, c2 = st.columns(2)
                 with c1:
                     if st.button("Marketing", type="primary", use_container_width=True, help="93% Match Case Study"):
-                         st.session_state["demo_mode"] = True
-                         st.session_state["cv_text"] = styles.get_demo_cv()
-                         st.session_state["jd_text"] = styles.get_demo_jd()
-                         st.session_state["proj_text"] = styles.get_demo_project()
-                         st.session_state["cl_text"] = styles.get_demo_cover_letter()
-                         st.session_state["show_project_toggle"] = True
-                         st.session_state["show_cover_letter"] = True
-                         if current_page == "CV Builder":
-                             st.session_state["trigger_demo_load"] = True
-                         st.rerun()
+                        st.session_state["demo_mode"] = True
+                        st.session_state["cv_text"] = styles.get_demo_cv()
+                        st.session_state["jd_text"] = styles.get_demo_jd()
+                        st.session_state["proj_text"] = styles.get_demo_project()
+                        st.session_state["cl_text"] = styles.get_demo_cover_letter()
+                        st.session_state["show_project_toggle"] = True
+                        st.session_state["show_cover_letter"] = True
+                        if current_page == "CV Builder":
+                            st.session_state["trigger_demo_load"] = True
+                        st.rerun()
                 with c2:
                     if st.button("Energy", type="primary", use_container_width=True, help="100% Match Case Study"):
-                         st.session_state["demo_mode"] = True
-                         st.session_state["cv_text"] = styles.get_energy_demo_cv()
-                         st.session_state["jd_text"] = styles.get_energy_demo_jd()
-                         st.session_state["proj_text"] = styles.get_energy_demo_project()
-                         st.session_state["cl_text"] = styles.get_energy_demo_cover_letter()
-                         st.session_state["show_project_toggle"] = True
-                         st.session_state["show_cover_letter"] = True
-                         if current_page == "CV Builder":
-                             st.session_state["trigger_demo_load"] = True
-                         st.rerun()
+                        st.session_state["demo_mode"] = True
+                        st.session_state["cv_text"] = styles.get_energy_demo_cv()
+                        st.session_state["jd_text"] = styles.get_energy_demo_jd()
+                        st.session_state["proj_text"] = styles.get_energy_demo_project()
+                        try:
+                            st.session_state["cl_text"] = styles.get_energy_demo_cover_letter()
+                        except AttributeError:
+                            st.session_state["cl_text"] = styles.get_demo_cover_letter()
+                        st.session_state["show_project_toggle"] = True
+                        st.session_state["show_cover_letter"] = True
+                        if current_page == "CV Builder":
+                            st.session_state["trigger_demo_load"] = True
+                        st.rerun()
 
-             
         st.markdown("<div style='margin-top: 2rem; color: #666; font-size: 0.8em;'>v2.1 | Local Mode</div>", unsafe_allow_html=True)
 
 def render_debug_page():
