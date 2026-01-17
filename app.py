@@ -1568,15 +1568,15 @@ def render_landing_page():
     """
     render_navigation() # GLOBAL NAVBAR
     
-    # HERO SECTION
+    # HERO SECTION - centered with margin auto
     st.markdown("""
-    <div style='text-align: center; padding: 2rem 2rem 1rem 2rem;'>
+    <div style='text-align: center; padding: 2rem 0 1rem 0; width: 100%;'>
         <h1 style='font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; background: -webkit-linear-gradient(45deg, #0077B5, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>CareerMatch AI</h1>
     </div>
     """, unsafe_allow_html=True)
 
-    # Metrics Row
-    m1, m2, m3 = st.columns(3)
+    # Metrics Row - using spacer columns for centering
+    spacer1, m1, m2, m3, spacer2 = st.columns([0.5, 1, 1, 1, 0.5])
     with m1:
         st.markdown("""
         <div style="text-align: center;">
@@ -1599,9 +1599,9 @@ def render_landing_page():
         </div>
         """, unsafe_allow_html=True)
     
-    # FUNNEL DESCRIPTION
+    # FUNNEL DESCRIPTION - centered
     st.markdown("""
-    <div style='text-align: center; padding: 1.5rem 2rem; margin-top: 1rem;'>
+    <div style='text-align: center; padding: 1.5rem 0; margin-top: 1rem; width: 100%;'>
         <p style='color: #8b949e; font-size: 1rem; max-width: 700px; margin: 0 auto;'>
             <strong style='color: #c9d1d9;'>Your Career Journey:</strong> 
             Start by discovering your ideal career path, then build a tailored CV, and finally evaluate it against real job descriptions.
@@ -1609,8 +1609,8 @@ def render_landing_page():
     </div>
     """, unsafe_allow_html=True)
 
-    # NAVIGATION CARDS - 3 equal columns (Career Discovery FIRST)
-    col1, col2, col3 = st.columns(3)
+    # NAVIGATION CARDS - with spacer columns for centering
+    spacer1, col1, col2, col3, spacer2 = st.columns([0.25, 1, 1, 1, 0.25])
     
     # Custom CSS for cards
     card_style = """
