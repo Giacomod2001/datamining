@@ -1049,6 +1049,26 @@ SKILL_CLUSTERS = {
     
     # Databases
     "Databases": {"MySQL", "PostgreSQL", "MongoDB", "Oracle", "SQL Server", "SQLite", "Redis", "Cassandra"},
+    
+    # ==========================================================================
+    # NEW: Analytics & Spreadsheet Skills (Excel equivalency)
+    # ==========================================================================
+    "Spreadsheet & Analysis Tools": {"Excel", "Google Sheets", "Data Analysis", "Data Analytics", "Analytics", "Spreadsheets", "VLOOKUP", "Pivot Tables"},
+    
+    # NEW: Business Analysis Cluster
+    "Business Analysis": {"Business Analysis", "Data Analysis", "Analytics", "Requirements Analysis", "Business Intelligence", "Reporting", "KPI Analysis"},
+    
+    # NEW: Marketing Functions Cluster
+    "Marketing Functions": {"Campaign Management", "Digital Marketing", "Performance Marketing", "Marketing Automation", "Marketing Strategy", "Campaign Optimization", "Marketing Analytics"},
+    
+    # NEW: Finance/Budgeting Cluster  
+    "Finance & Budgeting": {"Budgeting", "Financial Analysis", "Budget Management", "Financial Planning", "Cost Analysis", "ROI Analysis", "P&L Management"},
+    
+    # NEW: Statistics Cluster
+    "Statistical Analysis": {"Statistics", "Statistical Analysis", "Data Analysis", "Quantitative Analysis", "Analytics", "A/B Testing", "Hypothesis Testing"},
+    
+    # NEW: Strategy Cluster
+    "Strategy Skills": {"Strategy", "Strategic Planning", "Business Strategy", "Go-to-Market", "Market Analysis", "Competitive Analysis"},
 }
 
 PROJECT_BASED_SKILLS = {
