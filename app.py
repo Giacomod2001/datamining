@@ -49,10 +49,12 @@ import importlib
 
 # Force reload modules to ensure latest code is used
 import constants
+import knowledge_base  # NEW: Force reload to pick up INFERENCE_RULES
 import ml_utils
 import styles
 
 importlib.reload(constants)
+importlib.reload(knowledge_base) # NEW: Force reload
 importlib.reload(ml_utils)
 importlib.reload(styles)
 
@@ -678,6 +680,13 @@ def render_debug_page():
                         # Use HTML chips for better visualization
                         html_content = '<div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">'
                         for missing, present in res["transferable"].items():
+                            # missing = "Tableau"
+                            # present = ["Visualization"]
+                            # TO_DISPLAY: Just "Tableau"
+                            
+                            # Clean string format just in case
+                            skill_label = str(missing).split("<-")[0].strip() # Safety cleaner
+                            
                             tooltip = f"Covered by: {', '.join(present)}"
                             html_content += f'''
                             <div title="{tooltip}" style="
@@ -688,7 +697,7 @@ def render_debug_page():
                                 border-radius: 12px; 
                                 font-size: 0.9em;
                                 cursor: help;">
-                                {missing}
+                                {skill_label}
                             </div>
                             '''
                         html_content += '</div>'
