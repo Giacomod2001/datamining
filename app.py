@@ -1568,30 +1568,11 @@ def render_landing_page():
     """
     render_navigation() # GLOBAL NAVBAR
     
-    # 2. HERO SECTION
-    # Reduced top padding (4rem -> 2rem)
+    # HERO SECTION with beta note as subtitle
     st.markdown("""
-    <div style='text-align: center; padding: 2rem 2rem 3rem 2rem;'>
-        <h1 style='font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem; background: -webkit-linear-gradient(45deg, #0077B5, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>CareerMatch AI</h1>
-        <p style='font-size: 1.5rem; color: #8b949e; margin-bottom: 2rem;'>Advanced Data Mining & Text Analytics for Career Optimization</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # BETA DISCLAIMER BANNER
-    st.markdown("""
-    <div style='background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 152, 0, 0.1) 100%); 
-                border: 1px solid rgba(255, 193, 7, 0.4); 
-                border-radius: 12px; 
-                padding: 1rem 1.5rem; 
-                margin: 0 2rem 1.5rem 2rem;
-                text-align: center;'>
-        <p style='margin: 0; color: #ffc107; font-weight: 600; font-size: 1rem;'>
-            App in Continuous Development
-        </p>
-        <p style='margin: 0.5rem 0 0 0; color: #8b949e; font-size: 0.85rem;'>
-            A <strong>0% match</strong> may be due to ongoing model and database updates covering new sectors. 
-            Please try again later or contact us at <a href='mailto:dellacquagiacomo@gmail.com' style='color: #00A0DC;'>dellacquagiacomo@gmail.com</a>
-        </p>
+    <div style='text-align: center; padding: 2rem 2rem 1rem 2rem;'>
+        <h1 style='font-size: 3.5rem; font-weight: 800; margin-bottom: 0.5rem; background: -webkit-linear-gradient(45deg, #0077B5, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>CareerMatch AI</h1>
+        <p style='font-size: 0.9rem; color: #ffc107; margin-bottom: 1.5rem;'>App in Continuous Development - A 0% match may indicate the model doesn't yet cover your sector</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -1618,13 +1599,21 @@ def render_landing_page():
             <p style="color: #a0a0a0; font-size: 14px;">Sectors Covered</p>
         </div>
         """, unsafe_allow_html=True)
-        
-    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # FUNNEL DESCRIPTION
+    st.markdown("""
+    <div style='text-align: center; padding: 1.5rem 2rem; margin-top: 1rem;'>
+        <p style='color: #8b949e; font-size: 1rem; max-width: 700px; margin: 0 auto;'>
+            <strong style='color: #c9d1d9;'>Your Career Journey:</strong> 
+            Start by discovering your ideal career path, then build a tailored CV, and finally evaluate it against real job descriptions.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    # 3. NAVIGATION CARDS - 3 equal columns
+    # NAVIGATION CARDS - 3 equal columns (Career Discovery FIRST)
     col1, col2, col3 = st.columns(3)
     
-    # Custom CSS for cards to ensure equal height and centering
+    # Custom CSS for cards
     card_style = """
     <div style='text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: space-between;'>
         <div>
@@ -1634,30 +1623,33 @@ def render_landing_page():
     </div>
     """
     
+    # 1. CAREER DISCOVERY (first)
     with col1:
+        with st.container(border=True):
+            st.markdown(card_style.format("Career Discovery", "Not sure what jobs fit you? Answer a few questions about your preferences and let AI suggest the best career paths."), unsafe_allow_html=True)
+            if st.button("Discover My Career", use_container_width=True, type="primary"):
+                st.session_state["page"] = "Career Discovery"
+                st.rerun()
+    
+    # 2. CV BUILDER (second)
+    with col2:
         with st.container(border=True):
             st.markdown(card_style.format("CV Builder", "Build a professional, ATS-optimized CV with our AI-powered tool. Get real-time suggestions and tailored content."), unsafe_allow_html=True)
             if st.button("Open CV Builder", use_container_width=True):
                 st.session_state["page"] = "CV Builder"
                 st.rerun()
 
-    with col2:
+    # 3. CV EVALUATION (third)
+    with col3:
         with st.container(border=True):
             st.markdown(card_style.format("CV Evaluation", "Unlock your career potential with deep gap analysis. Get AI-driven advice to bridge skill gaps."), unsafe_allow_html=True)
             if st.button("Start Evaluation", use_container_width=True):
                 st.session_state["page"] = "CV Evaluation"
                 st.rerun()
 
-    with col3:
-        with st.container(border=True):
-            st.markdown(card_style.format("Career Discovery", "Not sure what jobs fit you? Answer a few questions about your preferences and let AI suggest the best career paths."), unsafe_allow_html=True)
-            if st.button("Discover My Career", use_container_width=True, type="primary"):
-                st.session_state["page"] = "Career Discovery"
-                st.rerun()
-
-    # Footer
+    # Footer with contact
     st.markdown("---")
-    st.markdown("<div style='text-align: center; color: #666;'>Course: Data Mining & Text Analytics | Prof. Alessandro Bruno | A.A. 2025-2026</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #666; font-size: 0.85rem;'>Questions? Contact <a href='mailto:dellacquagiacomo@gmail.com' style='color: #00A0DC;'>dellacquagiacomo@gmail.com</a></div>", unsafe_allow_html=True)
 
 
 
