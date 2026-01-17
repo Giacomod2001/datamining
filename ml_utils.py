@@ -2258,7 +2258,8 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     missing_soft = job_soft - cv_soft
 
     score_points = len(matching_hard) + (len(transferable) * 0.5)
-    match_pct = score_points / len(job_hard) * 100 if job_hard else 0
+    # Use ORIGINAL job_hard count (not expanded) for accurate percentage
+    match_pct = min(100.0, score_points / len(job_hard) * 100) if job_hard else 0
 
     # 7. Seniority Analysis
     cv_level, _ = detect_seniority(cv_text)
