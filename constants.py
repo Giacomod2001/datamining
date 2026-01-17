@@ -196,6 +196,18 @@ INFERENCE_RULES = {
     "GAAP": ["Accounting"],
     "Audit": ["Compliance"],
     "Transfer Pricing": ["Taxation"],
+
+    # --- ENERGY ENGINEERING & TRADING (NEW) ---
+    "ENTSO-E": ["Energy Markets", "Grid Operators"],
+    "TERNA": ["Grid Operators", "Energy Markets"],
+    "GME": ["Energy Markets", "Grid Operators"],
+    "Hypatia": ["Energy Software", "Renewable Energy"],
+    "Thermodynamics": ["Energy & Renewables"],
+    "NASA CEA": ["Aerospace Propulsion", "Combustion"],
+    "Balancing Market": ["Energy Markets", "Energy Trading"],
+    "PVsyst": ["Renewable Energy", "Energy Software"],
+    "MATLAB": ["Simulation", "Data Analysis"],
+    "Simulink": ["MATLAB", "Simulation"],
 }
 
 # =============================================================================
@@ -384,6 +396,16 @@ HARD_SKILLS = {
     "Renewable Energy": ["renewable energy", "solar pv", "photovoltaics", "wind energy", "pvsyst", "helioscope", "windsim"],
     "Grid & Storage": ["smart grid", "energy storage", "bess", "battery management systems", "high voltage", "power systems analysis"],
     "Sustainability": ["energy efficiency", "carbon footprint", "lca", "life cycle assessment", "leed", "energy audit"],
+    
+    # ========== ENERGY ENGINEERING & TRADING (NEW) ==========
+    "Energy Markets": ["energy markets", "power markets", "electricity markets", "wholesale market", "day-ahead", "intraday", "balancing market", "ancillary services", "mercato elettrico", "msd", "mgp", "mi"],
+    "Energy Trading": ["energy trading", "power trading", "commodity trading", "ppa", "power purchase agreement", "hedging", "price forecasting", "trading desk", "energy derivatives"],
+    "Grid Operators": ["entso-e", "terna", "gme", "gestore mercati", "tso", "transmission system operator", "gmme", "arera", "acer", "res integration"],
+    "Thermodynamics": ["thermodynamics", "termodinamica", "heat transfer", "cicli termodinamici", "brayton", "rankine", "heat recovery", "hrsg", "steam cycle", "gas cycle"],
+    "Aerospace Propulsion": ["propulsion", "propulsione", "turbomachinery", "gas turbine", "jet engine", "combustion", "nasa cea", "aerospace systems", "aerospace engineering", "ingegneria aerospaziale"],
+    "Energy Forecasting": ["load forecasting", "demand forecasting", "price forecasting", "renewable forecasting", "time series forecasting", "predictive models", "predictive analytics", "quantitative analysis"],
+    "Energy Software": ["hypatia", "pvsyst", "homer", "retscreen", "energyplus", "openmodelica", "plexos", "psse", "digsilent"],
+    "MATLAB": ["matlab", "simulink", "matlab/simulink", "mathworks"],
 
     # ========== LANGUAGES & TRANSLATION (DETAILED) ==========
     "Languages": ["english", "italian", "french", "german", "spanish", "chinese", "japanese"],
@@ -821,6 +843,16 @@ JOB_ARCHETYPES = {
     "Tax Consultant": {"Taxation", "Law", "Problem Solving", "Attention to Detail", "Communication"},
     "Transfer Pricing Specialist": {"Taxation", "Economics", "Writing", "Data Analysis", "Excel"},
     "Economist": {"Economics", "Data Analysis", "Statistics", "Research", "Writing"},
+
+    # ========== ENERGY ENGINEERING & TRADING (NEW ARCHETYPES) ==========
+    "Energy Engineer": {"Thermodynamics", "Energy & Renewables", "MATLAB", "Simulation", "Excel", "Python"},
+    "Energy Analyst": {"Energy Markets", "Data Analysis", "Python", "Excel", "Energy Forecasting", "SQL"},
+    "Energy Trader": {"Energy Trading", "Energy Markets", "Python", "Financial Analysis", "Risk Management", "Excel"},
+    "Power Market Analyst": {"Energy Markets", "Grid Operators", "Python", "Energy Forecasting", "Data Analysis", "Statistics"},
+    "Energy Consultant": {"Energy & Renewables", "Data Analysis", "Excel", "Project Management", "Communication", "Sustainability"},
+    "Aerospace Engineer": {"Aerospace Propulsion", "MATLAB", "Thermodynamics", "Simulation", "CAD", "Python"},
+    "Gas Turbine Engineer": {"Thermodynamics", "Aerospace Propulsion", "Simulation", "Mechanical Engineering", "MATLAB"},
+    "Quantitative Energy Analyst": {"Energy Markets", "Python", "Statistics", "Financial Analysis", "Energy Trading", "Machine Learning"},
 }
 
 # =============================================================================

@@ -2,6 +2,8 @@
 
 > AI-powered job search toolkit: CV-JD match scoring, skill gap analysis, smart CV Builder with suggestions, lifestyle-based Career Discovery, and personalized learning paths. Built with ML/NLP on Streamlit.
 
+> ⚠️ **Beta Notice**: This app is continuously updated. A **0% match** may indicate that your sector/role is not yet covered by our models. Please try again later or contact us at [dellacquagiacomo@gmail.com](mailto:dellacquagiacomo@gmail.com) for support.
+
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![License](https://img.shields.io/badge/License-PolyForm--NC-blue.svg)](LICENSE)

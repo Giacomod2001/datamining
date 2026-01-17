@@ -1576,6 +1576,24 @@ def render_landing_page():
         <p style='font-size: 1.5rem; color: #8b949e; margin-bottom: 2rem;'>Advanced Data Mining & Text Analytics for Career Optimization</p>
     </div>
     """, unsafe_allow_html=True)
+    
+    # BETA DISCLAIMER BANNER
+    st.markdown("""
+    <div style='background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 152, 0, 0.1) 100%); 
+                border: 1px solid rgba(255, 193, 7, 0.4); 
+                border-radius: 12px; 
+                padding: 1rem 1.5rem; 
+                margin: 0 2rem 1.5rem 2rem;
+                text-align: center;'>
+        <p style='margin: 0; color: #ffc107; font-weight: 600; font-size: 1rem;'>
+            🚧 App in Continuous Development
+        </p>
+        <p style='margin: 0.5rem 0 0 0; color: #8b949e; font-size: 0.85rem;'>
+            A <strong>0% match</strong> may be due to ongoing model and database updates covering new sectors. 
+            Please try again later or contact us at <a href='mailto:dellacquagiacomo@gmail.com' style='color: #00A0DC;'>dellacquagiacomo@gmail.com</a>
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
     # Metrics Row
     m1, m2, m3 = st.columns(3)
