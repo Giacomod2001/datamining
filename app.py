@@ -1586,7 +1586,7 @@ def render_landing_page():
                 margin: 0 2rem 1.5rem 2rem;
                 text-align: center;'>
         <p style='margin: 0; color: #ffc107; font-weight: 600; font-size: 1rem;'>
-            🚧 App in Continuous Development
+            App in Continuous Development
         </p>
         <p style='margin: 0.5rem 0 0 0; color: #8b949e; font-size: 0.85rem;'>
             A <strong>0% match</strong> may be due to ongoing model and database updates covering new sectors. 

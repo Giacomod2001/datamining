@@ -854,6 +854,14 @@ JOB_ARCHETYPES = {
     "Aerospace Engineer": {"Aerospace Propulsion", "MATLAB", "Thermodynamics", "Simulation", "CAD", "Python"},
     "Gas Turbine Engineer": {"Thermodynamics", "Aerospace Propulsion", "Simulation", "Mechanical Engineering", "MATLAB"},
     "Quantitative Energy Analyst": {"Energy Markets", "Python", "Statistics", "Financial Analysis", "Energy Trading", "Machine Learning"},
+    
+    # ========== GENERIC ARCHETYPES (for single-word matching) ==========
+    "Engineer": {"Programming", "Problem Solving", "Technical Writing", "Excel", "Project Management"},
+    "Analyst": {"Data Analysis", "Excel", "SQL", "Presentation", "Problem Solving"},
+    "Trader": {"Financial Analysis", "Risk Management", "Excel", "Communication", "Stress Management"},
+    "Developer": {"Programming", "Git", "Problem Solving", "Testing", "Agile"},
+    "Consultant": {"Communication", "Presentation", "Problem Solving", "Excel", "Project Management"},
+    "Manager": {"Leadership", "Project Management", "Communication", "Strategic Planning", "Team Management"},
 }
 
 # =============================================================================
