@@ -2167,39 +2167,103 @@ def detect_language(text: str) -> str:
 # =============================================================================
 def analyze_gap(cv_text: str, job_text: str) -> Dict:
     """
-    COMPLETE REWRITE - Ultra-simple skill gap analysis.
+    STRUCTURED SKILL GAP ANALYSIS v2.0
     
-    Logic:
-    - MATCHED (green) = Skills in BOTH CV and JD
-    - MISSING (red) = Skills in JD but NOT in CV
-    - EXTRA (gray) = Skills in CV but NOT in JD
-    - Score = len(matched) / len(jd_skills) * 100
+    Implements 4-step hierarchical matching:
+    1. DIRECT (Green): Exact match (CV: Python -> JD: Python)
+    2. INFERRED (Green): Hierarchy match (CV: Python -> JD: Programming)
+    3. TRANSFERABLE (Yellow): Cluster match (CV: Tableau -> JD: Power BI)
+    4. MISSING (Red): No match found
+    
+    Scoring:
+    - Direct/Inferred: 1.0 points
+    - Transferable: 0.5 points
+    - Max Score: 100%
     """
+    from .knowledge_base import SKILL_CLUSTERS, INFERENCE_RULES
+    
     # 1. Extract skills
     cv_hard, cv_soft = extract_skills_from_text(cv_text)
     job_hard, job_soft = extract_skills_from_text(job_text, is_jd=True)
 
-    # 2. Normalize to lowercase for comparison
+    # 2. Normalize inputs
     cv_hard_lower = {s.lower() for s in cv_hard}
     job_hard_lower = {s.lower() for s in job_hard}
     
-    # 3. Simple set operations
-    matched_lower = cv_hard_lower & job_hard_lower
-    missing_lower = job_hard_lower - cv_hard_lower
-    extra_lower = cv_hard_lower - job_hard_lower
+    # Initialize result sets
+    matched = set()      # Green (Direct + Inferred)
+    transferable = {}    # Yellow (Missing Skill -> Content)
+    missing = set()      # Red
     
-    # 4. Map back to original casing for display
-    matching_hard = {s for s in (cv_hard | job_hard) if s.lower() in matched_lower}
-    missing_hard = {s for s in job_hard if s.lower() in missing_lower}
-    extra_hard = {s for s in cv_hard if s.lower() in extra_lower}
+    # 3. Step-by-Step Matching
+    score_points = 0.0
     
-    # 5. Soft skills (same logic)
+    for jd_skill in job_hard:
+        jd_norm = jd_skill.lower()
+        
+        # STEP 1: DIRECT MATCH (Green)
+        if jd_norm in cv_hard_lower:
+            matched.add(jd_skill)
+            score_points += 1.0
+            continue
+            
+        # STEP 2: INFERRED MATCH (Green)
+        # Check if user has a "child" skill that implies this "parent" skill
+        # e.g., JD wants "Programming" -> User has "Python" (Inference: Python -> Programming)
+        inferred_match = False
+        for cv_skill in cv_hard:
+            parents = INFERENCE_RULES.get(cv_skill, [])
+            if any(p.lower() == jd_norm for p in parents):
+                matched.add(jd_skill) # Mark as matched (Green)
+                score_points += 1.0
+                inferred_match = True
+                break
+        if inferred_match:
+            continue
+            
+        # STEP 3: TRANSFERABLE MATCH (Yellow)
+        # Check if user has an "equivalent" skill in the same cluster
+        # e.g., JD wants "Power BI" -> User has "Tableau"
+        trans_match = False
+        for cluster_name, cluster_skills in SKILL_CLUSTERS.items():
+            cluster_lower = {s.lower() for s in cluster_skills}
+            
+            # If JD skill is in this cluster
+            if jd_norm in cluster_lower:
+                # Check if user has ANY other skill from this cluster
+                user_cluster_skills = cv_hard_lower.intersection(cluster_lower)
+                if user_cluster_skills:
+                    # Found a transferable skill!
+                    # Map back to original casing for display
+                    found_skills = {s for s in cv_hard if s.lower() in user_cluster_skills}
+                    transferable[jd_skill] = list(found_skills)
+                    score_points += 0.5
+                    trans_match = True
+                    break
+        if trans_match:
+            continue
+            
+        # STEP 4: MISSING (Red)
+        missing.add(jd_skill)
+
+    # 4. Extra Skills (Gray)
+    # Skills in CV that were not used for any match
+    # Note: determining "used" skills strictly is complex, so we fallback to simple set diff for "extra"
+    # This is purely informational.
+    extra_hard = {s for s in cv_hard if s.lower() not in job_hard_lower}
+
+    # 5. Soft Skills (Direct match only)
     matching_soft = cv_soft & job_soft
     missing_soft = job_soft - cv_soft
     
-    # 6. Calculate score (simple percentage)
-    match_pct = len(matching_hard) / len(job_hard) * 100 if job_hard else 0
-    
+    # 6. Final Score Calculation
+    # Cap score at 100% (handling potential edge cases with definitions)
+    total_jd_skills = len(job_hard)
+    if total_jd_skills > 0:
+        match_pct = min(100.0, (score_points / total_jd_skills) * 100)
+    else:
+        match_pct = 0.0
+
     # 7. Seniority Analysis
     cv_level, _ = detect_seniority(cv_text)
     jd_level, _ = detect_seniority(job_text)
@@ -2215,13 +2279,13 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
 
     return {
         "match_percentage": match_pct,
-        "matching_hard": matching_hard,
-        "missing_hard": missing_hard,
-        "project_review": set(),  # Only populated by analyze_gap_with_project
-        "transferable": {},  # Not used in simple version
+        "matching_hard": matched,
+        "missing_hard": missing,
+        "transferable": transferable,
         "extra_hard": extra_hard,
         "matching_soft": matching_soft,
         "missing_soft": missing_soft,
+        "project_review": set(),
         "seniority_info": {
             "cv_level": cv_level,
             "jd_level": jd_level,
@@ -2274,14 +2338,23 @@ def analyze_gap_with_project(cv_text: str, job_text: str, project_text: str) -> 
     )
     
     # 8. Update Skills if Project Fills Gaps
+    # Note: Project verification is separate from "Transferable" logic
     newly_found_in_project = res["missing_hard"].intersection(proj_hard)
     if newly_found_in_project:
         res["matching_hard"].update(newly_found_in_project)
         res["missing_hard"] = res["missing_hard"] - newly_found_in_project
         
-        # Recalculate Match Score
-        score_points = len(res["matching_hard"]) + (len(res["transferable"]) * 0.5) + (len(res["project_review"]) * 0.3)
-        res["match_percentage"] = score_points / len(job_hard) * 100 if job_hard else 0
+        # Recalculate Match Score with new findings
+        # Score = (Direct + Inferred) + (Transferable * 0.5) + (Project Verified * 0.3 bonus)
+        # Note: newly_found_in_project are now considered "Matched" (Direct) effectively via Project
+        
+        total_jd = len(job_hard)
+        if total_jd > 0:
+            direct_points = len(res["matching_hard"]) * 1.0
+            trans_points = len(res["transferable"]) * 0.5
+            # Add small bonus for project context if desired, or keep simple
+            total_points = direct_points + trans_points
+            res["match_percentage"] = min(100.0, (total_points / total_jd) * 100)
     
     # 9. Add Portfolio Intelligence to Results
     res["project_verified"] = project_verified

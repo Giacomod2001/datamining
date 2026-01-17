@@ -635,446 +635,105 @@ JOB_ARCHETYPES_EXTENDED = {
 # SECTION 2: ENHANCED INFERENCE SYSTEM
 # =============================================================================
 
-# 2.1 MULTI-LEVEL INFERENCE CHAINS
-INFERENCE_CHAINS = {
-    "BigQuery": {
-        "tier_1": ["SQL", "Data Warehousing"],
-        "tier_2": ["Python for ETL", "dbt", "Analytics Engineering"],
-        "tier_3": ["Data Governance", "Cost Optimization", "ML Infrastructure"],
-        "lateral_pivot": ["Snowflake", "Redshift", "Apache Spark"],
-        "business_context": ["BI Tools", "KPI Development", "Financial Modeling"],
-        "prerequisite_order": ["SQL", "Cloud Fundamentals", "BigQuery"],
-        "market_demand_trend": "↑ growing",
-    },
-    
-    "Energy Trading": {
-        "foundational": ["Financial Markets", "Commodities", "Risk Management"],
-        "technical": ["Python", "Time Series Forecasting", "Statistical Modeling"],
-        "domain": ["Power Markets", "ENTSO-E", "TERNA", "PPA", "Hedging"],
-        "advanced": ["Machine Learning", "Market Microstructure", "Quantitative Finance"],
-        "soft_skills": ["Negotiation", "Stress Management", "Decision-Making"],
-        "prerequisite_order": ["Finance Foundation", "Markets", "Trading Basics", "Domain"],
-        "market_demand_trend": "↑ emerging (green transition)",
-    }
-}
-
-# 2.2 SKILL TRANSLATION MAP (Career Pivot)
-SKILL_TRANSLATION_MAP = {
-    "Campaign Management": {
-        "equivalent_in": {
-            "Product Management": "Release Planning & Feature Rollout",
-            "Engineering": "Project Scoping & Sprint Planning",
-            "Finance": "Budget Cycle Management & Forecasting",
-            "Supply Chain": "Demand Planning & Allocation",
-        },
-        "transferability_score": 0.85, 
-        "learning_gap": ["Cross-functional communication", "Metrics framework"]
-    }
-}
-
 # =============================================================================
-# SECTION 3: SKILL LEVEL & LEARNING PATHS
+# SECTION 2: ENHANCED INFERENCE SYSTEM
 # =============================================================================
 
-# 3.1 SENIORITY MAPPING
-SENIORITY_MAPPING = {
-    "Python": {
-        "entry": {
-            "description": "Scripting & automation basics",
-            "criteria": ["Syntax knowledge", "Basic data structures", "Simple scripts"]
-        },
-        "mid": {
-            "description": "Production code & architecture awareness",
-            "criteria": ["OOP concepts", "Error handling", "Testing", "Performance"]
-        },
-        "senior": {
-            "description": "System design & technical leadership",
-            "criteria": ["Architecture decisions", "Mentoring", "Production reliability", "Optimization"]
-        }
-    }
-}
-
-# 3.2 LEARNING PATHS
-LEARNING_PATHS = {
-    "Data Analytics_to_Data Science": {
-        "current_skills": ["SQL", "Excel", "Python basics", "Google Analytics"],
-        "gap_skills": [
-            {"skill": "Statistics", "resources": ["Andrew Ng course", "StatQuest"], "duration": "40h"},
-            {"skill": "Machine Learning", "resources": ["Fast.ai", "Kaggle"], "duration": "80h"},
-            {"skill": "Advanced Python", "resources": ["Hands-on ML book"], "duration": "60h"}
-        ],
-        "total_time": "~180-200 hours",
-        "estimated_salary_uplift": "+15-25%",
-        "job_titles_unlocked": ["Data Scientist", "ML Engineer"]
-    }
-}
-
-# =============================================================================
-# SECTION 4: GRANULAR EXTRACTION RULES
-# =============================================================================
-
-# 4.1 CONTEXT SIGNALS
-CONTEXT_SIGNALS = {
-    "depth_indicators": {
-        "lead": ["lead", "responsible for", "drive", "architect", "manage"],
-        "hands_on": ["develop", "build", "implement", "write code", "execute"],
-        "knowledge": ["understand", "knowledge of", "familiar with", "exposure to"],
-    },
-    
-    "seniority_from_jd": {
-        "entry": ["junior", "intern", "graduate", "entry level", "no experience"],
-        "mid": ["3-5 years", "mid-level", "experienced", "specialized"],
-        "senior": ["8+ years", "senior", "lead", "architect", "principal", "manager"],
-        "executive": ["director", "vp", "head of", "chief", "partner"]
-    }
-}
-
-# 4.2 DOMAIN EXTRACTION RULES
-DOMAIN_EXTRACTION_RULES = {
-    "Energy": {
-        "must_extract": ["Energy Markets", "Trading", "Power Systems", "TERNA", "GME"],
-        "context_words": ["dispatch", "balancing", "ancillary", "PPA", "hedge", "commodity"],
-        "synonyms": {
-            "Power": ["Electricity", "Grid", "Generation"],
-            "Trading": ["Commodity", "Hedging", "Risk Management"]
-        }
-    },
-    "Biotech": {
-        "must_extract": ["GCP", "Clinical Trials", "GMP", "Regulatory", "Quality"],
-        "context_words": ["manufacturing", "batch", "protocol", "compliance", "validation"],
-        "synonyms": {
-            "Quality": ["QA", "QC", "Quality Assurance"],
-            "Regulatory": ["FDA", "EMA", "Regulatory Affairs"]
-        }
-    }
-}
-
-# =============================================================================
-# SECTION 6: MARKET INTELLIGENCE
-# =============================================================================
-
-# 6.1 SKILL DEMAND MATRIX
-SKILL_DEMAND_MATRIX = {
-    "high_demand": [
-        ("Python", "↑ +12%"),
-        ("Data Engineering", "↑ +10%"),
-        ("Cloud Computing", "↑ +8%"),
-        ("Machine Learning", "↑ +6%"),
-        ("Energy Trading", "↑ +15% (emerging)"),
-        ("Renewable Energy", "↑ +10%"),
-        ("Clinical Operations", "↑ +5%")
-    ],
-    "emerging": [
-        ("GenAI", "↑ +180%"),
-        ("Sustainability Data", "↑ +25%"),
-        ("Edge AI", "↑ +40%"),
-    ],
-    "salary_impact": {
-        "high_demand": "+20-40%",
-        "emerging": "+15-30%",
-        "legacy": "-10-20%"
-    }
-}
-
-# =============================================================================
-# SECTION 8: ADVANCED FEATURES
-# =============================================================================
-
-# 8.1 SKILL DEPRECIATION
-SKILL_DEPRECIATION = {
-    "Python": "5 years",
-    "JavaScript": "3 years",
-    "GenAI": "6 months",
-    "Energy Markets": "2 years"
-}
-
-# 8.2 HIDDEN SKILL PATTERNS
-HIDDEN_SKILL_PATTERNS = {
-    "Startup scale-up": ["Adaptability", "Problem-solving", "Initiative", "Entrepreneurship"],
-    "Regulatory compliance": ["Attention to detail", "Risk management", "Documentation"],
-    "International teams": ["Communication", "Cultural awareness", "Empathy"],
-    "High-pressure environment": ["Stress management", "Decision-making", "Resilience"]
-}
-
-# 8.3 PIVOT FINDER
-PIVOT_FINDER = {
-    "Marketing_to_Product": {
-        "common_skills": ["Strategy", "Data Analysis", "Communication"],
-        "gap_skills": ["Technical acumen", "Product roadmap"],
-        "difficulty": "medium",
-        "time_needed": "6-12 months"
-    }
-}
-
-
-# =============================================================================
-# LEGACY CONSTANTS IMPORTED FROM CONSTANTS.PY
-# =============================================================================
-
-ML_MODELS = {
-    "TF-IDF": {
-        "type": "Feature Extraction",
-        "desc": "Trasforma testo in Vector Space Model (TF × IDF)",
-        "ref": "Text Mining, Word Vector Representation"
-    },
-    "Random Forest": {
-        "type": "Classification (Supervised)",
-        "desc": "Ensemble di Decision Trees con majority voting",
-        "ref": "Classification and Regression"
-    },
-    "K-Means": {
-        "type": "Clustering (Unsupervised)",
-        "desc": "Partitioning: assegna punti → ricalcola centroidi → ripeti",
-        "ref": "Clustering Techniques"
-    },
-    "Hierarchical Clustering": {
-        "type": "Clustering (Unsupervised)", 
-        "desc": "Agglomerativo bottom-up con Ward linkage → dendrogramma",
-        "ref": "Hierarchical Clustering"
-    },
-    "LDA": {
-        "type": "Topic Modeling (Unsupervised)",
-        "desc": "Modello generativo: documento = mixture di topic",
-        "ref": "Topic Model"
-    },
-    "NER": {
-        "type": "Information Extraction",
-        "desc": "Estrae entità nominate (ORG, PERSON, LOC, DATE)",
-        "ref": "Named Entity Recognition"
-    }
-}
-
+# 2.1 INFERENCE RULES (HIERARCHY)
+# Logic: If user has Child Skill, they implicitly have Parent Skill (GREEN MATCH)
+# Format: "Child Skill": ["Parent Skill 1", "Parent Skill 2"]
 INFERENCE_RULES = {
-    # ===========================================================================
-    # CLEANED INFERENCE RULES - Max 1-2 direct technical inferences per skill
-    # No soft skills (Communication, Problem Solving), no cross-domain cascading
-    # ===========================================================================
-
-    # --- TECHNOLOGY & IT ---
-    "React": ["JavaScript"],
-    "Vue": ["JavaScript"],
-    "Angular": ["JavaScript", "TypeScript"],
-    "TypeScript": ["JavaScript"],
-    "Django": ["Python"],
-    "Flask": ["Python"],
-    "Spring": ["Java"],
-    "Hibernate": ["Java"],
+    # Technology
+    "Python": ["Programming", "Scripting"],
+    "Java": ["Programming", "Object Oriented Programming"],
+    "JavaScript": ["Programming", "Frontend Development"],
+    "React": ["JavaScript", "Frontend Development"],
+    "Angular": ["JavaScript", "Frontend Development"],
+    "Vue": ["JavaScript", "Frontend Development"],
+    "Django": ["Python", "Backend Development"],
+    "Flask": ["Python", "Backend Development"],
+    "Spring": ["Java", "Backend Development"],
+    "Node.js": ["JavaScript", "Backend Development"],
     "AWS": ["Cloud Computing"],
     "Azure": ["Cloud Computing"],
     "GCP": ["Cloud Computing"],
-    "Docker": ["DevOps"],
-    "Kubernetes": ["DevOps"],
-    "Terraform": ["DevOps"],
+    "Docker": ["Containerization", "DevOps"],
+    "Kubernetes": ["Containerization", "DevOps"],
+    "Terraform": ["IaC", "DevOps"],
     "Git": ["Version Control"],
-
-    # --- MARKETING & DIGITAL ---
-    "Google Ads": ["SEM"],
-    "Facebook Ads": ["Social Media Marketing"],
-    "LinkedIn Ads": ["Social Media Marketing"],
-    "Google Analytics": ["Web Analytics"],
-    "GA4": ["Web Analytics"],
-    "HubSpot": ["CRM"],
-    "Salesforce": ["CRM"],
-
-    # --- BUSINESS & MANAGEMENT ---
+    "SQL": ["Database Management"],
+    
+    # Data
+    "Pandas": ["Python", "Data Analysis"],
+    "NumPy": ["Python", "Data Analysis"],
+    "Scikit-learn": ["Python", "Machine Learning"],
+    "TensorFlow": ["Deep Learning", "Machine Learning"],
+    "PyTorch": ["Deep Learning", "Machine Learning"],
+    "Tableau": ["Data Visualization", "BI Tools"],
+    "Power BI": ["Data Visualization", "BI Tools"],
+    "Looker": ["Data Visualization", "BI Tools"],
+    "Excel": ["Spreadsheets", "Data Analysis"],
+    
+    # Marketing
+    "Google Ads": ["SEM", "Digital Marketing"],
+    "Facebook Ads": ["Social Media Marketing", "Digital Marketing"],
+    "Google Analytics": ["Web Analytics", "Digital Marketing"],
+    "SEO": ["Digital Marketing"],
+    "Content Marketing": ["Digital Marketing"],
+    "Copywriting": ["Content Creation"],
+    
+    # Business
     "Jira": ["Project Management"],
     "Trello": ["Project Management"],
     "Asana": ["Project Management"],
     "Scrum": ["Agile"],
     "Kanban": ["Agile"],
-
-    # --- FINANCE & ACCOUNTING ---
-    "Financial Reporting": ["Accounting"],
-    "Auditing": ["Accounting"],
-    "Tax": ["Accounting"],
-    "Financial Modeling": ["Excel"],
-    "SAP": ["ERP"],
-    "IFRS": ["Accounting"],
-    "GAAP": ["Accounting"],
-
-    # --- DESIGN & CREATIVE ---
-    "Adobe Photoshop": ["Graphic Design"],
-    "Adobe Illustrator": ["Graphic Design"],
-    "Adobe InDesign": ["Graphic Design"],
-    "Figma": ["UI Design"],
-    "Sketch": ["UI Design"],
-    "Premiere Pro": ["Video Editing"],
-    "After Effects": ["Video Editing"],
-
-    # --- LEGAL ---
-    "GDPR": ["Compliance"],
-    "M&A": ["Corporate Law"],
-
-    # --- DATA & ANALYTICS ---
-    "Power BI": ["Data Visualization"],
-    "Tableau": ["Data Visualization"],
-    "Looker": ["Data Visualization"],
-    "BigQuery": ["SQL"],
-    "Snowflake": ["SQL"],
-
-    # --- LAB & SCIENCE (only direct, no cascading) ---
-    "HPLC": ["Lab Skills"],
-    "PCR": ["Lab Skills"],
-    "GMP": ["Quality Management"],
-
-    # --- ENGINEERING ---
-    "SolidWorks": ["CAD"],
-    "AutoCAD": ["CAD"],
-    "PLC": ["Automation"],
-
-    # --- HR ---
-    "Recruiting": ["Talent Acquisition"],
-    "ATS Management": ["Recruiting"],
-
-    # --- FASHION & LUXURY (NEW) ---
-    "Fashion Design": ["Sketching"],
-    "Textile Design": ["Fabric Knowledge"],
-    "Visual Merchandising": ["Retail Design"],
-    "CLO3D": ["3D Fashion Design"],
-    "Gerber": ["Pattern Making"],
-    "Lectra": ["Pattern Making"],
-    "Luxury Retail": ["Clienteling"],
-
-    # --- FOOD, BEVERAGE & AGRITECH (NEW) ---
-    "HACCP": ["Food Safety"],
-    "ISO 22000": ["Food Safety"],
-    "Enology": ["Winemaking"],
-    "Sensory Analysis": ["Food Quality"],
-    "Menu Engineering": ["F&B Management"],
-
-    # --- MANUFACTURING 4.0 (NEW) ---
-    "CNC Programming": ["Machining"],
-    "Fanuc": ["Robotics"],
-    "Siemens PLC": ["Automation"],
-    "Predictive Maintenance": ["Maintenance Management"],
-    "Lean Manufacturing": ["Process Improvement"],
-    "Six Sigma": ["Quality Management"],
-
-    # --- DESIGN & ARCHITECTURE (NEW) ---
-    "Revit": ["BIM"],
-    "ArchiCAD": ["BIM"],
-    "SketchUp": ["3D Modeling"],
-    "V-Ray": ["Rendering"],
-    "AutoCAD": ["CAD"],
-    
-    # --- BANKING & INSURANCE (NEW) ---
-    "MiFID II": ["Compliance"],
-    "Anti-Money Laundering": ["Compliance"],
-    "Credit Risk": ["Risk Management"],
-    "Wealth Management": ["Financial Planning"],
-
-    # --- ENGINEERING DEEP DIVE (NEW) ---
-    "SolidWorks": ["CAD"],
-    "CATIA": ["CAD"],
-    "Ansys": ["Simulation"],
-    "Altium Designer": ["PCB Design"],
-    "Revit": ["BIM"],
-    "Navisworks": ["BIM"],
-    "Embedded C": ["Embedded Systems"],
-    "PLC Programming": ["Automation"],
-
-    # --- BIOTECH & PHARMA (NEW) ---
-    "PCR": ["Lab Skills"],
-    "ELISA": ["Lab Skills"],
-    "Clinical Trials": ["GCP"],
-    "GMP": ["Quality Assurance"],
-    "Regulatory Affairs": ["Compliance"],
-
-    # --- LANGUAGES (NEW) ---
-    "Trados Studio": ["Translation Tech"],
-    "MemoQ": ["Translation Tech"],
-    "Simultaneous Interpreting": ["Interpreting"],
-    
-    # --- ECONOMICS (NEW) ---
-    "IFRS": ["Accounting"],
-    "GAAP": ["Accounting"],
-    "Audit": ["Compliance"],
-    "Transfer Pricing": ["Taxation"],
-
-    # --- ENERGY ENGINEERING & TRADING (NEW) ---
-    "ENTSO-E": ["Energy Markets", "Grid Operators"],
-    "TERNA": ["Grid Operators", "Energy Markets"],
-    "GME": ["Energy Markets", "Grid Operators"],
-    "Hypatia": ["Energy Software", "Renewable Energy"],
-    "Thermodynamics": ["Energy & Renewables"],
-    "NASA CEA": ["Aerospace Propulsion", "Combustion"],
-    "Balancing Market": ["Energy Markets", "Energy Trading"],
-    "PVsyst": ["Renewable Energy", "Energy Software"],
-    "MATLAB": ["Simulation", "Data Analysis"],
-    "Simulink": ["MATLAB", "Simulation"],
+    "Budgeting": ["Financial Management"],
+    "Financial Modeling": ["Financial Analysis"],
 }
 
+# 2.2 SKILL CLUSTERS (EQUIVALENCY)
+# Logic: If user has ANY skill in cluster, other skills in cluster are TRANSFERABLE (YELLOW MATCH)
 SKILL_CLUSTERS = {
-    # BI & Visualization Tools - EXPANDED to include extracted skill names
-    "BI Tools": {"Tableau", "Power BI", "Looker", "Looker Studio", "QlikView", "Metabase", "Data Studio", "Google Data Studio", "Visualization", "Data Visualization"},
+    # BI Tools (Interchangeable)
+    "BI Tools": {"Tableau", "Power BI", "Looker", "Looker Studio", "QlikView", "Data Studio", "Visualization", "Data Visualization"},
     
-    # Analytics Platforms  
-    "Analytics Platforms": {"Google Analytics", "GA4", "Adobe Analytics", "Mixpanel", "Amplitude", "Hotjar", "Matomo"},
+    # Cloud Platforms (Conceptual Transferability)
+    "Cloud Platforms": {"AWS", "Azure", "GCP", "Google Cloud", "IBM Cloud", "Oracle Cloud", "Cloud Computing"},
     
-    # Cloud Providers
-    "Cloud Platforms": {"AWS", "Azure", "GCP", "Google Cloud", "IBM Cloud", "Oracle Cloud"},
+    # Databases (SQL Dialects often transferable)
+    "SQL Databases": {"MySQL", "PostgreSQL", "SQL Server", "Oracle Database", "MariaDB", "SQLite", "SQL"},
     
-    # CRM Systems
-    "CRM Systems": {"Salesforce", "HubSpot", "Zoho CRM", "Pipedrive", "Microsoft Dynamics", "SAP CRM", "Oracle CRM"},
+    # Python Web Frameworks
+    "Python Frameworks": {"Django", "Flask", "FastAPI", "Pyramid"},
     
-    # Design Tools
-    "Design Software": {"Figma", "Sketch", "Adobe XD", "InVision", "Canva", "Miro"},
+    # JS Frameworks (High transferability of core concepts)
+    "Frontend Frameworks": {"React", "Vue", "Angular", "Svelte", "Ember"},
     
-    # Adobe Suite
-    "Adobe Products": {"Photoshop", "Illustrator", "InDesign", "Premiere Pro", "After Effects", "Lightroom", "Adobe Creative Suite"},
+    # Containerization
+    "Containerization": {"Docker", "Podman", "LXC", "Kubernetes", "OpenShift", "Containerization"},
     
-    # Project Management Tools
-    "PM Tools": {"Jira", "Asana", "Trello", "Monday.com", "Notion", "ClickUp", "Basecamp", "MS Project"},
+    # Marketing Analytics
+    "Web Analytics": {"Google Analytics", "GA4", "Adobe Analytics", "Mixpanel", "Matomo", "Web Analytics"},
     
-    # Office Suites
-    "Office Software": {"Microsoft Office", "Google Workspace", "LibreOffice", "iWork"},
+    # CRM
+    "CRM Systems": {"Salesforce", "HubSpot", "Zoho CRM", "Microsoft Dynamics", "Pipedrive", "CRM"},
     
-    # ERP Systems
-    "ERP Systems": {"SAP", "Oracle ERP", "Microsoft Dynamics", "Odoo", "NetSuite"},
+    # Office/Productivity
+    "Spreadsheets": {"Excel", "Google Sheets", "Numbers", "Spreadsheets"},
+    "Presentation": {"PowerPoint", "Keynote", "Google Slides", "Presentation Skills"},
     
-    # E-commerce Platforms
-    "E-commerce": {"Shopify", "WooCommerce", "Magento", "PrestaShop", "BigCommerce"},
+    # Project Management
+    "PM Tools": {"Jira", "Asana", "Trello", "Monday.com", "ClickUp", "Project Management"},
     
-    # Email Marketing
-    "Email Platforms": {"Mailchimp", "SendGrid", "Klaviyo", "ActiveCampaign", "Sendinblue", "HubSpot Email"},
+    # Creative
+    "Vector Graphics": {"Illustrator", "CorelDRAW", "Inkscape", "Graphic Design"},
+    "Photo Editing": ["Photoshop", "Lightroom", "GIMP", "Photo Editing"],
+    "UI Design": {"Figma", "Sketch", "Adobe XD", "InVision", "UI Design"},
     
-    # Social Media
-    "Social Platforms": {"Facebook", "Instagram", "LinkedIn", "TikTok", "Twitter", "YouTube", "Pinterest"},
-    
-    # Video Conferencing
-    "Video Tools": {"Zoom", "Teams", "Google Meet", "Webex", "Skype"},
-    
-    # Programming Languages
-    "Programming": {"Python", "Java", "JavaScript", "C#", "C++", "Ruby", "PHP", "Go", "Swift", "Kotlin"},
-    
-    # Databases
-    "Databases": {"MySQL", "PostgreSQL", "MongoDB", "Oracle", "SQL Server", "SQLite", "Redis", "Cassandra"},
-    
-    # ==========================================================================
-    # NEW: Analytics & Spreadsheet Skills (Excel equivalency)
-    # ==========================================================================
-    "Spreadsheet & Analysis Tools": {"Excel", "Google Sheets", "Data Analysis", "Data Analytics", "Analytics", "Spreadsheets", "VLOOKUP", "Pivot Tables"},
-    
-    # NEW: Business Analysis Cluster
-    "Business Analysis": {"Business Analysis", "Data Analysis", "Analytics", "Requirements Analysis", "Business Intelligence", "Reporting", "KPI Analysis"},
-    
-    # NEW: Marketing Functions Cluster
-    "Marketing Functions": {"Campaign Management", "Digital Marketing", "Performance Marketing", "Marketing Automation", "Marketing Strategy", "Campaign Optimization", "Marketing Analytics"},
-    
-    # NEW: Finance/Budgeting Cluster (expanded to include marketing budget skills)
-    "Finance & Budgeting": {"Budgeting", "Financial Analysis", "Budget Management", "Financial Planning", "Cost Analysis", "ROI Analysis", "P&L Management", "Digital Marketing", "Performance Marketing", "Marketing Analytics", "Campaign Optimization"},
-    
-    # NEW: Statistics Cluster
-    "Statistical Analysis": {"Statistics", "Statistical Analysis", "Data Analysis", "Quantitative Analysis", "Analytics", "A/B Testing", "Hypothesis Testing", "Data Analytics", "Marketing Analytics"},
-    
-    # NEW: Strategy Cluster (expanded to include marketing strategy skills)
-    "Strategy Skills": {"Strategy", "Strategic Planning", "Business Strategy", "Go-to-Market", "Market Analysis", "Competitive Analysis", "Marketing Strategy", "Digital Marketing", "Performance Marketing", "Growth Strategy"},
-    
-    # NEW: DevOps & Infrastructure Cluster
-    "DevOps & Cloud": {"DevOps", "Docker", "Kubernetes", "Containerization", "CI/CD", "AWS", "Azure", "GCP", "Cloud Computing", "Terraform", "Ansible", "Jenkins"},
-    
-    # NEW: Data Engineering Cluster
-    "Data Engineering": {"Data Modelling", "Data Modeling", "ETL", "Data Pipelines", "SQL", "BigQuery", "Snowflake", "Data Warehousing", "Data Architecture"},
+    # Marketing Strategy
+    "Digital Ads": {"Google Ads", "Facebook Ads", "LinkedIn Ads", "Bing Ads", "PPC", "SEM"},
+    "Social Media": {"Instagram", "Facebook", "LinkedIn", "TikTok", "Twitter", "Social Media Marketing"},
 }
 
 PROJECT_BASED_SKILLS = {
