@@ -2195,46 +2195,48 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     # Stats
     skill_clusters = getattr(constants, "SKILL_CLUSTERS", {})
 
-    inference_chains = getattr(constants, "INFERENCE_CHAINS", {})
+    # ==========================================================================
+    # SIMPLIFIED TRANSFERABLE MATCHING (REBUILT FROM SCRATCH)
+    # ==========================================================================
+    # Logic: If CV has ANY skill in a cluster, ALL other skills in that 
+    # cluster become Transferable (yellow instead of red).
+    # ==========================================================================
     
-    # Logic 1: Transferable & Inference Chains
     transferable = {} 
     remaining_missing = set()
+    
+    # Pre-compute: normalize all CV skills to lowercase for comparison
+    cv_skills_lower = {s.lower() for s in cv_hard}
+    
+    # Pre-compute: build a lookup table of cluster memberships (all lowercase)
+    cluster_lookup = {}  # skill_lower -> set of all other skills in same cluster(s)
+    for cluster_name, members in skill_clusters.items():
+        members_lower = {m.lower() for m in members}
+        for skill in members_lower:
+            if skill not in cluster_lookup:
+                cluster_lookup[skill] = set()
+            cluster_lookup[skill].update(members_lower)
+    
+    # Check each missing skill
     for missing in initial_missing_hard:
+        missing_lower = missing.lower()
         found_transferable = False
         
-        # 1a. Check Skill Clusters (Generic) - NORMALIZED MATCHING
-        missing_lower = missing.lower()
-        for cluster_name, members in skill_clusters.items():
-            members_lower = {m.lower() for m in members}
-            cv_hard_lower = {s.lower() for s in cv_hard}
-            if missing_lower in members_lower:
-                user_has_lower = members_lower.intersection(cv_hard_lower)
-                if user_has_lower:
-                    # Find original casing for display
-                    user_has_original = [s for s in cv_hard if s.lower() in user_has_lower]
-                    transferable[missing] = user_has_original[0] if user_has_original else list(user_has_lower)[0]
-                    found_transferable = True
-                    break
+        # Check if this missing skill is in any cluster
+        if missing_lower in cluster_lookup:
+            # Get all equivalent skills in the same cluster(s)
+            equivalent_skills = cluster_lookup[missing_lower]
+            
+            # Check if user has ANY of the equivalent skills
+            user_has = equivalent_skills.intersection(cv_skills_lower)
+            
+            if user_has:
+                # Find original casing for display
+                user_has_original = [s for s in cv_hard if s.lower() in user_has]
+                display_skill = user_has_original[0] if user_has_original else list(user_has)[0]
+                transferable[missing] = display_skill
+                found_transferable = True
         
-        # 1b. Check Inference Chains (Specific / Deep) - NEW v2.0
-        if not found_transferable and missing in inference_chains:
-             chain = inference_chains[missing]
-             # Check Tier 1 (Strong inference)
-             t1 = set(chain.get("tier_1", []))
-             matched_t1 = t1.intersection(cv_hard)
-             if matched_t1:
-                  transferable[missing] = f"Inferred via {list(matched_t1)[0]} (Tier 1)"
-                  found_transferable = True
-             
-             # Check Tier 2 (Weak inference)
-             elif not found_transferable:
-                  t2 = set(chain.get("tier_2", []))
-                  matched_t2 = t2.intersection(cv_hard)
-                  if matched_t2:
-                       transferable[missing] = f"Inferred via {list(matched_t2)[0]} (Tier 2)"
-                       found_transferable = True
-
         if not found_transferable:
             remaining_missing.add(missing)
 

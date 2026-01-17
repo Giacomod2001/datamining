@@ -1069,6 +1069,12 @@ SKILL_CLUSTERS = {
     
     # NEW: Strategy Cluster (expanded to include marketing strategy skills)
     "Strategy Skills": {"Strategy", "Strategic Planning", "Business Strategy", "Go-to-Market", "Market Analysis", "Competitive Analysis", "Marketing Strategy", "Digital Marketing", "Performance Marketing", "Growth Strategy"},
+    
+    # NEW: DevOps & Infrastructure Cluster
+    "DevOps & Cloud": {"DevOps", "Docker", "Kubernetes", "Containerization", "CI/CD", "AWS", "Azure", "GCP", "Cloud Computing", "Terraform", "Ansible", "Jenkins"},
+    
+    # NEW: Data Engineering Cluster
+    "Data Engineering": {"Data Modelling", "Data Modeling", "ETL", "Data Pipelines", "SQL", "BigQuery", "Snowflake", "Data Warehousing", "Data Architecture"},
 }
 
 PROJECT_BASED_SKILLS = {
