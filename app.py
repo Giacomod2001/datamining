@@ -138,96 +138,94 @@ def render_navigation():
         # Get Current Page First
         current_page = st.session_state.get("page", "Landing")
 
-        # Branding
-        # Determine Sidebar Title
-        page_titles = {
-            "Landing": "CAREER ASSISTANT",
-            "Career Discovery": "CAREER DISCOVERY",
-            "CV Builder": "CV BUILDER",
-            "CV Evaluation": "CV ANALYSIS",
-            "Debugger": "DEV CONSOLE"
-        }
-        section_title = page_titles.get(current_page, "CAREER ASSISTANT")
-
-        # Branding (Dynamic Title)
-        st.markdown(f"""
-        <div style='text-align: center; padding: 0.5rem 0;'>
-            <h2 style='font-size: 1.5rem; margin: 0;'>CareerMatch AI</h2>
-            <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>{section_title}</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-        # CSS Styles (Static - separated to avoid f-string brace issues)
-        st.markdown("""
-        <style>
-            /* TARGETING: Use the marker span to find the immediately following button container */
-            div:has(span#home-btn-marker) + div button {
-                background-color: #00f2c3 !important;
-                color: #FFFFFF !important;
-                border: none !important;
+        # Branding & Navigation (HIDDEN IN DEBUGGER)
+        if current_page != "Debugger":
+            # Determine Sidebar Title
+            page_titles = {
+                "Landing": "CAREER ASSISTANT",
+                "Career Discovery": "CAREER DISCOVERY",
+                "CV Builder": "CV BUILDER",
+                "CV Evaluation": "CV ANALYSIS",
+                "Debugger": "DEV CONSOLE"
             }
-            div:has(span#dev-btn-marker) + div button {
-                background-color: #00f2c3 !important;
-                color: #FFFFFF !important;
-                border: none !important;
-            }
-            /* Hover effects */
-            div:has(span#home-btn-marker) + div button:hover,
-            div:has(span#dev-btn-marker) + div button:hover {
-                background-color: #00c8a0 !important;
-                color: #FFFFFF !important;
-            }
-        </style>
-        """, unsafe_allow_html=True)
-        st.divider()
-        
-        # Navigation Buttons
-        # (current_page already defined above)
-        
-        # Home Button (Separated) with Marler
-        st.markdown('<span id="home-btn-marker"></span>', unsafe_allow_html=True)
-        btn_type = "primary" if current_page == "Landing" else "secondary"
-        if st.button("Home", key="nav_Landing", type=btn_type, use_container_width=True):
-            st.session_state["page"] = "Landing"
-            st.rerun()
+            section_title = page_titles.get(current_page, "CAREER ASSISTANT")
 
-        # Spacer
-        st.markdown("<div style='height: 0.5rem;'></div>", unsafe_allow_html=True)
+            # Branding (Dynamic Title)
+            st.markdown(f"""
+            <div style='text-align: center; padding: 0.5rem 0;'>
+                <h2 style='font-size: 1.5rem; margin: 0;'>CareerMatch AI</h2>
+                <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>{section_title}</p>
+            </div>
+            """, unsafe_allow_html=True)
 
-        # Main Tools Group
-        nav_items = [
-            ("Career Discovery", "Career Discovery"),
-            ("CV Builder", "CV Builder"),
-            ("CV Analysis", "CV Evaluation")
-        ]
-        
-        for label, page_key in nav_items:
-            # Skip button if it matches current page (avoid duplication)
-            if current_page == page_key:
-                continue
-
-            # Active page gets primary style (redundant check but safe)
-            btn_type = "primary" if current_page == page_key else "secondary"
+            # CSS Styles
+            st.markdown("""
+            <style>
+                /* TARGETING: Use the marker span to find the immediately following button container */
+                div:has(span#home-btn-marker) + div button {
+                    background-color: #00f2c3 !important;
+                    color: #FFFFFF !important;
+                    border: none !important;
+                }
+                div:has(span#dev-btn-marker) + div button {
+                    background-color: #00f2c3 !important;
+                    color: #FFFFFF !important;
+                    border: none !important;
+                }
+                /* Hover effects */
+                div:has(span#home-btn-marker) + div button:hover,
+                div:has(span#dev-btn-marker) + div button:hover {
+                    background-color: #00c8a0 !important;
+                    color: #FFFFFF !important;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            st.divider()
             
-            if st.button(label, key=f"nav_{page_key}", type=btn_type, use_container_width=True):
-                st.session_state["page"] = page_key
+            # Home Button (Separated) with Marler
+            st.markdown('<span id="home-btn-marker"></span>', unsafe_allow_html=True)
+            btn_type = "primary" if current_page == "Landing" else "secondary"
+            if st.button("Home", key="nav_Landing", type=btn_type, use_container_width=True):
+                st.session_state["page"] = "Landing"
                 st.rerun()
 
-        # Spacer (Large)
-        st.markdown("<div style='height: 1.5rem;'></div>", unsafe_allow_html=True)
+            # Spacer
+            st.markdown("<div style='height: 0.5rem;'></div>", unsafe_allow_html=True)
 
-        # Dev Console (Separated) with Marker
-        st.markdown('<span id="dev-btn-marker"></span>', unsafe_allow_html=True)
-        btn_type = "primary" if current_page == "Debugger" else "secondary"
-        if st.button("Dev Console", key="nav_Debugger", type=btn_type, use_container_width=True):
-            st.session_state["page"] = "Debugger"
-            st.rerun()
+            # Main Tools Group
+            nav_items = [
+                ("Career Discovery", "Career Discovery"),
+                ("CV Builder", "CV Builder"),
+                ("CV Analysis", "CV Evaluation")
+            ]
             
-        st.divider()
+            for label, page_key in nav_items:
+                # Skip button if it matches current page (avoid duplication)
+                if current_page == page_key:
+                    continue
+
+                # Active page gets primary style
+                btn_type = "primary" if current_page == page_key else "secondary"
+                
+                if st.button(label, key=f"nav_{page_key}", type=btn_type, use_container_width=True):
+                    st.session_state["page"] = page_key
+                    st.rerun()
+
+            # Spacer (Large)
+            st.markdown("<div style='height: 1.5rem;'></div>", unsafe_allow_html=True)
+
+            # Dev Console (Separated) with Marker
+            st.markdown('<span id="dev-btn-marker"></span>', unsafe_allow_html=True)
+            btn_type = "primary" if current_page == "Debugger" else "secondary"
+            if st.button("Dev Console", key="nav_Debugger", type=btn_type, use_container_width=True):
+                st.session_state["page"] = "Debugger"
+                st.rerun()
+                
+            st.divider()
         
         # Demo Controls
-        # Demo Controls - Visible in operational pages
-        if current_page not in ["Landing", "Debugger"]:
+        # Demo Controls - Visible in operational pages AND Debugger
+        if current_page != "Landing":
             if st.session_state.get("demo_mode"):
                 if st.button("Disable Test Mode", type="secondary", use_container_width=True):
                     st.session_state["demo_mode"] = False
@@ -244,7 +242,7 @@ def render_navigation():
                      st.session_state["cv_text"] = styles.get_demo_cv()
                      st.session_state["jd_text"] = styles.get_demo_jd()
                      st.session_state["proj_text"] = styles.get_demo_project()
-                     st.session_state["cl_text"] = styles.get_demo_cover_letter() # Fixed missing load
+                     st.session_state["cl_text"] = styles.get_demo_cover_letter()
                      st.session_state["show_project_toggle"] = True
                      st.session_state["show_cover_letter"] = True
                      
