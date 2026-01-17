@@ -2224,7 +2224,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     transferable = res.get("transferable", {})
     if transferable:
         st.markdown("**Transferable:**")
-        transfer_html = " ".join([f"<span class='skill-tag-transferable' title='Covered by: {p}'>{m}</span>" for m, p in transferable.items()])
+        transfer_html = " ".join([f"<span class='skill-tag-transferable' title='Covered by: {', '.join(p) if isinstance(p, list) else p}'>{str(m).split('←')[0].strip()}</span>" for m, p in transferable.items()])
         st.markdown(transfer_html, unsafe_allow_html=True)
     
     if res["missing_hard"]:
