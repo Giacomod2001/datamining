@@ -1581,11 +1581,11 @@ def render_landing_page():
     st.markdown(f"""
     <div style="display: flex; justify-content: center; gap: 8rem; margin-bottom: 3rem; flex-wrap: wrap;">
         <div style="display: flex; align-items: center; gap: 15px;">
-            <h2 style="{metric_gradient} margin: 0; padding: 0; font-size: 2.2rem; font-weight: 600;">1500+</h2>
+            <h2 style="{metric_gradient} margin: 0; padding: 0; font-size: 2.2rem; font-weight: 600;">950+</h2>
             <span style="color: #c9d1d9; font-size: 1.5rem; font-weight: 400;">Killer Keywords</span>
         </div>
         <div style="display: flex; align-items: center; gap: 15px;">
-            <h2 style="{metric_gradient} margin: 0; padding: 0; font-size: 2.2rem; font-weight: 600;">120+</h2>
+            <h2 style="{metric_gradient} margin: 0; padding: 0; font-size: 2.2rem; font-weight: 600;">230+</h2>
             <span style="color: #c9d1d9; font-size: 1.5rem; font-weight: 400;">Job Archetypes</span>
         </div>
         <div style="display: flex; align-items: center; gap: 15px;">
