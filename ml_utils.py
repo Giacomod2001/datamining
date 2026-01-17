@@ -1627,6 +1627,59 @@ def preprocess_jd_text(text: str) -> str:
 
 
 # =============================================================================
+# =============================================================================
+# CONTEXT AWARENESS & DOMAIN INTELLIGENCE (NEW v2.0)
+# =============================================================================
+
+def detect_domain_context(text: str) -> str:
+    """
+    Identifies the specific industry domain (Energy, Biotech, Fashion, etc.) from text.
+    Uses DOMAIN_EXTRACTION_RULES from constants.
+    """
+    text_lower = text.lower()
+    domain_rules = getattr(constants, "DOMAIN_EXTRACTION_RULES", {})
+    
+    best_domain = "General"
+    max_score = 0
+    
+    for domain, rules in domain_rules.items():
+        score = 0
+        # Check context words
+        for word in rules.get("context_words", []):
+            if word.lower() in text_lower:
+                score += 1
+        
+        # Check specific must_extract terms
+        for term in rules.get("must_extract", []):
+            if term.lower() in text_lower:
+                score += 2
+                
+        if score > max_score and score >= 2: # Min threshold
+            max_score = score
+            best_domain = domain
+            
+    return best_domain
+
+def detect_seniority_level(text: str) -> str:
+    """
+    Infers the seniority level (Entry, Mid, Senior, Executive) from text signals.
+    Uses CONTEXT_SIGNALS from constants.
+    """
+    text_lower = text.lower()
+    signals = getattr(constants, "CONTEXT_SIGNALS", {}).get("seniority_from_jd", {})
+    
+    # Priority check: start from Executive down to Entry
+    if any(sig in text_lower for sig in signals.get("executive", [])):
+        return "Executive"
+    if any(sig in text_lower for sig in signals.get("senior", [])):
+        return "Senior"
+    if any(sig in text_lower for sig in signals.get("mid", [])):
+        return "Mid-Level"
+    if any(sig in text_lower for sig in signals.get("entry", [])):
+        return "Entry Level"
+        
+    return "Not Specified"
+
 def extract_skills_from_text(text: str, is_jd: bool = False) -> Tuple[Set[str], Set[str]]:
     """
     ESTRAZIONE COMPETENZE DA TESTO
@@ -1693,9 +1746,22 @@ def extract_skills_from_text(text: str, is_jd: bool = False) -> Tuple[Set[str], 
     text_lower = text.lower()
 
     # Carica knowledge base
-    hard_skills = getattr(constants, "HARD_SKILLS", {})
+    # (Use copy to allow local extension based on domain context)
+    hard_skills = getattr(constants, "HARD_SKILLS", {}).copy()
     soft_skills = getattr(constants, "SOFT_SKILLS", {})
     inference_rules = getattr(constants, "INFERENCE_RULES", {})
+    
+    # NEW: Domain Context Boost
+    # If a specific domain is detected, we ensure its critical skills are searched for,
+    # even if they might not be in the standard HARD_SKILLS list or require prioritization.
+    domain_context = detect_domain_context(text)
+    if domain_context != "General":
+        domain_rules = getattr(constants, "DOMAIN_EXTRACTION_RULES", {}).get(domain_context, {})
+        must_extract = domain_rules.get("must_extract", [])
+        for skill_name in must_extract:
+            if skill_name not in hard_skills:
+                # Add domain-specific skill to search list (self-variation)
+                hard_skills[skill_name] = [skill_name]
 
     # =========================================================================
     # STEP 1: PREPROCESSING E GENERAZIONE N-GRAMS
@@ -2110,11 +2176,15 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     # Stats
     skill_clusters = getattr(constants, "SKILL_CLUSTERS", {})
 
-    # Logic 1: Transferable
+    inference_chains = getattr(constants, "INFERENCE_CHAINS", {})
+    
+    # Logic 1: Transferable & Inference Chains
     transferable = {} 
     remaining_missing = set()
     for missing in initial_missing_hard:
         found_transferable = False
+        
+        # 1a. Check Skill Clusters (Generic)
         for cluster_name, members in skill_clusters.items():
             if missing in members:
                 user_has = members.intersection(cv_hard)
@@ -2122,6 +2192,25 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
                     transferable[missing] = list(user_has)[0] 
                     found_transferable = True
                     break
+        
+        # 1b. Check Inference Chains (Specific / Deep) - NEW v2.0
+        if not found_transferable and missing in inference_chains:
+             chain = inference_chains[missing]
+             # Check Tier 1 (Strong inference)
+             t1 = set(chain.get("tier_1", []))
+             matched_t1 = t1.intersection(cv_hard)
+             if matched_t1:
+                  transferable[missing] = f"Inferred via {list(matched_t1)[0]} (Tier 1)"
+                  found_transferable = True
+             
+             # Check Tier 2 (Weak inference)
+             elif not found_transferable:
+                  t2 = set(chain.get("tier_2", []))
+                  matched_t2 = t2.intersection(cv_hard)
+                  if matched_t2:
+                       transferable[missing] = f"Inferred via {list(matched_t2)[0]} (Tier 2)"
+                       found_transferable = True
+
         if not found_transferable:
             remaining_missing.add(missing)
 
@@ -2924,6 +3013,54 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
     cv_norm = {s.lower() for s in cv_skills}
     
     # Add all equivalent skills from clusters
+    skill_clusters = getattr(constants, "SKILL_CLUSTERS", {})
+    for skill in list(cv_norm):
+        for cluster_name, members in skill_clusters.items():
+            if skill in members:
+                cv_norm.update(members)
+                
+    # 5. Compute Recommendations (JACCARD SIMILARITY for robustness)
+    recommendations = []
+    
+    for i, name in enumerate(archetype_names):
+        if name in excluded_roles:
+            continue
+            
+        role_skills = job_archetypes[name]
+        role_norm = {s.lower() for s in role_skills}
+        
+        if not role_norm:
+            continue
+            
+        # Jaccard Index: Intersection / Union
+        intersection = len(cv_norm.intersection(role_norm))
+        union = len(cv_norm.union(role_norm))
+        jaccard_score = intersection / union if union > 0 else 0.0
+        
+        # Boost with TF-IDF/LSA semantic score (from previous step)
+        # arch_vector index is i (since we sliced off CV/JD)
+        semantic_score = similarities[i]
+        
+        # Education Boost
+        edu_boost = education_boost.get(name, 0) / 100.0
+        
+        # Combined Score: 60% Jaccard (Direct Skill Match) + 30% Semantic + 10% Ed Boost
+        final_score = (0.6 * jaccard_score) + (0.3 * semantic_score) + (0.1 * edu_boost)
+        
+        # Penalize if score is too low
+        if final_score > 0.15: # Threshold
+             missing = role_norm - cv_norm
+             recommendations.append({
+                 "role": name,
+                 "score": final_score,
+                 "missing": list(missing)[:5] # Top 5 missing
+             })
+             
+    # Sort and Return
+    recommendations.sort(key=lambda x: x["score"], reverse=True)
+    return recommendations
+
+def expand_skills_with_clusters(cv_norm):
     skill_clusters = getattr(constants, "SKILL_CLUSTERS", {})
     cv_expanded = set(cv_norm)
     for cluster_name, cluster_skills in skill_clusters.items():

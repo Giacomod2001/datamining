@@ -622,15 +622,45 @@ def render_debug_page():
             with col1:
                 with st.expander(f"Matched Skills ({matched_count})", expanded=True):
                     if res["matching_hard"]:
+                        # NEW: Seniority Detection Display
+                        seniority = ml_utils.detect_seniority_level(st.session_state.get("cv_text", ""))
+                        st.caption(f"DETECTED LEVEL: **{seniority.upper()}**")
                         st.caption("These skills directly match job requirements")
-                        st.write(sorted(res["matching_hard"]))
+                        
+                        cols = st.columns(2)
+                        for idx, skill in enumerate(sorted(res["matching_hard"])):
+                            with cols[idx % 2]:
+                                st.markdown(f"✅ {skill}")
                     else:
                         st.caption("No direct matches found")
                 
                 with st.expander(f"Missing Skills ({missing_count})", expanded=False):
                     if res["missing_hard"]:
                         st.caption("Priority skills to develop")
-                        st.write(sorted(res["missing_hard"]))
+                        
+                        # NEW: Market Intelligence for Missing Skills
+                        demand_matrix = getattr(constants, "SKILL_DEMAND_MATRIX", {})
+                        high_demand = dict(demand_matrix.get("high_demand", []))
+                        
+                        for skill in sorted(res["missing_hard"]):
+                            trend = high_demand.get(skill, "")
+                            if trend:
+                                st.markdown(f"❌ **{skill}** <span style='color:green; font-size:0.8em'>{trend}</span>", unsafe_allow_html=True)
+                            else:
+                                st.markdown(f"❌ {skill}")
+                                
+                        # NEW: Learning Paths Suggestion
+                        learning_paths = getattr(constants, "LEARNING_PATHS", {})
+                        # Simple check if there's a relevant path (demo logic: generic path if gaps exist)
+                        if missing_count > 3:
+                            st.info("💡 **Career Tip**: High number of gaps detected. Consider a structured learning path.")
+                            with st.expander("View Recommended Learning Path"):
+                                # Example Retrieval (In real logic this would be dynamic match)
+                                path = learning_paths.get("Data Analytics_to_Data Science")
+                                if path:
+                                    st.markdown(f"**Target: Data Science** ({path['total_time']})")
+                                    for step in path['gap_skills']:
+                                        st.markdown(f"- **{step['skill']}**: {step['resources'][0]} ({step['duration']})")
                     else:
                         st.caption("No missing skills - perfect match!")
             
