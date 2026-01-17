@@ -17,16 +17,22 @@
 
 **New Features**:
 
-- **Unified Navigation**: Access all tools (CV Builder, Evaluation, Discovery) from a consistent sidebar menu.
-- **Career Discovery**: New module to find career paths based on lifestyle preferences.
-- **Advanced ML Engine**: Now with Seniority Detection (Junior/Senior) and LSA Semantic Matching.
-- **Improved Demo Mode**: One-click demo toggle available globally.
+- **Refined UI/UX**: New Customer Journey-oriented Sidebar with visual cues.
+- **Enhanced Knowledge Base**: Expanded to **950+ Killer Keywords** and **230+ Job Archetypes**.
+- **Career Discovery**: Specialized module to find career paths based on lifestyle & preferences.
+- **Advanced Match Engine**: Powered by TF-IDF, Cosine Similarity, and Jaccard Index.
 
 ---
 
 ## What is CareerMatch AI?
 
-**CareerMatch AI** analyzes CV-Job compatibility using **ML/NLP**. Get match scores, discover transferable skills, and receive personalized learning paths.
+**CareerMatch AI** analyzes CV-Job compatibility using **ML/NLP**. Get match scores, discover transferable skills, and receive personalized learning paths. It acts as a bridge between candidates and ATS systems.
+
+### Key Metrics
+
+- **950+** Killer Keywords mapped
+- **230+** Job Archetypes defined
+- **25+** Industry Sectors coverage
 
 ### Key Features
 
@@ -34,11 +40,10 @@
 |---------|-------------|
 | **CV Builder (v2.0)** | Interactive wizard to build professional CVs with real-time AI suggestions |
 | **Match Score** | AI-based CV-Job compatibility score (0-100%) |
-| **Education-Aware** | Smart weighting of recent education degrees for career pathing |
-| **Gap Analysis** | Identifies missing skills vs Job Description |
-| **Career Compass** | Advanced role discovery using Skills + Education + Interests (Unlimited model) |
-| **Career Discovery** | **NEW!** Explore career paths based on lifestyle & work preferences (Remote, Creative, etc.) |
-| **Psychometric Profile** | Silent Burnout & Resilience detection |
+| **Gap Analysis** | Identifies missing hard/soft skills vs Job Description |
+| **Career Compass** | Recommendation engine using **Jaccard Similarity** to suggest alternative roles |
+| **Career Discovery** | Explore career paths based on lifestyle & work preferences (Remote, Creative, etc.) |
+| **Developer Console** | "Glass Box" view to inspect ML logic, clusters, and raw vectors |
 
 ---
 
@@ -68,65 +73,43 @@ The app opens automatically at `http://localhost:8501`.
 
 ## App Structure & Modules
 
-The application is composed of 4 main integrated environments, accessible via the global sidebar:
+The application is composed of 4 main integrated environments, accessible via the ordered sidebar:
 
-### 1. CV Evaluation Engine (Home)
+### 1. Home
 
-The core of the application. It accepts a CV and a Job Description to perform a deep-dive match analysis.
+The landing page featuring:
 
-- **Inputs**: PDF or Text for both CV and JD.
-- **Outputs**: Match Score (0-100%), Missing Skills, Seniority warning, and AI Career Compass.
+- Real-time Knowledge Base metrics.
+- Direct funnels to the core modules.
 
-### 2. Smart CV Builder
-
-An interactive wizard to create professional CVs from scratch.
-
-- **Features**: Real-time AI suggestions based on target job roles.
-- **Export**: Generates ATS-friendly PDF and TXT files.
-
-### 3. Career Discovery
+### 2. Career Discovery
 
 A lifestyle-based career explorer for users without a specific target job.
 
 - **Mechanism**: Recommends roles based on preferences (e.g., Remote vs On-site, Creative vs Logical).
 - **Integration**: Direct link to external job boards with seniority filters.
 
-### 4. Developer Console
+### 3. Smart CV Builder
 
-A transparent "Glass Box" interface for examiners and developers.
+An interactive wizard to create professional CVs from scratch.
+
+- **Features**: Real-time AI suggestions based on target job roles.
+- **Export**: Generates ATS-friendly PDF and TXT files.
+
+### 4. CV Analysis (Evaluation Engine)
+
+The core determination engine.
+
+- **Inputs**: PDF or Text for both CV and JD.
+- **Logic**: Performs Weighted Cosine Similarity and Keyword Gap Analysis.
+- **Outputs**: Match Score, Missing Skills, and Seniority warning.
+
+### 5. Developer Console (Debugger)
+
+A transparent interface for examiners and developers.
 
 - **Purpose**: Inspect the exact ML logic (TF-IDF vectors, Clustering, NLP tokens) behind every decision.
-- **Access**: Available under "Dev Console" in the sidebar.
-
----
-
-## CV Builder Workflow
-
-The application features a 4-step guided process:
-
-1. **Personal Profile**: Enter details and professional summary.
-    - *Smart Feature*: Paste a Job Description to get real-time optimization scoring.
-2. **Skills & Competencies**: Select from 600+ database skills or add custom ones.
-    - *AI Insight*: System suggests skills missing from your profile but required by the JD.
-3. **Experience**: Add work history, projects, and education.
-4. **Review & Export**: Download as TXT or PDF, or send directly to the Analysis Engine.
-
-### CV Evaluation Workflow
-
-1. **Upload Data**: Paste your CV check (or use the one from Builder) and optionally a Target Job Description.
-2. **Analysis**: The AI Engine performs gap analysis, keyword extraction, and seniority check.
-3. **Results**:
-   - **Match Score**: Gauge chart showing compatibility.
-   - **Gap Analysis**: List of missing hard skills with learning resources.
-   - **Seniority Fit**: Warning if you are Over/Underqualified.
-4. **Compass**: Scroll down to see efficient alternative roles based on your skills.
-
-### Career Discovery Workflow
-
-1. **Dashboard**: Navigate to "Career Discovery" from the sidebar.
-2. **Preferences**: Set your working style (Remote/Hybrid, Creative vs Logic, Team Size).
-3. **Discovery**: The system recommends career paths that fit your lifestyle, not just your skills.
-4. **Action**: Explore recommended roles and access direct search links filtered by your seniority.
+- **Access**: Located at the bottom of the sidebar (Teal button).
 
 ---
 
@@ -138,13 +121,13 @@ This project implements the following Data Mining and Text Analytics techniques:
 
 | Step | Implementation |
 |------|----------------|
-| **1. Data Cleaning** | Text preprocessing, lowercase, noise removal |
-| **2. Data Integration** | Merge CV + Job Description + Portfolio |
-| **3. Data Selection** | Extract relevant sections |
-| **4. Data Transformation** | TF-IDF vectorization |
-| **5. Data Mining** | Classification (Random Forest), Clustering (K-Means), Topic Modeling (LDA) |
-| **6. Pattern Evaluation** | Match scoring, confidence calculation |
-| **7. Knowledge Presentation** | Streamlit Dashboard & PDF Reports |
+| **1. Data Cleaning** | Text preprocessing, lowercase, noise removal, PyPDF2 extraction |
+| **2. Data Integration** | Merge CV + Job Description + Archetype Knowledge Base |
+| **3. Data Selection** | Extract relevant sections (Skills, Experience, Education) |
+| **4. Data Transformation** | TF-IDF vectorization, N-Gram generation |
+| **5. Data Mining** | Classification (Random Forest), Clustering (K-Means), Similarity (Cosine/Jaccard) |
+| **6. Pattern Evaluation** | Match scoring, confidence calculation, Gap Analysis |
+| **7. Knowledge Presentation** | Streamlit Dashboard & Dynamic Visualizations |
 
 ### Advanced Machine Learning (v2.1)
 
@@ -152,14 +135,12 @@ This project implements the following Data Mining and Text Analytics techniques:
 
 Combines **Keyword Frequency (TF-IDF)** with **Latent Semantic Analysis (SVD)** to understand context.
 
-- *Benefit*: Recognizes that "Data Analysis" matches "Business Intelligence" conceptually, even if words differ.
-- *Weighting*: 70% Precision (Keywords) + 30% Context (Semantics).
+- *Benefit*: Recognizes that "Data Analysis" matches "Business Intelligence" conceptually.
+- *Weighting*: Balanced Precision (Keywords) + Context (Semantics).
 
-#### 2. Automatic Seniority Detection
+#### 2. Archetype Fallback System
 
-Analyzes CV context (years of experience, keywords like "Head", "Junior") to determine the candidate's level.
-
-- *Application*: Penalizes mismatches (e.g. Junior applying for Director) and filters external job searches automatically (e.g. searching for "Junior Data Scientist").
+If a Job Description is sparse, the system "injects" missing implied skills from our **230+ Job Archetypes** database to provide a fairer analysis.
 
 ### Text Mining Pipeline
 
@@ -173,9 +154,9 @@ Input Text --> Tokenization --> N-gram Generation --> TF-IDF --> ML Model --> Ou
 
 ## Privacy
 
-- **100% Local Processing** - No data leaves your computer
-- **Zero Data Collection** - We don't collect any information
-- **Open Source** - Transparent and verifiable code
+- **100% Local Processing** - No data leaves your computer (in local mode).
+- **Stateless Session** - Data is wiped upon reload.
+- **Open Source** - Transparent and verifiable code.
 
 ---
 
@@ -200,7 +181,7 @@ See [LICENSE](LICENSE) for full terms.
 
 This project was developed as a collaborative effort with the following primary responsibilities:
 
-- **Giacomo Dellacqua** - Project Design (UI/UX & Application Architecture)
+- **Giacomo Dell'Acqua** - Project Design (UI/UX & Application Architecture)
 - **Luca Tallarico** - Machine Learning & NLP/Text Mining
 - **Ruben Scoletta** - Testing, Quality Assurance & Documentation
 
