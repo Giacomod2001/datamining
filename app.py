@@ -1648,12 +1648,14 @@ def render_landing_page():
 
     # Footer with beta note and contact
     st.markdown("---")
-    st.markdown("""
+    # Email body template (URL encoded)
+    email_body = "Hi%2C%0A%0AI%20would%20like%20to%20report%3A%0A%0AType%3A%20%5BBug%20%2F%20Missing%20Sector%20%2F%20Feedback%20%2F%20Question%5D%0A%0ADescription%3A%0A%0A%0A%0AThank%20you!"
+    st.markdown(f"""
     <div style='text-align: center; color: #666; font-size: 0.85rem;'>
         App in Continuous Development (0% match may indicate sector not yet covered) | 
         Questions, missing sectors, bugs or feedback? Contact via 
-        <a href='https://mail.google.com/mail/?view=cm&to=dellacquagiacomo@gmail.com&su=CareerMatch%20AI%20Feedback' target='_blank' style='color: #00A0DC;'>Gmail</a> or 
-        <a href='https://outlook.live.com/mail/0/deeplink/compose?to=dellacquagiacomo@gmail.com&subject=CareerMatch%20AI%20Feedback' target='_blank' style='color: #00A0DC;'>Outlook</a>
+        <a href='https://mail.google.com/mail/?view=cm&to=dellacquagiacomo@gmail.com&su=CareerMatch%20AI%20Feedback&body={email_body}' target='_blank' style='color: #00A0DC;'>Gmail</a> or 
+        <a href='https://outlook.live.com/mail/0/deeplink/compose?to=dellacquagiacomo@gmail.com&subject=CareerMatch%20AI%20Feedback&body={email_body}' target='_blank' style='color: #00A0DC;'>Outlook</a>
     </div>
     """, unsafe_allow_html=True)
 
