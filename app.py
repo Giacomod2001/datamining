@@ -1648,7 +1648,14 @@ def render_landing_page():
 
     # Footer with beta note and contact
     st.markdown("---")
-    st.markdown("<div style='text-align: center; color: #666; font-size: 0.85rem;'>App in Continuous Development (0% match may indicate sector not yet covered) | Questions, missing sectors, bugs or feedback? Contact <a href='mailto:dellacquagiacomo@gmail.com?subject=CareerMatch%20AI%20Feedback' style='color: #00A0DC;'>dellacquagiacomo@gmail.com</a> (subject: CareerMatch AI)</div>", unsafe_allow_html=True)
+    st.markdown("""
+    <div style='text-align: center; color: #666; font-size: 0.85rem;'>
+        App in Continuous Development (0% match may indicate sector not yet covered) | 
+        Questions, missing sectors, bugs or feedback? Contact via 
+        <a href='https://mail.google.com/mail/?view=cm&to=dellacquagiacomo@gmail.com&su=CareerMatch%20AI%20Feedback' target='_blank' style='color: #00A0DC;'>Gmail</a> or 
+        <a href='https://outlook.live.com/mail/0/deeplink/compose?to=dellacquagiacomo@gmail.com&subject=CareerMatch%20AI%20Feedback' target='_blank' style='color: #00A0DC;'>Outlook</a>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 
