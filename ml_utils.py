@@ -2206,6 +2206,10 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
             archetype_data = JOB_ARCHETYPES_EXTENDED[best_role]
             # Combine all skill lists
             arch_hard = set()
+            
+            # Check various keys used in different versions of the KB
+            if "primary_skills" in archetype_data:
+                arch_hard.update(archetype_data["primary_skills"])
             if "hard_skills" in archetype_data:
                 arch_hard.update(archetype_data["hard_skills"])
             

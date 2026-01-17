@@ -1410,7 +1410,14 @@ JOB_ROLE_METADATA = {
     "NVH Engineer": {"category": "Engineering", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
     "Embedded Software Engineer": {"category": "Engineering", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
     "Firmware Engineer": {"category": "Engineering", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
-    "Renewable Energy Engineer": {"category": "Engineering", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
+    "Renewable Energy Engineer": {
+        "hard_skills": ["Energy Markets", "PVSyst", "AutoCAD", "Matlab", "Simulink", "Solar Energy", "Wind Energy", "Energy Efficiency", "Project Management", "Python"],
+        "soft_skills": ["Problem Solving", "Teamwork", "Sustainability Awareness"],
+        "description": "Designs and implements renewable energy solutions.",
+        "market_demand": "High",
+        "salary_range": "35k-55k",
+        "career_path": ["Senior Engineer", "Energy Consultant", "Project Manager"]
+    },
     "BIM Manager": {"category": "Engineering", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
     
     # ========== BIOTECH & PHARMA (NEW METADATA) ==========
