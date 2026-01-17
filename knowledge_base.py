@@ -1126,6 +1126,9 @@ HARD_SKILLS = {
     "Marketing Strategy": ["marketing strategy", "pianificazione marketing", "marketing mix", "go-to-market"],
     
     # NEW: Core Marketing Skills
+    "Digital Marketing": ["digital marketing", "marketing digitale", "online marketing", "internet marketing", "web marketing"],
+    "Performance Marketing": ["performance marketing", "performance-based marketing", "roi marketing", "performance driven"],
+    "Marketing Analytics": ["marketing analytics", "marketing data", "marketing intelligence", "marketing metrics"],
     "Analytics": ["analytics", "marketing analytics", "web analytics", "digital analytics", "performance analytics", "analisi", "metriche"],
     "Campaign Management": ["campaign management", "gestione campagne", "campaign planning", "campaign execution", "multi-channel campaigns", "gestione attività marketing"],
     
