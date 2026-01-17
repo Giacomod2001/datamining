@@ -3211,21 +3211,7 @@ def discover_careers(
     # Sort by score descending
     recommendations.sort(key=lambda x: x["score"], reverse=True)
     return recommendations
-            "category": metadata.get("category", "Other"),
-            "score": final_score,
-            "skills_required": list(role_skills),
-            "skills_matched": list(skills_matched),
-            "missing_skills": list(missing_skills),
-            "preference_match": None,  # Not used in simplified version
-            "skill_match": skill_match,
-            "edu_boost": 0,
-            "pref_details": [],
-            "metadata": metadata
-        })
-    
-    # Sort by score descending
-    recommendations.sort(key=lambda x: x["score"], reverse=True)
-    return recommendations
+
 
 def _parse_intent_signals(text: str) -> dict:
     """
