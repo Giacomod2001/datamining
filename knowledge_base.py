@@ -1105,6 +1105,10 @@ HARD_SKILLS = {
     # ========== MARKETING & COMMUNICATION (DETAILED) ==========
     "Marketing Strategy": ["marketing strategy", "pianificazione marketing", "marketing mix", "go-to-market"],
     
+    # NEW: Core Marketing Skills
+    "Analytics": ["analytics", "marketing analytics", "web analytics", "digital analytics", "performance analytics", "analisi", "metriche"],
+    "Campaign Management": ["campaign management", "gestione campagne", "campaign planning", "campaign execution", "multi-channel campaigns", "gestione attività marketing"],
+    
     # SEO (Killer Keywords)
     "SEO": ["seo", "search engine optimization", "organic traffic", "organic search"],
     "Technical SEO": ["technical seo", "schema markup", "structured data", "core web vitals", "log file analysis", "crawl budget"],
