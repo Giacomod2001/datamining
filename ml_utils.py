@@ -1879,6 +1879,8 @@ def extract_skills_from_text(text: str, is_jd: bool = False) -> Tuple[Set[str], 
     # =========================================================================
     if is_jd:
         job_archetypes = getattr(constants, "JOB_ARCHETYPES", {})
+        soft_skill_names = set(soft_skills.keys())  # Filter out soft skills
+        
         # Normalize text: remove punctuation and extra spaces
         text_normalized = re.sub(r'[,;:\.\-\(\)]', ' ', text_lower)
         text_normalized = ' '.join(text_normalized.split())  # Normalize whitespace
@@ -1891,13 +1893,17 @@ def extract_skills_from_text(text: str, is_jd: bool = False) -> Tuple[Set[str], 
             # Method 1: Exact phrase match
             if role_lower in text_normalized:
                 for skill in role_skills:
-                    hard_found.add(skill)
+                    # Only add if NOT a soft skill
+                    if skill not in soft_skill_names:
+                        hard_found.add(skill)
                 continue
             
             # Method 2: All words of role name present in JD
             if len(role_words) > 1 and all(w in text_words for w in role_words):
                 for skill in role_skills:
-                    hard_found.add(skill)
+                    # Only add if NOT a soft skill
+                    if skill not in soft_skill_names:
+                        hard_found.add(skill)
                 continue
             
             # Method 3: Fuzzy match for role names (handle typos/variations)
