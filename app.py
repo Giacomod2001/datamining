@@ -1568,36 +1568,30 @@ def render_landing_page():
     """
     render_navigation() # GLOBAL NAVBAR
     
-    # HERO SECTION - centered with margin auto
+    # HERO SECTION
     st.markdown("""
     <div style='text-align: center; padding: 2rem 0 1rem 0; width: 100%;'>
-        <h1 style='font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; background: -webkit-linear-gradient(45deg, #0077B5, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>CareerMatch AI!</h1>
+        <h1 style='font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; background: -webkit-linear-gradient(45deg, #0077B5, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>CareerMatch AI</h1>
     </div>
     """, unsafe_allow_html=True)
 
-    # Metrics Row - using tighter spacer columns for better centering
-    spacer1, m1, m2, m3, spacer2 = st.columns([1.5, 1, 1, 1, 1.5])
-    with m1:
-        st.markdown("""
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%;">
-            <h2 style="color: #00f2c3; margin: 0; padding: 0;">1500+</h2>
+    # Metrics Row - HTML Flexbox for perfect centering
+    st.markdown("""
+    <div style="display: flex; justify-content: center; gap: 4rem; margin-bottom: 2rem; flex-wrap: wrap;">
+        <div style="text-align: center;">
+            <h2 style="color: #00f2c3; margin: 0; padding: 0; font-size: 2rem;">1500+</h2>
             <p style="color: #a0a0a0; font-size: 14px; margin: 0;">Killer Keywords</p>
         </div>
-        """, unsafe_allow_html=True)
-    with m2:
-        st.markdown("""
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%;">
-            <h2 style="color: #00f2c3; margin: 0; padding: 0;">120+</h2>
+        <div style="text-align: center;">
+            <h2 style="color: #00f2c3; margin: 0; padding: 0; font-size: 2rem;">120+</h2>
             <p style="color: #a0a0a0; font-size: 14px; margin: 0;">Job Archetypes</p>
         </div>
-        """, unsafe_allow_html=True)
-    with m3:
-        st.markdown("""
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%;">
-            <h2 style="color: #ffdb4d; margin: 0; padding: 0;">25+</h2>
+        <div style="text-align: center;">
+            <h2 style="color: #ffdb4d; margin: 0; padding: 0; font-size: 2rem;">25+</h2>
             <p style="color: #a0a0a0; font-size: 14px; margin: 0;">Sectors Covered</p>
         </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
     
     # FUNNEL DESCRIPTION - centered
     st.markdown("""
