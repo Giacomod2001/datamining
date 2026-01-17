@@ -1191,6 +1191,7 @@ ML_MODELS = {
 # whereas JOB_ARCHETYPES_EXTENDED is Dict[str, Dict] (V2 Metadata)
 
 JOB_ARCHETYPES = {}
+INFERENCE_RULES = SKILL_HIERARCHY  # Alias for backward compatibility
 
 for role, metadata in JOB_ARCHETYPES_EXTENDED.items():
     if isinstance(metadata, dict):
