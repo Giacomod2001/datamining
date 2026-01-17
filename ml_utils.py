@@ -3138,11 +3138,17 @@ def discover_careers(
     if cv_text:
         cv_hard, cv_soft = extract_skills_from_text(cv_text)
         cv_skills = cv_hard | cv_soft
+        print(f"DEBUG: Extracted {len(cv_skills)} skills from CV: {list(cv_skills)[:5]}...")
+    else:
+        print("DEBUG: No CV text provided")
     
     # --- 2. SCORE EACH ROLE (SIMPLIFIED) ---
     recommendations = []
     
     for role_name, role_skills in job_archetypes.items():
+        # DEBUG PRINT FOR FIRST ROLE ONLY
+        if role_name == "Data Analyst":
+            print(f"DEBUG: Processing Data Analyst. Role Skills: {role_skills}")
         # Get role metadata (use defaults if not defined)
         metadata = role_metadata.get(role_name, {
             "category": "Other",
@@ -3180,6 +3186,8 @@ def discover_careers(
             
             if len(role_skills) > 0:
                 skill_match = (len(matched) / len(role_skills)) * 100
+                if role_name == "Data Analyst":
+                    print(f"DEBUG: Data Analyst Match: Matched={len(matched)}, Total={len(role_skills)}, Score={skill_match}")
         else:
             # No CV or no role skills → default neutral score
             skill_match = 50
