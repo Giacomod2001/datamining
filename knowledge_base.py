@@ -1401,6 +1401,22 @@ JOB_ROLE_METADATA = {
         "salary_range": "35k-55k",
         "career_path": ["Senior Engineer", "Energy Consultant", "Project Manager"]
     },
+    "Energy Engineer": {
+        "hard_skills": ["Energy Efficiency", "Power Systems", "Thermodynamics", "AutoCAD", "Excel", "Project Management"],
+        "soft_skills": ["Problem Solving", "Teamwork", "Analytical Thinking"],
+        "description": "General energy engineering role.",
+        "market_demand": "High",
+        "salary_range": "35k-60k",
+        "career_path": ["Senior Energy Engineer"]
+    },
+    "Energy Engineering": {
+         "hard_skills": ["Energy Efficiency", "Power Systems", "Thermodynamics", "AutoCAD", "Excel", "Project Management"],
+        "soft_skills": ["Problem Solving", "Teamwork", "Analytical Thinking"],
+        "description": "General energy engineering role.",
+        "market_demand": "High",
+        "salary_range": "35k-60k",
+        "career_path": ["Senior Energy Engineer"]
+    },
     "BIM Manager": {"category": "Engineering", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
     
     # ========== BIOTECH & PHARMA (NEW METADATA) ==========
