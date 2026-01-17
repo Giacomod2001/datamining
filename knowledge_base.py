@@ -1061,14 +1061,14 @@ SKILL_CLUSTERS = {
     # NEW: Marketing Functions Cluster
     "Marketing Functions": {"Campaign Management", "Digital Marketing", "Performance Marketing", "Marketing Automation", "Marketing Strategy", "Campaign Optimization", "Marketing Analytics"},
     
-    # NEW: Finance/Budgeting Cluster  
-    "Finance & Budgeting": {"Budgeting", "Financial Analysis", "Budget Management", "Financial Planning", "Cost Analysis", "ROI Analysis", "P&L Management"},
+    # NEW: Finance/Budgeting Cluster (expanded to include marketing budget skills)
+    "Finance & Budgeting": {"Budgeting", "Financial Analysis", "Budget Management", "Financial Planning", "Cost Analysis", "ROI Analysis", "P&L Management", "Digital Marketing", "Performance Marketing", "Marketing Analytics", "Campaign Optimization"},
     
     # NEW: Statistics Cluster
-    "Statistical Analysis": {"Statistics", "Statistical Analysis", "Data Analysis", "Quantitative Analysis", "Analytics", "A/B Testing", "Hypothesis Testing"},
+    "Statistical Analysis": {"Statistics", "Statistical Analysis", "Data Analysis", "Quantitative Analysis", "Analytics", "A/B Testing", "Hypothesis Testing", "Data Analytics", "Marketing Analytics"},
     
-    # NEW: Strategy Cluster
-    "Strategy Skills": {"Strategy", "Strategic Planning", "Business Strategy", "Go-to-Market", "Market Analysis", "Competitive Analysis"},
+    # NEW: Strategy Cluster (expanded to include marketing strategy skills)
+    "Strategy Skills": {"Strategy", "Strategic Planning", "Business Strategy", "Go-to-Market", "Market Analysis", "Competitive Analysis", "Marketing Strategy", "Digital Marketing", "Performance Marketing", "Growth Strategy"},
 }
 
 PROJECT_BASED_SKILLS = {
@@ -1301,7 +1301,7 @@ HARD_SKILLS = {
     "Energy & Renewables": ["rinnovabili", "fotovoltaico", "eolico", "efficienza energetica", "energy manager", "pvsyst", "high voltage"],
 
     # ========== BIOTECH, PHARMA & SCIENCE (DETAILED) ==========
-    "Clinical Research": ["clinical trials", "studi clinici", "gcp", "good clinical practice", "cra", "ich-gcp"],
+    "Clinical Research": ["clinical trials", "studi clinici", "good clinical practice", "clinical research associate", "cra clinical", "ich-gcp"],
     "Regulatory Affairs": ["regulatory affairs", "aifa", "ema", "fda", "dossier", "market access"],
     "Quality Assurance (Pharma)": ["gmp", "good manufacturing practice", "glp", "capa", "change control", "data integrity"],
     "Lab Techniques": ["pcr", "elisa", "westem blot", "hplc", "cell culture", "biologia molecolare", "chromatography"],
