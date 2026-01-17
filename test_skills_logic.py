@@ -46,12 +46,8 @@ class TestSkillGapLogic(unittest.TestCase):
         # The current analyze_gap implementation puts it in 'transferable' dict, NOT 'matching_hard'
         # and excludes it from 'missing_hard'.
         
-        self.assertNotIn("Tableau", result["matching_hard"]) 
-        self.assertIn("Tableau", result["transferable"])
-        self.assertNotIn("Tableau", result["missing_hard"])
-        
         # With aggregated Visualization key, both Looker Studio and Tableau map to 'Visualization'
-        # So it becomes a Direct Match (Green)
+        # So it becomes a Direct Match (Green) for current logic (User requested "Match era meglio prima")
         self.assertIn("Visualization", result["matching_hard"])
         self.assertNotIn("Tableau", result["missing_hard"])
         
@@ -79,7 +75,8 @@ class TestSkillGapLogic(unittest.TestCase):
         result = analyze_gap(cv_text, jd_text)
         
         self.assertIn("Python", result["matching_hard"]) # 1.0
-        self.assertIn("Tableau", result["transferable"]) # 0.5
+        # Tableau -> Visualization (Green Direct Match due to aggregation)
+        self.assertIn("Visualization", result["matching_hard"]) 
         self.assertIn("Java", result["missing_hard"])    # 0.0
         
         # Score calculation is complex due to Inference Rules (Python -> Programming, Tableau -> BI Tools, etc.)
