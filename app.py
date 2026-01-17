@@ -1579,23 +1579,23 @@ def render_landing_page():
     spacer1, m1, m2, m3, spacer2 = st.columns([0.5, 1, 1, 1, 0.5])
     with m1:
         st.markdown("""
-        <div style="text-align: center;">
-            <h2 style="color: #00f2c3; margin-bottom: 0;">1500+</h2>
-            <p style="color: #a0a0a0; font-size: 14px;">Killer Keywords</p>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+            <h2 style="color: #00f2c3; margin: 0; padding: 0;">1500+</h2>
+            <p style="color: #a0a0a0; font-size: 14px; margin: 0;">Killer Keywords</p>
         </div>
         """, unsafe_allow_html=True)
     with m2:
         st.markdown("""
-        <div style="text-align: center;">
-            <h2 style="color: #00f2c3; margin-bottom: 0;">120+</h2>
-            <p style="color: #a0a0a0; font-size: 14px;">Job Archetypes</p>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+            <h2 style="color: #00f2c3; margin: 0; padding: 0;">120+</h2>
+            <p style="color: #a0a0a0; font-size: 14px; margin: 0;">Job Archetypes</p>
         </div>
         """, unsafe_allow_html=True)
     with m3:
         st.markdown("""
-        <div style="text-align: center;">
-            <h2 style="color: #ffdb4d; margin-bottom: 0;">25+</h2>
-            <p style="color: #a0a0a0; font-size: 14px;">Sectors Covered</p>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+            <h2 style="color: #ffdb4d; margin: 0; padding: 0;">25+</h2>
+            <p style="color: #a0a0a0; font-size: 14px; margin: 0;">Sectors Covered</p>
         </div>
         """, unsafe_allow_html=True)
     
