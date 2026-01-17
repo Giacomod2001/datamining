@@ -2246,22 +2246,12 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     
     st.divider()
     
-    # --- AI CAREER COMPASS (Moved Up) ---
-    # AI Career Compass (Visible)
+    # --- AI CAREER COMPASS (Unified Logic) ---
     st.subheader("AI Career Compass")
     st.caption("Alternative roles based on your profile and education")
     
-    # Seniority Detection for Queries
-    cv_level, _ = ml_utils.detect_seniority(cv_text) if cv_text else ("Mid Level", 0.0)
-    query_prefix = ""
-    if cv_level == "Entry Level": query_prefix = "Junior "
-    elif cv_level == "Senior Level": query_prefix = "Senior "
-    
-    # Subtle seniority indicator
-    st.caption(f"Profile Analysis: **{cv_level}**. Recommendations optimized for this level.")
-
-    candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
-    recs = ml_utils.recommend_roles(candidate_skills, jd_text if jd_text else "", cv_text if cv_text else "")
+    # Call Unified Discovery Engine
+    recs = ml_utils.discover_careers(cv_text=cv_text if cv_text else "")
     
     # Optional Filter
     match_range = st.radio(
@@ -2270,7 +2260,7 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
         horizontal=True,
         label_visibility="collapsed",
         key="compass_filter_range",
-        index=1 
+        index=2 # Default to 50-75% for realism
     )
     
     # Filter logic
@@ -2285,37 +2275,41 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     if filtered_recs:
         # Display in 2 columns
         col1, col2 = st.columns(2)
-        for i, rec in enumerate(filtered_recs):
+        for i, rec in enumerate(filtered_recs[:6]): # Show top 6 results
             with col1 if i % 2 == 0 else col2:
                 with st.container(border=True):
                     # Header: Role + Score Badge
                     c_head, c_badge = st.columns([3, 1])
                     with c_head:
                         role_title = rec['role']
-                        if rec.get('seniority_fit') == "Underqualified":
-                             role_title += " (Ambitious)"
                         st.markdown(f"**{role_title}**")
+                        if rec.get('category'):
+                            st.caption(f"{rec['category']}")
                     with c_badge:
-                        st.markdown(f"<div style='text-align: right; font-weight: bold;'>{rec['score']:.0f}%</div>", unsafe_allow_html=True)
+                        score_color = "#00C853" if rec['score'] >= 70 else "#FFB300" if rec['score'] >= 50 else "#E53935"
+                        st.markdown(f"<div style='text-align: right; font-weight: bold; color: {score_color};'>{rec['score']:.0f}%</div>", unsafe_allow_html=True)
                     
                     # Visual Progress Bar
                     st.progress(int(rec['score']))
                     
+                    # Missing Skills Line
+                    if rec.get('missing_skills'):
+                        missing = sorted(list(rec['missing_skills']))[:3]
+                        st.caption(f"Missing: {', '.join(missing)}")
+                    
                     # Links
-                    role_query = urllib.parse.quote(f"{query_prefix}{rec['role']}")
+                    role_query = urllib.parse.quote(f"{rec['role']}")
                     st.markdown(f"""
-                    <div style="display: flex; gap: 10px; font-size: 0.9em; margin-top: 12px; margin-bottom: 4px;">
+                    <div style="display: flex; gap: 10px; font-size: 0.8em; margin-top: 8px;">
                         <a href="https://www.google.com/search?q={role_query}+jobs" target="_blank" style="text-decoration: none;">Google</a>
                         <span style="color: #30363d;">|</span>
                         <a href="https://www.linkedin.com/jobs/search/?keywords={role_query}" target="_blank" style="text-decoration: none;">LinkedIn</a>
-                        <span style="color: #30363d;">|</span>
-                        <a href="https://it.indeed.com/jobs?q={role_query}" target="_blank" style="text-decoration: none;">Indeed</a>
                     </div>
                     """, unsafe_allow_html=True)
     elif recs:
-        st.info(f"No roles found in the {match_range} range. Try a different filter.")
+        st.info(f"No roles found in the {match_range} range. Try lower ranges.")
     else:
-        st.info("No alternative roles found based on your skills.")
+        st.info("No alternative roles found. Try adding more detail to your CV.")
     
     st.divider()
 
