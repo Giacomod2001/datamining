@@ -1575,20 +1575,20 @@ def render_landing_page():
     </div>
     """, unsafe_allow_html=True)
 
-    # Metrics Row - Horizontal Layout (Side-by-Side)
+    # Metrics Row - Single Line, Same Style, Wide Spacing
     st.markdown("""
-    <div style="display: flex; justify-content: center; gap: 4rem; margin-bottom: 2rem; flex-wrap: wrap;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <h2 style="color: #00f2c3; margin: 0; padding: 0; font-size: 2.5rem; line-height: 1;">1500+</h2>
-            <p style="color: #a0a0a0; font-size: 16px; margin: 0; text-align: left; line-height: 1.2;">Killer<br>Keywords</p>
+    <div style="display: flex; justify-content: center; gap: 8rem; margin-bottom: 3rem; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <h2 style="color: #00f2c3; margin: 0; padding: 0; font-size: 2.2rem; font-weight: 700;">1500+</h2>
+            <span style="color: #00f2c3; font-size: 2.2rem; font-weight: 700;">Killer Keywords</span>
         </div>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <h2 style="color: #00f2c3; margin: 0; padding: 0; font-size: 2.5rem; line-height: 1;">120+</h2>
-            <p style="color: #a0a0a0; font-size: 16px; margin: 0; text-align: left; line-height: 1.2;">Job<br>Archetypes</p>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <h2 style="color: #00f2c3; margin: 0; padding: 0; font-size: 2.2rem; font-weight: 700;">120+</h2>
+            <span style="color: #00f2c3; font-size: 2.2rem; font-weight: 700;">Job Archetypes</span>
         </div>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <h2 style="color: #ffdb4d; margin: 0; padding: 0; font-size: 2.5rem; line-height: 1;">25+</h2>
-            <p style="color: #a0a0a0; font-size: 16px; margin: 0; text-align: left; line-height: 1.2;">Sectors<br>Covered</p>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <h2 style="color: #ffdb4d; margin: 0; padding: 0; font-size: 2.2rem; font-weight: 700;">25+</h2>
+            <span style="color: #ffdb4d; font-size: 2.2rem; font-weight: 700;">Sectors Covered</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
