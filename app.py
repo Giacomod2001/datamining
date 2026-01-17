@@ -141,6 +141,24 @@ def render_navigation():
             <h2 style='font-size: 1.5rem; margin: 0;'>CareerMatch AI</h2>
             <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>CAREER ASSISTANT</p>
         </div>
+        <style>
+            /* Custom Style for Home (Button 1) and Dev Console (Button 5) in Sidebar */
+            section[data-testid="stSidebar"] .stButton:nth-of-type(1) button {
+                border: 1px solid #00f2c3 !important;
+                color: #00f2c3 !important;
+            }
+            section[data-testid="stSidebar"] .stButton:nth-of-type(5) button {
+                border: 1px solid #00f2c3 !important;
+                color: #00f2c3 !important;
+            }
+            /* Hover effect override */
+            section[data-testid="stSidebar"] .stButton:nth-of-type(1) button:hover,
+            section[data-testid="stSidebar"] .stButton:nth-of-type(5) button:hover {
+                border-color: #00f2c3 !important;
+                color: #00f2c3 !important;
+                background-color: rgba(0, 242, 195, 0.1) !important;
+            }
+        </style>
         """, unsafe_allow_html=True)
         st.divider()
         
@@ -236,11 +254,29 @@ def render_debug_page():
     # =========================================================================
     with st.sidebar:
         # BRANDING (Centered)
-        st.markdown("""
+        st.markdown(f"""
         <div style='text-align: center; padding: 0.5rem 0;'>
             <h2 style='font-size: 1.5rem; margin: 0;'>CareerMatch AI</h2>
-            <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>DEV SYSTEM INTERFACE</p>
+            <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>DEBUGGER CONSOLE</p>
         </div>
+        <style>
+            /* Custom Style for Home (Button 1) and Dev Console (Button 5) in Sidebar */
+            section[data-testid="stSidebar"] .stButton:nth-of-type(1) button {{
+                border: 1px solid #00f2c3 !important;
+                color: #00f2c3 !important;
+            }}
+            section[data-testid="stSidebar"] .stButton:nth-of-type(5) button {{
+                border: 1px solid #00f2c3 !important;
+                color: #00f2c3 !important;
+            }}
+            /* Hover effect override */
+            section[data-testid="stSidebar"] .stButton:nth-of-type(1) button:hover,
+            section[data-testid="stSidebar"] .stButton:nth-of-type(5) button:hover {{
+                border-color: #00f2c3 !important;
+                color: #00f2c3 !important;
+                background-color: rgba(0, 242, 195, 0.1) !important;
+            }}
+        </style>
         """, unsafe_allow_html=True)
         
         st.divider()
