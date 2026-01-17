@@ -145,19 +145,19 @@ def render_navigation():
             /* Custom Style for Home (Button 1) and Dev Console (Button 5) in Sidebar */
             section[data-testid="stSidebar"] .stButton:nth-of-type(1) button {
                 background-color: #00f2c3 !important;
-                color: #000000 !important;
+                color: #FFFFFF !important;
                 border: none !important;
             }
             section[data-testid="stSidebar"] .stButton:nth-of-type(5) button {
                 background-color: #00f2c3 !important;
-                color: #000000 !important;
+                color: #FFFFFF !important;
                 border: none !important;
             }
             /* Hover effect override */
             section[data-testid="stSidebar"] .stButton:nth-of-type(1) button:hover,
             section[data-testid="stSidebar"] .stButton:nth-of-type(5) button:hover {
                 background-color: #00c8a0 !important;
-                color: #000000 !important;
+                color: #FFFFFF !important;
             }
         </style>
         """, unsafe_allow_html=True)
@@ -264,19 +264,19 @@ def render_debug_page():
             /* Custom Style for Home (Button 1) and Dev Console (Button 5) in Sidebar */
             section[data-testid="stSidebar"] .stButton:nth-of-type(1) button {{
                 background-color: #00f2c3 !important;
-                color: #000000 !important;
+                color: #FFFFFF !important;
                 border: none !important;
             }}
             section[data-testid="stSidebar"] .stButton:nth-of-type(5) button {{
                 background-color: #00f2c3 !important;
-                color: #000000 !important;
+                color: #FFFFFF !important;
                 border: none !important;
             }}
             /* Hover effect override */
             section[data-testid="stSidebar"] .stButton:nth-of-type(1) button:hover,
             section[data-testid="stSidebar"] .stButton:nth-of-type(5) button:hover {{
                 background-color: #00c8a0 !important;
-                color: #000000 !important;
+                color: #FFFFFF !important;
             }}
         </style>
         """, unsafe_allow_html=True)
