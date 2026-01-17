@@ -2203,12 +2203,17 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     for missing in initial_missing_hard:
         found_transferable = False
         
-        # 1a. Check Skill Clusters (Generic)
+        # 1a. Check Skill Clusters (Generic) - NORMALIZED MATCHING
+        missing_lower = missing.lower()
         for cluster_name, members in skill_clusters.items():
-            if missing in members:
-                user_has = members.intersection(cv_hard)
-                if user_has:
-                    transferable[missing] = list(user_has)[0] 
+            members_lower = {m.lower() for m in members}
+            cv_hard_lower = {s.lower() for s in cv_hard}
+            if missing_lower in members_lower:
+                user_has_lower = members_lower.intersection(cv_hard_lower)
+                if user_has_lower:
+                    # Find original casing for display
+                    user_has_original = [s for s in cv_hard if s.lower() in user_has_lower]
+                    transferable[missing] = user_has_original[0] if user_has_original else list(user_has_lower)[0]
                     found_transferable = True
                     break
         
