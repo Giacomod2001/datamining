@@ -1575,8 +1575,8 @@ def render_landing_page():
     </div>
     """, unsafe_allow_html=True)
 
-    # Metrics Row - using spacer columns for centering
-    spacer1, m1, m2, m3, spacer2 = st.columns([0.5, 1, 1, 1, 0.5])
+    # Metrics Row - using tighter spacer columns for better centering
+    spacer1, m1, m2, m3, spacer2 = st.columns([1.5, 1, 1, 1, 1.5])
     with m1:
         st.markdown("""
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%;">
@@ -1610,7 +1610,7 @@ def render_landing_page():
     """, unsafe_allow_html=True)
 
     # NAVIGATION CARDS - with spacer columns for centering
-    spacer1, col1, col2, col3, spacer2 = st.columns([0.25, 1, 1, 1, 0.25])
+    spacer1, col1, col2, col3, spacer2 = st.columns([0.5, 1, 1, 1, 0.5])
     
     # Custom CSS for cards
     card_style = """
