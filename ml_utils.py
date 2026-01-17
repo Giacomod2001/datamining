@@ -2169,9 +2169,22 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     if detected_lang:
         cv_hard.add(detected_lang)
 
-    matching_hard = cv_hard & job_hard
-    initial_missing_hard = job_hard - cv_hard
-    extra_hard = cv_hard - job_hard
+    # Expand skills using hierarchy (English -> Languages, etc.)
+    cv_hard_normalized = {s.lower() for s in cv_hard}
+    job_hard_normalized = {s.lower() for s in job_hard}
+    
+    cv_hard_expanded = expand_skills_with_clusters(cv_hard_normalized)
+    job_hard_expanded = expand_skills_with_clusters(job_hard_normalized)
+    
+    # Match based on expanded sets
+    matching_hard_normalized = cv_hard_expanded & job_hard_expanded
+    initial_missing_hard_normalized = job_hard_expanded - cv_hard_expanded
+    extra_hard_normalized = cv_hard_expanded - job_hard_expanded
+    
+    # Map back to original casing for display
+    matching_hard = {s for s in (cv_hard | job_hard) if s.lower() in matching_hard_normalized}
+    initial_missing_hard = {s for s in job_hard if s.lower() in initial_missing_hard_normalized}
+    extra_hard = {s for s in cv_hard if s.lower() in extra_hard_normalized}
 
     # Stats
     skill_clusters = getattr(constants, "SKILL_CLUSTERS", {})
