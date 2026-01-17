@@ -2166,101 +2166,40 @@ def detect_language(text: str) -> str:
 
 # =============================================================================
 def analyze_gap(cv_text: str, job_text: str) -> Dict:
+    """
+    COMPLETE REWRITE - Ultra-simple skill gap analysis.
+    
+    Logic:
+    - MATCHED (green) = Skills in BOTH CV and JD
+    - MISSING (red) = Skills in JD but NOT in CV
+    - EXTRA (gray) = Skills in CV but NOT in JD
+    - Score = len(matched) / len(jd_skills) * 100
+    """
+    # 1. Extract skills
     cv_hard, cv_soft = extract_skills_from_text(cv_text)
-    job_hard, job_soft = extract_skills_from_text(job_text, is_jd=True)  # FIXED: Enable archetype fallback
+    job_hard, job_soft = extract_skills_from_text(job_text, is_jd=True)
 
-    # 0. Native Language Inference
-    # If CV is detected as Italian, we assume candidate speaks Italian (Native)
-    detected_lang = detect_language(cv_text)
-    if detected_lang:
-        cv_hard.add(detected_lang)
-
-    # ==========================================================================
-    # MATCHING LOGIC (WITH INFERENCE/CLUSTER EXPANSION)
-    # ==========================================================================
-    # GREEN (matched) = Skills matched via direct match OR inference/cluster
-    # YELLOW (transferable) = Skills matched via cluster but not directly
-    # RED (missing) = Skills not matched at all
-    # ==========================================================================
+    # 2. Normalize to lowercase for comparison
+    cv_hard_lower = {s.lower() for s in cv_hard}
+    job_hard_lower = {s.lower() for s in job_hard}
     
-    # Normalize to lowercase for comparison
-    cv_hard_normalized = {s.lower() for s in cv_hard}
-    job_hard_normalized = {s.lower() for s in job_hard}
+    # 3. Simple set operations
+    matched_lower = cv_hard_lower & job_hard_lower
+    missing_lower = job_hard_lower - cv_hard_lower
+    extra_lower = cv_hard_lower - job_hard_lower
     
-    # Expand using clusters and inference rules
-    cv_hard_expanded = expand_skills_with_clusters(cv_hard_normalized)
-    job_hard_expanded = expand_skills_with_clusters(job_hard_normalized)
+    # 4. Map back to original casing for display
+    matching_hard = {s for s in (cv_hard | job_hard) if s.lower() in matched_lower}
+    missing_hard = {s for s in job_hard if s.lower() in missing_lower}
+    extra_hard = {s for s in cv_hard if s.lower() in extra_lower}
     
-    # Match based on expanded sets (includes inference)
-    matching_hard_normalized = cv_hard_expanded & job_hard_expanded
-    initial_missing_hard_normalized = job_hard_expanded - cv_hard_expanded
-    extra_hard_normalized = cv_hard_expanded - job_hard_expanded
-    
-    # Map back to original casing for display
-    matching_hard = {s for s in (cv_hard | job_hard) if s.lower() in matching_hard_normalized}
-    initial_missing_hard = {s for s in job_hard if s.lower() in initial_missing_hard_normalized}
-    extra_hard = {s for s in cv_hard if s.lower() in extra_hard_normalized}
-
-    # Stats
-    skill_clusters = getattr(constants, "SKILL_CLUSTERS", {})
-
-    # ==========================================================================
-    # SIMPLIFIED TRANSFERABLE MATCHING (REBUILT FROM SCRATCH)
-    # ==========================================================================
-    # Logic: If CV has ANY skill in a cluster, ALL other skills in that 
-    # cluster become Transferable (yellow instead of red).
-    # ==========================================================================
-    
-    transferable = {} 
-    remaining_missing = set()
-    
-    # Pre-compute: normalize all CV skills to lowercase for comparison
-    cv_skills_lower = {s.lower() for s in cv_hard}
-    
-    # Pre-compute: build a lookup table of cluster memberships (all lowercase)
-    cluster_lookup = {}  # skill_lower -> set of all other skills in same cluster(s)
-    for cluster_name, members in skill_clusters.items():
-        members_lower = {m.lower() for m in members}
-        for skill in members_lower:
-            if skill not in cluster_lookup:
-                cluster_lookup[skill] = set()
-            cluster_lookup[skill].update(members_lower)
-    
-    # Check each missing skill
-    for missing in initial_missing_hard:
-        missing_lower = missing.lower()
-        found_transferable = False
-        
-        # Check if this missing skill is in any cluster
-        if missing_lower in cluster_lookup:
-            # Get all equivalent skills in the same cluster(s)
-            equivalent_skills = cluster_lookup[missing_lower]
-            
-            # Check if user has ANY of the equivalent skills
-            user_has = equivalent_skills.intersection(cv_skills_lower)
-            
-            if user_has:
-                # Find original casing for display
-                user_has_original = [s for s in cv_hard if s.lower() in user_has]
-                display_skill = user_has_original[0] if user_has_original else list(user_has)[0]
-                transferable[missing] = display_skill
-                found_transferable = True
-        
-        if not found_transferable:
-            remaining_missing.add(missing)
-
-    # Note: project_review is ONLY populated by analyze_gap_with_project
-    # when the user actually provides project content
-    project_review = set()
-    final_strict_missing = remaining_missing  # All remaining are missing
-
+    # 5. Soft skills (same logic)
     matching_soft = cv_soft & job_soft
     missing_soft = job_soft - cv_soft
-
-    score_points = len(matching_hard) + (len(transferable) * 0.5)
-    # Use ORIGINAL job_hard count (not expanded) for accurate percentage
-    match_pct = min(100.0, score_points / len(job_hard) * 100) if job_hard else 0
-
+    
+    # 6. Calculate score (simple percentage)
+    match_pct = len(matching_hard) / len(job_hard) * 100 if job_hard else 0
+    
     # 7. Seniority Analysis
     cv_level, _ = detect_seniority(cv_text)
     jd_level, _ = detect_seniority(job_text)
@@ -2277,9 +2216,9 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     return {
         "match_percentage": match_pct,
         "matching_hard": matching_hard,
-        "missing_hard": final_strict_missing,
-        "project_review": project_review, 
-        "transferable": transferable,
+        "missing_hard": missing_hard,
+        "project_review": set(),  # Only populated by analyze_gap_with_project
+        "transferable": {},  # Not used in simple version
         "extra_hard": extra_hard,
         "matching_soft": matching_soft,
         "missing_soft": missing_soft,
