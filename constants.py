@@ -19,7 +19,6 @@ from knowledge_base import (
     SOFT_SKILLS, 
     NON_SKILL_PATTERNS, 
     CAREER_CATEGORIES, 
-    JOB_ROLE_METADATA, 
     JOB_ARCHETYPES_EXTENDED
 )
 
@@ -31,13 +30,26 @@ from knowledge_base import (
 # knowledge_base.JOB_ARCHETYPES_EXTENDED is Dict[str, Dict] (V2 Metadata)
 
 JOB_ARCHETYPES = {}
+JOB_ROLE_METADATA = {}
+
 for role, metadata in JOB_ARCHETYPES_EXTENDED.items():
     if isinstance(metadata, dict) and "primary_skills" in metadata:
-        # Create a set of primary skills
+        # Create a set of primary skills for JOB_ARCHETYPES
         skills_set = set(metadata["primary_skills"])
         # Optionally add soft skills if needed for keyword matching
         # skills_set.update(metadata.get("soft_skills", []))
         JOB_ARCHETYPES[role] = skills_set
+        
+        # Create metadata dict for JOB_ROLE_METADATA (used by discover_careers)
+        JOB_ROLE_METADATA[role] = {
+            "category": metadata.get("category", "Other"),
+            "client_facing": metadata.get("client_facing", None),
+            "remote_friendly": metadata.get("remote_friendly", None),
+            "international": metadata.get("international", None),
+            "dynamic": metadata.get("dynamic", None),
+            "creative": metadata.get("creative", None),
+        }
     else:
         # Fallback for any non-dict entries
         JOB_ARCHETYPES[role] = set(metadata)
+        JOB_ROLE_METADATA[role] = {"category": "Other"}
