@@ -2176,7 +2176,7 @@ def analyze_gap_with_project(cv_text: str, job_text: str, project_text: str) -> 
     
     # 2. Extract skills from all sources
     proj_hard, _ = extract_skills_from_text(project_text)
-    job_hard, _ = extract_skills_from_text(job_text)
+    job_hard, _ = extract_skills_from_text(job_text, is_jd=True)  # Enable archetype fallback
     cv_hard, _ = extract_skills_from_text(cv_text)
     
     # 3. Calculate Portfolio Quality Score (0-100)
