@@ -1005,8 +1005,8 @@ INFERENCE_RULES = {
 }
 
 SKILL_CLUSTERS = {
-    # BI & Visualization Tools
-    "BI Tools": {"Tableau", "Power BI", "Looker", "Looker Studio", "QlikView", "Metabase", "Data Studio", "Google Data Studio"},
+    # BI & Visualization Tools - EXPANDED to include extracted skill names
+    "BI Tools": {"Tableau", "Power BI", "Looker", "Looker Studio", "QlikView", "Metabase", "Data Studio", "Google Data Studio", "Visualization", "Data Visualization"},
     
     # Analytics Platforms  
     "Analytics Platforms": {"Google Analytics", "GA4", "Adobe Analytics", "Mixpanel", "Amplitude", "Hotjar", "Matomo"},
