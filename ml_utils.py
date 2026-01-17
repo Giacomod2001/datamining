@@ -2380,10 +2380,11 @@ def analyze_gap_with_project(cv_text: str, job_text: str, project_text: str) -> 
         total_jd = len(job_hard)
         if total_jd > 0:
             direct_points = len(res["matching_hard"]) * 1.0
-            trans_points = len(res["transferable"]) * 0.5
+            trans_points = len(res["transferable"]) * 0.7
             # Add small bonus for project context if desired, or keep simple
             total_points = direct_points + trans_points
             res["match_percentage"] = min(100.0, (total_points / total_jd) * 100)
+
     
     # 9. Add Portfolio Intelligence to Results
     res["project_verified"] = project_verified

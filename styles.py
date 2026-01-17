@@ -981,3 +981,68 @@ Requirements:
 """
 
 
+
+def get_energy_demo_cv():
+    """Returns sample CV for Energy Engineer (100% match case study)."""
+    return """
+LUCA VERDI
+Energy Engineer | RES Specialist
+Milan, Italy | l.verdi@email.com | +39 333 123 4567
+
+SUMMARY
+Highly analytical Energy Engineer with a strong background in thermodynamics and power systems. 
+Expert in renewable energy integration and energy efficiency optimization for industrial plants.
+
+SKILLS
+- Core: Thermodynamics, Power Systems, Energy Efficiency, Renewable Energy
+- Tools: MATLAB, Simulink, AutoCAD, Excel (Advanced), Python
+- General: Engineering, Project Management, Statistical Analysis
+
+EXPERIENCE
+Junior Energy Engineer | GreenPower Solutions | 2023 - Present
+- Conducted energy audits for industrial facilities, improving energy efficiency by 15%.
+- Modeled complex thermodynamics systems to optimize heat recovery.
+- Designed power systems for large-scale solar and wind farms using AutoCAD.
+
+RESEARCH PROJECT
+Smart Grid Optimization | University Case Study
+- Developed a Python-based simulation for demand-response in smart grids.
+- Calculated energy efficiency metrics for various renewable energy scenarios.
+
+EDUCATION
+Master's Degree in Energy Engineering | Politecnico di Milano | 2021 - 2023
+- Focus: Renewable Energy Systems and Power Grid Stability
+"""
+
+def get_energy_demo_jd():
+    """Returns sample JD for Energy Engineer (100% match case study)."""
+    return """
+ENERGY ENGINEER
+Enel Green Power | Rome, Italy
+
+We are seeking a dedicated Energy Engineer to join our Renewable Energy division.
+
+RESPONSIBILITIES:
+- Perform thermodynamics analysis for energy generation plants.
+- Design and optimize power systems for renewable energy integration.
+- Implement energy efficiency programs across our operations.
+- Use MATLAB and Python for system modeling and simulation.
+
+REQUIREMENTS:
+- Degree in Energy Engineering or similar.
+- Strong knowledge of Thermodynamics and Power Systems.
+- Proficiency in MATLAB, Python, and Excel.
+- Experience with Renewable Energy technologies.
+- Background in Engineering fundamentals.
+"""
+
+def get_energy_demo_project():
+    """Returns sample project for Energy Engineer demo."""
+    return """
+RENEWABLE GRID SIMULATOR
+Key Skills: Thermodynamics, Power Systems, Python, Energy Efficiency
+
+Developed a comprehensive simulator to evaluate the impact of high renewable energy 
+penetration on national power systems. Used Python and MATLAB for modeling 
+thermodynamic cycles and grid stability.
+"""
