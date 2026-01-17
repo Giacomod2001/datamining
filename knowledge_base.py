@@ -1401,22 +1401,6 @@ JOB_ROLE_METADATA = {
         "salary_range": "35k-55k",
         "career_path": ["Senior Engineer", "Energy Consultant", "Project Manager"]
     },
-    
-    # ... (other roles) ...
-
-    # Energy & Engineering Inferences (User Requested)
-    "Energy Engineering": ["Thermodynamics", "Power Systems", "Energy Efficiency", "Physics", "Mathematics"],
-    "Ingegneria Energetica": ["Energy Engineering", "Thermodynamics", "Power Systems", "Energy Efficiency"],
-    "Ing. Energetico": ["Energy Engineering"],
-    "Renewable Energy": ["Solar Energy", "Wind Energy", "Sustainability"],
-    "Energiewende": ["Renewable Energy"],
-    "Photovoltaics": ["Solar Energy"],
-    "PV": ["Solar Energy"],
-    "Solar Energy": ["Renewable Energy"],
-    "Matlab": ["Simulink", "Programming"],
-    "PVSyst": ["Solar Energy"],
-    "AutoCAD": ["CAD", "Technical Drawing"],
-}
     "BIM Manager": {"category": "Engineering", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
     
     # ========== BIOTECH & PHARMA (NEW METADATA) ==========
