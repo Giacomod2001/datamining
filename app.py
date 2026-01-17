@@ -688,7 +688,7 @@ def render_debug_page():
                                 border-radius: 12px; 
                                 font-size: 0.9em;
                                 cursor: help;">
-                                {missing} <span style="opacity: 0.7; font-size: 0.8em;">(Transferable)</span>
+                                {missing}
                             </div>
                             '''
                         html_content += '</div>'

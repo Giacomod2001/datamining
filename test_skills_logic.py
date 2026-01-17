@@ -32,26 +32,18 @@ class TestSkillGapLogic(unittest.TestCase):
         self.assertNotIn("Programming", result["missing_hard"])
         self.assertAlmostEqual(result["match_percentage"], 100.0)
 
-    def test_transferable_match(self):
-        """Test Case 3: Transferable Match (Yellow) - Cluster"""
-        # User has Looker Studio, JD needs Tableau
-        # Both in "BI Tools" cluster
-        
-        cv_text = "Proficient in Looker Studio."
-        jd_text = "Experience with Tableau is required."
+    def test_downward_inference_match(self):
+        """Test Case 3: Downward Inference Match (Green)"""
+        # User has Data Analysis (Advanced), JD needs Excel (Basic)
+        # Rule: Data Analysis -> Excel
+        cv_text = "I have 5 years experience in Data Analysis."
+        jd_text = "Must be proficient in Excel."
         
         result = analyze_gap(cv_text, jd_text)
         
-        # Tableau is technically "missing" as a direct skill, BUT handled as transferable
-        # The current analyze_gap implementation puts it in 'transferable' dict, NOT 'matching_hard'
-        # and excludes it from 'missing_hard'.
-        
-        # With aggregated Visualization key, both Looker Studio and Tableau map to 'Visualization'
-        # So it becomes a Direct Match (Green) for current logic (User requested "Match era meglio prima")
-        self.assertIn("Visualization", result["matching_hard"])
-        self.assertNotIn("Tableau", result["missing_hard"])
-        
-        # Score calculation: 100% match
+        # Should be a match because Data Analysis implies Excel
+        self.assertIn("Excel", result["matching_hard"])
+        self.assertNotIn("Excel", result["missing_hard"])
         self.assertAlmostEqual(result["match_percentage"], 100.0)
 
     def test_missing_match(self):

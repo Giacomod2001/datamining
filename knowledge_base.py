@@ -1428,6 +1428,72 @@ JOB_ROLE_METADATA = {
     "Tax Consultant": {"category": "Finance", "client_facing": True, "remote_friendly": True, "international": False, "dynamic": False, "creative": False},
     "Economist": {"category": "Finance", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
 }
+# ========== INFERENCE RULES (HIIERARCHY & IMPLICATIONS) ==========
+INFERENCE_RULES = {
+    # Child -> Parent (Generalization)
+    "Python": ["Programming", "Coding"],
+    "Java": ["Programming", "Coding"],
+    "C++": ["Programming", "Coding"],
+    "C#": ["Programming", "Coding"],
+    "JavaScript": ["Programming", "Web Development"],
+    "TypeScript": ["Programming", "Web Development"],
+    "React": ["Web Development", "Frontend Development"],
+    "Angular": ["Web Development", "Frontend Development"],
+    "Vue.js": ["Web Development", "Frontend Development"],
+    "Django": ["Web Development", "Backend Development", "Python"],
+    "Flask": ["Web Development", "Backend Development", "Python"],
+    "Spring Boot": ["Web Development", "Backend Development", "Java"],
+    "AWS": ["Cloud Computing"],
+    "Azure": ["Cloud Computing"],
+    "Google Cloud": ["Cloud Computing"],
+    "Docker": ["Containerization", "DevOps"],
+    "Kubernetes": ["Containerization", "Orchestration", "DevOps"],
+    "Terraform": ["IaC", "DevOps", "Cloud Computing"],
+    "Ansible": ["Configuration Management", "DevOps"],
+    "Jenkins": ["CI/CD", "DevOps"],
+    "Git": ["Version Control"],
+    "GitHub": ["Version Control", "Git"],
+    "GitLab": ["Version Control", "Git", "CI/CD"],
+    "SQL": ["Database Management", "Data Modelling"],
+    "NoSQL": ["Database Management"],
+    "MongoDB": ["Database Management", "NoSQL"],
+    "PostgreSQL": ["Database Management", "SQL"],
+    "MySQL": ["Database Management", "SQL"],
+    
+    # Parent/Advanced -> Child/Basic (Implication/Downward Inference) - USER REQUESTED
+    "Data Science": ["Machine Learning", "Data Analysis", "Statistics", "Programming", "Python", "SQL"],
+    "Machine Learning": ["Statistics", "Data Analysis", "Modeling", "Python"],
+    "Deep Learning": ["Machine Learning", "Statistics", "Data Analysis"],
+    "Artificial Intelligence": ["Machine Learning"],
+    
+    "Data Analysis": ["Excel", "Business Analysis", "Reporting", "Statistics"],
+    "Analytics": ["Excel", "Business Analysis", "Reporting", "Data Analysis"],
+    "Business Intelligence": ["Data Analysis", "Reporting", "Visualization", "Excel"],
+    
+    "DevOps": ["Containerization", "Cloud Computing", "CI/CD", "Scripting"],
+    "Cloud Computing": ["Networking"],
+    
+    "Digital Marketing": ["Campaign Management", "Strategy", "Budgeting", "Analytics", "Social Media Marketing", "SEO", "SEM"],
+    "SEO": ["Digital Marketing", "Analytics"],
+    "SEM": ["Digital Marketing", "Analytics"],
+    "Social Media Marketing": ["Digital Marketing", "Content Strategy"],
+    "Content Marketing": ["Copywriting", "Digital Marketing"],
+    
+    "Full Stack Development": ["Frontend Development", "Backend Development", "Web Development", "Database Management"],
+    "Backend Development": ["Database Management", "API Development"],
+    
+    "Project Management": ["Planning", "Risk Management", "Budgeting", "Leadership"],
+    
+    # Language Implications
+    "English": ["Languages"],
+    "Italian": ["Languages"],
+    "French": ["Languages"],
+    "German": ["Languages"],
+    "Spanish": ["Languages"],
+    "Chinese": ["Languages"],
+    "Japanese": ["Languages"],
+}
+
 ML_MODELS = {
     "Authorization": ["oauth", "jwt", "sso", "saml", "openid connect", "auth0", "okta"],
     
