@@ -147,12 +147,12 @@ def render_navigation():
         # Navigation Buttons
         current_page = st.session_state.get("page", "Landing")
         
+        # Main Navigation Group
         nav_items = [
             ("Home", "Landing"),
-            ("CV Analysis", "CV Evaluation"),
-            ("CV Builder", "CV Builder"),
             ("Career Discovery", "Career Discovery"),
-            ("Dev Console", "Debugger")
+            ("CV Builder", "CV Builder"),
+            ("CV Analysis", "CV Evaluation")
         ]
         
         for label, page_key in nav_items:
@@ -162,6 +162,15 @@ def render_navigation():
             if st.button(label, key=f"nav_{page_key}", type=btn_type, use_container_width=True):
                 st.session_state["page"] = page_key
                 st.rerun()
+
+        # Spacer
+        st.markdown("<div style='height: 1.5rem;'></div>", unsafe_allow_html=True)
+
+        # Dev Console (Separated)
+        btn_type = "primary" if current_page == "Debugger" else "secondary"
+        if st.button("Dev Console", key="nav_Debugger", type=btn_type, use_container_width=True):
+            st.session_state["page"] = "Debugger"
+            st.rerun()
             
         st.divider()
         
