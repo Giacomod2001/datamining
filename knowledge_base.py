@@ -1220,7 +1220,10 @@ HARD_SKILLS = {
     # ========== DATA & ANALTYICS (STANDARD) ==========
     "Excel": ["excel", "microsoft excel", "advanced excel", "excel advanced", "vba", "pivot table", "vlookup", "xlookup"],
     "Data Analysis": ["data analysis", "pandas", "numpy", "power query"],
-    "Visualization": ["power bi", "tableau", "looker", "qlik", "domo", "google data studio", "looker studio", "google looker studio", "data visualization"],
+    "Artificial Intelligence": ["artificial intelligence", "ai", "machine intelligence", "computational intelligence", "cognitive computing", "generative ai", "llm", "large language models"],
+    "Machine Learning": ["machine learning", "ml", "deep learning", "neural networks", "predictive modeling", "tensorflow", "pytorch", "scikit-learn", "xgboost", "automl"],
+    "Visualization": ["power bi", "looker", "qlik", "domo", "google data studio", "looker studio", "google looker studio", "data visualization"],
+    "Tableau": ["tableau", "tableau desktop", "tableau server", "tableau prep", "tableau public"],
     "Big Data": ["hadoop", "spark", "hive", "databricks", "snowflake", "redshift", "bigquery"],
     "Google Analytics": ["google analytics", "ga4", "google analytics 4", "universal analytics", "web analytics"],
 
@@ -1501,6 +1504,9 @@ JOB_ROLE_METADATA = {
     "Full Stack Developer": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
     "Data Analyst": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
     "Data Scientist": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
+    "Machine Learning Engineer": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "AI Engineer": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
+    "Data Architect": {"category": "Technology", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
     "Data Engineer": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
     "Business Intelligence Analyst": {"category": "Technology", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
     "UX Designer": {"category": "Design", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
