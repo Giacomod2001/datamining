@@ -166,7 +166,6 @@ def detect_seniority(text: str) -> Tuple[str, float]:
         
     return "Mid Level", 0.3 # Default assumption
 
-import knowledge_base  # Contiene HARD_SKILLS, SOFT_SKILLS, INFERENCE_RULES
 import constants
 
 
@@ -2175,90 +2174,74 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     2. INFERRED (Green): Hierarchy match (CV: Python -> JD: Programming)
     3. TRANSFERABLE (Yellow): Cluster match (CV: Tableau -> JD: Power BI)
     4. MISSING (Red): No match found
-    
-    Scoring:
-    - Direct/Inferred: 1.0 points
-    - Transferable: 0.5 points
-    - Max Score: 100%
     """
-    SKILL_CLUSTERS = knowledge_base.SKILL_CLUSTERS
-    INFERENCE_RULES = knowledge_base.INFERENCE_RULES
-    JOB_ARCHETYPES_EXTENDED = knowledge_base.JOB_ARCHETYPES_EXTENDED
+    # 1. Setup Data Structures
+    SKILL_CLUSTERS = getattr(knowledge_base, "SKILL_CLUSTERS", {})
+    INFERENCE_RULES = getattr(knowledge_base, "SKILL_HIERARCHY", {}) 
+    # Backwards compatibility for inference rules
+    if not INFERENCE_RULES:
+        INFERENCE_RULES = getattr(knowledge_base, "INFERENCE_RULES", {})
+        
+    JOB_ARCHETYPES_EXTENDED = getattr(knowledge_base, "JOB_ARCHETYPES_EXTENDED", {})
     import difflib
 
-    # 1. Extract skills
+    # 2. Extract skills from both texts
     cv_hard, cv_soft = extract_skills_from_text(cv_text)
     job_hard, job_soft = extract_skills_from_text(job_text, is_jd=True)
 
-    # 1b. Smart Archetype Fallback (User entered a Title instead of JD)
-    # If extraction is sparse (< 3 skills), try to match the text to a known role
-    if len(job_hard) < 3 and len(job_text.split()) < 10:
+    # 3. Archetype Fallback (if JD is just a title or very short)
+    if len(job_hard) < 3 and len(job_text.split()) < 15:
         titles = list(JOB_ARCHETYPES_EXTENDED.keys())
-        # Clean job text query
-        query = job_text.strip()
+        query = job_text.strip().lower()
         
-        # Fuzzy match
-        matches = difflib.get_close_matches(query, titles, n=1, cutoff=0.6)
-        if not matches:
-            # Try simple case-insensitive containment
-            matches = [t for t in titles if query.lower() in t.lower()]
+        # Look for exact or fuzzy title match
+        best_role = None
+        for title in titles:
+            if query == title.lower() or query in title.lower():
+                best_role = title
+                break
         
-        if matches:
-            best_role = matches[0]
-            # Load skills from archetype
-            archetype_data = JOB_ARCHETYPES_EXTENDED[best_role]
-            # Combine all skill lists
-            arch_hard = set()
+        if not best_role:
+            matches = difflib.get_close_matches(query, titles, n=1, cutoff=0.7)
+            if matches: best_role = matches[0]
             
-            # Check various keys used in different versions of the KB
-            if "primary_skills" in archetype_data:
-                arch_hard.update(archetype_data["primary_skills"])
-            if "hard_skills" in archetype_data:
-                arch_hard.update(archetype_data["hard_skills"])
-            
-            # Legacy format support just in case
-            if isinstance(archetype_data, list):
-                arch_hard.update(archetype_data)
+        if best_role:
+            role_data = JOB_ARCHETYPES_EXTENDED[best_role]
+            arch_skills = set()
+            if isinstance(role_data, dict):
+                arch_skills.update(role_data.get("primary_skills", []))
+                arch_skills.update(role_data.get("hard_skills", []))
+                job_soft.update(role_data.get("soft_skills", []))
+            elif isinstance(role_data, (list, set)):
+                arch_skills.update(role_data)
+            job_hard.update(arch_skills)
 
-            # Add to job_hard
-            job_hard.update(arch_hard)
-            
-            # Optional: Add soft skills too if available
-            if "soft_skills" in archetype_data:
-                job_soft.update(archetype_data["soft_skills"])
-
-
-    # 2. Normalize inputs
+    # 4. Multi-Step Matching Logic
     cv_hard_lower = {s.lower() for s in cv_hard}
-    job_hard_lower = {s.lower() for s in job_hard}
     
-    # Initialize result sets
-    matched = set()      # Green (Direct + Inferred)
-    transferable = {}    # Yellow (Missing Skill -> Content)
-    missing = set()      # Red
-    
-    # 3. Step-by-Step Matching
-    score_points = 0.0
-    
-    # Pre-calculate fallback skills from CV for faster lookup
-    # Expand CV skills with inferences for matching
+    # Pre-expand CV skills with their parents for hierarchical matching
     cv_expanded = set(cv_hard_lower)
     for s in cv_hard:
         if s in INFERENCE_RULES:
             cv_expanded.update({p.lower() for p in INFERENCE_RULES[s]})
 
+    matched = set()      # Green (Direct + Inferred)
+    transferable = {}    # Yellow (Missing Skill -> Explanation)
+    missing = set()      # Red
+    score_points = 0.0
+    
     for jd_skill in job_hard:
         jd_norm = jd_skill.lower()
         
-        # STEP 1: DIRECT MATCH (Green)
+        # STEP 1: DIRECT or INFERRED (Parent) MATCH
         if jd_norm in cv_expanded:
             matched.add(jd_skill)
             score_points += 1.0
             continue
-
-        # STEP 2: INFERRED MATCH (Green) - JD skill is a parent of a CV skill
-        # (This is already covered by cv_expanded if we think about it, 
-        # but let's be explicit for "Inferred" logic if JD skill is a parent)
+            
+        # STEP 2: INFERRED (Child) MATCH (JD wants parent, user has child)
+        # (Actually cv_expanded handles user having child and JD wanting parent)
+        # Let's check JD parent -> User child if not caught
         inferred = False
         for cv_s in cv_hard:
             if cv_s in INFERENCE_RULES and jd_skill in INFERENCE_RULES[cv_s]:
@@ -2268,74 +2251,31 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
                 break
         if inferred: continue
 
-        # STEP 3: TRANSFERABLE MATCH (Yellow) - Cluster match
-        # If JD skill and a CV skill are in the same cluster
+        # STEP 3: TRANSFERABLE MATCH (Cluster-based)
         found_transferable = False
         for cluster_id, cluster_data in SKILL_CLUSTERS.items():
-            cluster_skills = {s.lower() for s in cluster_data.get("skills", [])}
+            cluster_skills = {s.lower() for s in (cluster_data.get("skills", []) if isinstance(cluster_data, dict) else cluster_data)}
             if jd_norm in cluster_skills:
-                # Check if user has ANY skill from this cluster
                 common = cv_hard_lower.intersection(cluster_skills)
                 if common:
                     transferable[jd_skill] = f"Transferable from {', '.join(list(common)[:2])}"
-                    score_points += 0.7  # Increased from 0.5 to improve match %
+                    score_points += 0.7 
                     found_transferable = True
                     break
-        
         if found_transferable: continue
 
-        # STEP 4: MISSING (Red)
+        # STEP 4: MISSING
         missing.add(jd_skill)
 
-    # 4. Calculate final score (Capped at 100%)
-    total_jd = len(job_hard)
-    if total_jd > 0:
-        match_percentage = min(100, (score_points / total_jd) * 100)
-    else:
-        match_percentage = 100 if cv_hard else 0
-
-    return {
-        "match_percentage": match_percentage,
-        "matching_hard": list(matched),
-        "transferable": transferable,
-        "missing_hard": list(missing),
-        "cv_skills": list(cv_hard),
-        "job_skills": list(job_hard)
-    }
-    # 4. Extra Skills (Gray)
+    # 5. Result Construction
     extra_hard = cv_hard - matched
     for s in transferable:
         if s in extra_hard: extra_hard.remove(s)
         
-    return {
-        "match_percentage": match_percentage,
-        "matching_hard": list(matched),
-        "transferable": transferable,
-        "missing_hard": list(missing),
-        "extra_hard": list(extra_hard),
-        "matching_soft": list(cv_soft.intersection(job_soft)),
-        "missing_soft": list(job_soft - cv_soft),
-        "cv_skills": list(cv_hard),
-        "job_skills": list(job_hard)
-    }
-    # Skills in CV that were not used for any match
-    # Note: determining "used" skills strictly is complex, so we fallback to simple set diff for "extra"
-    # This is purely informational.
-    extra_hard = {s for s in cv_hard if s.lower() not in job_hard_lower}
-
-    # 5. Soft Skills (Direct match only)
     matching_soft = cv_soft & job_soft
     missing_soft = job_soft - cv_soft
-    
-    # 6. Final Score Calculation
-    # Cap score at 100% (handling potential edge cases with definitions)
-    total_jd_skills = len(job_hard)
-    if total_jd_skills > 0:
-        match_pct = min(100.0, (score_points / total_jd_skills) * 100)
-    else:
-        match_pct = 0.0
 
-    # 7. Seniority Analysis
+    # 6. Seniority and Metrics
     cv_level, _ = detect_seniority(cv_text)
     jd_level, _ = detect_seniority(job_text)
     
@@ -2348,20 +2288,26 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
         else:
             seniority_match = "Partial Match"
 
+    total_jd = len(job_hard)
+    match_percentage = min(100.0, (score_points / total_jd) * 100) if total_jd > 0 else (100.0 if cv_hard else 0.0)
+
     return {
-        "match_percentage": match_pct,
-        "matching_hard": matched,
-        "missing_hard": missing,
+        "match_percentage": match_percentage,
+        "matching_hard": list(matched),
         "transferable": transferable,
-        "extra_hard": extra_hard,
-        "matching_soft": matching_soft,
-        "missing_soft": missing_soft,
+        "missing_hard": list(missing),
+        "extra_hard": list(extra_hard),
+        "matching_soft": list(matching_soft),
+        "missing_soft": list(missing_soft),
         "project_review": set(),
         "seniority_info": {
             "cv_level": cv_level,
             "jd_level": jd_level,
             "match_status": seniority_match
-        }
+        },
+        "cv_skills": list(cv_hard),
+        "job_skills": list(job_hard),
+        "match_pct": match_percentage # Duplicate for robustness
     }
 
 def analyze_gap_with_project(cv_text: str, job_text: str, project_text: str) -> Dict:
