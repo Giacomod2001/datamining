@@ -1046,3 +1046,19 @@ Developed a comprehensive simulator to evaluate the impact of high renewable ene
 penetration on national power systems. Used Python and MATLAB for modeling 
 thermodynamic cycles and grid stability.
 """
+def get_energy_demo_cover_letter():
+    """Returns sample cover letter for Energy Engineer demo."""
+    return """
+Gentilissimi,
+
+Desidero sottoporre la mia candidatura per la posizione di Energy Engineer presso Enel Green Power.
+
+Forte di un Master in Ingegneria Energetica conseguito presso il Politecnico di Milano, ho sviluppato competenze approfondite in termodinamica e sistemi di potenza. Durante la mia esperienza come Junior Energy Engineer presso GreenPower Solutions, ho avuto modo di applicare queste conoscenze per ottimizzare l'efficienza energetica di impianti industriali complessi.
+
+Sono appassionato di energie rinnovabili e ho padronanza di strumenti come MATLAB e Python, che ho utilizzato per modellare scenari di integrazione di impianti fotovoltaici ed eolici nella rete elettrica.
+
+Sono convinto che le mie competenze tecniche e la mia propensione all'analisi possano contribuire significativamente ai vostri progetti di transizione energetica.
+
+Distinti saluti,
+Luca Verdi
+"""

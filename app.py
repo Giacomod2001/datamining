@@ -234,8 +234,13 @@ def render_navigation():
                         st.session_state["jd_text"] = styles.get_demo_jd()
                         st.session_state["proj_text"] = styles.get_demo_project()
                         st.session_state["cl_text"] = styles.get_demo_cover_letter()
+                        st.session_state["cv_input"] = "Text"
+                        st.session_state["jd_input"] = "Text"
+                        st.session_state["proj_input"] = "Text"
+                        st.session_state["cl_input"] = "Text"
                         st.session_state["show_project_toggle"] = True
                         st.session_state["show_cover_letter"] = True
+                        st.session_state["last_results"] = None # Clear results to force refresh
                         if current_page == "CV Builder":
                             st.session_state["trigger_demo_load"] = True
                         st.rerun()
@@ -245,12 +250,14 @@ def render_navigation():
                         st.session_state["cv_text"] = styles.get_energy_demo_cv()
                         st.session_state["jd_text"] = styles.get_energy_demo_jd()
                         st.session_state["proj_text"] = styles.get_energy_demo_project()
-                        try:
-                            st.session_state["cl_text"] = styles.get_energy_demo_cover_letter()
-                        except AttributeError:
-                            st.session_state["cl_text"] = styles.get_demo_cover_letter()
+                        st.session_state["cl_text"] = styles.get_energy_demo_cover_letter()
+                        st.session_state["cv_input"] = "Text"
+                        st.session_state["jd_input"] = "Text"
+                        st.session_state["proj_input"] = "Text"
+                        st.session_state["cl_input"] = "Text"
                         st.session_state["show_project_toggle"] = True
                         st.session_state["show_cover_letter"] = True
+                        st.session_state["last_results"] = None # Clear results to force refresh
                         if current_page == "CV Builder":
                             st.session_state["trigger_demo_load"] = True
                         st.rerun()
