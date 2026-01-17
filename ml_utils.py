@@ -1747,16 +1747,16 @@ def extract_skills_from_text(text: str, is_jd: bool = False) -> Tuple[Set[str], 
 
     # Carica knowledge base
     # (Use copy to allow local extension based on domain context)
-    hard_skills = getattr(constants, "HARD_SKILLS", {}).copy()
-    soft_skills = getattr(constants, "SOFT_SKILLS", {})
-    inference_rules = getattr(constants, "INFERENCE_RULES", {})
+    hard_skills = getattr(knowledge_base, "HARD_SKILLS", {}).copy()
+    soft_skills = getattr(knowledge_base, "SOFT_SKILLS", {})
+    inference_rules = getattr(knowledge_base, "INFERENCE_RULES", {})
     
     # NEW: Domain Context Boost
     # If a specific domain is detected, we ensure its critical skills are searched for,
     # even if they might not be in the standard HARD_SKILLS list or require prioritization.
     domain_context = detect_domain_context(text)
     if domain_context != "General":
-        domain_rules = getattr(constants, "DOMAIN_EXTRACTION_RULES", {}).get(domain_context, {})
+        domain_rules = getattr(knowledge_base, "DOMAIN_EXTRACTION_RULES", {}).get(domain_context, {})
         must_extract = domain_rules.get("must_extract", [])
         for skill_name in must_extract:
             if skill_name not in hard_skills:
