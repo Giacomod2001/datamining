@@ -2347,9 +2347,9 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     # Project Tips
     if "project_verified" in res and res["project_verified"]:
         with st.expander("Project Interview Coaching", expanded=False):
-            verified = res.get('project_verified', set())
-            matching = res.get('matching_hard', set())
-            missing = res.get('missing_hard', set())
+            verified = set(res.get('project_verified', set()))
+            matching = set(res.get('matching_hard', set()))
+            missing = set(res.get('missing_hard', set()))
             
             c1, c2 = st.columns(2)
             
@@ -2374,9 +2374,10 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
 
             st.divider()
             
-            overlap = verified & matching
+            overlap = verified.intersection(matching)
             if overlap:
                  st.markdown(f"**Pro Tip:** Use your experience with **{', '.join(list(overlap)[:2])}** to answer behavioral questions.")
+
     
     # Cover Letter
     if cl_analysis:
