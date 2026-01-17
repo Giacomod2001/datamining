@@ -2290,7 +2290,8 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
             seniority_match = "Partial Match"
 
     total_jd = len(job_hard)
-    match_percentage = min(100.0, (score_points / total_jd) * 100) if total_jd > 0 else (100.0 if cv_hard else 0.0)
+    # Riferimento KDD: Pattern Evaluation. Match percentage non può essere 100 se non ci sono skill nella JD.
+    match_percentage = min(100.0, (score_points / total_jd) * 100) if total_jd > 0 else 0.0
 
     return {
         "match_percentage": match_percentage,

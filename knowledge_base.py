@@ -364,6 +364,19 @@ JOB_ARCHETYPES_EXTENDED = {
         'prerequisite_skills': ['ML fundamentals', 'Python'],
         'learning_time': '3-6 months domain learning'
     },
+    'Energy Engineer': {
+        'primary_skills': ['Thermodynamics', 'Power Systems', 'Energy Efficiency', 'Renewable Energy', 'Excel', 'MATLAB', 'Python', 'Engineering'],
+        'soft_skills': ['Analytical Thinking', 'Problem Solving', 'Adaptability', 'Project Management'],
+        'market_demand': 'high',
+        'salary_range_italy': '€32k-60k',
+        'career_path': 'Junior Energy Engineer -> Senior Energy Engineer -> Energy Manager -> Technical Director',
+        'geographic_focus': ['Italy', 'EU'],
+        'remote_friendly': False,
+        'typical_employer': ['Energy Utilities', 'Consulting Firms', 'Manufacturing', 'RES Developers'],
+        'transition_from': ['Energy Engineering Degree', 'Mechanical Engineering', 'Electrical Engineering'],
+        'prerequisite_skills': ['Physics', 'Thermodynamics', 'Math'],
+        'learning_time': '5 years (University)'
+    },
 }
 
 # =============================================================================
@@ -961,7 +974,7 @@ HARD_SKILLS = {
         "CAD": ["autocad", "solidworks", "catia", "nx", "ptc creo", "revit", "bim", "civil 3d", "microstation"],
         "Simulation": ["ansys", "abaqus", "comsol", "simulink", "matlab", "labview", "hysys", "aspen plus", "fluent", "cfd"],
         "Electronics": ["pcb design", "altium designer", "eagle", "proteus", "kicad", "spice", "vhdl", "verilog", "fpga", "arduino", "raspberry pi", "plc", "scada"],
-        "Energy Engineering": ["energy engineering", "ingegneria energetica", "renewable energy", "solar energy", "photovoltaics", "wind energy", "energy efficiency", "thermodynamics", "power systems"],
+        "Energy Engineering": ["energy engineering", "energy engineer", "ingegneria energetica", "renewable energy", "solar energy", "photovoltaics", "wind energy", "energy efficiency", "thermodynamics", "power systems"],
     },
     "Electrical Engineering": ["electrical engineering", "elettrotecnica", "schema elettrico", "medium voltage", "high voltage", "cabine"],
     "Embedded Systems": ["embedded c", "microcontrollers", "stm32", "pic", "fpga", "vhdl", "verilog", "rtos", "firmware"],
