@@ -1571,7 +1571,7 @@ def render_landing_page():
     # HERO SECTION - centered with margin auto
     st.markdown("""
     <div style='text-align: center; padding: 2rem 0 1rem 0; width: 100%;'>
-        <h1 style='font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; background: -webkit-linear-gradient(45deg, #0077B5, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>CareerMatch AI</h1>
+        <h1 style='font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; background: -webkit-linear-gradient(45deg, #0077B5, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>CareerMatch AI!</h1>
     </div>
     """, unsafe_allow_html=True)
 
