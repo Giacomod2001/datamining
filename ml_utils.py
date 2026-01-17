@@ -2095,7 +2095,7 @@ def detect_language(text: str) -> str:
 # =============================================================================
 def analyze_gap(cv_text: str, job_text: str) -> Dict:
     cv_hard, cv_soft = extract_skills_from_text(cv_text)
-    job_hard, job_soft = extract_skills_from_text(job_text)
+    job_hard, job_soft = extract_skills_from_text(job_text, is_jd=True)  # FIXED: Enable archetype fallback
 
     # 0. Native Language Inference
     # If CV is detected as Italian, we assume candidate speaks Italian (Native)
