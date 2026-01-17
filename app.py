@@ -48,12 +48,10 @@ import urllib.parse
 import importlib
 
 # Force reload modules to ensure latest code is used
-import constants
 import knowledge_base  # NEW: Force reload to pick up INFERENCE_RULES
 import ml_utils
 import styles
 
-importlib.reload(constants)
 importlib.reload(knowledge_base) # NEW: Force reload
 importlib.reload(ml_utils)
 importlib.reload(styles)
@@ -463,11 +461,11 @@ def render_debug_page():
         
         # Direct counts (no conditional checks that might fail)
         try:
-            hard_skills_count = len(constants.HARD_SKILLS)
-            soft_skills_count = len(constants.SOFT_SKILLS)
-            inference_count = len(constants.INFERENCE_RULES)
-            cluster_count = len(constants.SKILL_CLUSTERS)
-            total_variations = sum(len(v) for v in constants.HARD_SKILLS.values()) + sum(len(v) for v in constants.SOFT_SKILLS.values())
+            hard_skills_count = len(knowledge_base.HARD_SKILLS)
+            soft_skills_count = len(knowledge_base.SOFT_SKILLS)
+            inference_count = len(knowledge_base.INFERENCE_RULES)
+            cluster_count = len(knowledge_base.SKILL_CLUSTERS)
+            total_variations = sum(len(v) for v in knowledge_base.HARD_SKILLS.values()) + sum(len(v) for v in knowledge_base.SOFT_SKILLS.values())
         except:
             hard_skills_count = soft_skills_count = inference_count = cluster_count = total_variations = 0
         
@@ -641,7 +639,7 @@ def render_debug_page():
                         st.caption("Priority skills to develop")
                         
                         # NEW: Market Intelligence for Missing Skills
-                        demand_matrix = getattr(constants, "SKILL_DEMAND_MATRIX", {})
+                        demand_matrix = getattr(knowledge_base, "SKILL_DEMAND_MATRIX", {})
                         high_demand = dict(demand_matrix.get("high_demand", []))
                         
                         for skill in sorted(res["missing_hard"]):
@@ -652,7 +650,7 @@ def render_debug_page():
                                 st.markdown(f"❌ {skill}")
                                 
                         # NEW: Learning Paths Suggestion
-                        learning_paths = getattr(constants, "LEARNING_PATHS", {})
+                        learning_paths = getattr(knowledge_base, "LEARNING_PATHS", {})
                         # Simple check if there's a relevant path (demo logic: generic path if gaps exist)
                         if missing_count > 3:
                             st.info("💡 **Career Tip**: High number of gaps detected. Consider a structured learning path.")

@@ -132,7 +132,7 @@ def detect_seniority(text: str) -> Tuple[str, float]:
             max_years = 0
     
     # 2. Keyword counting with Regex Boundaries
-    seniority_map = getattr(constants, "SENIORITY_KEYWORDS", {})
+    seniority_map = getattr(knowledge_base, "SENIORITY_KEYWORDS", {})
     scores = {"Entry Level": 0, "Mid Level": 0, "Senior Level": 0}
     
     for level, keywords in seniority_map.items():
@@ -166,7 +166,7 @@ def detect_seniority(text: str) -> Tuple[str, float]:
         
     return "Mid Level", 0.3 # Default assumption
 
-import constants  # Contiene HARD_SKILLS, SOFT_SKILLS, INFERENCE_RULES
+import knowledge_base  # Contiene HARD_SKILLS, SOFT_SKILLS, INFERENCE_RULES
 
 
 # =============================================================================
@@ -1878,7 +1878,7 @@ def extract_skills_from_text(text: str, is_jd: bool = False) -> Tuple[Set[str], 
     # Questo permette di matchare JD che contengono solo nomi di ruoli.
     # =========================================================================
     if is_jd:
-        job_archetypes = getattr(constants, "JOB_ARCHETYPES", {})
+        job_archetypes = getattr(knowledge_base, "JOB_ARCHETYPES", {})
         soft_skill_names = set(soft_skills.keys())  # Filter out soft skills
         
         # Normalize text: remove punctuation and extra spaces

@@ -941,9 +941,12 @@ HARD_SKILLS = {
     "Insurance Products": ["assicurazioni", "polizze", "ramo danni", "ramo vita", "insurance underwriting", "claims"],
 
     # ========== ENGINEERING DEEP DIVE (DETAILED) ==========
-    "Mechanical Design": ["catia", "solidworks", "creo", "nx", "gd&t", "meccanica", "disegno meccanico"],
-    "Simulation (FEA/CFD)": ["ansys", "abaqus", "fem", "cfd", "nastran", "hypermesh", "simulazione"],
-    "Automotive Engineering": ["automotive", "powertrain", "chassis", "nvh", "ecu", "calibrazione", "adas", "iso 26262"],
+    "Engineering": {
+        "CAD": ["autocad", "solidworks", "catia", "nx", "ptc creo", "revit", "bim", "civil 3d", "microstation"],
+        "Simulation": ["ansys", "abaqus", "comsol", "simulink", "matlab", "labview", "hysys", "aspen plus", "fluent", "cfd"],
+        "Electronics": ["pcb design", "altium designer", "eagle", "proteus", "kicad", "spice", "vhdl", "verilog", "fpga", "arduino", "raspberry pi", "plc", "scada"],
+        "Energy Engineering": ["energy engineering", "ingegneria energetica", "renewable energy", "solar energy", "photovoltaics", "wind energy", "energy efficiency", "thermodynamics", "power systems"],
+    },
     "Electrical Engineering": ["electrical engineering", "elettrotecnica", "schema elettrico", "medium voltage", "high voltage", "cabine"],
     "Embedded Systems": ["embedded c", "microcontrollers", "stm32", "pic", "fpga", "vhdl", "verilog", "rtos", "firmware"],
     "Civil Engineering": ["ingegneria civile", "strutture", "calcolo strutturale", "direzione lavori", "computo metrico", "primus"],
@@ -1566,3 +1569,23 @@ ML_MODELS = {
     "Big Data": ["hadoop", "spark", "hive", "databricks", "snowflake", "redshift", "bigquery"],
     "Google Analytics": ["google analytics", "ga4", "google analytics 4", "universal analytics", "web analytics"],
 }
+
+# =============================================================================
+# BACKWARD COMPATIBILITY LAYER
+# =============================================================================
+# The application expects JOB_ARCHETYPES to be Dict[str, Set[str]]
+# whereas JOB_ARCHETYPES_EXTENDED is Dict[str, Dict] (V2 Metadata)
+
+JOB_ARCHETYPES = {}
+
+for role, metadata in JOB_ARCHETYPES_EXTENDED.items():
+    if isinstance(metadata, dict):
+        if 'primary_skills' in metadata:
+            JOB_ARCHETYPES[role] = set(metadata['primary_skills'])
+        elif 'hard_skills' in metadata:
+            JOB_ARCHETYPES[role] = set(metadata['hard_skills'])
+        else:
+            JOB_ARCHETYPES[role] = set()
+    else:
+        # Fallback for any non-dict entries
+        JOB_ARCHETYPES[role] = set(metadata) if not isinstance(metadata, set) else metadata
