@@ -3011,13 +3011,7 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
     
     # Build expanded CV skills set (including cluster equivalents)
     cv_norm = {s.lower() for s in cv_skills}
-    
-    # Add all equivalent skills from clusters
-    skill_clusters = getattr(constants, "SKILL_CLUSTERS", {})
-    for skill in list(cv_norm):
-        for cluster_name, members in skill_clusters.items():
-            if skill in members:
-                cv_norm.update(members)
+    cv_norm = expand_skills_with_clusters(cv_norm)
                 
     # 5. Compute Recommendations (JACCARD SIMILARITY for robustness)
     recommendations = []
@@ -3061,76 +3055,35 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
     return recommendations
 
 def expand_skills_with_clusters(cv_norm):
-    skill_clusters = getattr(constants, "SKILL_CLUSTERS", {})
     cv_expanded = set(cv_norm)
+    
+    # 1. Cluster Expansion
+    skill_clusters = getattr(constants, "SKILL_CLUSTERS", {})
     for cluster_name, cluster_skills in skill_clusters.items():
         cluster_lower = {s.lower() for s in cluster_skills}
         if cv_norm & cluster_lower:  # If CV has any skill from this cluster
             cv_expanded.update(cluster_lower)  # Add all equivalent skills
     
-    # Also apply inference rules to expand CV skills
+    # 2. Inference Rules
     inference_rules = getattr(constants, "INFERENCE_RULES", {})
-    for skill in list(cv_norm):
+    for skill in list(cv_expanded): # Iterate over expanded to catch chains
         for rule_skill, inferred in inference_rules.items():
             if skill == rule_skill.lower():
                 cv_expanded.update(s.lower() for s in inferred)
-    
-    # 6. Rank and Format - Use skill-based overlap for accurate scoring
-    recommendations = []
-    for i, tfidf_score in enumerate(similarities):
-        role_name = archetype_names[i]
-        
-        # Skip excluded roles (redundant with JD)
-        if role_name in excluded_roles:
-            continue
-            
-        role_skills = constants.JOB_ARCHETYPES[role_name]
-        role_norm = {s.lower() for s in role_skills}
-        
-        # Calculate actual skill overlap (matched skills / role requirements)
-        matched_skills = cv_expanded & role_norm
-        missing_norm = role_norm - cv_expanded
-        missing_display = [s for s in role_skills if s.lower() in missing_norm]
-        
-        # Score = overlap percentage (more meaningful than TF-IDF cosine)
-        if len(role_norm) > 0:
-            overlap_score = (len(matched_skills) / len(role_norm)) * 100
-        else:
-            overlap_score = 0
-        
-        # Add education boost if applicable
-        edu_boost = education_boost.get(role_name, 0)
-        
-        # Seniority Scoring
-        is_senior_role = any(kw in role_name.lower() for kw in ["senior", "lead", "manager", "head", "principal", "director", "chief"])
-        is_junior_role = any(kw in role_name.lower() for kw in ["junior", "associate", "intern", "trainee", "entry"])
-        
-        seniority_penalty = 1.0
-        seniority_fit = "Match"
-        
-        if cv_level == "Entry Level" and is_senior_role:
-             seniority_penalty = 0.75 # Was 0.5 (too harsh)
-             seniority_fit = "Underqualified"
-        elif cv_level == "Senior Level" and is_junior_role:
-             seniority_penalty = 0.9 
-             seniority_fit = "Overqualified"
 
-        final_score = min(100, (overlap_score + edu_boost) * seniority_penalty)  # Cap at 100%
-        
-        # Quality Filter - Show roles with at least 10% skill match OR education boost
-        if final_score < 10:
-            continue
+    # 3. Hierarchy Expansion (Value -> Key)
+    # If user has "English" (value), they imply "Languages" (key)
+    all_defs = {}
+    all_defs.update(getattr(constants, "HARD_SKILLS", {}))
+    all_defs.update(getattr(constants, "SOFT_SKILLS", {}))
+    
+    for key, variations in all_defs.items():
+        variations_norm = {v.lower() for v in variations}
+        # If CV has ANY variation, grant the parent Key
+        if cv_expanded & variations_norm:
+            cv_expanded.add(key.lower())
             
-        recommendations.append({
-            "role": role_name,
-            "score": final_score, 
-            "missing": missing_display,
-            "edu_boost": edu_boost > 0,  # Flag if boosted by education
-            "seniority_fit": seniority_fit
-        })
-        
-    recommendations.sort(key=lambda x: x["score"], reverse=True)
-    return recommendations[:6]
+    return cv_expanded
 
 
 # =============================================================================
