@@ -1096,71 +1096,7 @@ def render_cv_builder():
     # Initialize Global JD Text for all steps
     jd_text = st.session_state.get("cv_builder_jd", "")
 
-    # --- SIDEBAR TOOLS (Consistent across steps) ---
-    with st.sidebar:
-        if st.button("Home", use_container_width=True):
-             st.session_state["page"] = "Landing"
-             st.rerun()
-        
-        st.divider()
-        
-        # 2. BRANDING (Centered)
-        st.markdown("""
-        <div style='text-align: center; padding: 0.5rem 0;'>
-            <h2 style='font-size: 1.5rem; margin: 0;'>CareerMatch AI</h2>
-            <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>CV BUILDER</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.divider()
-        
-        # 3. QUICK ACTIONS
-        col_demo1, col_demo2 = st.columns(2)
-        with col_demo1:
-            if st.button("Load Demo", use_container_width=True, help="Load sample data"):
-                 st.session_state["trigger_demo_load"] = True
-                 st.session_state["cv_builder_demo_mode"] = True 
-                 st.rerun()
-        with col_demo2:
-            if st.button("CV Evaluation", use_container_width=True, help="Go to Evaluation"):
-                st.session_state["page"] = "CV Evaluation"
-                st.rerun()
-        
-        # DEMO STATUS
-        if st.session_state.get("cv_builder_demo_mode"):
-            st.info("Demo Mode Active")
-            if st.button("Exit Demo", use_container_width=True):
-                # Reset to empty state
-                st.session_state["cv_builder"] = {
-                    "name": "", "location": "", "email": "", "phone": "", "summary": "",
-                    "competencies": [], "tech_skills": {}, "experiences": [], 
-                    "education": [], "projects": [], "languages": []
-                }
-                st.session_state["cv_builder_jd"] = ""
-                st.session_state["cv_builder_demo_mode"] = False
-                st.rerun()
-
-        st.markdown("<br>" * 1, unsafe_allow_html=True)
-         
-        # How It Works (Moved to Sidebar)
-        with st.expander("How AI Analysis Works", expanded=True):
-            st.markdown("""
-            **1. Keyword Extraction**
-            System scans text for technical terms (1500+ skills database).
-            
-            **2. Context Matching**
-            Distinguishes simple mentions from actual proficiency.
-            
-            **3. Gap Analysis**
-            Compares your skills vs Job Description to find missing ones.
-            """)
-        
-        # SPACER and DEV LINK
-        st.markdown("<br>" * 10, unsafe_allow_html=True)
-        st.divider()
-        if st.button("Devs Console", use_container_width=True):
-             st.session_state["page"] = "Debugger"
-             st.rerun()
+    # (Custom sidebar removed to use Global Navigation)
     
     # --- BUILDER STEPS CONTENT ---
     
