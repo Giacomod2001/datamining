@@ -1240,17 +1240,20 @@ def render_cv_builder():
                     user_skills.update(ts)
                 
                 # 3. Calculate Score
-                if jd_reqs:
-                    matches = jd_reqs.intersection(user_skills)
-                    score = int((len(matches) / len(jd_reqs)) * 100)
-                    score = min(score, 100)
+                # 3. Calculate Score using Centralized Logic (Inference Aware)
+                if jd_text:
+                    # Use analyze_gap to get full power of inference rules (A -> B)
+                    gap_analysis = ml_utils.analyze_gap(full_cv_text, jd_text)
+                    
+                    score = int(gap_analysis["match_percentage"])
+                    missing = gap_analysis["missing_hard"]
+                    matched_hard = gap_analysis["matching_hard"]
 
                     c_score, c_info = st.columns([1, 2])
                     with c_score:
                         st.metric("Optimization Score", f"{score}%")
                     with c_info:
                         if score < 100:
-                            missing = jd_hard - user_skills
                             if missing:
                                 st.warning(f"Missing: {', '.join(list(missing)[:3])}...")
                             else:

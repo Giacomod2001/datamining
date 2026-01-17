@@ -2180,11 +2180,46 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     - Transferable: 0.5 points
     - Max Score: 100%
     """
-    from knowledge_base import SKILL_CLUSTERS, INFERENCE_RULES
-    
+    from knowledge_base import SKILL_CLUSTERS, INFERENCE_RULES, JOB_ARCHETYPES_EXTENDED
+    import difflib
+
     # 1. Extract skills
     cv_hard, cv_soft = extract_skills_from_text(cv_text)
     job_hard, job_soft = extract_skills_from_text(job_text, is_jd=True)
+
+    # 1b. Smart Archetype Fallback (User entered a Title instead of JD)
+    # If extraction is sparse (< 3 skills), try to match the text to a known role
+    if len(job_hard) < 3 and len(job_text.split()) < 10:
+        titles = list(JOB_ARCHETYPES_EXTENDED.keys())
+        # Clean job text query
+        query = job_text.strip()
+        
+        # Fuzzy match
+        matches = difflib.get_close_matches(query, titles, n=1, cutoff=0.6)
+        if not matches:
+            # Try simple case-insensitive containment
+            matches = [t for t in titles if query.lower() in t.lower()]
+        
+        if matches:
+            best_role = matches[0]
+            # Load skills from archetype
+            archetype_data = JOB_ARCHETYPES_EXTENDED[best_role]
+            # Combine all skill lists
+            arch_hard = set()
+            if "hard_skills" in archetype_data:
+                arch_hard.update(archetype_data["hard_skills"])
+            
+            # Legacy format support just in case
+            if isinstance(archetype_data, list):
+                arch_hard.update(archetype_data)
+
+            # Add to job_hard
+            job_hard.update(arch_hard)
+            
+            # Optional: Add soft skills too if available
+            if "soft_skills" in archetype_data:
+                job_soft.update(archetype_data["soft_skills"])
+
 
     # 2. Normalize inputs
     cv_hard_lower = {s.lower() for s in cv_hard}
