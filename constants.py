@@ -325,7 +325,7 @@ HARD_SKILLS = {
     "Marketing Strategy": ["marketing strategy", "pianificazione marketing", "marketing mix", "go-to-market"],
     
     # SEO (Killer Keywords)
-    "SEO": ["seo", "optimization", "organic traffic"],
+    "SEO": ["seo", "search engine optimization", "organic traffic", "organic search"],
     "Technical SEO": ["technical seo", "schema markup", "structured data", "core web vitals", "log file analysis", "crawl budget"],
     "Keyword Strategy": ["keyword research", "search intent", "semrush", "ahrefs", "long-tail keywords"],
     "Local SEO": ["local seo", "google my business", "local pack", "citation building"],
