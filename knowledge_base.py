@@ -1491,6 +1491,19 @@ INFERENCE_RULES = {
     "Spanish": ["Languages"],
     "Chinese": ["Languages"],
     "Japanese": ["Languages"],
+
+    # Energy & Engineering Inferences (User Requested)
+    "Energy Engineering": ["Thermodynamics", "Power Systems", "Energy Efficiency", "Physics", "Mathematics"],
+    "Ingegneria Energetica": ["Energy Engineering", "Thermodynamics", "Power Systems", "Energy Efficiency"],
+    "Ing. Energetico": ["Energy Engineering"],
+    "Renewable Energy": ["Solar Energy", "Wind Energy", "Sustainability"],
+    "Energiewende": ["Renewable Energy"],
+    "Photovoltaics": ["Solar Energy"],
+    "PV": ["Solar Energy"],
+    "Solar Energy": ["Renewable Energy"],
+    "Matlab": ["Simulink", "Programming"],
+    "PVSyst": ["Solar Energy"],
+    "AutoCAD": ["CAD", "Technical Drawing"],
 }
 
 ML_MODELS = {
