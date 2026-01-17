@@ -1575,20 +1575,22 @@ def render_landing_page():
     </div>
     """, unsafe_allow_html=True)
 
-    # Metrics Row - Single Line, Same Style, Wide Spacing
-    st.markdown("""
+    # Metrics Row - Elegant Style (Title Gradient)
+    metric_gradient = "background: -webkit-linear-gradient(45deg, #0077B5, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"
+    
+    st.markdown(f"""
     <div style="display: flex; justify-content: center; gap: 8rem; margin-bottom: 3rem; flex-wrap: wrap;">
         <div style="display: flex; align-items: center; gap: 15px;">
-            <h2 style="color: #00f2c3; margin: 0; padding: 0; font-size: 2.2rem; font-weight: 700;">1500+</h2>
-            <span style="color: #00f2c3; font-size: 2.2rem; font-weight: 700;">Killer Keywords</span>
+            <h2 style="{metric_gradient} margin: 0; padding: 0; font-size: 2.2rem; font-weight: 600;">1500+</h2>
+            <span style="color: #c9d1d9; font-size: 1.5rem; font-weight: 400;">Killer Keywords</span>
         </div>
         <div style="display: flex; align-items: center; gap: 15px;">
-            <h2 style="color: #00f2c3; margin: 0; padding: 0; font-size: 2.2rem; font-weight: 700;">120+</h2>
-            <span style="color: #00f2c3; font-size: 2.2rem; font-weight: 700;">Job Archetypes</span>
+            <h2 style="{metric_gradient} margin: 0; padding: 0; font-size: 2.2rem; font-weight: 600;">120+</h2>
+            <span style="color: #c9d1d9; font-size: 1.5rem; font-weight: 400;">Job Archetypes</span>
         </div>
         <div style="display: flex; align-items: center; gap: 15px;">
-            <h2 style="color: #ffdb4d; margin: 0; padding: 0; font-size: 2.2rem; font-weight: 700;">25+</h2>
-            <span style="color: #ffdb4d; font-size: 2.2rem; font-weight: 700;">Sectors Covered</span>
+            <h2 style="{metric_gradient} margin: 0; padding: 0; font-size: 2.2rem; font-weight: 600;">25+</h2>
+            <span style="color: #c9d1d9; font-size: 1.5rem; font-weight: 400;">Sectors Covered</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
