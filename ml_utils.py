@@ -2266,8 +2266,14 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
         # Check if user has an "equivalent" skill in the same cluster
         # e.g., JD wants "Power BI" -> User has "Tableau"
         trans_match = False
-        for cluster_name, cluster_skills in SKILL_CLUSTERS.items():
-            cluster_lower = {s.lower() for s in cluster_skills}
+        for cluster_name, cluster_data in SKILL_CLUSTERS.items():
+            # Support both V1 (simple list/set) and V2 (dict with 'skills' key)
+            if isinstance(cluster_data, dict) and "skills" in cluster_data:
+                cluster_set = cluster_data["skills"]
+            else:
+                cluster_set = cluster_data
+                
+            cluster_lower = {s.lower() for s in cluster_set}
             
             # If JD skill is in this cluster
             if jd_norm in cluster_lower:
