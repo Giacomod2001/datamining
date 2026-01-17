@@ -1575,20 +1575,20 @@ def render_landing_page():
     </div>
     """, unsafe_allow_html=True)
 
-    # Metrics Row - HTML Flexbox + Grid for absolute centering
+    # Metrics Row - Horizontal Layout (Side-by-Side)
     st.markdown("""
-    <div style="display: flex; justify-content: center; gap: 6rem; margin-bottom: 2rem; flex-wrap: wrap;">
-        <div style="display: grid; place-items: center; text-align: center;">
-            <h2 style="color: #00f2c3; margin: 0; padding: 0; font-size: 2.5rem; line-height: 1.2;">1500+</h2>
-            <p style="color: #a0a0a0; font-size: 14px; margin: 0;">Killer Keywords</p>
+    <div style="display: flex; justify-content: center; gap: 4rem; margin-bottom: 2rem; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <h2 style="color: #00f2c3; margin: 0; padding: 0; font-size: 2.5rem; line-height: 1;">1500+</h2>
+            <p style="color: #a0a0a0; font-size: 16px; margin: 0; text-align: left; line-height: 1.2;">Killer<br>Keywords</p>
         </div>
-        <div style="display: grid; place-items: center; text-align: center;">
-            <h2 style="color: #00f2c3; margin: 0; padding: 0; font-size: 2.5rem; line-height: 1.2;">120+</h2>
-            <p style="color: #a0a0a0; font-size: 14px; margin: 0;">Job Archetypes</p>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <h2 style="color: #00f2c3; margin: 0; padding: 0; font-size: 2.5rem; line-height: 1;">120+</h2>
+            <p style="color: #a0a0a0; font-size: 16px; margin: 0; text-align: left; line-height: 1.2;">Job<br>Archetypes</p>
         </div>
-        <div style="display: grid; place-items: center; text-align: center;">
-            <h2 style="color: #ffdb4d; margin: 0; padding: 0; font-size: 2.5rem; line-height: 1.2;">25+</h2>
-            <p style="color: #a0a0a0; font-size: 14px; margin: 0;">Sectors Covered</p>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <h2 style="color: #ffdb4d; margin: 0; padding: 0; font-size: 2.5rem; line-height: 1;">25+</h2>
+            <p style="color: #a0a0a0; font-size: 16px; margin: 0; text-align: left; line-height: 1.2;">Sectors<br>Covered</p>
         </div>
     </div>
     """, unsafe_allow_html=True)
