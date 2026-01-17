@@ -136,11 +136,26 @@ def render_navigation():
     """
     with st.sidebar:
         # Branding
-        st.markdown("""
+        # Determine Sidebar Title
+        page_titles = {
+            "Landing": "CAREER ASSISTANT",
+            "Career Discovery": "CAREER DISCOVERY",
+            "CV Builder": "CV BUILDER",
+            "CV Evaluation": "CV ANALYSIS",
+            "Debugger": "DEV CONSOLE"
+        }
+        section_title = page_titles.get(current_page, "CAREER ASSISTANT")
+
+        # Branding (Dynamic Title)
+        st.markdown(f"""
         <div style='text-align: center; padding: 0.5rem 0;'>
             <h2 style='font-size: 1.5rem; margin: 0;'>CareerMatch AI</h2>
-            <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>CAREER ASSISTANT</p>
+            <p style='color: #00A0DC; font-size: 0.8rem; font-weight: 600; margin: 0;'>{section_title}</p>
         </div>
+        """, unsafe_allow_html=True)
+
+        # CSS Styles (Static - separated to avoid f-string brace issues)
+        st.markdown("""
         <style>
             /* TARGETING: Use the marker span to find the immediately following button container */
             div:has(span#home-btn-marker) + div button {
@@ -184,7 +199,11 @@ def render_navigation():
         ]
         
         for label, page_key in nav_items:
-            # Active page gets primary style
+            # Skip button if it matches current page (avoid duplication)
+            if current_page == page_key:
+                continue
+
+            # Active page gets primary style (redundant check but safe)
             btn_type = "primary" if current_page == page_key else "secondary"
             
             if st.button(label, key=f"nav_{page_key}", type=btn_type, use_container_width=True):
