@@ -2175,14 +2175,23 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     if detected_lang:
         cv_hard.add(detected_lang)
 
-    # Expand skills using hierarchy (English -> Languages, etc.)
+    # ==========================================================================
+    # MATCHING LOGIC (WITH INFERENCE/CLUSTER EXPANSION)
+    # ==========================================================================
+    # GREEN (matched) = Skills matched via direct match OR inference/cluster
+    # YELLOW (transferable) = Skills matched via cluster but not directly
+    # RED (missing) = Skills not matched at all
+    # ==========================================================================
+    
+    # Normalize to lowercase for comparison
     cv_hard_normalized = {s.lower() for s in cv_hard}
     job_hard_normalized = {s.lower() for s in job_hard}
     
+    # Expand using clusters and inference rules
     cv_hard_expanded = expand_skills_with_clusters(cv_hard_normalized)
     job_hard_expanded = expand_skills_with_clusters(job_hard_normalized)
     
-    # Match based on expanded sets
+    # Match based on expanded sets (includes inference)
     matching_hard_normalized = cv_hard_expanded & job_hard_expanded
     initial_missing_hard_normalized = job_hard_expanded - cv_hard_expanded
     extra_hard_normalized = cv_hard_expanded - job_hard_expanded
