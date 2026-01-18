@@ -180,7 +180,7 @@ See [LICENSE](LICENSE) for full terms.
 The authors would like to acknowledge the assistance of AI tools during the development phase:
 
 - **Claude Opus 4.5** - Primary AI assistant for development, implementation, and code optimization
-- **Gemini 3 Flash** - Additional AI support for debugging
+- **Gemini 3 Pro High** - Additional AI support for debugging
 - **Antigravity** - Agentic development support
 
 All final implementations, testing, and documentation were carried out independently by the project team.
