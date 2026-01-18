@@ -227,32 +227,38 @@ def render_navigation():
                     st.session_state["page"] = "Landing"
                     st.rerun()
             else:
-                if st.button("Load Test Data", type="primary", use_container_width=True):
-                    st.session_state["demo_mode"] = True
-                    # Set text inputs
-                    st.session_state["cv_text"] = styles.get_demo_cv()
-                    st.session_state["jd_text"] = styles.get_demo_jd()
-                    st.session_state["proj_text"] = styles.get_demo_project()
-                    st.session_state["cl_text"] = styles.get_demo_cover_letter()
-                    
-                    # Force Text mode
-                    st.session_state["cv_input"] = "Text"
-                    st.session_state["jd_input"] = "Text"
-                    st.session_state["proj_input"] = "Text"
-                    st.session_state["cl_input"] = "Text"
-                    
-                    # Clear PDF inputs to avoid collisions
-                    for key in ["cv_pdf", "jd_pdf", "proj_pdf", "cl_pdf"]:
-                        if key in st.session_state:
-                            st.session_state[key] = None
-                    
-                    st.session_state["show_project_toggle"] = True
-                    st.session_state["show_cover_letter"] = True
-                    st.session_state["last_results"] = None # Force refresh
-                    
-                    if current_page == "CV Builder":
-                        st.session_state["trigger_demo_load"] = True
-                    st.rerun()
+                # If we're in the Debugger, the primary button should be "Home" and lead to Landing
+                if current_page == "Debugger":
+                    if st.button("Home", type="primary", use_container_width=True):
+                        st.session_state["page"] = "Landing"
+                        st.rerun()
+                else:
+                    if st.button("Load Test Data", type="primary", use_container_width=True):
+                        st.session_state["demo_mode"] = True
+                        # Set text inputs
+                        st.session_state["cv_text"] = styles.get_demo_cv()
+                        st.session_state["jd_text"] = styles.get_demo_jd()
+                        st.session_state["proj_text"] = styles.get_demo_project()
+                        st.session_state["cl_text"] = styles.get_demo_cover_letter()
+                        
+                        # Force Text mode
+                        st.session_state["cv_input"] = "Text"
+                        st.session_state["jd_input"] = "Text"
+                        st.session_state["proj_input"] = "Text"
+                        st.session_state["cl_input"] = "Text"
+                        
+                        # Clear PDF inputs to avoid collisions
+                        for key in ["cv_pdf", "jd_pdf", "proj_pdf", "cl_pdf"]:
+                            if key in st.session_state:
+                                st.session_state[key] = None
+                        
+                        st.session_state["show_project_toggle"] = True
+                        st.session_state["show_cover_letter"] = True
+                        st.session_state["last_results"] = None # Force refresh
+                        
+                        if current_page == "CV Builder":
+                            st.session_state["trigger_demo_load"] = True
+                        st.rerun()
 
 
         st.markdown("<div style='margin-top: 2rem; color: #666; font-size: 0.8em;'>v2.1 | Local Mode</div>", unsafe_allow_html=True)
