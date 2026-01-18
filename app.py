@@ -90,8 +90,7 @@ st.markdown(styles.get_premium_css(), unsafe_allow_html=True)
 
 if "page" not in st.session_state:
     st.session_state["page"] = "Landing"
-if "demo_mode" not in st.session_state:
-    st.session_state["demo_mode"] = False
+# No demo_mode initialization needed for production
 
 # CV Builder session state
 if "cv_builder" not in st.session_state:
@@ -216,49 +215,11 @@ def render_navigation():
             st.divider()
         
         if current_page != "Landing":
-            if st.session_state.get("demo_mode"):
-                if st.button("Disable Test Mode", type="secondary", use_container_width=True):
-                    st.session_state["demo_mode"] = False
-                    st.session_state["cv_text"] = ""
-                    st.session_state["jd_text"] = ""
-                    st.session_state["proj_text"] = ""
-                    st.session_state["cl_text"] = ""
-                    st.session_state["last_results"] = None
+            # If we're in the Debugger, the primary button should be "Home" and lead to Landing
+            if current_page == "Debugger":
+                if st.button("Home", type="primary", use_container_width=True):
                     st.session_state["page"] = "Landing"
                     st.rerun()
-            else:
-                # If we're in the Debugger, the primary button should be "Home" and lead to Landing
-                if current_page == "Debugger":
-                    if st.button("Home", type="primary", use_container_width=True):
-                        st.session_state["page"] = "Landing"
-                        st.rerun()
-                else:
-                    if st.button("Load Test Data", type="primary", use_container_width=True):
-                        st.session_state["demo_mode"] = True
-                        # Set text inputs
-                        st.session_state["cv_text"] = styles.get_demo_cv()
-                        st.session_state["jd_text"] = styles.get_demo_jd()
-                        st.session_state["proj_text"] = styles.get_demo_project()
-                        st.session_state["cl_text"] = styles.get_demo_cover_letter()
-                        
-                        # Force Text mode
-                        st.session_state["cv_input"] = "Text"
-                        st.session_state["jd_input"] = "Text"
-                        st.session_state["proj_input"] = "Text"
-                        st.session_state["cl_input"] = "Text"
-                        
-                        # Clear PDF inputs to avoid collisions
-                        for key in ["cv_pdf", "jd_pdf", "proj_pdf", "cl_pdf"]:
-                            if key in st.session_state:
-                                st.session_state[key] = None
-                        
-                        st.session_state["show_project_toggle"] = True
-                        st.session_state["show_cover_letter"] = True
-                        st.session_state["last_results"] = None # Force refresh
-                        
-                        if current_page == "CV Builder":
-                            st.session_state["trigger_demo_load"] = True
-                        st.rerun()
 
 
         st.markdown("<div style='margin-top: 2rem; color: #666; font-size: 0.8em;'>v2.1 | Local Mode</div>", unsafe_allow_html=True)
@@ -542,9 +503,8 @@ def render_debug_page():
                 st.success("Analysis data cleared!")
                 st.rerun()
         with act3:
-            if st.button("Reset Demo Mode", use_container_width=True):
-                st.session_state["demo_mode"] = False
-                st.success("Demo mode reset!")
+            if st.button("Force Refresh", use_container_width=True):
+                st.rerun()
         
 
     
@@ -691,7 +651,7 @@ def render_debug_page():
                             # Clean string format just in case
                             skill_label = str(missing).split("<-")[0].strip() # Safety cleaner
                             
-                            tooltip = f"Covered by: {', '.join(present)}"
+                            tooltip = f"Covered by: {', '.join(present) if isinstance(present, (list, set)) else present}"
                             html_content += f'''
                             <div title="{tooltip}" style="
                                 background-color: rgba(255, 179, 0, 0.15); 
@@ -1172,13 +1132,7 @@ def render_cv_builder():
     if "cv_builder_step" not in st.session_state:
         st.session_state["cv_builder_step"] = 1
 
-    # HANDLE DEMO DATA LOADING (Triggered by button later in code)
-    if st.session_state.get("trigger_demo_load", False):
-        demo_jd = styles.get_demo_builder_jd()
-        st.session_state["cv_builder"] = styles.get_demo_cv_builder_data()
-        # Direct key update is enough for widget with same key
-        st.session_state["cv_builder_jd"] = demo_jd 
-        st.session_state["trigger_demo_load"] = False  # Reset flag
+    # HANDLE DEMO DATA LOADING REMOVED
 
     # TITLE (Centered)
     st.markdown("""
@@ -2036,8 +1990,8 @@ def render_evaluation_page():
         st.toggle("Include Project Portfolio", key="show_project_toggle")
         st.toggle("Include Cover Letter", key="show_cover_letter")
         
-    if st.session_state.get("demo_mode"):
-        st.info("**Demo Mode Active**: Sample data loaded for testing.")
+    # Remove demo mode info banner
+    pass
 
     # ==========================================================================
     # MAIN CONTENT AREA - Hero Section
@@ -2144,7 +2098,7 @@ def render_evaluation_page():
     
     with col_btn2:
         if st.button("Clear All", use_container_width=True):
-            st.session_state["demo_mode"] = False
+            # No demo_mode to reset here
             st.session_state["last_results"] = None
             # Clear all text and files
             for key in ["cv_text", "jd_text", "proj_text", "cl_text", "cv_pdf", "jd_pdf", "proj_pdf", "cl_pdf"]:
@@ -2156,7 +2110,6 @@ def render_evaluation_page():
         # Input validation
         if not cv or not jd:
             st.error("Please provide both your CV and the Job Description to continue.")
-            st.info("Tip: Click 'Try Demo' in the sidebar to see the app in action with sample data.")
             return
 
         # Progress bar with stages
@@ -2320,6 +2273,30 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
     
     st.divider()
     
+    # --- SOFT SKILLS & INTERVIEW (New Section) ---
+    st.subheader("Human Factors & Interview Verification")
+    st.caption("Soft skills are evaluated through behavioral questions rather than strict matching.")
+    
+    c_soft1, c_soft2 = st.columns(2)
+    
+    with c_soft1:
+        st.markdown("**Stated Strengths (from CV):**")
+        stated = res.get("soft_stated_strengths", [])
+        if stated:
+            stated_html = " ".join([f"<span class='skill-tag-bonus'>{s}</span>" for s in sorted(stated)])
+            st.markdown(stated_html, unsafe_allow_html=True)
+        else:
+            st.caption("No explicit soft skills detected in CV.")
+            
+    with c_soft2:
+        st.markdown("**Discussion Points (for Interview):**")
+        discussion = res.get("soft_discussion_points", [])
+        if discussion:
+            discussion_html = " ".join([f"<span class='skill-tag-transferable'>{s}</span>" for s in sorted(discussion)])
+            st.markdown(discussion_html, unsafe_allow_html=True)
+        else:
+            st.caption("All JD-requested soft skills are mentioned in your CV.")
+
     st.divider()
 
     # --- JOB CONTEXT ANALYSIS (Moved Up) ---

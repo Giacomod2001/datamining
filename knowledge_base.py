@@ -377,6 +377,201 @@ JOB_ARCHETYPES_EXTENDED = {
         'prerequisite_skills': ['Physics', 'Thermodynamics', 'Math'],
         'learning_time': '5 years (University)'
     },
+
+    # ========== SUSTAINABILITY & ESG ==========
+    'Sustainability Manager': {
+        'primary_skills': ['Sustainability', 'ESG Reporting', 'Carbon Footprint', 'LCA', 'Compliance', 'Stakeholder Management'],
+        'soft_skills': ['Adaptability', 'Communication', 'Strategic Thinking', 'Influence', 'Problem Solving'],
+        'market_demand': 'high',
+        'salary_range_italy': '€45k-80k',
+        'career_path': 'Sustainability Specialist -> Sustainability Manager -> Head of Sustainability -> CSO',
+        'geographic_focus': ['Italy', 'EU', 'Global'],
+        'remote_friendly': True,
+        'typical_employer': ['Large Corporates', 'Consulting Firms', 'Manufacturing'],
+        'transition_from': ['Environmental Science', 'Business Management', 'Engineering'],
+        'prerequisite_skills': ['Sustainability fundamentals', 'Reporting standards'],
+        'learning_time': '12-24 months onboarding'
+    },
+
+    # ========== E-COMMERCE ==========
+    'E-commerce Manager': {
+        'primary_skills': ['E-commerce', 'Digital Marketing', 'Analytics', 'Shopify', 'Inventory Management', 'CRO'],
+        'soft_skills': ['Adaptability', 'Analytical Thinking', 'Communication', 'Leadership', 'Problem Solving'],
+        'market_demand': 'high',
+        'salary_range_italy': '€35k-65k',
+        'career_path': 'E-commerce Specialist -> E-commerce Manager -> Head of E-commerce -> Digital Director',
+        'geographic_focus': ['Italy', 'Remote', 'EU'],
+        'remote_friendly': True,
+        'typical_employer': ['Retailers', 'Brands', 'Digital Agencies'],
+        'transition_from': ['Marketing', 'Retail Management', 'Business'],
+        'prerequisite_skills': ['Online sales basics', 'Digital marketing'],
+        'learning_time': '6-12 months proficiency'
+    },
+
+    # ========== LEGAL TECH & COMPLIANCE ==========
+    'Compliance Officer': {
+        'primary_skills': ['Compliance', 'Risk Management', 'GDPR', 'Legal Tech', 'Reporting', 'Audit'],
+        'soft_skills': ['Attention to Detail', 'Analytical Thinking', 'Communication', 'Ethics', 'Problem Solving'],
+        'market_demand': 'high',
+        'salary_range_italy': '€40k-70k',
+        'career_path': 'Compliance Analyst -> Compliance Officer -> Head of Compliance -> Chief Compliance Officer',
+        'geographic_focus': ['Italy', 'EU'],
+        'remote_friendly': True,
+        'typical_employer': ['Banks', 'Insurance', 'Large Corporates', 'Fintech'],
+        'transition_from': ['Law', 'Economics', 'Political Science'],
+        'prerequisite_skills': ['Legal/Regulatory knowledge'],
+        'learning_time': '12-18 months proficiency'
+    },
+
+    # ========== HEALTHTECH & CLINICAL DATA ==========
+    'Clinical Data Manager': {
+        'primary_skills': ['Clinical Data Management', 'Statistics', 'SQL', 'Clinical Research', 'HealthTech', 'EDC Systems'],
+        'soft_skills': ['Attention to Detail', 'Analytical Thinking', 'Communication', 'Problem Solving', 'Adaptability'],
+        'market_demand': 'medium-high',
+        'salary_range_italy': '€35k-60k',
+        'career_path': 'Data Entry -> Clinical Data Manager -> Senior Data Manager -> Head of Data Management',
+        'geographic_focus': ['Italy', 'EU', 'US'],
+        'remote_friendly': True,
+        'typical_employer': ['Pharma', 'CRO', 'Biotech', 'Hospitals'],
+        'transition_from': ['Biology', 'Biotechnology', 'Mathematics', 'Medicine'],
+        'prerequisite_skills': ['Clinical research basics', 'Data integrity'],
+        'learning_time': '12-18 months proficiency'
+    },
+
+    # ========== LUXURY & FASHION (ITA) ==========
+    'Luxury Store Manager': {
+        'primary_skills': ['Luxury Retail', 'Visual Merchandising', 'Clienteling', 'Team Management', 'Salesforce', 'P&L Management'],
+        'soft_skills': ['Elegance', 'Communication', 'Leadership', 'Emotional Intelligence', 'Adaptability'],
+        'market_demand': 'high',
+        'salary_range_italy': '€50k-95k',
+        'career_path': 'Senior Client Advisor -> Assistant Store Manager -> Store Manager -> Regional Manager',
+        'geographic_focus': ['Milan', 'Paris', 'New York', 'Dubai', 'Florence'],
+        'remote_friendly': False,
+        'typical_employer': ['Luxury Brands (LVMH, Kering, etc.)', 'High-end Boutiques'],
+        'transition_from': ['Retail Management', 'Premium Hospitality'],
+        'prerequisite_skills': ['Retail experience', 'Brand awareness'],
+        'learning_time': '12-24 months onboarding'
+    },
+
+    # ========== HOSPITALITY & PREMIUM TOURISM (ITA) ==========
+    'Hotel General Manager': {
+        'primary_skills': ['Hotel Management', 'Revenue Management', 'Guest Experience', 'Budgeting', 'Operations', 'PMS Software'],
+        'soft_skills': ['Diplomacy', 'Leadership', 'Problem Solving', 'Customer Focus', 'Adaptability'],
+        'market_demand': 'medium-high',
+        'salary_range_italy': '€60k-120k+',
+        'career_path': 'Department Head -> Operation Manager -> General Manager -> Area Manager',
+        'geographic_focus': ['Italy', 'EU', 'Global Tourism Hubs'],
+        'remote_friendly': False,
+        'typical_employer': ['Luxury Hotels', 'International Chains', 'Resorts'],
+        'transition_from': ['F&B Management', 'Front Office Management', 'Event Planning'],
+        'prerequisite_skills': ['Hospitality degree', 'Multilingual proficiency'],
+        'learning_time': '5-10 years experience'
+    },
+
+    # ========== AUTOMOTIVE & MOTOR VALLEY (ITA) ==========
+    'Automotive Engineer': {
+        'primary_skills': ['Automotive Engineering', 'MATLAB', 'Simulation', 'Vehicle Dynamics', 'CAD', 'Powertrain'],
+        'soft_skills': ['Analytical Thinking', 'Teamwork', 'Attention to Detail', 'Innovation', 'Problem Solving'],
+        'market_demand': 'very high',
+        'salary_range_italy': '€38k-75k',
+        'career_path': 'Junior Engineer -> Design Engineer -> Lead Engineer -> Technical Director',
+        'geographic_focus': ['Emilia-Romagna (Motor Valley)', 'Turin', 'Germany', 'US'],
+        'remote_friendly': False,
+        'typical_employer': ['Ferrari', 'Lamborghini', 'Maserati', 'Tier 1 Suppliers'],
+        'transition_from': ['Mechanical Engineering', 'Motorsport'],
+        'prerequisite_skills': ['Mechanical/Automotive degree'],
+        'learning_time': '12-18 months proficiency'
+    },
+
+    # ========== FINTECH & WEB3 (GLOBAL) ==========
+    'Fintech Product Manager': {
+        'primary_skills': ['Product Management', 'Open Banking', 'Agile', 'Compliance', 'Data Analysis', 'User Research'],
+        'soft_skills': ['Adaptability', 'Strategic Thinking', 'Communication', 'Collaborative Skills'],
+        'market_demand': 'very high',
+        'salary_range_italy': '€45k-85k',
+        'career_path': 'Product Owner -> Product Manager -> Senior PM -> Head of Product',
+        'geographic_focus': ['Milan', 'London', 'Berlin', 'Remote'],
+        'remote_friendly': True,
+        'typical_employer': ['Fintech Startups', 'Neobanks', 'Payment Processors'],
+        'transition_from': ['Traditional Banking', 'Tech PM', 'Consulting'],
+        'prerequisite_skills': ['Product lifecycle knowledge', 'Fintech awareness'],
+        'learning_time': '6-12 months proficiency'
+    },
+
+    # ========== AEROSPACE & DEFENSE (GLOBAL) ==========
+    'Systems Engineer (Aerospace)': {
+        'primary_skills': ['Systems Engineering', 'Mission Design', 'Propulsion', 'Avionics', 'Aerodynamics', 'Project Management'],
+        'soft_skills': ['Critical Thinking', 'Communication', 'Teamwork', 'Meticulousness', 'Systems Thinking'],
+        'market_demand': 'high',
+        'salary_range_italy': '€40k-80k',
+        'career_path': 'Subsystem Engineer -> Systems Engineer -> Lead Systems Engineer -> Project Manager',
+        'geographic_focus': ['Italy (Leonardo, ASI)', 'France', 'US (NASA, SpaceX)', 'Germany'],
+        'remote_friendly': False,
+        'typical_employer': ['Aerospace Companies', 'Space Agencies', 'Defense Contractors'],
+        'transition_from': ['Aerospace Engineering', 'Systems Analysis'],
+        'prerequisite_skills': ['Aerospace/Systems degree'],
+        'learning_time': '12-24 months onboarding'
+    },
+
+    # ========== GLOBAL FRONTIER: NEWSPACE ==========
+    'Space Systems Architect': {
+        'primary_skills': ['Systems Engineering', 'Mission Design', 'Satellite Ops', 'GNC', 'Space Mechanics', 'Risk Management'],
+        'soft_skills': ['Visionary Thinking', 'Systems Thinking', 'Leadership', 'Complex Problem Solving'],
+        'market_demand': 'high',
+        'salary_range_italy': '€55k-100k+',
+        'career_path': 'Senior Systems Engineer -> Principal Engineer -> Space Architect -> Mission Director',
+        'geographic_focus': ['Global (SpaceX, ESA, NASA, Axiom)', 'Italy (Thales Alenia, Avio)'],
+        'remote_friendly': False,
+        'typical_employer': ['NewSpace Companies', 'Space Agencies', 'Defense Contractors'],
+        'transition_from': ['Aerospace Engineering', 'Systems Engineering'],
+        'prerequisite_skills': ['Advanced Aerospace Degree', 'Mission Design experience'],
+        'learning_time': '5-10 years experience'
+    },
+
+    # ========== GLOBAL FRONTIER: QUANTUM COMPUTING ==========
+    'Quantum Algorithm Researcher': {
+        'primary_skills': ['Quantum Computing', 'Quantum Algorithms', 'Physics', 'Mathematics', 'Python', 'Qiskit'],
+        'soft_skills': ['Intellectual Curiosity', 'Analytical Thinking', 'Patience', 'Scientific Rigor'],
+        'market_demand': 'emerging',
+        'salary_range_italy': '€45k-80k',
+        'career_path': 'Research Assistant -> Quantum Researcher -> Senior Researcher -> Quantum Architect',
+        'geographic_focus': ['Global (IBM, Google, IonQ)', 'EU Research Hubs'],
+        'remote_friendly': True,
+        'typical_employer': ['Big Tech Research', 'Quantum Startups', 'National Labs'],
+        'transition_from': ['Theoretical Physics', 'Mathematics', 'Computer Science'],
+        'prerequisite_skills': ['PhD in Physics/Math/CS', 'Programming'],
+        'learning_time': '5-7 years academic background'
+    },
+
+    # ========== GLOBAL FRONTIER: GAMING & XR ==========
+    'XR Developer': {
+        'primary_skills': ['Spatial Computing', 'Unity 3D', 'Unreal Engine', 'C#', 'C++', 'Computer Vision'],
+        'soft_skills': ['Creativity', 'Attention to Detail', 'User Empathy', 'Adaptability'],
+        'market_demand': 'high',
+        'salary_range_italy': '€35k-65k',
+        'career_path': 'Junior VR Developer -> XR Developer -> Senior XR Developer -> XR Architect',
+        'geographic_focus': ['Global Tech Hubs', 'Remote'],
+        'remote_friendly': True,
+        'typical_employer': ['Gaming Studios', 'Tech Giants (Meta, Apple)', 'Simulation Companies'],
+        'transition_from': ['Game Development', 'Software Engineering', 'UI/UX Design'],
+        'prerequisite_skills': ['3D Math', 'Programming (C#/C++)'],
+        'learning_time': '12-18 months proficiency'
+    },
+
+    # ========== GLOBAL FRONTIER: AGTECH ==========
+    'AgTech Innovation Specialist': {
+        'primary_skills': ['Precision Farming', 'IoT', 'Data Analysis', 'Hydroponics', 'Sustainability', 'GIS'],
+        'soft_skills': ['Resourcefulness', 'Communication', 'Strategic Thinking', 'Domain Curiosity'],
+        'market_demand': 'medium-high',
+        'salary_range_italy': '€35k-60k',
+        'career_path': 'Operations Specialist -> AgTech Specialist -> Innovation Manager -> CTO (AgTech)',
+        'geographic_focus': ['Italy (Po Valley)', 'Israel', 'Netherlands', 'US'],
+        'remote_friendly': False,
+        'typical_employer': ['AgTech Startups', 'Large Agri-food Corporates', 'Equipment Manufacturers'],
+        'transition_from': ['Agronomy', 'IoT Engineering', 'Data Science'],
+        'prerequisite_skills': ['Agronomy basics', 'Digital tools interest'],
+        'learning_time': '12-24 months onboarding'
+    },
 }
 
 # =============================================================================
@@ -506,6 +701,78 @@ SKILL_HIERARCHY = {
     "French": ["Languages", "Communication"],
     "German": ["Languages", "Communication"],
     "Spanish": ["Languages", "Communication"],
+    
+    # Sustainability
+    "LCA": ["Sustainability", "Environmental Science"],
+    "Carbon Footprint": ["Sustainability", "Reporting"],
+    "ESG Reporting": ["Sustainability", "Reporting", "Compliance"],
+    "Circular Economy": ["Sustainability", "Resource Management"],
+    
+    # E-commerce
+    "Shopify": ["E-commerce", "Digital Presence"],
+    "Magento": ["E-commerce", "Web Development"],
+    "Amazon Marketplace": ["E-commerce", "Sales Channels"],
+    "CRO": ["E-commerce", "Digital Marketing", "Analytics"],
+    
+    # Legal Tech
+    "CLM": ["Legal Tech", "Contract Management"],
+    "GDPR": ["Compliance", "Legal Tech", "Privacy"],
+    "AML": ["Compliance", "Legal Tech", "Finance"],
+    
+    # HealthTech
+    "HL7": ["HealthTech", "Data Standards"],
+    "EHR": ["HealthTech", "Digital Health"],
+    "CDM": ["HealthTech", "Clinical Research"],
+    
+    # Luxury & Fashion
+    "Luxury Retail": ["Sales", "Luxury & Fashion"],
+    "Visual Merchandising": ["Design", "Retail"],
+    "Textile Knowledge": ["Fashion Design", "Materials Science"],
+    "Haute Couture": ["Fashion Design", "Luxury & Fashion"],
+    "Salesforce Clienteling": ["CRM", "Luxury Retail"],
+    
+    # Hospitality
+    "Hotel Management": ["Hospitality", "Management"],
+    "Revenue Management": ["Hospitality", "Finance", "Analytics"],
+    "PMS Software": ["Hospitality", "Software"],
+    "Guest Experience": ["Hospitality", "Customer Service"],
+    
+    # Automotive
+    "Vehicle Dynamics": ["Automotive Engineering", "Physics"],
+    "Powertrain": ["Automotive Engineering", "Mechanical Engineering"],
+    "Aerodynamics Specialist": ["Aerospace", "Automotive", "Physics"],
+    "CFD": ["Engineering", "Simulation"],
+    
+    # Fintech & Web3
+    "Solidity": ["Blockchain", "Programming"],
+    "Smart Contracts": ["Blockchain", "Legal Tech"],
+    "Cryptography": ["Security", "Mathematics"],
+    "Open Banking": ["Fintech", "Banking"],
+    
+    # Aerospace
+    "Avionics": ["Aerospace", "Electronics"],
+    "Propulsion": ["Aerospace", "Engineering"],
+    "Orbital Mechanics": ["Aerospace", "Physics"],
+    "Mission Design": ["Aerospace", "Systems Engineering"],
+    
+    # Global Frontier: NewSpace
+    "GNC": ["Aerospace", "Physics", "Math"],
+    "CubeSats": ["Aerospace", "Satellites"],
+    "Satellite Ops": ["Aerospace", "Operations"],
+    
+    # Global Frontier: Quantum
+    "Qiskit": ["Quantum Computing", "Python"],
+    "Quantum Algorithms": ["Quantum Computing", "Mathematics", "Computer Science"],
+    "Parallel Programming": ["HPC", "Computer Science"],
+    
+    # Global Frontier: Gaming/XR
+    "Unreal Engine": ["Game Development", "Graphics", "C++"],
+    "Unity 3D": ["Game Development", "XR", "C#"],
+    "Spatial Computing": ["AR/VR", "User Experience"],
+    
+    # Global Frontier: AgTech
+    "NDVI Analysis": ["AgTech", "Data Analysis", "GIS"],
+    "Vertical Farming": ["AgTech", "Sustainability", "Engineering"],
 }
 
 # 2.2 PARENT → CHILD IMPLICATIONS (Skills that imply knowledge of related skills)
@@ -534,14 +801,61 @@ SKILL_IMPLICATIONS = {
     "Product Management": ["Market Research", "User Research", "Data Analysis", "Agile"],
     
     "Business Intelligence": ["Data Analysis", "Reporting", "Visualization", "SQL"],
-    "Data Analysis": ["Excel", "Statistics", "Critical Thinking"],
+    "Data Analysis": ["Excel", "SQL", "Statistics", "Reporting", "Visualization", "Critical Thinking"],
     "Analytics": ["Data Analysis", "Reporting", "Metrics"],
+    "Advanced Excel": ["Excel", "Spreadsheets", "Data Analysis", "VBA"],
+    "Marketing Analytics": ["Google Analytics", "Excel", "Data Analysis", "SQL"],
     
     "UX Design": ["User Research", "Prototyping", "Wireframing", "Usability Testing"],
     "UI Design": ["Visual Design", "Typography", "Color Theory", "Design Tools"],
     
     "Cybersecurity": ["Network Security", "Risk Management", "Compliance", "Incident Response"],
     "Network Security": ["Networking", "Firewall Management", "Security Protocols"],
+    
+    "Seniority": ["Leadership", "Project Management", "Team Management"],
+    
+    # Sustainability Implications
+    "Sustainability Manager": ["Sustainability", "ESG Reporting", "Carbon Footprint", "LCA", "Compliance"],
+    "ESG Analyst": ["Sustainability", "ESG Reporting", "Data Analysis", "Reporting"],
+    
+    # E-commerce Implications
+    "E-commerce Manager": ["E-commerce", "Digital Marketing", "Analytics", "Inventory Management", "Shopify"],
+    "Growth Hacker": ["Digital Marketing", "Analytics", "CRO", "Content Strategy"],
+    
+    # Legal Tech & Compliance
+    "DPO": ["GDPR", "Privacy", "Compliance", "Risk Management"],
+    "Compliance Officer": ["Compliance", "Risk Management", "Reporting", "Legal Tech"],
+    
+    # HealthTech
+    "Informatics Specialist": ["HealthTech", "EHR", "Data Analysis", "HL7"],
+    "Clinical Data Manager": ["HealthTech", "CDM", "Clinical Research", "Data Analysis"],
+    
+    # Luxury & Fashion Implications
+    "Luxury Store Manager": ["Luxury Retail", "Visual Merchandising", "Team Management", "Salesforce", "Customer Experience"],
+    "Merchandising Manager": ["Fashion Merchandising", "Data Analysis", "Textile Knowledge", "Inventory Management"],
+    
+    # Hospitality Implications
+    "Hotel General Manager": ["Hotel Management", "Revenue Management", "Team Management", "Guest Experience", "Budgeting"],
+    "Revenue Manager": ["Revenue Management", "Excel", "Data Analysis", "PMS Software", "Pricing Strategy"],
+    
+    # Automotive Implications
+    "Automotive Engineer": ["Automotive Engineering", "MATLAB", "Simulation", "Vehicle Dynamics", "Powertrain"],
+    "Aerodynamics Specialist": ["Aerodynamics", "CFD", "Physics", "Mathematics"],
+    
+    # Fintech Implications
+    "Blockchain Developer": ["Blockchain", "Solidity", "Smart Contracts", "Cryptography", "Git"],
+    "Fintech PM": ["Product Management", "Open Banking", "Agile", "Compliance", "Data Analysis"],
+    
+    # Aerospace Implications
+    "Systems Engineer (Aerospace)": ["Systems Engineering", "Mission Design", "Propulsion", "Avionics", "Aerodynamics"],
+    "Satellite Engineer": ["Orbital Mechanics", "Propulsion", "Systems Engineering", "Communication"],
+    
+    # Global Frontier Implications
+    "Space Systems Architect": ["Space Systems", "Mission Design", "Satellite Ops", "Systems Engineering", "GNC"],
+    "Quantum Researcher": ["Quantum Computing", "Quantum Algorithms", "Physics", "Mathematics", "Python"],
+    "XR Developer": ["Spatial Computing", "Unity 3D", "Unreal Engine", "C#", "C++", "UI/UX Basics"],
+    "AgTech Specialist": ["Precision Farming", "IoT", "Data Analysis", "Sustainability", "Hydroponics"],
+    "Supply Chain Director": ["Logistics", "4PL Logistics", "Risk Management", "Business Strategy", "Analytics"],
 }
 
 # 2.3 SKILL CLUSTERS (Transferable/Equivalent Skills)
@@ -1017,6 +1331,98 @@ HARD_SKILLS = {
     "Sales": ["sales", "vendita"],
     "CRM": ["salesforce", "hubspot", "crm"],
 
+    # ========== SUSTAINABILITY & ESG (DETAILED) ==========
+    "Sustainability": ["sustainability", "sostenibilità", "esg", "environmental social governance"],
+    "LCA": ["life cycle assessment", "lca", "analisi del ciclo di vita"],
+    "Carbon Footprint": ["carbon footprint", "impronta di carbonio", "carbon accounting", "emissioni co2"],
+    "ESG Reporting": ["gri", "sasb", "tcfd", "esg report", "sustainability reporting"],
+    "Circular Economy": ["circular economy", "economia circolare", "waste management"],
+
+    # ========== E-COMMERCE & DIGITAL COMMERCE (DETAILED) ==========
+    "E-commerce": ["e-commerce", "ecommerce", "online shop", "marketplace"],
+    "Shopify": ["shopify"],
+    "Magento": ["magento", "adobe commerce"],
+    "Amazon Marketplace": ["amazon seller central", "fba", "amazon marketplace"],
+    "Conversion Rate Optimization": ["cro", "conversion rate optimization", "a/b testing"],
+    "Digital Payments": ["stripe", "paypal", "payments gateway"],
+
+    # ========== LEGAL TECH & COMPLIANCE (DETAILED) ==========
+    "Legal Tech": ["legal tech", "legal operations", "clm", "contract lifecycle management"],
+    "GDPR": ["gdpr", "data privacy", "privacy by design", "dpo"],
+    "Compliance": ["compliance", "regulatory compliance", "risk & compliance"],
+    "Anti-Money Laundering": ["aml", "anti-money laundering", "kyc", "antiriciclaggio"],
+
+    # ========== HEALTHTECH & CLINICAL DATA (DETAILED) ==========
+    "HealthTech": ["healthtech", "digital health", "e-health"],
+    "HL7": ["hl7", "fhira", "interoperability healthcare"],
+    "Electronic Health Records": ["ehr", "emr", "cartella clinica elettronica"],
+    "Clinical Data Management": ["clinical data management", "cdm", "clinical trials data"],
+
+    # ========== LUXURY & FASHION (ITA-GLOBAL) ==========
+    "Luxury Retail": ["luxury retail", "clienteling", "luxury store management", "alta moda", "high-end retail"],
+    "Visual Merchandising": ["visual merchandising", "vetrinistica", "allestimento", "window display"],
+    "Textile Knowledge": ["textiles", "tessuti", "materials knowledge", "haute couture", "sartorial"],
+    "Fashion Merchandising": ["merchandising", "product selection", "assortment planning"],
+    "Brand Heritage": ["brand heritage", "brand storytelling", "history of fashion"],
+
+    # ========== HOSPITALITY & PREMIUM TOURISM (ITA-GLOBAL) ==========
+    "Hotel Management": ["hotel management", "front office management", "hospitality operations", "direzione alberghiera"],
+    "Revenue Management": ["revenue management", "yield management", "pricing strategy", "otas"],
+    "PMS Software": ["opera pms", "prohotelier", "hotel software", "pms"],
+    "Guest Experience": ["guest relation", "guest experience", "concierge", "customer satisfaction hospitality"],
+    "Event Planning (Tourism)": ["mice", "meetings incentives conferences exhibitions", "event management"],
+
+    # ========== AUTOMOTIVE & MOTOR VALLEY (ITA) ==========
+    "Vehicle Dynamics": ["vehicle dynamics", "dinamica veicolo", "handing", "suspension tuning"],
+    "Powertrain": ["powertrain", "motore", "engine mapping", "transmission systems", "e-powertrain"],
+    "Automotive Engineering": ["automotive engineering", "ingegneria del veicolo", "car design technical"],
+    "CFD (Automotive)": ["computational fluid dynamics", "cfd", "aerodinamica", "wind tunnel testing"],
+
+    # ========== FINTECH & WEB3 ==========
+    "Blockchain": ["blockchain", "distributed ledger", "web3", "smart contracts"],
+    "Solidity": ["solidity", "ethereum", "evm"],
+    "Cryptography": ["cryptography", "crittografia", "encryption"],
+    "Open Banking": ["open banking", "psd2", "fintech apis"],
+    "Algorithmic Trading": ["algo trading", "quantitative trading", "hft"],
+
+    # ========== AEROSPACE & DEFENSE ==========
+    "Aerodynamics": ["aerodynamics", "aerodinamica", "fluid dynamics aerospace"],
+    "Avionics": ["avionics", "avionica", "flight control systems"],
+    "Propulsion": ["propulsion", "propulsione", "jet engines", "rocket science"],
+    "Orbital Mechanics": ["orbital mechanics", "astrodynamics", "satellite trajectories"],
+    "Systems Engineering (Aerospace)": ["systems engineering", "mission design", "space systems"],
+
+    # ========== NEWSPACE & SPACE EXPLORATION (GLOBAL FRONTIER) ==========
+    "Satellite Operations": ["satellite ops", "ground station", "mission control", "telemetry", "tt&c"],
+    "GNC": ["guidance navigation control", "gnc", "attitude control", "adcs", "orbit determination"],
+    "CubeSats": ["cubesat", "nanosatellite", "smallsat", "space systems design"],
+    "Space Mechanics": ["stk", "systems tool kit", "freeflyer", "gmat", "orbit analysis"],
+    "Lunar Economy": ["lunar exploration", "isru", "moon base", "lunar logistics"],
+
+    # ========== QUANTUM COMPUTING & HPC (GLOBAL FRONTIER) ==========
+    "Quantum Algorithms": ["quantum algorithms", "shor's algorithm", "grover's algorithm", "vqe", "qaoa"],
+    "Qiskit": ["qiskit", "ibm quantum"],
+    "Cirq": ["cirq", "google quantum"],
+    "Quantum Hardware": ["superconducting qubits", "ion traps", "topological qubits", "quantum error correction"],
+    "Parallel Programming": ["cuda", "opencl", "mpi", "openmp", "high performance computing", "hpc"],
+
+    # ========== ADVANCED LOGISTICS & SUPPLY CHAIN (GLOBAL FRONTIER) ==========
+    "4PL Logistics": ["4pl", "fourth party logistics", "supply chain orchestration"],
+    "Cold Chain": ["cold chain", "refrigerated logistics", "temperature controlled", "pharma logistics"],
+    "Last-mile Optimization": ["last-mile", "routing algorithms", "delivery optimization", "micro-fulfillment"],
+    "Supply Chain Resilience": ["risk management supply chain", "resilience planning", "supply chain visibility"],
+
+    # ========== GAMING, AR/VR & METAVERSE (GLOBAL FRONTIER) ==========
+    "Unreal Engine": ["unreal engine 5", "ue5", "blueprints", "niagara", "nanite"],
+    "Unity 3D": ["unity", "unity3d", "c# gaming"],
+    "Spatial Computing": ["ar", "vr", "augmented reality", "virtual reality", "mixed reality", "xr", "oculus", "hololens"],
+    "Game Engine Design": ["game engine development", "rendering pipeline", "physics engine"],
+    "Metaverse Architecture": ["digital twins", "virtual worlds", "3d environment design"],
+
+    # ========== ADVANCED AGTECH (GLOBAL FRONTIER) ==========
+    "Precision Farming": ["precision agriculture", "precision farming", "ndvi", "satellite imaging ag"],
+    "Hydroponics": ["hydroponics", "aeroponics", "aquaponics", "vertical farming", "soilless culture"],
+    "Drone Mapping": ["uav mapping", "drone photogrammetry", "ag-drones", "pix4d"],
 }
 
 # =============================================================================

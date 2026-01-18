@@ -99,7 +99,7 @@ except ImportError:
     Pipeline = None
     KMeans = None
     WordCloud = None
-    TrancatedSVD = None
+    TruncatedSVD = None
 
 try:
     from PyPDF2 import PdfReader
@@ -1818,14 +1818,18 @@ def extract_skills_from_text(text: str, is_jd: bool = False) -> Tuple[Set[str], 
         # Third try: fuzzy matching (only for skills with 5+ chars to avoid false positives)
         # Short skills like SEO, SQL, CSS require exact match only
         if not matched and fuzz and len(skill) >= 5:
+            # Skip fuzzy matching for common words that are often false positives
+            if skill.lower() in ["excel", "lead", "plan", "drive", "base"]:
+                continue
+                
             for word in text_words:
-                if len(word) > 4 and fuzz.ratio(word, skill.lower()) > 88:
+                if len(word) > 4 and fuzz.ratio(word, skill.lower()) > 90: # Increased threshold for safety
                     hard_found.add(skill)
                     break
             # Also check bigrams for compound skills
             if not matched:
                 for bigram in bigrams:
-                    if fuzz.ratio(bigram, skill.lower()) > 88:
+                    if fuzz.ratio(bigram, skill.lower()) > 90:
                         hard_found.add(skill)
                         break
 
@@ -1903,18 +1907,25 @@ def extract_skills_from_text(text: str, is_jd: bool = False) -> Tuple[Set[str], 
             
             # Method 1: Exact phrase match
             if role_lower in text_normalized:
+                expanded_role_skills = expand_skills_bidirectional({s.lower() for s in role_skills})
                 for skill in role_skills:
-                    # Only add if NOT a soft skill
+                    # Only add if NOT a soft skill (we check normalized name in expanded set)
                     if skill not in soft_skill_names:
                         hard_found.add(skill)
+                # Ensure inferred skills are also added
+                for s_inferred in expanded_role_skills:
+                    # We add them as capitalized to fit the hard_found convention
+                    hard_found.add(s_inferred.capitalize())
                 continue
             
             # Method 2: All words of role name present in JD
             if len(role_words) > 1 and all(w in text_words for w in role_words):
+                expanded_role_skills = expand_skills_bidirectional({s.lower() for s in role_skills})
                 for skill in role_skills:
-                    # Only add if NOT a soft skill
                     if skill not in soft_skill_names:
                         hard_found.add(skill)
+                for s_inferred in expanded_role_skills:
+                    hard_found.add(s_inferred.capitalize())
                 continue
             
             # Method 3: Fuzzy match for role names (handle typos/variations)
@@ -1922,10 +1933,36 @@ def extract_skills_from_text(text: str, is_jd: bool = False) -> Tuple[Set[str], 
                 # Check against original text segments
                 for segment in text_normalized.split():
                     if len(segment) > 5 and fuzz.ratio(segment, role_lower.replace(" ", "")) > 85:
+                        expanded_role_skills = expand_skills_bidirectional({s.lower() for s in role_skills})
                         for skill in role_skills:
                             hard_found.add(skill)
+                        for s_inferred in expanded_role_skills:
+                            hard_found.add(s_inferred.capitalize())
                         break
 
+    # =========================================================================
+    # STEP 3: FALSE POSITIVE FILTERING (NEW)
+    # =========================================================================
+    # Riferimento corso: "Precision vs Recall"
+    #
+    # Alcuni termini sono sia skill che verbi comuni (es. "Excel", "Lead", "Plan").
+    # Se appaiono solo in contesti verbali generici, li rimuoviamo.
+    # =========================================================================
+    
+    if "Excel" in hard_found:
+        # Se 'excel' appare solo come verbo "will excel", "to excel", lo scartiamo
+        verb_phrases = ["will excel", "to excel", "excel in", "excelling at my"]
+        count_all = text_lower.count("excel")
+        count_verbs = sum(text_lower.count(p) for p in verb_phrases)
+        if count_all > 0 and count_all == count_verbs:
+            hard_found.discard("Excel")
+
+    if "Management" in hard_found and "Management" not in text:
+        # Se abbiamo trovato 'management' solo tramite fuzzy o lowercase e 
+        # il testo parla di "time management" (che è soft), non aggiungerlo agli hard 
+        # a meno che non sia esplicitamente un corso o ruolo.
+        pass # placeholder for complex logic if needed
+        
     return hard_found, soft_found
 
 
@@ -2189,6 +2226,8 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     # 1. Setup Data Structures
     SKILL_CLUSTERS = getattr(knowledge_base, "SKILL_CLUSTERS", {})
     INFERENCE_RULES = getattr(knowledge_base, "SKILL_HIERARCHY", {}) 
+    SKILL_IMPLICATIONS = getattr(knowledge_base, "SKILL_IMPLICATIONS", {})
+    
     # Backwards compatibility for inference rules
     if not INFERENCE_RULES:
         INFERENCE_RULES = getattr(knowledge_base, "INFERENCE_RULES", {})
@@ -2225,16 +2264,16 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
                 job_soft.update(role_data.get("soft_skills", []))
             elif isinstance(role_data, (list, set)):
                 arch_skills.update(role_data)
+            
+            # Apply bidirectional expansion to the archetype skills
+            expanded_arch = expand_skills_bidirectional({s.lower() for s in arch_skills})
+            # Convert back to capitalized or original for consistency
             job_hard.update(arch_skills)
+            job_hard.update({s.capitalize() for s in expanded_arch})
 
-    # 4. Multi-Step Matching Logic
+    # 4. Multi-Step Matching Logic (Hard Skills ONLY for Score)
     cv_hard_lower = {s.lower() for s in cv_hard}
-    
-    # Pre-expand CV skills with their parents for hierarchical matching
-    cv_expanded = set(cv_hard_lower)
-    for s in cv_hard:
-        if s in INFERENCE_RULES:
-            cv_expanded.update({p.lower() for p in INFERENCE_RULES[s]})
+    cv_expanded = expand_skills_bidirectional(cv_hard_lower)
 
     matched = set()      # Green (Direct + Inferred)
     transferable = {}    # Yellow (Missing Skill -> Explanation)
@@ -2283,8 +2322,11 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     for s in transferable:
         if s in extra_hard: extra_hard.remove(s)
         
+    # Soft skills are handled as "Interview Verification" items, not strict matches
+    # Rationale: User request - soft skills are hard to verify on paper
     matching_soft = cv_soft & job_soft
-    missing_soft = job_soft - cv_soft
+    discussion_soft = job_soft - cv_soft # Soft skills in JD but not in CV
+    cv_stated_soft = cv_soft # All soft skills from CV
 
     # 6. Seniority and Metrics
     cv_level, _ = detect_seniority(cv_text)
@@ -2309,8 +2351,11 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
         "transferable": transferable,
         "missing_hard": list(missing),
         "extra_hard": list(extra_hard),
-        "matching_soft": list(matching_soft),
-        "missing_soft": list(missing_soft),
+        "soft_interview_verified": list(matching_soft), # Stated and requested
+        "soft_discussion_points": list(discussion_soft), # Requested but not stated
+        "soft_stated_strengths": list(cv_stated_soft), # All stated
+        "matching_soft": list(matching_soft), # Legacy support
+        "missing_soft": list(discussion_soft), # Legacy support
         "project_review": set(),
         "seniority_info": {
             "cv_level": cv_level,
@@ -2366,12 +2411,13 @@ def analyze_gap_with_project(cv_text: str, job_text: str, project_text: str) -> 
         missing_skills=res["missing_hard"]
     )
     
-    # 8. Update Skills if Project Fills Gaps
-    # Note: Project verification is separate from "Transferable" logic
+    # 8. Update Skills if Project Fills Gaps (with Bidirectional Expansion)
+    proj_expanded = expand_skills_bidirectional(proj_hard)
     missing_set = set(res["missing_hard"])
     matching_set = set(res["matching_hard"])
     
-    newly_found_in_project = missing_set.intersection(proj_hard)
+    # Check if expanded project skills cover any missing job skills
+    newly_found_in_project = missing_set.intersection(proj_expanded)
     if newly_found_in_project:
         matching_set.update(newly_found_in_project)
         missing_set = missing_set - newly_found_in_project
@@ -2689,7 +2735,6 @@ def generate_detailed_report_text(res: Dict, jd_text: str = "", cl_analysis: Dic
             report.append(f"    - {s}")
         report.append("")
 
-    # Missing Skills
     report.append("[!] MISSING SKILLS")
     missing_hard = res.get("missing_hard", [])
     if missing_hard:
@@ -2697,6 +2742,22 @@ def generate_detailed_report_text(res: Dict, jd_text: str = "", cl_analysis: Dic
             report.append(f"    - {s}")
     else:
         report.append("    (No critical gaps - Excellent match!)")
+    
+    report.append("")
+    
+    # Soft Skills (New Interview-centric approach)
+    report.append("[?] INTERVIEW VERIFICATION (Soft Skills)")
+    report.append("    (Soft skills are best evaluated through behavioral interviews)")
+    
+    stated_soft = res.get("soft_stated_strengths", [])
+    if stated_soft:
+        report.append("    Stated Strengths (detected in CV):")
+        report.append(f"      {', '.join(sorted(stated_soft))}")
+        
+    discussion_soft = res.get("soft_discussion_points", [])
+    if discussion_soft:
+        report.append("    Discussion Points (JD requested, prepare examples):")
+        report.append(f"      {', '.join(sorted(discussion_soft))}")
     
     report.append("")
     report.append("")
@@ -3151,36 +3212,72 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
     recommendations.sort(key=lambda x: x["score"], reverse=True)
     return recommendations
 
-def expand_skills_with_clusters(cv_norm):
-    cv_expanded = set(cv_norm)
+def expand_skills_bidirectional(skills_norm: Set[str]) -> Set[str]:
+    """
+    UNIFIED SKILL EXPANSION ENGINE v2.0
+    ----------------------------------
+    Implements bidirectional inference:
+    1. HIERARCHY (Upwards): Specific -> General (e.g., React -> Frontend)
+    2. IMPLICATIONS (Downwards): General -> Specific (e.g., Data Science -> Python)
+    3. CLUSTERS (Horizontal): Equivalent/Transferable (e.g., Tableau -> Power BI)
     
-    # 1. Cluster Expansion
-    skill_clusters = getattr(constants, "SKILL_CLUSTERS", {})
-    for cluster_name, cluster_skills in skill_clusters.items():
-        cluster_lower = {s.lower() for s in cluster_skills}
-        if cv_norm & cluster_lower:  # If CV has any skill from this cluster
-            cv_expanded.update(cluster_lower)  # Add all equivalent skills
-    
-    # 2. Inference Rules
-    inference_rules = getattr(constants, "INFERENCE_RULES", {})
-    for skill in list(cv_expanded): # Iterate over expanded to catch chains
-        for rule_skill, inferred in inference_rules.items():
-            if skill == rule_skill.lower():
-                cv_expanded.update(s.lower() for s in inferred)
+    Args:
+        skills_norm: Set of normalized (lowercase) skill names
+        
+    Returns:
+        Set[str]: Expanded set of normalized skill names
+    """
+    if not skills_norm:
+        return set()
 
-    # 3. Hierarchy Expansion (Value -> Key)
-    # If user has "English" (value), they imply "Languages" (key)
-    all_defs = {}
-    all_defs.update(getattr(constants, "HARD_SKILLS", {}))
-    all_defs.update(getattr(constants, "SOFT_SKILLS", {}))
+    # Access Knowledge Base
+    SKILL_CLUSTERS = getattr(knowledge_base, "SKILL_CLUSTERS", {})
+    SKILL_HIERARCHY = getattr(knowledge_base, "SKILL_HIERARCHY", {})
+    if not SKILL_HIERARCHY:
+        SKILL_HIERARCHY = getattr(knowledge_base, "INFERENCE_RULES", {})
+    SKILL_IMPLICATIONS = getattr(knowledge_base, "SKILL_IMPLICATIONS", {})
     
-    for key, variations in all_defs.items():
-        variations_norm = {v.lower() for v in variations}
-        # If CV has ANY variation, grant the parent Key
-        if cv_expanded & variations_norm:
-            cv_expanded.add(key.lower())
+    expanded = set(skills_norm)
+    
+    # 1. Cluster Expansion (Horizontal - Transferable)
+    for cluster_id, cluster_data in SKILL_CLUSTERS.items():
+        cluster_skills = {s.lower() for s in (cluster_data.get("skills", []) if isinstance(cluster_data, dict) else cluster_data)}
+        if expanded & cluster_skills:
+            expanded.update(cluster_skills)
+
+    # 2. Bidirectional Inference (Up/Down)
+    # We do a few iterations to handle chains (e.g., A -> B -> C)
+    for _ in range(2): 
+        current_pass = set(expanded)
+        for s in current_pass:
+            # CHILD -> PARENT (Hierarchy)
+            # Find rules where current skill 's' or its original form is a key
+            # Mapping from normalized to Knowledge Base keys if needed
+            for rule_key, parents in SKILL_HIERARCHY.items():
+                if s == rule_key.lower():
+                    expanded.update({p.lower() for p in parents})
             
-    return cv_expanded
+            # PARENT -> CHILD (Implications)
+            for rule_key, children in SKILL_IMPLICATIONS.items():
+                if s == rule_key.lower():
+                    expanded.update({c.lower() for c in children})
+                    
+        if len(expanded) == len(current_pass):
+            break
+
+    # 3. Knowledge Base Key Expansion (Variety -> Canonical)
+    # Ensure variations (like 'fogli di calcolo') grant the parent key ('Excel')
+    hard_skills = getattr(knowledge_base, "HARD_SKILLS", {})
+    for canonical, variations in hard_skills.items():
+        variations_norm = {v.lower() for v in variations}
+        if expanded & variations_norm:
+            expanded.add(canonical.lower())
+
+    return expanded
+
+# Legacy alias for backward compatibility
+def expand_skills_with_clusters(cv_norm):
+    return expand_skills_bidirectional(cv_norm)
 
 
 # =============================================================================
