@@ -1,7 +1,7 @@
 # CareerMatch AI
 
 > AI-powered job search toolkit: CV-JD match scoring, skill gap analysis, smart CV Builder with suggestions, lifestyle-based Career Discovery, and personalized learning paths. Built with ML/NLP on Streamlit.
-
+>
 > ⚠️ **Beta Notice**: This app is continuously updated. A **0% match** may indicate that your sector/role is not yet covered by our models. Please try again later or contact us at [dellacquagiacomo@gmail.com](mailto:dellacquagiacomo@gmail.com) for support.
 
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
@@ -37,7 +37,7 @@
 ### Key Features
 
 | **Feature** | **Description** |
-|---------|-------------|
+| ----------- | --------------- |
 | **CV Builder (v2.0)** | Interactive wizard to build professional CVs with real-time AI suggestions |
 | **Match Score** | AI-based CV-Job compatibility score (0-100%) |
 | **Gap Analysis** | Identifies missing hard/soft skills vs Job Description |
@@ -120,7 +120,7 @@ This project implements the following Data Mining and Text Analytics techniques:
 ### Knowledge Discovery Process (KDD)
 
 | Step | Implementation |
-|------|----------------|
+| ---- | -------------- |
 | **1. Data Cleaning** | Text preprocessing, lowercase, noise removal, PyPDF2 extraction |
 | **2. Data Integration** | Merge CV + Job Description + Archetype Knowledge Base |
 | **3. Data Selection** | Extract relevant sections (Skills, Experience, Education) |
@@ -175,6 +175,16 @@ Commercial use requires explicit written permission from the authors.
 
 See [LICENSE](LICENSE) for full terms.
 
+## Acknowledgments
+
+The authors would like to acknowledge the assistance of AI tools during the development phase:
+
+- **Claude Opus 4.5** - Primary AI assistant for development, implementation, and code optimization
+- **Gemini 3 Flash** - Additional AI support for debugging
+- **Antigravity** - Agentic development support
+
+All final implementations, testing, and documentation were carried out independently by the project team.
+
 ---
 
 ## Authors
@@ -187,14 +197,10 @@ This project was developed as a collaborative effort with the following primary 
 
 ---
 
-<div align="center">
-
-**CareerMatch AI**
+### Project Summary
 
 Data Mining & Text Analytics Project
 
 IULM University - A.Y. 2025-2026
 
 [Live Demo](https://dataminingiulm.streamlit.app/) | [GitHub](https://github.com/Giacomod2001/datamining)
-
-</div>

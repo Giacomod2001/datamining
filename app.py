@@ -224,6 +224,7 @@ def render_navigation():
                     st.session_state["proj_text"] = ""
                     st.session_state["cl_text"] = ""
                     st.session_state["last_results"] = None
+                    st.session_state["page"] = "Landing"
                     st.rerun()
             else:
                 if st.button("Load Test Data", type="primary", use_container_width=True):
