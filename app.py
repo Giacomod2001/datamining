@@ -1072,6 +1072,76 @@ def render_debug_page():
             else:
                 st.text("No projects.")
 
+    # =========================================================================
+    # TAB 7: CAREER DISCOVERY ENGINE
+    # =========================================================================
+    with t7:
+        st.subheader("Discovery Engine Diagnostics")
+        st.info("Insights into the Career Discovery recommendation logic and results.")
+        
+        discovery_results = st.session_state.get("discovery_results", [])
+        has_cv = st.session_state.get("discovery_has_cv", False)
+        cv_text_session = st.session_state.get("processed_cv_text", "")
+        
+        if not discovery_results:
+            st.warning("No discovery analysis has been performed yet.")
+            st.markdown("Run a 'Career Discovery' session from the main menu to see data here.")
+        else:
+            # 1. Summary Metrics
+            st.markdown("### Recommendation Summary")
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Total Matches", len(discovery_results))
+            with col2:
+                avg_score = sum(r['score'] for r in discovery_results) / len(discovery_results) if discovery_results else 0
+                st.metric("Avg Match Score", f"{avg_score:.1f}%")
+            with col3:
+                st.metric("CV Integration", "Active" if has_cv else "Inactive")
+                
+            st.divider()
+            
+            # 2. Results Data Inspector
+            st.markdown("### Raw Results Data (JSON)")
+            with st.expander("View Result Objects (Top 10)", expanded=False):
+                st.json(discovery_results[:10])
+                
+            # 3. Algorithm Debugging
+            st.markdown("### Internal Scoring Logic")
+            st.markdown("""
+            The Discovery Score is calculated as a weighted average:
+            - **Preference Alignment (40%)**: Matches against industry, remote, and style preferences.
+            - **Skill Match (60%)**: Jaccard similarity between detected CV skills and role archetypes.
+            - **Education Boost**: Small percentage bonus for relevant major/degree field.
+            """)
+            
+            # 4. Filter Testing
+            st.markdown("### Filter Simulation")
+            if discovery_results:
+                q_range = st.slider("Quality Threshold (Min Score %)", 0, 100, 25)
+                highly_relevant = [r for r in discovery_results if r['score'] >= q_range]
+                st.write(f"Items exceeding threshold: {len(highly_relevant)}")
+                
+                if highly_relevant:
+                    # Show as dataframe for easy inspection
+                    debug_df = pd.DataFrame(highly_relevant)
+                    if not debug_df.empty:
+                        # Drop columns that might have complex objects for better display
+                        cols_to_show = [col for col in debug_df.columns if col not in ['skills_matched', 'missing_skills', 'skills_required']]
+                        st.dataframe(debug_df[cols_to_show], use_container_width=True)
+            
+            # 5. Profile Analysis
+            if has_cv:
+                st.divider()
+                st.markdown("### Detected Interest Signal")
+                cv_level, score = ml_utils.detect_seniority(cv_text_session)
+                st.write(f"Detected Seniority: **{cv_level}** (Confidence: {score:.2f})")
+                
+                # Show extracted skills used for discovery
+                cv_hard, cv_soft = ml_utils.extract_skills_from_text(cv_text_session)
+                all_found = cv_hard | cv_soft
+                st.markdown(f"**Skills used for matching:** ({len(all_found)} detected)")
+                st.write(", ".join(sorted(all_found)))
+
 # =============================================================================
 # CV BUILDER PAGE
 # =============================================================================
