@@ -1978,7 +1978,7 @@ def generate_pdf_report(res: Dict, jd_text: str = "", cl_analysis: Dict = None) 
     pdf.ln(2)
     
     # Matched Skills
-    matched = list(res.get("matching_hard", []))
+    matched = list(res.get("matching_hard") or [])
     pdf.set_font('Times', 'B', 11)
     pdf.cell(0, 6, f"Matched ({len(matched)}):", 0, 1)
     pdf.set_font('Times', '', 11)
@@ -1986,7 +1986,7 @@ def generate_pdf_report(res: Dict, jd_text: str = "", cl_analysis: Dict = None) 
     pdf.multi_cell(0, 5, clean(", ".join(matched[:15])) + ("..." if len(matched) > 15 else "") if matched else "None")
     
     # Missing Skills
-    missing = list(res.get("missing_hard", []))
+    missing = list(res.get("missing_hard") or [])
     pdf.set_font('Times', 'B', 11)
     pdf.set_text_color(0, 0, 0)
     pdf.cell(0, 6, f"Missing ({len(missing)}):", 0, 1)
@@ -2617,7 +2617,7 @@ def suggest_gap_projects(missing_skills: Set[str]) -> List[Dict]:
 # =============================================================================
 def generate_detailed_report_text(res: Dict, jd_text: str = "", cl_analysis: Dict = None) -> str:
     """Generates a clean, professional text report."""
-    match_pct = res['match_percentage']
+    match_pct = res.get('match_percentage', 0)
     
     report = []
     
@@ -2666,8 +2666,9 @@ def generate_detailed_report_text(res: Dict, jd_text: str = "", cl_analysis: Dic
     
     # Matched Skills
     report.append("[+] MATCHED SKILLS")
-    if res["matching_hard"]:
-        for s in sorted(res["matching_hard"]): 
+    matching_hard = res.get("matching_hard", [])
+    if matching_hard:
+        for s in sorted(matching_hard): 
             report.append(f"    - {s}")
     else:
         report.append("  (No direct matches)")
@@ -2690,8 +2691,9 @@ def generate_detailed_report_text(res: Dict, jd_text: str = "", cl_analysis: Dic
 
     # Missing Skills
     report.append("[!] MISSING SKILLS")
-    if res["missing_hard"]:
-        for s in sorted(res["missing_hard"]):
+    missing_hard = res.get("missing_hard", [])
+    if missing_hard:
+        for s in sorted(missing_hard):
             report.append(f"    - {s}")
     else:
         report.append("    (No critical gaps - Excellent match!)")
@@ -2704,37 +2706,40 @@ def generate_detailed_report_text(res: Dict, jd_text: str = "", cl_analysis: Dic
         report.append("2. COVER LETTER EVALUATION")
         report.append("-" * 70)
         report.append("")
-        report.append(f"Overall Score:        {cl_analysis['overall_score']:.1f}%")
-        report.append(f"Word Count:           {cl_analysis['word_count']} words")
-        report.append(f"Language:             {cl_analysis['language'] or 'English'}")
+        report.append(f"Overall Score:        {cl_analysis.get('overall_score', 0):.1f}%")
+        report.append(f"Word Count:           {cl_analysis.get('word_count', 0)} words")
+        report.append(f"Language:             {cl_analysis.get('language') or 'English'}")
         report.append("")
         
         report.append("METRICS:")
-        report.append(f"  • Keyword Coverage:     {cl_analysis['hard_coverage']:.0f}%")
-        report.append(f"  • Soft Skills:          {cl_analysis['soft_coverage']:.0f}%")
-        report.append(f"  • Structure:            {cl_analysis['structure_score']:.0f}%")
-        report.append(f"  • Personalization:      {cl_analysis['personalization_score']:.0f}%")
+        report.append(f"  • Keyword Coverage:     {cl_analysis.get('hard_coverage', 0):.0f}%")
+        report.append(f"  • Soft Skills:          {cl_analysis.get('soft_coverage', 0):.0f}%")
+        report.append(f"  • Structure:            {cl_analysis.get('structure_score', 0):.0f}%")
+        report.append(f"  • Personalization:      {cl_analysis.get('personalization_score', 0):.0f}%")
         report.append("")
         
-        if cl_analysis.get('strengths'):
+        strengths = cl_analysis.get('strengths', [])
+        if strengths:
             report.append("STRENGTHS:")
-            for strength in cl_analysis['strengths'][:5]:
+            for strength in strengths[:5]:
                 report.append(f"    + {strength}")
             report.append("")
         
-        if cl_analysis.get('improvements'):
+        improvements = cl_analysis.get('improvements', [])
+        if improvements:
             report.append("IMPROVEMENT SUGGESTIONS:")
-            for improvement in cl_analysis['improvements'][:5]:
+            for improvement in improvements[:5]:
                 report.append(f"    > {improvement}")
             report.append("")
         
-        if cl_analysis.get('hard_missing'):
-            missing_kws = list(cl_analysis['hard_missing'])[:8]
+        hard_missing = cl_analysis.get('hard_missing', [])
+        if hard_missing:
+            missing_kws = list(hard_missing)[:8]
             if missing_kws:
                 report.append("MISSING KEYWORDS (consider adding):")
                 report.append(f"  {', '.join(missing_kws)}")
-                if len(cl_analysis['hard_missing']) > 8:
-                    report.append(f"  ... and {len(cl_analysis['hard_missing']) - 8} more")
+                if len(hard_missing) > 8:
+                    report.append(f"  ... and {len(hard_missing) - 8} more")
                 report.append("")
         
         report.append("")
@@ -2763,11 +2768,11 @@ def generate_detailed_report_text(res: Dict, jd_text: str = "", cl_analysis: Dic
     
     # ==================== CAREER COMPASS ====================
     # Defense against list types from session state
-    matching_set = set(res.get("matching_hard", []))
-    missing_set = set(res.get("missing_hard", []))
-    extra_set = set(res.get("extra_hard", []))
+    matching_set = set(res.get("matching_hard") or [])
+    missing_set = set(res.get("missing_hard") or [])
+    extra_set = set(res.get("extra_hard") or [])
     
-    candidate_skills = matching_set | missing_set | extra_set
+    candidate_skills = matching_set.union(missing_set, extra_set)
     
     try:
         recs = recommend_roles(candidate_skills, jd_text)
