@@ -2762,7 +2762,12 @@ def generate_detailed_report_text(res: Dict, jd_text: str = "", cl_analysis: Dic
     report.append("")
     
     # ==================== CAREER COMPASS ====================
-    candidate_skills = res["matching_hard"] | res["missing_hard"] | res["extra_hard"]
+    # Defense against list types from session state
+    matching_set = set(res.get("matching_hard", []))
+    missing_set = set(res.get("missing_hard", []))
+    extra_set = set(res.get("extra_hard", []))
+    
+    candidate_skills = matching_set | missing_set | extra_set
     
     try:
         recs = recommend_roles(candidate_skills, jd_text)
