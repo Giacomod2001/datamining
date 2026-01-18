@@ -3245,14 +3245,21 @@ def expand_skills_bidirectional(skills_norm: Set[str]) -> Set[str]:
         if expanded & cluster_skills:
             expanded.update(cluster_skills)
 
-    # 2. Bidirectional Inference (Up/Down)
+    # 2. Knowledge Base Key Expansion (Variety -> Canonical)
+    # Move this BEFORE inference so variations (like 'fogli di calcolo') 
+    # grant the parent key ('Excel') and trigger ITS implications.
+    hard_skills = getattr(knowledge_base, "HARD_SKILLS", {})
+    for canonical, variations in hard_skills.items():
+        variations_norm = {v.lower() for v in variations}
+        if expanded & variations_norm:
+            expanded.add(canonical.lower())
+
+    # 3. Bidirectional Inference (Up/Down)
     # We do a few iterations to handle chains (e.g., A -> B -> C)
     for _ in range(2): 
         current_pass = set(expanded)
         for s in current_pass:
             # CHILD -> PARENT (Hierarchy)
-            # Find rules where current skill 's' or its original form is a key
-            # Mapping from normalized to Knowledge Base keys if needed
             for rule_key, parents in SKILL_HIERARCHY.items():
                 if s == rule_key.lower():
                     expanded.update({p.lower() for p in parents})
@@ -3264,14 +3271,6 @@ def expand_skills_bidirectional(skills_norm: Set[str]) -> Set[str]:
                     
         if len(expanded) == len(current_pass):
             break
-
-    # 3. Knowledge Base Key Expansion (Variety -> Canonical)
-    # Ensure variations (like 'fogli di calcolo') grant the parent key ('Excel')
-    hard_skills = getattr(knowledge_base, "HARD_SKILLS", {})
-    for canonical, variations in hard_skills.items():
-        variations_norm = {v.lower() for v in variations}
-        if expanded & variations_norm:
-            expanded.add(canonical.lower())
 
     return expanded
 
