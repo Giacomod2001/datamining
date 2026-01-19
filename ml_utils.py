@@ -2213,22 +2213,46 @@ def detect_language(text: str) -> str:
     return None
 
 # =============================================================================
+# =============================================================================
+# SCORING HARMONIZATION - Unified Weights
+# =============================================================================
+WEIGHT_DIRECT = 1.0
+WEIGHT_INFERRED = 0.9        # Parent/Child link (e.g. React -> Frontend)
+WEIGHT_TRANSFERABLE = 0.7    # Equivalent tool (e.g. Power BI -> Tableau) - Unified to 0.7
+WEIGHT_PROJECT_ONLY = 0.4    # Found in project but not stated in CV
+
+def calculate_match_score(score_points: float, total_items: int) -> float:
+    """
+    Unified calculation for match percentage.
+    Ensures consistent capping (100%) and rounding (1 decimal).
+    """
+    if total_items <= 0:
+        return 0.0
+    percentage = (score_points / total_items) * 100
+    return round(min(100.0, percentage), 1)
+
+def _calculate_composite_role_score(skill_score: float, semantic_score: float, edu_boost: float) -> float:
+    """
+    INTERNAL UNIFIED SCORER v1.1
+    ----------------------------
+    Combines three factors into a single consistent match percentage:
+    1. Skill Match (65%) - Weighted direct/inferred/transferable.
+    2. Semantic Context (20%) - TF-IDF/LSA similarity.
+    3. Education Boost (15%) - Degree/field relevance (Increased weight).
+    """
+    # All inputs are on a 0-100 scale.
+    final = (0.65 * skill_score) + (0.20 * semantic_score) + (0.15 * edu_boost)
+    return round(min(100.0, final), 1)
+
 def analyze_gap(cv_text: str, job_text: str) -> Dict:
     """
-    STRUCTURED SKILL GAP ANALYSIS v2.0
+    STRUCTURED SKILL GAP ANALYSIS v3.0 - Harmonized
     
-    Implements 4-step hierarchical matching:
-    1. DIRECT (Green): Exact match (CV: Python -> JD: Python)
-    2. INFERRED (Green): Hierarchy match (CV: Python -> JD: Programming)
-    3. TRANSFERABLE (Yellow): Cluster match (CV: Tableau -> JD: Power BI)
-    4. MISSING (Red): No match found
+    Implements multi-step hierarchical matching with standardized weights.
     """
     # 1. Setup Data Structures
     SKILL_CLUSTERS = getattr(knowledge_base, "SKILL_CLUSTERS", {})
     INFERENCE_RULES = getattr(knowledge_base, "SKILL_HIERARCHY", {}) 
-    SKILL_IMPLICATIONS = getattr(knowledge_base, "SKILL_IMPLICATIONS", {})
-    
-    # Backwards compatibility for inference rules
     if not INFERENCE_RULES:
         INFERENCE_RULES = getattr(knowledge_base, "INFERENCE_RULES", {})
         
@@ -2239,13 +2263,15 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     cv_hard, cv_soft = extract_skills_from_text(cv_text)
     job_hard, job_soft = extract_skills_from_text(job_text, is_jd=True)
 
-    # 3. Archetype Fallback (if JD is just a title or very short)
-    if len(job_hard) < 3 and len(job_text.split()) < 15:
+    # 3. Archetype Fallback (if JD is a Role Name)
+    # -------------------------------------------
+    # We look for a role match even if skills were already extracted, 
+    # to ensure composite scoring (70/20/15) is applied for role-based JDs.
+    best_role = None
+    if len(job_text.split()) < 15:
         titles = list(JOB_ARCHETYPES_EXTENDED.keys())
         query = job_text.strip().lower()
         
-        # Look for exact or fuzzy title match
-        best_role = None
         for title in titles:
             if query == title.lower() or query in title.lower():
                 best_role = title
@@ -2265,43 +2291,35 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
             elif isinstance(role_data, (list, set)):
                 arch_skills.update(role_data)
             
-            # Apply bidirectional expansion to the archetype skills
             expanded_arch = expand_skills_bidirectional({s.lower() for s in arch_skills})
-            # Convert back to capitalized or original for consistency
             job_hard.update(arch_skills)
             job_hard.update({s.capitalize() for s in expanded_arch})
 
-    # 4. Multi-Step Matching Logic (Hard Skills ONLY for Score)
+    # 4. Multi-Step Matching Logic
     cv_hard_lower = {s.lower() for s in cv_hard}
     cv_expanded = expand_skills_bidirectional(cv_hard_lower)
 
-    matched = set()      # Green (Direct + Inferred)
-    transferable = {}    # Yellow (Missing Skill -> Explanation)
+    matched = set()      # Green
+    transferable = {}    # Yellow
     missing = set()      # Red
     score_points = 0.0
     
     for jd_skill in job_hard:
         jd_norm = jd_skill.lower()
         
-        # STEP 1: DIRECT or INFERRED (Parent) MATCH
-        if jd_norm in cv_expanded:
+        # STEP 1: DIRECT MATCH (1.0)
+        if jd_norm in cv_hard_lower:
             matched.add(jd_skill)
-            score_points += 1.0
+            score_points += WEIGHT_DIRECT
             continue
             
-        # STEP 2: INFERRED (Child) MATCH (JD wants parent, user has child)
-        # (Actually cv_expanded handles user having child and JD wanting parent)
-        # Let's check JD parent -> User child if not caught
-        inferred = False
-        for cv_s in cv_hard:
-            if cv_s in INFERENCE_RULES and jd_skill in INFERENCE_RULES[cv_s]:
-                matched.add(jd_skill)
-                score_points += 1.0
-                inferred = True
-                break
-        if inferred: continue
+        # STEP 2: INFERRED MATCH (0.9) - Hierarchy
+        if jd_norm in cv_expanded:
+            matched.add(jd_skill)
+            score_points += WEIGHT_INFERRED
+            continue
 
-        # STEP 3: TRANSFERABLE MATCH (Cluster-based)
+        # STEP 3: TRANSFERABLE MATCH (0.6) - Clusters
         found_transferable = False
         for cluster_id, cluster_data in SKILL_CLUSTERS.items():
             cluster_skills = {s.lower() for s in (cluster_data.get("skills", []) if isinstance(cluster_data, dict) else cluster_data)}
@@ -2309,7 +2327,7 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
                 common = cv_hard_lower.intersection(cluster_skills)
                 if common:
                     transferable[jd_skill] = f"Transferable from {', '.join(list(common)[:2])}"
-                    score_points += 0.7 
+                    score_points += WEIGHT_TRANSFERABLE
                     found_transferable = True
                     break
         if found_transferable: continue
@@ -2322,11 +2340,9 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     for s in transferable:
         if s in extra_hard: extra_hard.remove(s)
         
-    # Soft skills are handled as "Interview Verification" items, not strict matches
-    # Rationale: User request - soft skills are hard to verify on paper
     matching_soft = cv_soft & job_soft
-    discussion_soft = job_soft - cv_soft # Soft skills in JD but not in CV
-    cv_stated_soft = cv_soft # All soft skills from CV
+    discussion_soft = job_soft - cv_soft
+    cv_stated_soft = cv_soft
 
     # 6. Seniority and Metrics
     cv_level, _ = detect_seniority(cv_text)
@@ -2334,28 +2350,41 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
     
     seniority_match = "Match"
     if cv_level != jd_level:
-        if cv_level == "Entry Level" and jd_level == "Senior Level":
-            seniority_match = "Underqualified"
-        elif cv_level == "Senior Level" and jd_level == "Entry Level":
-            seniority_match = "Overqualified"
-        else:
-            seniority_match = "Partial Match"
+        if cv_level == "Entry Level" and jd_level == "Senior Level": seniority_match = "Underqualified"
+        elif cv_level == "Senior Level" and jd_level == "Entry Level": seniority_match = "Overqualified"
+        else: seniority_match = "Partial Match"
 
     total_jd = len(job_hard)
-    # Riferimento KDD: Pattern Evaluation. Match percentage non può essere 100 se non ci sono skill nella JD.
-    match_percentage = min(100.0, (score_points / total_jd) * 100) if total_jd > 0 else 0.0
+    skill_match_score = calculate_match_score(score_points, total_jd)
+    
+    # 4b. COMPOSITE SCORING (if Role Fallback was used)
+    # This ensures consistency with Discovery/Compass
+    final_match_pct = skill_match_score
+    
+    # We check if 'best_role' exists in local scope (from fallback section)
+    if 'best_role' in locals() and best_role and cv_text:
+        # Get semantic match for this specific role
+        # We do NOT pass jd_text here so the role isn't excluded for matching itself
+        recs = recommend_roles(cv_skills=cv_hard | cv_soft, cv_text=cv_text)
+        # Find our best_role in the recs to get its composite score
+        for r in recs:
+            if r['role'] == best_role:
+                final_match_pct = r['score']
+                break
+
+    match_percentage = final_match_pct
 
     return {
-        "match_percentage": match_percentage,
+        "match_percentage": round(match_percentage, 1),
         "matching_hard": list(matched),
         "transferable": transferable,
         "missing_hard": list(missing),
         "extra_hard": list(extra_hard),
-        "soft_interview_verified": list(matching_soft), # Stated and requested
-        "soft_discussion_points": list(discussion_soft), # Requested but not stated
-        "soft_stated_strengths": list(cv_stated_soft), # All stated
-        "matching_soft": list(matching_soft), # Legacy support
-        "missing_soft": list(discussion_soft), # Legacy support
+        "soft_interview_verified": list(matching_soft),
+        "soft_discussion_points": list(discussion_soft),
+        "soft_stated_strengths": list(cv_stated_soft),
+        "matching_soft": list(matching_soft), 
+        "missing_soft": list(discussion_soft),
         "project_review": set(),
         "seniority_info": {
             "cv_level": cv_level,
@@ -2364,7 +2393,7 @@ def analyze_gap(cv_text: str, job_text: str) -> Dict:
         },
         "cv_skills": list(cv_hard),
         "job_skills": list(job_hard),
-        "match_pct": match_percentage # Duplicate for robustness
+        "match_pct": round(match_percentage, 1)
     }
 
 def analyze_gap_with_project(cv_text: str, job_text: str, project_text: str) -> Dict:
@@ -2429,10 +2458,10 @@ def analyze_gap_with_project(cv_text: str, job_text: str, project_text: str) -> 
         # Recalculate Match Score with new findings
         total_jd = len(job_hard)
         if total_jd > 0:
-            direct_points = len(res["matching_hard"]) * 1.0
-            trans_points = len(res["transferable"]) * 0.7
+            direct_points = len(res["matching_hard"]) * WEIGHT_DIRECT
+            trans_points = len(res["transferable"]) * WEIGHT_TRANSFERABLE
             total_points = direct_points + trans_points
-            res["match_percentage"] = min(100.0, (total_points / total_jd) * 100)
+            res["match_percentage"] = calculate_match_score(total_points, total_jd)
             res["match_pct"] = res["match_percentage"]
 
     
@@ -3061,6 +3090,7 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
     Now also considers education from CV text with recency weighting.
     """
     job_archetypes = getattr(constants, "JOB_ARCHETYPES", {})
+    SKILL_CLUSTERS = getattr(knowledge_base, "SKILL_CLUSTERS", {})
     if not cv_skills or not job_archetypes or not TfidfVectorizer:
         return []
 
@@ -3077,8 +3107,9 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
             if edu_keyword in cv_lower:
                 # Check if it's recent (appears early in CV = more recent)
                 position = cv_lower.find(edu_keyword)
-                # Weight: earlier position = more recent = higher weight (max 30%, min 10%)
-                recency_weight = max(10, 30 - (position / len(cv_lower)) * 15)
+                # Weight: earlier position = more recent = higher weight 
+                # Scaled to 0-100 range for unified scoring (max 100, min 40 if mentioned)
+                recency_weight = max(40, 100 - (position / len(cv_lower)) * 50)
                 
                 for role in related_roles:
                     if role in job_archetypes:
@@ -3173,7 +3204,15 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
         if name in excluded_roles:
             continue
             
-        role_skills = job_archetypes[name]
+        role_data = job_archetypes[name]
+        if isinstance(role_data, dict):
+            metadata = role_data
+            category = metadata.get("category", "Other")
+            role_skills = set(metadata.get("primary_skills", []) + metadata.get("hard_skills", []))
+        else:
+            category = "Other"
+            role_skills = set(role_data)
+            
         role_norm = {s.lower() for s in role_skills}
         
         if not role_norm:
@@ -3183,29 +3222,59 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
         # This ensures "Analytics" matches "Business Analysis", etc.
         role_norm_expanded = expand_skills_with_clusters(role_norm)
             
-        # Jaccard Index: Intersection / Union (using EXPANDED sets)
-        intersection = len(cv_norm.intersection(role_norm_expanded))
-        union = len(cv_norm.union(role_norm_expanded))
-        jaccard_score = intersection / union if union > 0 else 0.0
+        # 5. Compute Recommendations (WEIGHTED SCORING for consistency)
+        # -----------------------------------------------------------
+        # Use same logic as analyze_gap: Direct(1.0), Inferred(0.9), Transferable(0.7)
+        score_points = 0.0
+        skills_matched = set()
         
-        # Boost with TF-IDF/LSA semantic score (from previous step)
-        # arch_vector index is i (since we sliced off CV/JD)
-        semantic_score = similarities[i]
+        cv_expanded = expand_skills_bidirectional(cv_norm)
         
-        # Education Boost
-        edu_boost = education_boost.get(name, 0) / 100.0
+        for rs in role_norm:
+            # Direct Match
+            if rs in cv_norm:
+                score_points += WEIGHT_DIRECT
+                skills_matched.add(rs)
+                continue
+            
+            # Inferred Match
+            if rs in cv_expanded:
+                score_points += WEIGHT_INFERRED
+                skills_matched.add(rs)
+                continue
+               
+            # Transferable Match 
+            found_trans = False
+            for cid, cdata in SKILL_CLUSTERS.items():
+                cskills = {s.lower() for s in (cdata.get("skills", []) if isinstance(cdata, dict) else cdata)}
+                if rs in cskills:
+                    if cv_norm.intersection(cskills):
+                        score_points += WEIGHT_TRANSFERABLE
+                        found_trans = True
+                        break
+            if found_trans: continue
+
+        # Calculate base weighted score
+        weighted_skill_score = calculate_match_score(score_points, len(role_norm))
         
-        # Combined Score: 60% Jaccard (Direct Skill Match) + 30% Semantic + 10% Ed Boost
-        final_score = (0.6 * jaccard_score) + (0.3 * semantic_score) + (0.1 * edu_boost)
+        # Boost with Semantic Similarity (0-100 range)
+        semantic_score = similarities[i] * 100
         
-        # Lower threshold from 0.15 to 0.05 to ensure results are shown
-        if final_score > 0.05: # Threshold (was 0.15)
-             # Use expanded sets for missing calculation
-             missing = role_norm_expanded - cv_norm
+        # Education Boost (0-30 range)
+        edu_boost = (education_boost.get(name, 0))
+        
+        # FINAL UNIFIED COMPOSITE SCORE
+        final_score = _calculate_composite_role_score(weighted_skill_score, semantic_score, edu_boost)
+        
+        if final_score > 5: # Threshold
+             missing = role_norm - skills_matched
              recommendations.append({
                  "role": name,
+                 "category": category,
                  "score": final_score,
-                 "missing": list(missing)[:5] # Top 5 missing
+                 "skills_matched": list(skills_matched),
+                 "skills_required": list(role_skills),
+                 "missing_skills": list(missing)[:5]
              })
              
     # Sort and Return
@@ -3288,131 +3357,48 @@ def discover_careers(
     preferences: dict = None
 ) -> List[dict]:
     """
-    SIMPLIFIED CAREER DISCOVERY ENGINE
-    ===================================
-    Recommends job roles based primarily on skill matching.
-    
-    Args:
-        cv_text: Optional CV text for skill extraction
-        free_text: User's description (currently not used in simplified version)
-        preferences: Dict with categories and preferences (optional filtering)
-    
-    Returns:
-        List of dicts with: role, category, score, skills_required, skills_matched, missing_skills
+    SIMPLIFIED CAREER DISCOVERY ENGINE v2.0
+    ======================================
+    Consumes unified recommend_roles engine to ensure 100% scoring consistency.
     """
-    job_archetypes = getattr(constants, "JOB_ARCHETYPES", {})
-    role_metadata = getattr(constants, "JOB_ROLE_METADATA", {})
+    # 1. Extract CV Skills
+    cv_hard, cv_soft = extract_skills_from_text(cv_text)
+    cv_skills = cv_hard | cv_soft
     
-    if not job_archetypes:
-        return []
+    # 2. Get recommendations from Unified Engine
+    # This ensures 70/20/10 weighted scoring is applied
+    recs = recommend_roles(cv_skills=cv_skills, cv_text=cv_text)
     
+    # 3. Apply Discovery-specific Filtering and Formatting
     preferences = preferences or {}
+    selected_categories = preferences.get("categories", [])
     
-    # --- 1. EXTRACT CV SKILLS (if provided) ---
-    cv_skills = set()
-    if cv_text:
-        cv_hard, cv_soft = extract_skills_from_text(cv_text)
-        cv_skills = cv_hard | cv_soft
-    
-    # --- 2. SCORE EACH ROLE (SIMPLIFIED) ---
-    recommendations = []
-    
-    for role_name, role_data in job_archetypes.items():
-        # Get role metadata (use defaults if not defined)
-        # Handle both Legacy (list) and New (dict) formats
-        if isinstance(role_data, dict):
-            # V2 Format
-            metadata = role_data
-            # Extract skills from various possible keys
-            role_skills = set(metadata.get("primary_skills", []) + metadata.get("hard_skills", []))
-            # Merge defaults if missing
-            category = metadata.get("category", "Other")
-        else:
-            # V1 Format (List of strings)
-            role_skills = set(role_data)
-            category = "Other"
-            # Try to look up metadata separately if available?
-            # For now, use defaults
-            metadata = role_metadata.get(role_name, {
-                "category": category,
-                "client_facing": None,
-                "remote_friendly": None,
-                "international": None,
-                "dynamic": None,
-                "creative": None
-            })
-
-        # --- CATEGORY FILTER (if specified) ---
-        selected_categories = preferences.get("categories", [])
-        if selected_categories:
-            if category not in selected_categories:
-                # If category is strictly filtered, we skip
-                continue
-                
-        # --- SKILL MATCHING ---
-        skill_match = 0
-        skills_matched = set()
-        missing_skills = set()
+    final_recs = []
+    for r in recs:
+        # recommend_roles now includes 'category' in dict (will update in next chunk)
+        category = r.get("category", "Other")
         
-        # Ensure we have skills to match against
-        if not role_skills:
+        if selected_categories and category not in selected_categories:
             continue
             
-        if cv_skills:
-            role_skills_normalized = {s.lower() for s in role_skills}
-            
-            # Apply skill clusters for transferable matching  
-            cv_expanded = expand_skills_with_clusters(cv_skills)
-            cv_expanded_lower = {s.lower() for s in cv_expanded}
-            
-            # Calculate overlap
-            matched_lower = cv_expanded_lower & role_skills_normalized
-            missing_lower = role_skills_normalized - cv_expanded_lower
-            
-            # Reconstruct original casing
-            skills_matched = {s for s in role_skills if s.lower() in matched_lower}
-            missing_skills = {s for s in role_skills if s.lower() in missing_lower}
-            
-            skill_match = (len(matched_lower) / len(role_skills_normalized)) * 100
-        else:
-            # No CV → default neutral score
-            skill_match = 50
-            missing_skills = set(role_skills)
-            
-        # --- FINAL SCORE (SIMPLE) ---
-        # Ensure non-zero score for UX purposes (Potential Score)
-        final_score = max(5.0, skill_match)
+        # Add metadata for discovery UI
+        role_metadata = getattr(constants, "JOB_ROLE_METADATA", {})
+        metadata = role_metadata.get(r['role'], {})
         
-        # Boost if category matches user preference (even without skills)
-        if selected_categories and category in selected_categories:
-             final_score += 10
-        
-        relevant_metadata = {
+        r.update({
             "category": category,
-            "client_facing": metadata.get("client_facing"),
-            "remote_friendly": metadata.get("remote_friendly"),
-            "international": metadata.get("international"),
-            "dynamic": metadata.get("dynamic"),
-            "creative": metadata.get("creative")
-        }
-
-        recommendations.append({
-            "role": role_name,
-            "category": category,
-            "score": final_score,
-            "skills_required": list(role_skills),
-            "skills_matched": list(skills_matched),
-            "missing_skills": list(missing_skills),
-            "preference_match": None, 
-            "skill_match": skill_match,
-            "edu_boost": 0,
-            "pref_details": [],
-            "metadata": relevant_metadata
+            "metadata": {
+                "category": category,
+                "client_facing": metadata.get("client_facing"),
+                "remote_friendly": metadata.get("remote_friendly"),
+                "international": metadata.get("international"),
+                "dynamic": metadata.get("dynamic"),
+                "creative": metadata.get("creative")
+            }
         })
-    
-    # Sort by score descending
-    recommendations.sort(key=lambda x: x["score"], reverse=True)
-    return recommendations
+        final_recs.append(r)
+        
+    return final_recs
 
 
 def _parse_intent_signals(text: str) -> dict:

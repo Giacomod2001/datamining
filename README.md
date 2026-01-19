@@ -7,7 +7,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![License](https://img.shields.io/badge/License-PolyForm--NC-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-2.1-0077B5?style=flat)](README.md)
+[![Version](https://img.shields.io/badge/Version-2.2-0077B5?style=flat)](README.md)
 
 ---
 
@@ -18,9 +18,9 @@
 **New Features**:
 
 - **Refined UI/UX**: New Customer Journey-oriented Sidebar with visual cues.
+- **Unified Match Engine**: Harmonized **65/20/15** scoring across all app modules.
 - **Enhanced Knowledge Base**: Expanded to **950+ Killer Keywords** and **230+ Job Archetypes**.
 - **Career Discovery**: Specialized module to find career paths based on lifestyle & preferences.
-- **Advanced Match Engine**: Powered by TF-IDF, Cosine Similarity, and Jaccard Index.
 
 ---
 
@@ -39,10 +39,9 @@
 | **Feature** | **Description** |
 | ----------- | --------------- |
 | **CV Builder (v2.0)** | Interactive wizard to build professional CVs with real-time AI suggestions |
-| **Match Score** | AI-based CV-Job compatibility score (0-100%) |
-| **Gap Analysis** | Identifies missing hard/soft skills vs Job Description |
-| **Career Compass** | Recommendation engine using **Jaccard Similarity** to suggest alternative roles |
-| **Career Discovery** | Explore career paths based on lifestyle & work preferences (Remote, Creative, etc.) |
+| **CV Analysis** | AI-based CV-Job compatibility score (0-100%) with Keyword Gap Analysis |
+| **Career Discovery** | Lifestyle-based explorer using the **Unified Composite Scoring** engine |
+| **AI Compass** | Recommendation engine suggesting roles with harmonized 65/20/15 logic |
 | **Developer Console** | "Glass Box" view to inspect ML logic, clusters, and raw vectors |
 
 ---
@@ -131,12 +130,13 @@ This project implements the following Data Mining and Text Analytics techniques:
 
 ### Advanced Machine Learning (v2.1)
 
-#### 1. Hybrid Semantic Matching (TF-IDF + LSA)
+#### 1. Unified Multi-Factor Scoring (v2.2)
 
-Combines **Keyword Frequency (TF-IDF)** with **Latent Semantic Analysis (SVD)** to understand context.
+The matching engine now uses a weighted composite formula to ensure consistency across the entire application:
 
-- *Benefit*: Recognizes that "Data Analysis" matches "Business Intelligence" conceptually.
-- *Weighting*: Balanced Precision (Keywords) + Context (Semantics).
+- **Skill Match (65%)**: Direct, Inferred, and Transferable (70% weight) keyword matching.
+- **Semantic Context (20%)**: TF-IDF + Latent Semantic Analysis (LSA) to understand the "soul" of the CV.
+- **Education Boost (15%)**: Smart detection of university degrees with **Recency Scaling** (newer degrees weigh more).
 
 #### 2. Archetype Fallback System
 
