@@ -792,19 +792,21 @@ SKILL_IMPLICATIONS = {
     "DevOps": ["CI/CD", "Cloud Computing", "Containerization", "Scripting", "Automation"],
     "Cloud Computing": ["Networking", "Security Basics", "Infrastructure"],
     
-    "Digital Marketing": ["Campaign Management", "Analytics", "Content Strategy", "SEO", "SEM"],
+    "Digital Marketing": ["Campaign Management", "Analytics", "Content Strategy", "SEO", "SEM", "Budgeting"],
     "SEO": ["Content Marketing", "Analytics", "Keyword Research"],
     "SEM": ["PPC", "Google Ads", "Analytics"],
     "Social Media Marketing": ["Content Creation", "Community Management", "Analytics"],
     
-    "Project Management": ["Planning", "Risk Management", "Budgeting", "Team Coordination"],
+    "Project Management": ["Planning", "Risk Management", "Budgeting", "Team Coordination", "Pianificazione"],
     "Product Management": ["Market Research", "User Research", "Data Analysis", "Agile"],
     
     "Business Intelligence": ["Data Analysis", "Reporting", "Visualization", "SQL"],
     "Data Analysis": ["Excel", "SQL", "Statistics", "Reporting", "Visualization", "Critical Thinking"],
-    "Analytics": ["Data Analysis", "Reporting", "Metrics"],
+    "Analytics": ["Data Analysis", "Reporting", "Metrics", "KPI Management"],
     "Advanced Excel": ["Excel", "Spreadsheets", "Data Analysis", "VBA"],
-    "Marketing Analytics": ["Google Analytics", "Excel", "Data Analysis", "SQL"],
+    "Marketing Analytics": ["Google Analytics", "Excel", "Data Analysis", "SQL", "KPI Management"],
+    "Performance Marketing": ["PPC", "SEM", "Google Ads", "Facebook Ads", "KPI Management", "Analytics", "Data Analysis", "Budgeting"],
+    "KPI Management": ["Reporting", "Analytics", "Strategy", "Data Analysis"],
     
     "UX Design": ["User Research", "Prototyping", "Wireframing", "Usability Testing"],
     "UI Design": ["Visual Design", "Typography", "Color Theory", "Design Tools"],
@@ -994,6 +996,13 @@ SKILL_CLUSTERS = {
         "transferability": "high"
     },
     
+    # Marketing Metrics (Performance Specific)
+    "performance_metrics": {
+        "name": "Performance Marketing Metrics",
+        "skills": {"KPI", "ROI", "ROAS", "CPA", "CTR", "CPC", "Conversion Rate", "CAC", "LTV"},
+        "transferability": "very high"
+    },
+    
     # Programming Languages (Same Paradigm)
     "oop_languages": {
         "name": "Object-Oriented Languages",
@@ -1177,9 +1186,11 @@ HARD_SKILLS = {
     "Email Marketing": ["email marketing"],
     "Marketing Analytics": ["marketing analytics"],
     "Google Analytics": ["google analytics", "ga4"],
-    "Copywriting": ["copywriting", "copy"],
-    "Branding": ["branding", "brand strategy"],
-    "Campaign Management": ["campaign management", "gestione campagne"],
+    "Copywriting": ["copywriting", "copy", "scrittura persuasiva"],
+    "Branding": ["branding", "brand strategy", "posizionamento brand", "identità di marca"],
+    "Campaign Management": ["campaign management", "gestione campagne", "digital campaigns", "performance marketing", "direct marketing", "media planning", "advertising"],
+    "Performance Marketing": ["performance marketing", "paid ads", "media buying", "paid performance", "growth marketing", "conversion optimization", "advertising online", "campagne a performance"],
+    "KPI Management": ["kpi management", "gestione kpi", "okr", "performance measurement", "kpi tracking", "misurazione performance", "key performance indicators"],
     
     # ========== DESIGN ==========
     "UI Design": ["ui design", "user interface"],
@@ -1204,13 +1215,14 @@ HARD_SKILLS = {
     "Jira": ["jira"],
     "Confluence": ["confluence"],
     "Strategy": ["strategy", "strategia", "strategic planning"],
-    "Budgeting": ["budgeting", "budget management"],
+    "Planning": ["planning", "pianificazione", "pianificazione strategica", "strategic planning"],
+    "Budgeting": ["budgeting", "budget management", "gestione budget", "budget", "p&l management"],
     "Leadership": ["leadership", "team leadership"],
     "Stakeholder Management": ["stakeholder management"],
     
     # ========== FINANCE & ACCOUNTING ==========
-    "Accounting": ["accounting", "contabilità"],
-    "Financial Analysis": ["financial analysis", "analisi finanziaria"],
+    "Accounting": ["accounting", "contabilità", "billing", "financial reporting", "marketing accounting", "fatturazione", "amministrazione"],
+    "Financial Analysis": ["financial analysis", "analisi finanziaria", "financial reporting"],
     "Financial Modeling": ["financial modeling", "modelli finanziari"],
     "Taxation": ["taxation", "fiscalità", "tax"],
     "Auditing": ["auditing", "audit", "revisione"],
