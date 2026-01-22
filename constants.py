@@ -19,10 +19,26 @@ from knowledge_base import (
     SENIORITY_KEYWORDS,
     HARD_SKILLS,
     SOFT_SKILLS,
-    NON_SKILL_PATTERNS,
-    CAREER_CATEGORIES,
-    JOB_ROLE_METADATA
+    NON_SKILL_PATTERNS
 )
+
+# Dynamic Generation for backward compatibility
+CAREER_CATEGORIES = {}
+for role, metadata in JOB_ARCHETYPES_EXTENDED.items():
+    sector = metadata.get("sector", "Other")
+    if sector not in CAREER_CATEGORIES:
+        CAREER_CATEGORIES[sector] = f"Roles related to {sector}"
+
+JOB_ROLE_METADATA = {}
+for role, metadata in JOB_ARCHETYPES_EXTENDED.items():
+    JOB_ROLE_METADATA[role] = {
+        "category": metadata.get("sector", "Other"),
+        "client_facing": metadata.get("client_facing", False),
+        "remote_friendly": metadata.get("remote_friendly", True),
+        "international": metadata.get("international", True),
+        "dynamic": metadata.get("dynamic", False),
+        "creative": metadata.get("creative", False)
+    }
 
 # =============================================================================
 # BACKWARD COMPATIBILITY LAYER

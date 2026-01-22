@@ -7,132 +7,103 @@
 # =============================================================================
 
 JOB_ARCHETYPES_EXTENDED = {
-    # ========== SOFTWARE ENGINEERING ==========
+    # ========== TECHNOLOGY & DIGITAL ==========
     'Software Engineer': {
+        'sector': 'Technology',
         'primary_skills': ['Algorithms', 'Git', 'Programming', 'System Design', 'Testing'],
         'soft_skills': ['Adaptability', 'Analytical Thinking', 'Attention to Detail', 'Communication', 'Problem Solving'],
         'market_demand': 'high',
-        'salary_range_italy': '€35k-65k',
-        'career_path': 'Junior Software Engineer -> Senior Software Engineer -> Lead Software Engineer -> Engineering Manager',
-        'geographic_focus': ['Italy', 'Remote', 'EU'],
+        'salary_range': '€35k-65k',
         'remote_friendly': True,
-        'typical_employer': ['Tech Companies', 'Startups', 'Consulting', 'Banks'],
-        'transition_from': ['Computer Science Degree', 'Bootcamp', 'Self-taught'],
-        'prerequisite_skills': ['Programming fundamentals', 'Data structures'],
-        'learning_time': '6-12 months proficiency'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Junior -> Senior -> Lead -> Engineering Manager',
+        'transition_from': ['Computer Science Degree', 'Bootcamp'],
     },
     
     'Frontend Developer': {
+        'sector': 'Technology',
         'primary_skills': ['CSS', 'Git', 'HTML', 'JavaScript', 'React', 'UI Design'],
         'soft_skills': ['Adaptability', 'Communication', 'Problem Solving', 'Attention to Detail'],
         'market_demand': 'high',
-        'salary_range_italy': '€32k-58k',
-        'career_path': 'Junior Frontend Developer -> Senior Frontend Developer -> Lead Frontend Developer -> Frontend Architect',
-        'geographic_focus': ['Italy', 'Remote', 'EU'],
+        'salary_range': '€32k-58k',
         'remote_friendly': True,
-        'typical_employer': ['Tech Companies', 'Startups', 'Digital Agencies', 'E-commerce'],
-        'transition_from': ['Web Design', 'Computer Science', 'Bootcamp'],
-        'prerequisite_skills': ['HTML/CSS basics', 'JavaScript fundamentals'],
-        'learning_time': '6-12 months proficiency'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Junior -> Senior -> Lead -> Frontend Architect',
     },
     
     'Backend Developer': {
+        'sector': 'Technology',
         'primary_skills': ['Docker', 'Java', 'Microservices', 'Python', 'Redis', 'SQL', 'System Design'],
         'soft_skills': ['Adaptability', 'Communication', 'Problem Solving', 'Analytical Thinking'],
         'market_demand': 'high',
-        'salary_range_italy': '€35k-62k',
-        'career_path': 'Junior Backend Developer -> Senior Backend Developer -> Lead Backend Developer -> Backend Architect',
-        'geographic_focus': ['Italy', 'Remote', 'EU'],
+        'salary_range': '€35k-62k',
         'remote_friendly': True,
-        'typical_employer': ['Tech Companies', 'Startups', 'Consulting', 'Fintech'],
-        'transition_from': ['Computer Science Degree', 'Software Engineering'],
-        'prerequisite_skills': ['Programming', 'Database basics'],
-        'learning_time': '6-12 months proficiency'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Junior -> Senior -> Lead -> Backend Architect',
     },
     
     'Full Stack Developer': {
+        'sector': 'Technology',
         'primary_skills': ['DevOps', 'Git', 'JavaScript', 'Node.js', 'Python', 'React', 'SQL'],
         'soft_skills': ['Adaptability', 'Communication', 'Problem Solving', 'Multitasking'],
         'market_demand': 'very high',
-        'salary_range_italy': '€38k-68k',
-        'career_path': 'Junior Full Stack Developer -> Senior Full Stack Developer -> Lead Full Stack Developer -> Tech Lead',
-        'geographic_focus': ['Italy', 'Remote', 'EU', 'US'],
+        'salary_range': '€38k-68k',
         'remote_friendly': True,
-        'typical_employer': ['Startups', 'Tech Companies', 'Scale-ups', 'Consulting'],
-        'transition_from': ['Frontend/Backend', 'Computer Science'],
-        'prerequisite_skills': ['Full web stack understanding'],
-        'learning_time': '12-18 months proficiency'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Junior -> Senior -> Lead -> Tech Lead',
     },
     
     # ========== DATA & ANALYTICS ==========
     'Data Analyst': {
+        'sector': 'Data',
         'primary_skills': ['Data Visualization', 'Excel', 'Python', 'SQL', 'Statistics'],
         'soft_skills': ['Adaptability', 'Analytical Thinking', 'Attention to Detail', 'Communication', 'Problem Solving'],
         'market_demand': 'very high',
-        'salary_range_italy': '€32k-55k',
-        'career_path': 'Junior Data Analyst -> Senior Data Analyst -> Lead Data Analyst -> Analytics Manager',
-        'geographic_focus': ['Italy', 'Remote', 'EU'],
+        'salary_range': '€32k-55k',
         'remote_friendly': True,
-        'typical_employer': ['Corporates', 'Startups', 'Consulting', 'E-commerce'],
-        'transition_from': ['Business', 'Economics', 'Engineering'],
-        'prerequisite_skills': ['Excel', 'Basic statistics'],
-        'learning_time': '3-6 months proficiency'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Junior -> Senior -> Lead -> Analytics Manager',
     },
     
     'Data Scientist': {
+        'sector': 'Data',
         'primary_skills': ['Deep Learning', 'Machine Learning', 'Python', 'SQL', 'Statistics'],
         'soft_skills': ['Adaptability', 'Analytical Thinking', 'Attention to Detail', 'Communication', 'Problem Solving'],
         'market_demand': 'high',
-        'salary_range_italy': '€40k-70k',
-        'career_path': 'Junior Data Scientist -> Senior Data Scientist -> Lead Data Scientist -> Head of Data Science',
-        'geographic_focus': ['Italy', 'Remote', 'EU'],
+        'salary_range': '€40k-70k',
         'remote_friendly': True,
-        'typical_employer': ['Tech Companies', 'Consulting', 'Research', 'Finance'],
-        'transition_from': ['STEM Degree', 'Data Analyst', 'Research'],
-        'prerequisite_skills': ['Statistics', 'Programming', 'ML basics'],
-        'learning_time': '12-18 months proficiency'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Junior -> Senior -> Lead -> Head of Data Science',
     },
     
     'Data Engineer': {
+        'sector': 'Data',
         'primary_skills': ['BigQuery', 'Cloud Computing', 'ETL', 'Python', 'SQL', 'Spark'],
         'soft_skills': ['Adaptability', 'Analytical Thinking', 'Attention to Detail', 'Communication', 'Problem Solving'],
         'market_demand': 'very high',
-        'salary_range_italy': '€42k-72k',
-        'career_path': 'Junior Data Engineer -> Senior Data Engineer -> Lead Data Engineer -> Data Platform Architect',
-        'geographic_focus': ['Italy', 'Remote', 'EU'],
+        'salary_range': '€42k-72k',
         'remote_friendly': True,
-        'typical_employer': ['Tech Companies', 'Data-driven companies', 'Consulting'],
-        'transition_from': ['Software Engineering', 'Database Admin'],
-        'prerequisite_skills': ['SQL', 'Programming', 'ETL concepts'],
-        'learning_time': '6-12 months proficiency'
-    },
-    
-    'Business Intelligence Analyst': {
-        'primary_skills': ['Data Modelling', 'Power BI', 'Reporting', 'SQL', 'Tableau'],
-        'soft_skills': ['Adaptability', 'Analytical Thinking', 'Attention to Detail', 'Communication', 'Problem Solving'],
-        'market_demand': 'high',
-        'salary_range_italy': '€35k-58k',
-        'career_path': 'Junior BI Analyst -> Senior BI Analyst -> Lead BI Analyst -> BI Manager',
-        'geographic_focus': ['Italy', 'Remote', 'EU'],
-        'remote_friendly': True,
-        'typical_employer': ['Corporates', 'Consulting', 'Retail', 'Manufacturing'],
-        'transition_from': ['Data Analyst', 'Business Analyst'],
-        'prerequisite_skills': ['SQL', 'BI tools', 'Business acumen'],
-        'learning_time': '6-9 months proficiency'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Junior -> Senior -> Data Architect',
     },
     
     'Machine Learning Engineer': {
+        'sector': 'Data',
         'primary_skills': ['Cloud Computing', 'MLOps', 'Machine Learning', 'Python', 'TensorFlow'],
         'soft_skills': ['Adaptability', 'Analytical Thinking', 'Attention to Detail', 'Communication', 'Problem Solving'],
         'market_demand': 'high',
-        'salary_range_italy': '€45k-75k',
-        'career_path': 'Junior ML Engineer -> Senior ML Engineer -> Lead ML Engineer -> ML Research Scientist',
-        'geographic_focus': ['Italy', 'Remote', 'EU', 'US'],
+        'salary_range': '€45k-75k',
         'remote_friendly': True,
-        'typical_employer': ['Tech Companies', 'Research Labs', 'Automotive', 'Healthcare'],
-        'transition_from': ['Data Science', 'Software Engineering', 'PhD'],
-        'prerequisite_skills': ['ML fundamentals', 'Python', 'Math'],
-        'learning_time': '12-18 months proficiency'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Junior -> Senior -> Lead -> ML Research Scientist',
     },
     
     'Analytics Engineer': {
@@ -150,427 +121,370 @@ JOB_ARCHETYPES_EXTENDED = {
     },
     
     'MLOps Engineer': {
+        'sector': 'Data',
         'primary_skills': ['CI/CD', 'DevOps', 'Docker', 'Kubernetes', 'Machine Learning', 'Python'],
         'soft_skills': ['Adaptability', 'Analytical Thinking', 'Attention to Detail', 'Communication', 'Problem Solving'],
         'market_demand': 'very high',
-        'salary_range_italy': '€45k-75k',
-        'career_path': 'Junior MLOps Engineer -> Senior MLOps Engineer -> Lead MLOps Engineer -> ML Platform Architect',
-        'geographic_focus': ['Italy', 'Remote', 'EU', 'US'],
+        'salary_range': '€45k-75k',
         'remote_friendly': True,
-        'typical_employer': ['Tech Companies', 'AI Startups', 'Research', 'Cloud Providers'],
-        'transition_from': ['DevOps', 'Data Engineering', 'ML Engineering'],
-        'prerequisite_skills': ['DevOps', 'ML basics', 'Cloud'],
-        'learning_time': '9-15 months proficiency'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Junior -> Senior -> Tech Lead',
     },
     
     'AI Business Analyst': {
+        'sector': 'Data',
         'primary_skills': ['Artificial Intelligence', 'Business Analysis', 'Data Analysis', 'Python', 'Strategy'],
         'soft_skills': ['Adaptability', 'Communication', 'Problem Solving', 'Strategic Thinking'],
         'market_demand': 'emerging high',
-        'salary_range_italy': '€38k-62k',
-        'career_path': 'Junior AI Business Analyst -> Senior AI Business Analyst -> Lead AI Strategy Consultant',
-        'geographic_focus': ['Italy', 'Remote', 'EU'],
+        'salary_range': '€38k-62k',
         'remote_friendly': True,
-        'typical_employer': ['Consulting', 'Tech Companies', 'Innovation Labs'],
-        'transition_from': ['Business Analyst', 'Data Analyst'],
-        'prerequisite_skills': ['Business analysis', 'AI literacy'],
-        'learning_time': '6-12 months proficiency'
+        'client_facing': True,
+        'international': True,
+        'career_path': 'Junior -> Senior -> AI Consultant',
     },
     
     # ========== DESIGN & UX ==========
     'UX Designer': {
+        'sector': 'Design',
         'primary_skills': ['Figma', 'Prototyping', 'UX Design', 'User Research', 'Wireframing'],
         'soft_skills': ['Adaptability', 'Communication', 'Problem Solving', 'Empathy', 'Creativity'],
         'market_demand': 'high',
-        'salary_range_italy': '€32k-58k',
-        'career_path': 'Junior UX Designer -> Senior UX Designer -> Lead UX Designer -> UX Director',
-        'geographic_focus': ['Italy', 'Remote', 'EU'],
+        'salary_range': '€32k-58k',
         'remote_friendly': True,
-        'typical_employer': ['Tech Companies', 'Agencies', 'Startups', 'Consulting'],
-        'transition_from': ['Graphic Design', 'Psychology', 'HCI'],
-        'prerequisite_skills': ['Design thinking', 'User research basics'],
-        'learning_time': '6-12 months proficiency'
+        'client_facing': True,
+        'international': True,
+        'career_path': 'Junior -> Senior -> Lead -> UX Director',
     },
     
     'UI Designer': {
+        'sector': 'Design',
         'primary_skills': ['Adobe Creative Suite', 'Figma', 'Typography', 'UI Design', 'Visual Design'],
         'soft_skills': ['Adaptability', 'Communication', 'Problem Solving', 'Attention to Detail', 'Creativity'],
         'market_demand': 'high',
-        'salary_range_italy': '€30k-55k',
-        'career_path': 'Junior UI Designer -> Senior UI Designer -> Lead UI Designer -> Design Director',
-        'geographic_focus': ['Italy', 'Remote', 'EU'],
+        'salary_range': '€30k-55k',
         'remote_friendly': True,
-        'typical_employer': ['Tech Companies', 'Agencies', 'Startups', 'E-commerce'],
-        'transition_from': ['Graphic Design', 'Visual Arts'],
-        'prerequisite_skills': ['Design tools', 'Visual design principles'],
-        'learning_time': '6-9 months proficiency'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Junior -> Senior -> Lead -> Design Director',
     },
     
     # ========== DEVOPS & INFRASTRUCTURE ==========
     'DevOps Engineer': {
+        'sector': 'Technology',
         'primary_skills': ['CI/CD', 'Cloud Computing', 'DevOps', 'Docker', 'Kubernetes'],
         'soft_skills': ['Adaptability', 'Analytical Thinking', 'Attention to Detail', 'Communication', 'Problem Solving'],
         'market_demand': 'very high',
-        'salary_range_italy': '€42k-72k',
-        'career_path': 'Junior DevOps Engineer -> Senior DevOps Engineer -> Lead DevOps Engineer -> DevOps Architect',
-        'geographic_focus': ['Italy', 'Remote', 'EU', 'US'],
+        'salary_range': '€42k-72k',
         'remote_friendly': True,
-        'typical_employer': ['Tech Companies', 'Startups', 'Cloud Providers', 'Consulting'],
-        'transition_from': ['System Admin', 'Software Engineering'],
-        'prerequisite_skills': ['Linux', 'Scripting', 'Cloud basics'],
-        'learning_time': '9-15 months proficiency'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Junior -> Senior -> Lead -> Architect',
     },
     
     'Cybersecurity Analyst': {
+        'sector': 'Technology',
         'primary_skills': ['Compliance', 'Cybersecurity', 'Incident Response', 'Network Security', 'Risk Management'],
         'soft_skills': ['Adaptability', 'Analytical Thinking', 'Attention to Detail', 'Communication', 'Problem Solving'],
         'market_demand': 'very high',
-        'salary_range_italy': '€38k-68k',
-        'career_path': 'Junior Cybersecurity Analyst -> Senior Cybersecurity Analyst -> Cybersecurity Manager -> CISO',
-        'geographic_focus': ['Italy', 'Remote', 'EU'],
+        'salary_range': '€38k-68k',
         'remote_friendly': True,
-        'typical_employer': ['Banks', 'Corporates', 'Consulting', 'Government'],
-        'transition_from': ['IT Support', 'Network Admin', 'Computer Science'],
-        'prerequisite_skills': ['Networking', 'Security basics', 'Linux'],
-        'learning_time': '12-18 months proficiency'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Junior -> Senior -> Manager -> CISO',
     },
     
     'IT Support Specialist': {
+        'sector': 'Technology',
         'primary_skills': ['Customer Service', 'Hardware', 'IT Support', 'Troubleshooting', 'Windows'],
         'soft_skills': ['Adaptability', 'Communication', 'Empathy', 'Problem Solving', 'Patience'],
         'market_demand': 'stable',
-        'salary_range_italy': '€24k-38k',
-        'career_path': 'IT Support Specialist -> Senior IT Support -> IT Support Manager -> IT Operations Manager',
-        'geographic_focus': ['Italy', 'Hybrid'],
+        'salary_range': '€24k-38k',
         'remote_friendly': False,
-        'typical_employer': ['Corporates', 'MSPs', 'Schools', 'Healthcare'],
-        'transition_from': ['Entry Level', 'IT Certifications'],
-        'prerequisite_skills': ['Windows', 'Basic networking'],
-        'learning_time': '3-6 months proficiency'
+        'client_facing': True,
+        'international': False,
+        'career_path': 'Specialist -> Senior -> Manager',
     },
     
     'System Administrator': {
+        'sector': 'Technology',
         'primary_skills': ['Cloud Computing', 'Linux', 'Networking', 'Scripting', 'Windows Server'],
         'soft_skills': ['Adaptability', 'Communication', 'Problem Solving', 'Attention to Detail'],
         'market_demand': 'stable',
-        'salary_range_italy': '€32k-55k',
-        'career_path': 'Junior System Administrator -> Senior System Administrator -> Infrastructure Manager',
-        'geographic_focus': ['Italy', 'Hybrid'],
+        'salary_range': '€32k-55k',
         'remote_friendly': True,
-        'typical_employer': ['Corporates', 'MSPs', 'Government', 'Education'],
-        'transition_from': ['IT Support', 'Network Admin'],
-        'prerequisite_skills': ['Linux/Windows', 'Networking', 'Scripting'],
-        'learning_time': '6-12 months proficiency'
+        'client_facing': False,
+        'international': False,
+        'career_path': 'Junior -> Senior -> Infrastructure Manager',
     },
     
     # ========== PRODUCT & GROWTH ==========
     'Product Manager': {
+        'sector': 'Product',
         'primary_skills': ['Agile', 'Data Analysis', 'Product Management', 'Roadmap', 'User Stories'],
         'soft_skills': ['Adaptability', 'Communication', 'Leadership', 'Problem Solving', 'Strategic Thinking', 'Team Management'],
         'market_demand': 'high',
-        'salary_range_italy': '€45k-85k',
-        'career_path': 'Associate PM -> Product Manager -> Senior PM -> Group PM -> VP Product',
-        'geographic_focus': ['Italy', 'Remote', 'EU', 'US'],
+        'salary_range': '€45k-85k',
         'remote_friendly': True,
-        'typical_employer': ['Tech Companies', 'Startups', 'Scale-ups', 'Corporates'],
-        'transition_from': ['Business Analyst', 'Engineering', 'Consulting'],
-        'prerequisite_skills': ['Product thinking', 'Data literacy'],
-        'learning_time': 'Continuous specialization'
+        'client_facing': True,
+        'international': True,
+        'career_path': 'Junior -> PM -> Head of Product',
     },
-    
-    'Technical Product Manager': {
-        'primary_skills': ['APIs', 'Agile', 'Data Analysis', 'Product Management', 'System Design'],
-        'soft_skills': ['Adaptability', 'Communication', 'Leadership', 'Problem Solving', 'Strategic Thinking', 'Team Management'],
+
+    # ========== MARKETING & SALES ==========
+    'Marketing Manager': {
+        'sector': 'Marketing',
+        'primary_skills': ['SEO', 'SEM', 'Content Strategy', 'Social Media Marketing', 'Google Analytics'],
+        'soft_skills': ['Creativity', 'Communication', 'Strategic Thinking', 'Leadership'],
         'market_demand': 'high',
-        'salary_range_italy': '€50k-90k',
-        'career_path': 'Technical PM -> Senior Technical PM -> Principal PM -> Director of Product',
-        'geographic_focus': ['Italy', 'Remote', 'EU', 'US'],
+        'salary_range': '€35k-65k',
         'remote_friendly': True,
-        'typical_employer': ['Tech Companies', 'SaaS', 'Platform Companies'],
-        'transition_from': ['Software Engineering', 'Product Manager'],
-        'prerequisite_skills': ['Technical background', 'Product skills'],
-        'learning_time': 'Continuous specialization'
+        'client_facing': True,
+        'international': True,
+        'career_path': 'Specialist -> Manager -> CMO',
     },
-    
-    'Growth Engineer': {
-        'primary_skills': ['A/B Testing', 'Automation', 'Data Analysis', 'JavaScript', 'Marketing', 'Python'],
-        'soft_skills': ['Adaptability', 'Analytical Thinking', 'Attention to Detail', 'Communication', 'Problem Solving'],
+
+    'Account Executive': {
+        'sector': 'Sales',
+        'primary_skills': ['B2B Sales', 'CRM', 'Negotiation', 'Lead Generation', 'Sales Pitching'],
+        'soft_skills': ['Interpersonal Skills', 'Persuasion', 'Resilience', 'Communication'],
         'market_demand': 'high',
-        'salary_range_italy': '€40k-68k',
-        'career_path': 'Junior Growth Engineer -> Senior Growth Engineer -> Lead Growth Engineer -> Head of Growth',
-        'geographic_focus': ['Italy', 'Remote', 'EU', 'US'],
+        'salary_range': '€30k-60k + Bns',
         'remote_friendly': True,
-        'typical_employer': ['Startups', 'Scale-ups', 'SaaS Companies'],
-        'transition_from': ['Software Engineering', 'Marketing', 'Data'],
-        'prerequisite_skills': ['Programming', 'Analytics', 'Marketing basics'],
-        'learning_time': '6-12 months proficiency'
+        'client_facing': True,
+        'international': True,
+        'career_path': 'SDR -> AE -> Sales Manager',
+    },
+
+    # ========== FINANCE & ACCOUNTING ==========
+    'Financial Analyst': {
+        'sector': 'Finance',
+        'primary_skills': ['Financial Modelling', 'Financial Reporting', 'Excel', 'SQL', 'Valuation'],
+        'soft_skills': ['Analytical Thinking', 'Attention to Detail', 'Communication'],
+        'market_demand': 'high',
+        'salary_range': '€35k-60k',
+        'remote_friendly': True,
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Junior -> Senior -> Finance Manager -> CFO',
+    },
+    'Accountant': {
+        'sector': 'Finance',
+        'primary_skills': ['Accounting Principles', 'Auditing', 'Excel', 'Taxation', 'Financial Statements'],
+        'soft_skills': ['Attention to Detail', 'Integrity', 'Organization'],
+        'market_demand': 'stable',
+        'salary_range': '€30k-55k',
+        'remote_friendly': True,
+        'client_facing': True,
+        'international': False,
+        'career_path': 'Accountant -> Senior Accountant -> Accounting Manager',
+    },
+
+    # ========== HEALTHCARE & LIFE SCIENCES ==========
+    'Clinical Research Associate': {
+        'sector': 'Healthcare',
+        'primary_skills': ['Clinical Trials', 'GCP', 'Data Management', 'Monitoring', 'Regulatory Affairs'],
+        'soft_skills': ['Attention to Detail', 'Ethics', 'Communication'],
+        'market_demand': 'high',
+        'salary_range': '€35k-55k',
+        'remote_friendly': True,
+        'client_facing': True,
+        'international': True,
+        'career_path': 'CRA -> Senior CRA -> Clinical Project Manager',
+    },
+
+    # ========== LEGAL & COMPLIANCE ==========
+    'Legal Counsel': {
+        'sector': 'Legal',
+        'primary_skills': ['Contract Law', 'Corporate Law', 'Compliance', 'Legal Drafting', 'GDPR'],
+        'soft_skills': ['Attention to Detail', 'Critical Thinking', 'Communication', 'Ethics'],
+        'market_demand': 'stable',
+        'salary_range': '€40k-85k',
+        'remote_friendly': True,
+        'client_facing': True,
+        'international': True,
+        'career_path': 'Junior -> Legal Counsel -> General Counsel',
+    },
+
+    # ========== ENERGY & SUSTAINABILITY ==========
+    'Energy Engineer': {
+        'sector': 'Energy',
+        'primary_skills': ['Renewable Energy', 'Energy Auditing', 'Energy Efficiency', 'Sustainability', 'AutoCAD'],
+        'soft_skills': ['Analytical Thinking', 'Problem Solving', 'Technical Writing'],
+        'market_demand': 'high',
+        'salary_range': '€35k-60k',
+        'remote_friendly': False,
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Engineer -> Senior Engineer -> Energy Manager',
     },
     
-    # ========== SOLUTIONS & ARCHITECTURE ==========
     'Solutions Architect': {
+        'sector': 'Technology',
         'primary_skills': ['AWS', 'Azure', 'Cloud Computing', 'Communication', 'Sales', 'System Design'],
         'soft_skills': ['Adaptability', 'Communication', 'Empathy', 'Negotiation', 'Problem Solving'],
         'market_demand': 'high',
-        'salary_range_italy': '€50k-90k',
-        'career_path': 'Solutions Architect -> Senior SA -> Principal SA -> Enterprise Architect',
-        'geographic_focus': ['Italy', 'Remote', 'EU'],
+        'salary_range': '€50k-90k',
         'remote_friendly': True,
-        'typical_employer': ['Cloud Providers', 'Consulting', 'System Integrators'],
-        'transition_from': ['Software Engineering', 'Infrastructure'],
-        'prerequisite_skills': ['Cloud platforms', 'Architecture patterns'],
-        'learning_time': 'Continuous specialization'
-    },
-    
-    # ========== MARKETING ==========
-    'Marketing Manager': {
-        'primary_skills': ['Analytics', 'Budgeting', 'Campaign Management', 'Leadership', 'Marketing Strategy'],
-        'soft_skills': ['Adaptability', 'Communication', 'Leadership', 'Problem Solving', 'Strategic Thinking', 'Team Management'],
-        'market_demand': 'high',
-        'salary_range_italy': '€40k-70k',
-        'career_path': 'Marketing Specialist -> Marketing Manager -> Senior Marketing Manager -> CMO',
-        'geographic_focus': ['Italy', 'Hybrid', 'EU'],
-        'remote_friendly': True,
-        'typical_employer': ['Corporates', 'Agencies', 'Startups', 'E-commerce'],
-        'transition_from': ['Marketing Specialist', 'Communications', 'Business'],
-        'prerequisite_skills': ['Marketing fundamentals', 'Digital marketing'],
-        'learning_time': 'Continuous specialization'
-    },
-    
-    # ========== ENERGY & SPECIALIZED ENGINEERING ==========
-    'Energy Trader': {
-        'primary_skills': ['Energy Markets', 'Python', 'Financial Modeling', 'Risk Management', 'Power Systems', 'Trading Strategies', 'Commodities', 'Derivatives', 'Hedging'],
-        'soft_skills': ['Stress Management', 'Decision-Making', 'Negotiation', 'Analytical Thinking'],
-        'market_demand': 'emerging high',
-        'salary_range_italy': '€50k-120k',
-        'career_path': 'Analyst → Junior Trader → Senior Trader → Trading Manager → Head of Trading',
-        'geographic_focus': ['Italy', 'EU Energy Hubs'],
-        'remote_friendly': False,
-        'typical_employer': ['Enel', 'Terna', 'Eni', 'Trading Desks', 'Energy Brokers'],
-        'transition_from': ['Finance', 'Engineering', 'Data Science'],
-        'prerequisite_skills': ['Finance basics', 'Energy Market knowledge'],
-        'learning_time': '6-12 months onboarding'
-    },
-    
-    'Manufacturing Data Scientist': {
-        'primary_skills': ['Python', 'Machine Learning', 'Time Series Forecasting', 'Manufacturing Domain', 'Data Engineering', 'IIoT', 'Predictive Maintenance', 'Computer Vision', 'Edge Computing'],
-        'soft_skills': ['Problem-solving', 'Domain curiosity', 'Communication'],
-        'market_demand': 'very high',
-        'salary_range_italy': '€45k-75k',
-        'career_path': 'Data Analyst → ML Engineer → Principal Data Scientist → Director of Data Science',
-        'geographic_focus': ['Lombardy', 'Emilia-Romagna', 'Veneto'],
-        'remote_friendly': True,
-        'typical_employer': ['Manufacturing companies', 'Industry 4.0 startups', 'Consultancies'],
-        'transition_from': ['Data Science', 'Engineering', 'Operations'],
-        'prerequisite_skills': ['ML fundamentals', 'Python'],
-        'learning_time': '3-6 months domain learning'
-    },
-    'Energy Engineer': {
-        'primary_skills': ['Thermodynamics', 'Power Systems', 'Energy Efficiency', 'Renewable Energy', 'Excel', 'MATLAB', 'Python', 'Engineering'],
-        'soft_skills': ['Analytical Thinking', 'Problem Solving', 'Adaptability', 'Project Management'],
-        'market_demand': 'high',
-        'salary_range_italy': '€32k-60k',
-        'career_path': 'Junior Energy Engineer -> Senior Energy Engineer -> Energy Manager -> Technical Director',
-        'geographic_focus': ['Italy', 'EU'],
-        'remote_friendly': False,
-        'typical_employer': ['Energy Utilities', 'Consulting Firms', 'Manufacturing', 'RES Developers'],
-        'transition_from': ['Energy Engineering Degree', 'Mechanical Engineering', 'Electrical Engineering'],
-        'prerequisite_skills': ['Physics', 'Thermodynamics', 'Math'],
-        'learning_time': '5 years (University)'
+        'client_facing': True,
+        'international': True,
+        'career_path': 'Architect -> Senior SA -> Enterprise Architect',
     },
 
-    # ========== SUSTAINABILITY & ESG ==========
     'Sustainability Manager': {
+        'sector': 'Sustainability',
         'primary_skills': ['Sustainability', 'ESG Reporting', 'Carbon Footprint', 'LCA', 'Compliance', 'Stakeholder Management'],
         'soft_skills': ['Adaptability', 'Communication', 'Strategic Thinking', 'Influence', 'Problem Solving'],
         'market_demand': 'high',
-        'salary_range_italy': '€45k-80k',
-        'career_path': 'Sustainability Specialist -> Sustainability Manager -> Head of Sustainability -> CSO',
-        'geographic_focus': ['Italy', 'EU', 'Global'],
+        'salary_range': '€45k-80k',
         'remote_friendly': True,
-        'typical_employer': ['Large Corporates', 'Consulting Firms', 'Manufacturing'],
-        'transition_from': ['Environmental Science', 'Business Management', 'Engineering'],
-        'prerequisite_skills': ['Sustainability fundamentals', 'Reporting standards'],
-        'learning_time': '12-24 months onboarding'
+        'client_facing': True,
+        'international': True,
+        'career_path': 'Specialist -> Manager -> Head of Sustainability',
     },
 
-    # ========== E-COMMERCE ==========
     'E-commerce Manager': {
+        'sector': 'Marketing',
         'primary_skills': ['E-commerce', 'Digital Marketing', 'Analytics', 'Shopify', 'Inventory Management', 'CRO'],
         'soft_skills': ['Adaptability', 'Analytical Thinking', 'Communication', 'Leadership', 'Problem Solving'],
         'market_demand': 'high',
-        'salary_range_italy': '€35k-65k',
-        'career_path': 'E-commerce Specialist -> E-commerce Manager -> Head of E-commerce -> Digital Director',
-        'geographic_focus': ['Italy', 'Remote', 'EU'],
+        'salary_range': '€35k-65k',
         'remote_friendly': True,
-        'typical_employer': ['Retailers', 'Brands', 'Digital Agencies'],
-        'transition_from': ['Marketing', 'Retail Management', 'Business'],
-        'prerequisite_skills': ['Online sales basics', 'Digital marketing'],
-        'learning_time': '6-12 months proficiency'
+        'client_facing': True,
+        'international': True,
+        'career_path': 'Specialist -> Manager -> Digital Director',
     },
-
-    # ========== LEGAL TECH & COMPLIANCE ==========
     'Compliance Officer': {
+        'sector': 'Legal',
         'primary_skills': ['Compliance', 'Risk Management', 'GDPR', 'Legal Tech', 'Reporting', 'Audit'],
         'soft_skills': ['Attention to Detail', 'Analytical Thinking', 'Communication', 'Ethics', 'Problem Solving'],
         'market_demand': 'high',
-        'salary_range_italy': '€40k-70k',
-        'career_path': 'Compliance Analyst -> Compliance Officer -> Head of Compliance -> Chief Compliance Officer',
-        'geographic_focus': ['Italy', 'EU'],
+        'salary_range': '€40k-70k',
         'remote_friendly': True,
-        'typical_employer': ['Banks', 'Insurance', 'Large Corporates', 'Fintech'],
-        'transition_from': ['Law', 'Economics', 'Political Science'],
-        'prerequisite_skills': ['Legal/Regulatory knowledge'],
-        'learning_time': '12-18 months proficiency'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Analyst -> Officer -> Head of Compliance',
     },
 
     # ========== HEALTHTECH & CLINICAL DATA ==========
     'Clinical Data Manager': {
+        'sector': 'Healthcare',
         'primary_skills': ['Clinical Data Management', 'Statistics', 'SQL', 'Clinical Research', 'HealthTech', 'EDC Systems'],
         'soft_skills': ['Attention to Detail', 'Analytical Thinking', 'Communication', 'Problem Solving', 'Adaptability'],
         'market_demand': 'medium-high',
-        'salary_range_italy': '€35k-60k',
-        'career_path': 'Data Entry -> Clinical Data Manager -> Senior Data Manager -> Head of Data Management',
-        'geographic_focus': ['Italy', 'EU', 'US'],
+        'salary_range': '€35k-60k',
         'remote_friendly': True,
-        'typical_employer': ['Pharma', 'CRO', 'Biotech', 'Hospitals'],
-        'transition_from': ['Biology', 'Biotechnology', 'Mathematics', 'Medicine'],
-        'prerequisite_skills': ['Clinical research basics', 'Data integrity'],
-        'learning_time': '12-18 months proficiency'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Manager -> Senior Manager -> Head of Data Management',
     },
 
-    # ========== LUXURY & FASHION (ITA) ==========
     'Luxury Store Manager': {
+        'sector': 'Fashion & Luxury',
         'primary_skills': ['Luxury Retail', 'Visual Merchandising', 'Clienteling', 'Team Management', 'Salesforce', 'P&L Management'],
-        'soft_skills': ['Elegance', 'Communication', 'Leadership', 'Emotional Intelligence', 'Adaptability'],
+        'soft_skills': ['Communication', 'Leadership', 'Emotional Intelligence', 'Adaptability'],
         'market_demand': 'high',
-        'salary_range_italy': '€50k-95k',
-        'career_path': 'Senior Client Advisor -> Assistant Store Manager -> Store Manager -> Regional Manager',
-        'geographic_focus': ['Milan', 'Paris', 'New York', 'Dubai', 'Florence'],
+        'salary_range': '€50k-95k',
         'remote_friendly': False,
-        'typical_employer': ['Luxury Brands (LVMH, Kering, etc.)', 'High-end Boutiques'],
-        'transition_from': ['Retail Management', 'Premium Hospitality'],
-        'prerequisite_skills': ['Retail experience', 'Brand awareness'],
-        'learning_time': '12-24 months onboarding'
+        'client_facing': True,
+        'international': True,
+        'career_path': 'Assistant -> Store Manager -> Regional Manager',
     },
 
-    # ========== HOSPITALITY & PREMIUM TOURISM (ITA) ==========
     'Hotel General Manager': {
+        'sector': 'Hospitality',
         'primary_skills': ['Hotel Management', 'Revenue Management', 'Guest Experience', 'Budgeting', 'Operations', 'PMS Software'],
-        'soft_skills': ['Diplomacy', 'Leadership', 'Problem Solving', 'Customer Focus', 'Adaptability'],
+        'soft_skills': ['Leadership', 'Problem Solving', 'Customer Focus', 'Adaptability'],
         'market_demand': 'medium-high',
-        'salary_range_italy': '€60k-120k+',
-        'career_path': 'Department Head -> Operation Manager -> General Manager -> Area Manager',
-        'geographic_focus': ['Italy', 'EU', 'Global Tourism Hubs'],
+        'salary_range': '€60k-120k+',
         'remote_friendly': False,
-        'typical_employer': ['Luxury Hotels', 'International Chains', 'Resorts'],
-        'transition_from': ['F&B Management', 'Front Office Management', 'Event Planning'],
-        'prerequisite_skills': ['Hospitality degree', 'Multilingual proficiency'],
-        'learning_time': '5-10 years experience'
+        'client_facing': True,
+        'international': True,
+        'career_path': 'Operations Manager -> GM -> Area Manager',
     },
 
-    # ========== AUTOMOTIVE & MOTOR VALLEY (ITA) ==========
     'Automotive Engineer': {
+        'sector': 'Engineering',
         'primary_skills': ['Automotive Engineering', 'MATLAB', 'Simulation', 'Vehicle Dynamics', 'CAD', 'Powertrain'],
-        'soft_skills': ['Analytical Thinking', 'Teamwork', 'Attention to Detail', 'Innovation', 'Problem Solving'],
+        'soft_skills': ['Analytical Thinking', 'Teamwork', 'Attention to Detail', 'Problem Solving'],
         'market_demand': 'very high',
-        'salary_range_italy': '€38k-75k',
-        'career_path': 'Junior Engineer -> Design Engineer -> Lead Engineer -> Technical Director',
-        'geographic_focus': ['Emilia-Romagna (Motor Valley)', 'Turin', 'Germany', 'US'],
+        'salary_range': '€38k-75k',
         'remote_friendly': False,
-        'typical_employer': ['Ferrari', 'Lamborghini', 'Maserati', 'Tier 1 Suppliers'],
-        'transition_from': ['Mechanical Engineering', 'Motorsport'],
-        'prerequisite_skills': ['Mechanical/Automotive degree'],
-        'learning_time': '12-18 months proficiency'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Engineer -> Lead Engineer -> Technical Director',
     },
 
-    # ========== FINTECH & WEB3 (GLOBAL) ==========
     'Fintech Product Manager': {
+        'sector': 'Finance',
         'primary_skills': ['Product Management', 'Open Banking', 'Agile', 'Compliance', 'Data Analysis', 'User Research'],
         'soft_skills': ['Adaptability', 'Strategic Thinking', 'Communication', 'Collaborative Skills'],
         'market_demand': 'very high',
-        'salary_range_italy': '€45k-85k',
-        'career_path': 'Product Owner -> Product Manager -> Senior PM -> Head of Product',
-        'geographic_focus': ['Milan', 'London', 'Berlin', 'Remote'],
+        'salary_range': '€45k-85k',
         'remote_friendly': True,
-        'typical_employer': ['Fintech Startups', 'Neobanks', 'Payment Processors'],
-        'transition_from': ['Traditional Banking', 'Tech PM', 'Consulting'],
-        'prerequisite_skills': ['Product lifecycle knowledge', 'Fintech awareness'],
-        'learning_time': '6-12 months proficiency'
+        'client_facing': True,
+        'international': True,
+        'career_path': 'PM -> Senior PM -> Head of Product',
     },
 
-    # ========== AEROSPACE & DEFENSE (GLOBAL) ==========
     'Systems Engineer (Aerospace)': {
-        'primary_skills': ['Systems Engineering', 'Mission Design', 'Propulsion', 'Avionics', 'Aerodynamics', 'Project Management'],
-        'soft_skills': ['Critical Thinking', 'Communication', 'Teamwork', 'Meticulousness', 'Systems Thinking'],
+        'sector': 'Engineering',
+        'primary_skills': ['Systems Engineering', 'Mission Design', 'Propulsion', 'Avionics', 'Aerodynamics'],
+        'soft_skills': ['Critical Thinking', 'Communication', 'Teamwork', 'Systems Thinking'],
         'market_demand': 'high',
-        'salary_range_italy': '€40k-80k',
-        'career_path': 'Subsystem Engineer -> Systems Engineer -> Lead Systems Engineer -> Project Manager',
-        'geographic_focus': ['Italy (Leonardo, ASI)', 'France', 'US (NASA, SpaceX)', 'Germany'],
+        'salary_range': '€40k-80k',
         'remote_friendly': False,
-        'typical_employer': ['Aerospace Companies', 'Space Agencies', 'Defense Contractors'],
-        'transition_from': ['Aerospace Engineering', 'Systems Analysis'],
-        'prerequisite_skills': ['Aerospace/Systems degree'],
-        'learning_time': '12-24 months onboarding'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Engineer -> Systems Engineer -> Project Manager',
     },
 
-    # ========== GLOBAL FRONTIER: NEWSPACE ==========
     'Space Systems Architect': {
-        'primary_skills': ['Systems Engineering', 'Mission Design', 'Satellite Ops', 'GNC', 'Space Mechanics', 'Risk Management'],
+        'sector': 'Engineering',
+        'primary_skills': ['Systems Engineering', 'Mission Design', 'Satellite Ops', 'GNC', 'Space Mechanics'],
         'soft_skills': ['Visionary Thinking', 'Systems Thinking', 'Leadership', 'Complex Problem Solving'],
         'market_demand': 'high',
-        'salary_range_italy': '€55k-100k+',
-        'career_path': 'Senior Systems Engineer -> Principal Engineer -> Space Architect -> Mission Director',
-        'geographic_focus': ['Global (SpaceX, ESA, NASA, Axiom)', 'Italy (Thales Alenia, Avio)'],
+        'salary_range': '€55k-100k+',
         'remote_friendly': False,
-        'typical_employer': ['NewSpace Companies', 'Space Agencies', 'Defense Contractors'],
-        'transition_from': ['Aerospace Engineering', 'Systems Engineering'],
-        'prerequisite_skills': ['Advanced Aerospace Degree', 'Mission Design experience'],
-        'learning_time': '5-10 years experience'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Senior Engineer -> Space Architect -> Mission Director',
     },
 
-    # ========== GLOBAL FRONTIER: QUANTUM COMPUTING ==========
     'Quantum Algorithm Researcher': {
+        'sector': 'Technology',
         'primary_skills': ['Quantum Computing', 'Quantum Algorithms', 'Physics', 'Mathematics', 'Python', 'Qiskit'],
-        'soft_skills': ['Intellectual Curiosity', 'Analytical Thinking', 'Patience', 'Scientific Rigor'],
+        'soft_skills': ['Intellectual Curiosity', 'Analytical Thinking', 'Scientific Rigor'],
         'market_demand': 'emerging',
-        'salary_range_italy': '€45k-80k',
-        'career_path': 'Research Assistant -> Quantum Researcher -> Senior Researcher -> Quantum Architect',
-        'geographic_focus': ['Global (IBM, Google, IonQ)', 'EU Research Hubs'],
+        'salary_range': '€45k-80k',
         'remote_friendly': True,
-        'typical_employer': ['Big Tech Research', 'Quantum Startups', 'National Labs'],
-        'transition_from': ['Theoretical Physics', 'Mathematics', 'Computer Science'],
-        'prerequisite_skills': ['PhD in Physics/Math/CS', 'Programming'],
-        'learning_time': '5-7 years academic background'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Researcher -> Senior Researcher -> Quantum Architect',
     },
 
-    # ========== GLOBAL FRONTIER: GAMING & XR ==========
     'XR Developer': {
+        'sector': 'Technology',
         'primary_skills': ['Spatial Computing', 'Unity 3D', 'Unreal Engine', 'C#', 'C++', 'Computer Vision'],
         'soft_skills': ['Creativity', 'Attention to Detail', 'User Empathy', 'Adaptability'],
         'market_demand': 'high',
-        'salary_range_italy': '€35k-65k',
-        'career_path': 'Junior VR Developer -> XR Developer -> Senior XR Developer -> XR Architect',
-        'geographic_focus': ['Global Tech Hubs', 'Remote'],
+        'salary_range': '€35k-65k',
         'remote_friendly': True,
-        'typical_employer': ['Gaming Studios', 'Tech Giants (Meta, Apple)', 'Simulation Companies'],
-        'transition_from': ['Game Development', 'Software Engineering', 'UI/UX Design'],
-        'prerequisite_skills': ['3D Math', 'Programming (C#/C++)'],
-        'learning_time': '12-18 months proficiency'
+        'client_facing': False,
+        'international': True,
+        'career_path': 'Developer -> Senior XR Developer -> XR Architect',
     },
 
-    # ========== GLOBAL FRONTIER: AGTECH ==========
     'AgTech Innovation Specialist': {
+        'sector': 'Engineering',
         'primary_skills': ['Precision Farming', 'IoT', 'Data Analysis', 'Hydroponics', 'Sustainability', 'GIS'],
         'soft_skills': ['Resourcefulness', 'Communication', 'Strategic Thinking', 'Domain Curiosity'],
         'market_demand': 'medium-high',
-        'salary_range_italy': '€35k-60k',
-        'career_path': 'Operations Specialist -> AgTech Specialist -> Innovation Manager -> CTO (AgTech)',
-        'geographic_focus': ['Italy (Po Valley)', 'Israel', 'Netherlands', 'US'],
+        'salary_range': '€35k-60k',
         'remote_friendly': False,
-        'typical_employer': ['AgTech Startups', 'Large Agri-food Corporates', 'Equipment Manufacturers'],
-        'transition_from': ['Agronomy', 'IoT Engineering', 'Data Science'],
-        'prerequisite_skills': ['Agronomy basics', 'Digital tools interest'],
-        'learning_time': '12-24 months onboarding'
+        'client_facing': True,
+        'international': True,
+        'career_path': 'Specialist -> Innovation Manager -> CTO',
     },
 }
 
@@ -1527,54 +1441,9 @@ NON_SKILL_PATTERNS = {
 }
 
 # =============================================================================
-# SECTION 7: CAREER CATEGORIES & JOB METADATA
 # =============================================================================
-
-CAREER_CATEGORIES = {
-    "Technology": "Software, data, IT, cybersecurity, and digital infrastructure",
-    "Marketing": "Digital marketing, branding, communications, and growth",
-    "Business": "Management, consulting, operations, and strategy",
-    "Finance": "Accounting, financial analysis, investment, and risk",
-    "Design": "UX/UI, graphic design, creative direction, and content",
-    "Engineering": "Mechanical, electrical, industrial, and process engineering",
-    "Data": "Data science, analytics, ML, and data engineering",
-    "Product": "Product management, product design, and innovation",
-    "Sales": "B2B/B2C sales, account management, and business development",
-    "Energy": "Renewable energy, energy trading, and power systems",
-}
-
-JOB_ROLE_METADATA = {
-    # Technology
-    "Software Engineer": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
-    "Frontend Developer": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
-    "Backend Developer": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
-    "Full Stack Developer": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
-    "DevOps Engineer": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
-    "Cybersecurity Analyst": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": True, "creative": False},
-    "System Administrator": {"category": "Technology", "client_facing": False, "remote_friendly": True, "international": False, "dynamic": False, "creative": False},
-    
-    # Data
-    "Data Analyst": {"category": "Data", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
-    "Data Scientist": {"category": "Data", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
-    "Data Engineer": {"category": "Data", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
-    "ML Engineer": {"category": "Data", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
-    "Analytics Engineer": {"category": "Data", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": False},
-    
-    # Design
-    "UX Designer": {"category": "Design", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
-    "UI Designer": {"category": "Design", "client_facing": False, "remote_friendly": True, "international": True, "dynamic": False, "creative": True},
-    
-    # Product
-    "Product Manager": {"category": "Product", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
-    "Technical Product Manager": {"category": "Product", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
-    
-    # Marketing
-    "Marketing Manager": {"category": "Marketing", "client_facing": True, "remote_friendly": True, "international": True, "dynamic": True, "creative": True},
-    
-    # Energy
-    "Energy Trader": {"category": "Energy", "client_facing": True, "remote_friendly": False, "international": True, "dynamic": True, "creative": False},
-    "Energy Engineer": {"category": "Energy", "client_facing": False, "remote_friendly": False, "international": True, "dynamic": False, "creative": True},
-}
+# SECTION 3: SKILL CLUSTERS (EQUIVALENT TOOLS)
+# =============================================================================
 
 ML_MODELS = {
     "Authorization": ["oauth", "jwt", "sso", "saml", "openid connect", "auth0", "okta"],

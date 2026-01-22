@@ -3089,16 +3089,16 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
     Identifies the best fitting job roles excluding the one described in the JD.
     Now also considers education from CV text with recency weighting.
     """
-    job_archetypes = getattr(constants, "JOB_ARCHETYPES", {})
+    job_archetypes = getattr(knowledge_base, "JOB_ARCHETYPES_EXTENDED", {})
     SKILL_CLUSTERS = getattr(knowledge_base, "SKILL_CLUSTERS", {})
     if not cv_skills or not job_archetypes or not TfidfVectorizer:
         return []
 
-    # 0. Seniority Detection (New)
+    # 0. Seniority Detection
     cv_level, _ = detect_seniority(cv_text) if cv_text else ("Mid Level", 0.0)
 
     # 1. Extract education boost from CV text
-    education_boost = {}  # role_name -> boost score
+    education_boost = {}
     if cv_text:
         cv_lower = cv_text.lower()
         
@@ -3205,14 +3205,9 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
             continue
             
         role_data = job_archetypes[name]
-        if isinstance(role_data, dict):
-            metadata = role_data
-            category = metadata.get("category", "Other")
-            role_skills = set(metadata.get("primary_skills", []) + metadata.get("hard_skills", []))
-        else:
-            category = "Other"
-            role_skills = set(role_data)
-            
+        sector = role_data.get("sector", "Other")
+        role_skills = set(role_data.get("primary_skills", []))
+        
         role_norm = {s.lower() for s in role_skills}
         
         if not role_norm:
@@ -3270,7 +3265,7 @@ def recommend_roles(cv_skills: Set[str], jd_text: str = "", cv_text: str = "") -
              missing = role_norm - skills_matched
              recommendations.append({
                  "role": name,
-                 "category": category,
+                 "category": sector,
                  "score": final_score,
                  "skills_matched": list(skills_matched),
                  "skills_required": list(role_skills),
@@ -3375,25 +3370,24 @@ def discover_careers(
     
     final_recs = []
     for r in recs:
-        # recommend_roles now includes 'category' in dict (will update in next chunk)
-        category = r.get("category", "Other")
+        sector = r.get("category", "Other")
         
-        if selected_categories and category not in selected_categories:
+        if selected_categories and sector not in selected_categories:
             continue
             
-        # Add metadata for discovery UI
-        role_metadata = getattr(constants, "JOB_ROLE_METADATA", {})
-        metadata = role_metadata.get(r['role'], {})
+        # Add metadata for discovery UI (from Extended Archetypes directly)
+        job_archetypes = getattr(knowledge_base, "JOB_ARCHETYPES_EXTENDED", {})
+        metadata = job_archetypes.get(r['role'], {})
         
         r.update({
-            "category": category,
+            "category": sector,
             "metadata": {
-                "category": category,
-                "client_facing": metadata.get("client_facing"),
-                "remote_friendly": metadata.get("remote_friendly"),
-                "international": metadata.get("international"),
-                "dynamic": metadata.get("dynamic"),
-                "creative": metadata.get("creative")
+                "sector": sector,
+                "client_facing": metadata.get("client_facing", False),
+                "remote_friendly": metadata.get("remote_friendly", True),
+                "international": metadata.get("international", True),
+                "dynamic": metadata.get("dynamic", False),
+                "creative": metadata.get("creative", False)
             }
         })
         final_recs.append(r)

@@ -951,7 +951,7 @@ def render_debug_page():
         It includes skill relationships, equivalences, and training data for the ML models.
         """)
         
-        kb_tab1, kb_tab2, kb_tab3 = st.tabs(["Inference Rules", "Skill Clusters", "Training Data"])
+        kb_tab1, kb_tab2, kb_tab3, kb_tab4 = st.tabs(["Inference Rules", "Skill Clusters", "Sector Overview", "Training Data"])
         
         with kb_tab1:
             st.markdown("**How inference works:** When a specific skill is found, related parent skills are automatically inferred.")
@@ -990,6 +990,28 @@ def render_debug_page():
                     st.markdown(skills_html, unsafe_allow_html=True)
         
         with kb_tab3:
+            st.markdown("**Sectors & Archetypes:** Breakdown of jobs covered by each sector.")
+            job_archs = getattr(knowledge_base, "JOB_ARCHETYPES_EXTENDED", {})
+            sector_counts = {}
+            for role, meta in job_archs.items():
+                s = meta.get("sector", "Other")
+                sector_counts[s] = sector_counts.get(s, 0) + 1
+            
+            df_sectors = pd.DataFrame([{"Sector": k, "Archetypes": v} for k, v in sector_counts.items()]).sort_values("Archetypes", ascending=False)
+            
+            fig_sectors = px.bar(df_sectors, x="Sector", y="Archetypes", color="Sector", 
+                                title="Archetypes per Sector", template="plotly_dark")
+            fig_sectors.update_layout(showlegend=False, height=400)
+            st.plotly_chart(fig_sectors, use_container_width=True)
+            
+            # List of roles per sector
+            selected_sec = st.selectbox("Select Sector to view roles", options=df_sectors["Sector"].tolist())
+            if selected_sec:
+                roles_in_sec = [r for r, m in job_archs.items() if m.get("sector") == selected_sec]
+                st.write(f"**Roles in {selected_sec}:**")
+                st.markdown(", ".join([f"`{r}`" for r in sorted(roles_in_sec)]))
+
+        with kb_tab4:
             st.markdown("**ML Training Data:** Sample data used to train the Random Forest classifier.")
             _, df = ml_utils.train_rf_model()
             st.dataframe(df, use_container_width=True, hide_index=True)
@@ -1781,10 +1803,13 @@ def render_career_discovery():
     
     # Optional filters in expander
     with st.expander("Filters (optional)", expanded=False):
-        career_categories = getattr(constants, "CAREER_CATEGORIES", {})
+        # Extract unique sectors from JOB_ARCHETYPES_EXTENDED
+        job_archs = getattr(knowledge_base, "JOB_ARCHETYPES_EXTENDED", {})
+        all_sectors = sorted(list(set(m.get("sector", "Other") for m in job_archs.values())))
+        
         selected_categories = st.multiselect(
             "Industries (leave empty for Any)",
-            options=list(career_categories.keys()),
+            options=all_sectors,
             key="discovery_categories",
             placeholder="Any / All Industries"
         )
