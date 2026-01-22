@@ -3818,3 +3818,46 @@ def generate_simple_cv_pdf(text_content: str) -> bytes:
             
     return pdf.output(dest='S').encode('latin-1')
 
+# =============================================================================
+# CAREERBOT AI - Chat Assistant Logic
+# =============================================================================
+
+def get_chatbot_response(message: str, current_page: str = "Home") -> str:
+    """
+    CAREERBOT AI INTENT RECOGNITION
+    ===============================
+    Analyzes user messages and provides context-aware career advice.
+    Grounds responses in Database V3 (Sectors, Archetypes, Skills).
+    """
+    if not message:
+        return "How can I help you today?"
+
+    msg_lower = message.lower()
+    
+    # 1. GREETING & GENERAL
+    if any(kw in msg_lower for kw in ["ciao", "hello", "hi", "hey"]):
+        return "Hello! I'm CareerBot AI. I can help you discover career paths, optimize your CV, or understand market demands. What's on your mind?"
+
+    # 2. CV OPTIMIZATION
+    if any(kw in msg_lower for kw in ["cv", "curriculum", "resume", "migliorare", "improve"]):
+        if current_page == "CV Evaluation":
+            return "Since we're on the Evaluation page, try uploading your CV and a Job Description. I'll analyze the skill gap and suggest keywords to bridge it!"
+        return "I recommend using our 'CV Builder' to create an ATS-friendly profile, or 'CV Evaluation' to see how you match a specific job!"
+
+    # 3. CAREER DISCOVERY & SECTORS
+    if any(kw in msg_lower for kw in ["lavoro", "job", "carriera", "career", "discovery", "settore", "sector"]):
+        sectors = sorted(list(set(m.get("sector", "Other") for m in getattr(knowledge_base, "JOB_ARCHETYPES_EXTENDED", {}).values())))
+        return f"I can help you explore {len(sectors)} sectors! Try the 'Career Discovery' tool to find roles in industries like {', '.join(sectors[:3])}, and more."
+
+    # 4. SKILLS & DEMAND
+    if any(kw in msg_lower for kw in ["skill", "competenze", "tecniche", "demand", "mercato"]):
+        high_demand = [s[0] for s in getattr(constants, "SKILL_DEMAND_MATRIX", {}).get("high_demand", [])[:3]]
+        return f"Currently, skills like {', '.join(high_demand)} are in high market demand. You can check the 'Dev Console' for a full breakdown of recognized skills!"
+
+    # 5. SALARY & MARKET
+    if any(kw in msg_lower for kw in ["stipendio", "salary", "pay", "guadagno", "money"]):
+        return "Market salaries vary by sector and seniority. In our 'Career Discovery' cards, you'll find direct links to LinkedIn and Indeed to check live salary ranges for specific roles."
+
+    # 6. UNIVERSAL FALLBACK
+    return "That's an interesting question! Based on Database V3, I suggest exploring the 'Career Discovery' or 'CV Analysis' sections to get personalized data-driven insights."
+

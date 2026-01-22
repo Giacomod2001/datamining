@@ -728,6 +728,103 @@ hr {
         border-color: #0077B5 !important;
         background: rgba(0, 119, 181, 0.03) !important;
     }
+    /* =============================================================================
+       CHATBOT UI - Floating Assistant
+       ============================================================================= */
+    
+    .chat-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 350px;
+        max-height: 500px;
+        background: var(--bg-card);
+        border: 1px solid var(--primary-blue);
+        border-radius: 12px;
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        flex-direction: column;
+        z-index: 1000;
+        overflow: hidden;
+        animation: fadeInUp 0.3s ease-out;
+    }
+    
+    .chat-header {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-dark) 100%);
+        color: white;
+        padding: 12px 16px;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        background: rgba(13, 17, 23, 0.5);
+    }
+    
+    .chat-message {
+        padding: 8px 12px;
+        border-radius: 12px;
+        max-width: 85%;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    
+    .chat-message.user {
+        align-self: flex-end;
+        background: var(--primary-blue);
+        color: white;
+        border-bottom-right-radius: 2px;
+    }
+    
+    .chat-message.assistant {
+        align-self: flex-start;
+        background: var(--bg-elevated);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+        border-bottom-left-radius: 2px;
+    }
+    
+    .chat-input-area {
+        padding: 12px;
+        border-top: 1px solid var(--border-color);
+        background: var(--bg-card);
+    }
+    
+    /* Floating Action Button (FAB) */
+    .chat-fab {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-dark) 100%);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: var(--shadow-lg);
+        cursor: pointer;
+        z-index: 999;
+        transition: all var(--transition-normal);
+    }
+    
+    .chat-fab:hover {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 0 20px rgba(0, 119, 181, 0.4);
+    }
+    
+    .chat-fab i {
+        color: white;
+        font-size: 24px;
+    }
 }
 </style>
 """
