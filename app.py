@@ -222,7 +222,10 @@ def render_navigation():
                     st.rerun()
 
 
-        st.markdown("<div style='margin-top: 2rem; color: #666; font-size: 0.8em;'>v2.1 | Local Mode</div>", unsafe_allow_html=True)
+        st.markdown("<div style='margin-top: 1rem; color: #666; font-size: 0.8em;'>v2.2 | Local Mode</div>", unsafe_allow_html=True)
+        
+        # Integrate Ruben Assistant
+        render_chatbot()
 
 def render_debug_page():
     """
@@ -2496,85 +2499,57 @@ def render_results(res, jd_text=None, cv_text=None, cl_analysis=None):
                 st.download_button("Download PDF", report_pdf, file_name="Report.pdf", mime="application/pdf", use_container_width=True)
 
 # =============================================================================
-# CHATBOT ASSISTANT - CareerBot AI
+# RUBEN AI ASSISTANT - Sidebar Integration
 # =============================================================================
 
 def render_chatbot():
     """
-    Renders the Floating AI Assistant (CareerBot).
+    Renders Ruben AI Assistant at the bottom of the sidebar.
     """
     # 1. Initialize State
     if "chat_history" not in st.session_state:
         st.session_state["chat_history"] = []
-    if "chat_open" not in st.session_state:
-        st.session_state["chat_open"] = False
+    
+    current_page = st.session_state.get("page", "Landing")
 
-    # 2. Floating Action Button (FAB)
-    fab_icon = "✖" if st.session_state["chat_open"] else "💬"
-    st.markdown(f"""
-    <div class="chat-fab" onclick="window.parent.postMessage({{type: 'streamlit:setComponentValue', key: 'chat_toggle', value: true}}, '*')">
-        <span style="font-size: 24px; color: white;">{fab_icon}</span>
+    st.markdown('<div class="sidebar-chat-container">', unsafe_allow_html=True)
+    
+    # Header
+    st.markdown("""
+    <div class="sidebar-chat-header">
+        <span>Ruben - Career Consultant</span>
     </div>
     """, unsafe_allow_html=True)
     
-    # Simple trick for FAB toggle since Streamlit doesn't natively support overlay JS clicks well
-    # We use a standard Streamlit button hidden or styled, but since we have custom CSS,
-    # we'll use a sidebar toggle or a fixed button. 
-    # Actually, let's use a standard Streamlit button inside a custom positioned div for better reliability.
+    # Message Area
+    st.markdown('<div class="sidebar-chat-messages">', unsafe_allow_html=True)
     
-    with st.sidebar:
-        st.divider()
-        if st.checkbox("Open AI Assistant", value=st.session_state["chat_open"], key="chat_toggle_cb"):
-            st.session_state["chat_open"] = True
-        else:
-            st.session_state["chat_open"] = False
-
-    # 3. Chat Window (Appears if open)
-    if st.session_state["chat_open"]:
-        st.markdown('<div class="chat-container">', unsafe_allow_html=True)
-        
-        # Header
-        st.markdown("""
-        <div class="chat-header">
-            <span>CareerBot AI Assistant</span>
-            <span style="font-size: 0.8rem; opacity: 0.8;">V3 Intelligence</span>
+    # Welcome message if empty
+    if not st.session_state["chat_history"]:
+        st.markdown(f"""
+        <div class="sidebar-chat-message assistant">
+            Hello. I am Ruben. How can I assist you with the {current_page} section today?
         </div>
         """, unsafe_allow_html=True)
-        
-        # Message Area
-        st.markdown('<div class="chat-messages">', unsafe_allow_html=True)
-        
-        # Welcome message if empty
-        if not st.session_state["chat_history"]:
-            st.markdown("""
-            <div class="chat-message assistant">
-                Ciao! I'm your CareerBot. How can I help you with your career today? 
-                Try asking about <b>"high demand skills"</b> or <b>"improving my CV"</b>.
-            </div>
-            """, unsafe_allow_html=True)
-        
-        for chat in st.session_state["chat_history"]:
-            role_class = "user" if chat["role"] == "user" else "assistant"
-            st.markdown(f'<div class="chat-message {role_class}">{chat["content"]}</div>', unsafe_allow_html=True)
-        
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        # Input Area
-        with st.form(key="chat_form", clear_on_submit=True):
-            user_input = st.text_input("Ask me anything...", key="chat_input", label_visibility="collapsed", placeholder="Ask about jobs, skills...")
-            submit = st.form_submit_button("Send", use_container_width=True)
-            
-            if submit and user_input:
-                # Add user message
-                st.session_state["chat_history"].append({"role": "user", "content": user_input})
-                
-                # Get response
-                response = ml_utils.get_chatbot_response(user_input, st.session_state.get("page", "Home"))
-                st.session_state["chat_history"].append({"role": "assistant", "content": response})
-                
-                st.rerun()
-        
-        st.markdown('</div>', unsafe_allow_html=True)
+    
+    for chat in st.session_state["chat_history"]:
+        role_class = "user" if chat["role"] == "user" else "assistant"
+        st.markdown(f'<div class="sidebar-chat-message {role_class}">{chat["content"]}</div>', unsafe_allow_html=True)
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # Input Area - Using a simple text input without a form for better sidebar UX
+    user_input = st.text_input("Ask Ruben...", key="chat_input", label_visibility="collapsed", placeholder="Type a message...")
+    
+    if user_input:
+        # Prevent duplicate append on rerun
+        if not st.session_state["chat_history"] or st.session_state["chat_history"][-1]["content"] != user_input:
+            st.session_state["chat_history"].append({"role": "user", "content": user_input})
+            response = ml_utils.get_chatbot_response(user_input, current_page)
+            st.session_state["chat_history"].append({"role": "assistant", "content": response})
+            st.rerun()
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     if st.session_state["page"] == "Debugger":
@@ -2587,6 +2562,3 @@ if __name__ == "__main__":
         render_career_discovery()
     else:
         render_landing_page()
-    
-    # Render Assistant on all pages
-    render_chatbot()

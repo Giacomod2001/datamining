@@ -3819,45 +3819,54 @@ def generate_simple_cv_pdf(text_content: str) -> bytes:
     return pdf.output(dest='S').encode('latin-1')
 
 # =============================================================================
-# CAREERBOT AI - Chat Assistant Logic
+# RUBEN AI - Sidebar Assistant Logic
 # =============================================================================
 
-def get_chatbot_response(message: str, current_page: str = "Home") -> str:
+def get_chatbot_response(message: str, current_page: str = "Landing") -> str:
     """
-    CAREERBOT AI INTENT RECOGNITION
-    ===============================
-    Analyzes user messages and provides context-aware career advice.
-    Grounds responses in Database V3 (Sectors, Archetypes, Skills).
+    RUBEN AI CAREER CONSULTANT
+    ==========================
+    - Language: English Only
+    - Style: Professional, Human-like, No Emojis
+    - Focus: Service guidance and KDD process explanation
     """
     if not message:
-        return "How can I help you today?"
+        return "I am Ruben, your career consultant. How can I assist you with the platform today?"
 
     msg_lower = message.lower()
     
-    # 1. GREETING & GENERAL
-    if any(kw in msg_lower for kw in ["ciao", "hello", "hi", "hey"]):
-        return "Hello! I'm CareerBot AI. I can help you discover career paths, optimize your CV, or understand market demands. What's on your mind?"
+    # 1. GREETING & IDENTITY
+    if any(kw in msg_lower for kw in ["hi", "hello", "hey", "who are you", "ciao"]):
+        return "Hello. I am Ruben, a professional career consultant. I am here to help you navigate this AI-powered toolkit and optimize your career strategy."
 
-    # 2. CV OPTIMIZATION
-    if any(kw in msg_lower for kw in ["cv", "curriculum", "resume", "migliorare", "improve"]):
-        if current_page == "CV Evaluation":
-            return "Since we're on the Evaluation page, try uploading your CV and a Job Description. I'll analyze the skill gap and suggest keywords to bridge it!"
-        return "I recommend using our 'CV Builder' to create an ATS-friendly profile, or 'CV Evaluation' to see how you match a specific job!"
+    # 2. LANDING PAGE / GENERAL SERVICE INFO
+    if current_page == "Landing" or any(kw in msg_lower for kw in ["service", "how works", "kdd", "project", "app"]):
+        return ("This platform implements the Knowledge Discovery in Databases (KDD) process to bridge the gap between candidates and recruiters. "
+                "On this landing page, you can see real-time metrics of our Knowledge Base. "
+                "I suggest starting with 'Career Discovery' if you are exploring options, or 'CV Analysis' if you already have a target job description.")
 
-    # 3. CAREER DISCOVERY & SECTORS
-    if any(kw in msg_lower for kw in ["lavoro", "job", "carriera", "career", "discovery", "settore", "sector"]):
-        sectors = sorted(list(set(m.get("sector", "Other") for m in getattr(knowledge_base, "JOB_ARCHETYPES_EXTENDED", {}).values())))
-        return f"I can help you explore {len(sectors)} sectors! Try the 'Career Discovery' tool to find roles in industries like {', '.join(sectors[:3])}, and more."
+    # 3. CV EVALUATION / ANALYSIS HELP
+    if current_page == "CV Evaluation" or any(kw in msg_lower for kw in ["evaluation", "analysis", "score", "match"]):
+        return ("On the Analysis page, we use a weighted scoring engine: 65 percent for technical skills, 20 percent for semantic context, and 15 percent for education. "
+                "Upload your CV in PDF format and paste a Job Description to see your compatibility. "
+                "The 'Keyword Gap Analysis' will show you exactly which terms to add to your profile to improve your score.")
 
-    # 4. SKILLS & DEMAND
-    if any(kw in msg_lower for kw in ["skill", "competenze", "tecniche", "demand", "mercato"]):
-        high_demand = [s[0] for s in getattr(constants, "SKILL_DEMAND_MATRIX", {}).get("high_demand", [])[:3]]
-        return f"Currently, skills like {', '.join(high_demand)} are in high market demand. You can check the 'Dev Console' for a full breakdown of recognized skills!"
+    # 4. CAREER DISCOVERY HELP
+    if current_page == "Career Discovery" or any(kw in msg_lower for kw in ["discovery", "compass", "lifestyle", "preferences"]):
+        return ("The Career Discovery module is designed for exploratory search. It matches your lifestyle preferences (like remote work or international focus) "
+                "with over 230 job archetypes. This avoids the limitations of traditional keyword-only search by focusing on sector-wide compatibility.")
 
-    # 5. SALARY & MARKET
-    if any(kw in msg_lower for kw in ["stipendio", "salary", "pay", "guadagno", "money"]):
-        return "Market salaries vary by sector and seniority. In our 'Career Discovery' cards, you'll find direct links to LinkedIn and Indeed to check live salary ranges for specific roles."
+    # 5. CV BUILDER HELP
+    if current_page == "CV Builder" or any(kw in msg_lower for kw in ["builder", "create", "write", "ats"]):
+        return ("The CV Builder helps you generate ATS-friendly documents. Use the sections provided to input your experience and education. "
+                "The system provides real-time suggestions based on common industry standards to ensure high parsing rates by recruitment software.")
 
-    # 6. UNIVERSAL FALLBACK
-    return "That's an interesting question! Based on Database V3, I suggest exploring the 'Career Discovery' or 'CV Analysis' sections to get personalized data-driven insights."
+    # 6. DEVELOPER CONSOLE / ML LOGIC
+    if current_page == "Debugger" or any(kw in msg_lower for kw in ["debug", "ml", "logic", "algorithm", "cluster"]):
+        return ("The Developer Console provides a 'Glass Box' view of our algorithms. You can inspect TF-IDF vectors, K-Means clustering of skills, "
+                "and LDA topic modeling. It is designed to demonstrate the transparency and reliability of the Knowledge Discovery process used in this study.")
+
+    # 7. UNIVERSAL FALLBACK (Marcus/Ruben Style)
+    return ("I am here to guide you through the CareerMatch AI tools. Whether you need help with your CV, "
+            "exploring new career paths, or understanding the matching logic, please let me know which area you would like to discuss.")
 
