@@ -2539,36 +2539,28 @@ def render_chatbot():
             # Clear Input safely
             st.session_state["chat_input_widget"] = ""
 
-    st.markdown('<div class="sidebar-chat-container">', unsafe_allow_html=True)
-    
-    # Header
+    # === RUBEN AI CONSULTANT - INLINE STYLED ===
     st.markdown("""
-    <div class="sidebar-chat-header">
-        <span>Ruben AI Consultant</span>
-    </div>
+    <div style="margin-top: 1.5rem; padding: 1.25rem; background: rgba(0, 119, 181, 0.08); border: 1px solid rgba(0, 119, 181, 0.3); border-radius: 12px;">
+        <div style="font-size: 0.95rem; font-weight: 800; color: #00C9A7; margin-bottom: 1rem; letter-spacing: 0.5px;">
+            Ruben AI Consultant
+        </div>
     """, unsafe_allow_html=True)
     
-    # Message Area
-    st.markdown('<div class="sidebar-chat-messages">', unsafe_allow_html=True)
-    
-    # Only show the latest assistant response or the welcome message
-    # We filter out user messages to keep it clean as requested
+    # Get last assistant message or welcome
     assistant_messages = [m for m in st.session_state["chat_history"] if m["role"] == "assistant"]
-
     if not assistant_messages:
-        st.markdown(f"""
-        <div class="sidebar-chat-message assistant">
-            Hello. I am Ruben. How can I assist you with the <b>{current_page}</b> section today?
-        </div>
-        """, unsafe_allow_html=True)
+        display_msg = f"Hello. I am Ruben. How can I assist you with the <b>{current_page}</b> section today?"
     else:
-        # Show only the last assistant response to keep sidebar uncluttered
-        last_msg = assistant_messages[-1]["content"]
-        st.markdown(f'<div class="sidebar-chat-message assistant">{last_msg}</div>', unsafe_allow_html=True)
+        display_msg = assistant_messages[-1]["content"]
     
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown(f"""
+        <div style="background: #0d1117; color: #f0f6fc; border: 1px solid #30363d; padding: 14px 18px; border-radius: 16px; font-size: 0.9rem; line-height: 1.55; box-shadow: inset 0 1px 3px rgba(0,0,0,0.4); margin-bottom: 1rem;">
+            {display_msg}
+        </div>
+    """, unsafe_allow_html=True)
     
-    # Input Area - Using a simple text input with callback
+    # Input Area
     st.text_input(
         "Ask Ruben...", 
         key="chat_input_widget", 
