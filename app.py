@@ -2512,6 +2512,18 @@ def render_chatbot():
     
     current_page = st.session_state.get("page", "Landing")
 
+    # Define Callback to process chat
+    def process_chat():
+        user_msg = st.session_state.get("chat_input_widget", "")
+        if user_msg:
+            # Append User Message
+            st.session_state["chat_history"].append({"role": "user", "content": user_msg})
+            # Get response
+            response = ml_utils.get_chatbot_response(user_msg, current_page)
+            st.session_state["chat_history"].append({"role": "assistant", "content": response})
+            # Clear Input safely
+            st.session_state["chat_input_widget"] = ""
+
     st.markdown('<div class="sidebar-chat-container">', unsafe_allow_html=True)
     
     # Header
@@ -2538,23 +2550,14 @@ def render_chatbot():
     
     st.markdown('</div>', unsafe_allow_html=True)
     
-    # Input Area - Using a simple text input
-    # Logic: If text is entered, we process it and clear the session state key to avoid loops
-    user_input = st.text_input("Ask Ruben...", key="chat_input", label_visibility="collapsed", placeholder="Type a message...")
-    
-    if user_input:
-        # Process the input
-        st.session_state["chat_history"].append({"role": "user", "content": user_input})
-        
-        # Get response
-        with st.spinner("Ruben is thinking..."):
-            response = ml_utils.get_chatbot_response(user_input, current_page)
-            st.session_state["chat_history"].append({"role": "assistant", "content": response})
-        
-        # CLEAR INPUT: This is crucial to prevent infinite loops and allow new messages
-        # We empty the key associated with the text_input
-        st.session_state["chat_input"] = ""
-        st.rerun()
+    # Input Area - Using a simple text input with callback
+    st.text_input(
+        "Ask Ruben...", 
+        key="chat_input_widget", 
+        label_visibility="collapsed", 
+        placeholder="Type a message...",
+        on_change=process_chat
+    )
 
     st.markdown('</div>', unsafe_allow_html=True)
 
