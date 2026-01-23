@@ -729,67 +729,94 @@ hr {
         background: rgba(0, 119, 181, 0.03) !important;
     }
     /* =============================================================================
-       SIDEBAR CHAT UI - Marcus Assistant
+       RUBEN AI ASSISTANT UI
        ============================================================================= */
     
     .sidebar-chat-container {
         margin-top: 1.5rem;
-        padding: 1rem;
-        background: rgba(48, 54, 61, 0.2);
-        border: 1px solid var(--border-color);
+        padding: 1.25rem;
+        background: rgba(0, 119, 181, 0.05);
+        border: 1px solid rgba(0, 119, 181, 0.3);
         border-radius: 12px;
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
+        gap: 0.75rem;
+        box-shadow: inset 0 0 20px rgba(0, 119, 181, 0.05);
     }
     
     .sidebar-chat-header {
-        font-size: 0.85rem;
-        font-weight: 600;
+        font-size: 0.95rem;
+        font-weight: 700;
         color: var(--primary-light);
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .sidebar-chat-cta {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        font-style: italic;
+        margin-bottom: 0.25rem;
     }
     
     .sidebar-chat-messages {
-        max-height: 200px;
+        max-height: 250px;
         overflow-y: auto;
         padding-right: 4px;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 12px;
         scrollbar-width: thin;
-        scrollbar-color: var(--border-color) transparent;
-    }
-    
-    .sidebar-chat-message {
-        padding: 6px 10px;
-        border-radius: 8px;
-        font-size: 0.8rem;
-        line-height: 1.3;
-    }
-    
-    .sidebar-chat-message.user {
-        background: var(--primary-blue);
-        color: white;
-        align-self: flex-end;
-        border-bottom-right-radius: 2px;
+        scrollbar-color: var(--primary-blue) transparent;
     }
     
     .sidebar-chat-message.assistant {
-        background: var(--bg-elevated);
+        background: rgba(0, 119, 181, 0.1);
         color: var(--text-primary);
-        border: 1px solid var(--border-color);
-        align-self: flex-start;
-        border-bottom-left-radius: 2px;
+        border: 1px solid var(--primary-blue);
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        position: relative;
+        box-shadow: var(--shadow-sm);
     }
     
-    .sidebar-chat-input {
-        background: var(--bg-elevated) !important;
-        border: 1px solid var(--border-color) !important;
-        border-radius: 6px !important;
-        font-size: 0.8rem !important;
+    .sidebar-chat-message.assistant::before {
+        content: "";
+        position: absolute;
+        left: -1px;
+        top: 15px;
+        width: 3px;
+        height: 20px;
+        background: var(--primary-light);
+        border-radius: 2px;
+    }
+
+    .landing-chat-popup {
+        background: linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-card) 100%);
+        border: 1px solid var(--primary-blue);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        animation: fadeInUp 0.8s ease-out;
+        box-shadow: var(--shadow-lg), 0 0 30px rgba(0, 119, 181, 0.1);
+    }
+
+    .landing-chat-popup-text {
+        flex: 1;
+    }
+
+    .landing-chat-popup-title {
+        color: var(--primary-light);
+        font-weight: 700;
+        margin-bottom: 0.25rem !important;
     }
 }
 </style>

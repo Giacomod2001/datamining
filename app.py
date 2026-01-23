@@ -1685,6 +1685,20 @@ def render_landing_page():
     </div>
     """, unsafe_allow_html=True)
     
+    # Career Assistant Pop-up (Call to Action)
+    st.markdown("""
+    <div class="landing-chat-popup">
+        <div style="font-size: 2.5rem;">🤖</div>
+        <div class="landing-chat-popup-text">
+            <h4 class="landing-chat-popup-title">Hai dubbi o problemi?</h4>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">
+                Chiedi al nostro Career Consultant <b>Ruben</b> nella barra laterale. È esperto del processo KDD e può aiutarti a navigare tra le funzionalità dell'app.
+            </p>
+        </div>
+        <div style="color: var(--primary-blue); font-weight: 800; font-size: 1.2rem;">&rarr;</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
     # FUNNEL DESCRIPTION - centered
     st.markdown("""
     <div style='text-align: center; padding: 1.5rem 0; margin-top: 1rem; width: 100%;'>
@@ -2526,27 +2540,34 @@ def render_chatbot():
 
     st.markdown('<div class="sidebar-chat-container">', unsafe_allow_html=True)
     
+    # Signaling
+    st.markdown('<div class="sidebar-chat-cta">Professional Assistant</div>', unsafe_allow_html=True)
+
     # Header
     st.markdown("""
     <div class="sidebar-chat-header">
-        <span>Ruben - Career Consultant</span>
+        <span style="font-size: 1.2rem;">🤖</span>
+        <span>Ruben AI Consultant</span>
     </div>
     """, unsafe_allow_html=True)
     
     # Message Area
     st.markdown('<div class="sidebar-chat-messages">', unsafe_allow_html=True)
     
-    # Welcome message if empty
-    if not st.session_state["chat_history"]:
+    # Only show the latest assistant response or the welcome message
+    # We filter out user messages to keep it clean as requested
+    assistant_messages = [m for m in st.session_state["chat_history"] if m["role"] == "assistant"]
+
+    if not assistant_messages:
         st.markdown(f"""
         <div class="sidebar-chat-message assistant">
-            Hello. I am Ruben. How can I assist you with the {current_page} section today?
+            Hello. I am Ruben. How can I assist you with the <b>{current_page}</b> section today?
         </div>
         """, unsafe_allow_html=True)
-    
-    for chat in st.session_state["chat_history"]:
-        role_class = "user" if chat["role"] == "user" else "assistant"
-        st.markdown(f'<div class="sidebar-chat-message {role_class}">{chat["content"]}</div>', unsafe_allow_html=True)
+    else:
+        # Show only the last assistant response to keep sidebar uncluttered
+        last_msg = assistant_messages[-1]["content"]
+        st.markdown(f'<div class="sidebar-chat-message assistant">{last_msg}</div>', unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
     
