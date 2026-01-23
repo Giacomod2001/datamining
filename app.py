@@ -1739,7 +1739,7 @@ def render_landing_page():
     st.markdown("""
     <div class="landing-chat-popup">
         <div class="landing-chat-popup-text">
-            <h4 class="landing-chat-popup-title">Questions or Issues?</h4>
+            <h4 class="landing-chat-popup-title" style="text-align: center;">Questions or Issues?</h4>
             <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">
                 Need help? Ask <b>Ruben</b> in the sidebar. He can guide you through all features and answer your questions.
             </p>
