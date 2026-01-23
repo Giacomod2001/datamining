@@ -789,8 +789,11 @@ hr {
         border: 1px solid var(--primary-blue);
         border-radius: 16px;
         padding: 2rem 3rem;
-        margin: 3rem auto !important;
-        width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        margin-top: 3rem !important;
+        margin-bottom: 3rem !important;
+        width: calc(100% - 4rem) !important;
         max-width: 900px !important;
         display: flex !important;
         flex-direction: column !important;
