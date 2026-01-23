@@ -781,8 +781,9 @@ hr {
         border-radius: 8px;
         font-size: 0.85rem;
         line-height: 1.5;
-        position: relative;
-        box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+        display: block;
+        width: 100%;
     }
 
     .landing-chat-popup {

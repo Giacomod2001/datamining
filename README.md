@@ -1,58 +1,48 @@
 # CareerMatch AI
 
-> AI-powered job search toolkit: CV-JD match scoring, skill gap analysis, smart CV Builder with suggestions, lifestyle-based Career Discovery, and personalized learning paths. Built with ML/NLP on Streamlit.
->
-> ⚠️ **Beta Notice**: This app is continuously updated. A **0% match** may indicate that your sector/role is not yet covered by our models. Please try again later or contact us at [dellacquagiacomo@gmail.com](mailto:dellacquagiacomo@gmail.com) for support.
+> Professional Career Analytics Toolkit: Multi-factor match scoring, advanced skill gap analysis, ATS-optimized CV Builder, and personal AI consultation. Built on solid Data Mining (KDD) principles.
 
-[![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
+⚠️ **Beta Notice**: This application is under active development. A **0.0% match score** may indicate that your specific industry or niche is not yet fully mapped in our Knowledge Base. Please contact the development team for support.
+
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![License](https://img.shields.io/badge/License-PolyForm--NC-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-2.2-0077B5?style=flat)](README.md)
+[![Version](https://img.shields.io/badge/Version-3.0-0077B5?style=flat)](README.md)
 
 ---
 
 ## Live Demo
 
-**[Try CareerMatch AI Now](https://dataminingiulm.streamlit.app/)**
+**[Access CareerMatch AI Dashboard](https://dataminingiulm.streamlit.app/)**
 
-**New Features**:
+**Version 3.0 Highlights**:
 
-- **Refined UI/UX**: New Customer Journey-oriented Sidebar with visual cues.
-- **Unified Match Engine**: Harmonized **65/20/15** scoring across all app modules.
-- **Enhanced Knowledge Base**: Expanded to **950+ Killer Keywords** and **230+ Job Archetypes**.
-- **Career Discovery**: Specialized module to find career paths based on lifestyle & preferences.
+- **Ruben AI Consultant**: Integrated sidebar assistant for real-time guidance and KDD process explanation.
+- **Harmonized Scoring**: Unified **65/20/15** matching engine (Skills/Semantics/Education) across all modules.
+- **Enhanced Intelligence**: Expanded database featuring **950+ keywords** and **230+ job archetypes**.
+- **User Journey Focus**: Formal, emoji-free interface designed for professional career management.
 
 ---
 
-## What is CareerMatch AI?
+## Core Methodology
 
-**CareerMatch AI** analyzes CV-Job compatibility using **ML/NLP**. Get match scores, discover transferable skills, and receive personalized learning paths. It acts as a bridge between candidates and ATS systems.
+**CareerMatch AI** bridges the gap between candidates and complex recruitment algorithms using structured **Knowledge Discovery in Databases (KDD)**.
 
-### Key Metrics
+### Platform Modules
 
-- **950+** Killer Keywords mapped
-- **230+** Job Archetypes defined
-- **25+** Industry Sectors coverage
-
-### Key Features
-
-| **Feature** | **Description** |
+| **Module** | **Core Function** |
 | ----------- | --------------- |
-| **CV Builder (v2.0)** | Interactive wizard to build professional CVs with real-time AI suggestions |
-| **CV Analysis** | AI-based CV-Job compatibility score (0-100%) with Keyword Gap Analysis |
-| **Career Discovery** | Lifestyle-based explorer using the **Unified Composite Scoring** engine |
-| **AI Compass** | Recommendation engine suggesting roles with harmonized 65/20/15 logic |
-| **Developer Console** | "Glass Box" view to inspect ML logic, clusters, and raw vectors |
+| **Career Discovery** | Exploratory search engine matching lifestyle preferences with job archetypes. |
+| **CV Builder** | ATS-compliant document generator with real-time semantic suggestions. |
+| **CV Analysis** | Precision evaluation engine using weighted Cosine Similarity and Gap Analysis. |
+| **Ruben Assistant** | Professional AI consultant providing contextual help and algorithmic transparency. |
+| **Dev Console** | Full-stack transparency module ("Glass Box") to inspect ML logic and raw vectors. |
 
 ---
 
-## Quick Start
+## Installation
 
-### Option 1: Online Demo (Zero Installation)
-
-Try directly: **[dataminingiulm.streamlit.app](https://dataminingiulm.streamlit.app/)**
-
-### Option 2: Local Installation
+### Local Deployment
 
 ```bash
 # 1. Clone the repository
@@ -62,145 +52,50 @@ cd datamining
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Run the app
+# 3. Launch application
 streamlit run app.py
 ```
 
-The app opens automatically at `http://localhost:8501`.
+The application will be accessible at `http://localhost:8501`.
 
 ---
 
-## App Structure & Modules
+## Data Mining Process (KDD Implementation)
 
-The application is composed of 4 main integrated environments, accessible via the ordered sidebar:
-
-### 1. Home
-
-The landing page featuring:
-
-- Real-time Knowledge Base metrics.
-- Direct funnels to the core modules.
-
-### 2. Career Discovery
-
-A lifestyle-based career explorer for users without a specific target job.
-
-- **Mechanism**: Recommends roles based on preferences (e.g., Remote vs On-site, Creative vs Logical).
-- **Integration**: Direct link to external job boards with seniority filters.
-
-### 3. Smart CV Builder
-
-An interactive wizard to create professional CVs from scratch.
-
-- **Features**: Real-time AI suggestions based on target job roles.
-- **Export**: Generates ATS-friendly PDF and TXT files.
-
-### 4. CV Analysis (Evaluation Engine)
-
-The core determination engine.
-
-- **Inputs**: PDF or Text for both CV and JD.
-- **Logic**: Performs Weighted Cosine Similarity and Keyword Gap Analysis.
-- **Outputs**: Match Score, Missing Skills, and Seniority warning.
-
-### 5. Developer Console (Debugger)
-
-A transparent interface for examiners and developers.
-
-- **Purpose**: Inspect the exact ML logic (TF-IDF vectors, Clustering, NLP tokens) behind every decision.
-- **Access**: Located at the bottom of the sidebar (Teal button).
-
----
-
-## Data Mining Techniques
-
-This project implements the following Data Mining and Text Analytics techniques:
-
-### Knowledge Discovery Process (KDD)
-
-| Step | Implementation |
+| Step | Project Implementation |
 | ---- | -------------- |
-| **1. Data Cleaning** | Text preprocessing, lowercase, noise removal, PyPDF2 extraction |
-| **2. Data Integration** | Merge CV + Job Description + Archetype Knowledge Base |
-| **3. Data Selection** | Extract relevant sections (Skills, Experience, Education) |
-| **4. Data Transformation** | TF-IDF vectorization, N-Gram generation |
-| **5. Data Mining** | Classification (Random Forest), Clustering (K-Means), Similarity (Cosine/Jaccard) |
-| **6. Pattern Evaluation** | Match scoring, confidence calculation, Gap Analysis |
-| **7. Knowledge Presentation** | Streamlit Dashboard & Dynamic Visualizations |
-
-### Advanced Machine Learning (v2.1)
-
-#### 1. Unified Multi-Factor Scoring (v2.2)
-
-The matching engine now uses a weighted composite formula to ensure consistency across the entire application:
-
-- **Skill Match (65%)**: Direct, Inferred, and Transferable (70% weight) keyword matching.
-- **Semantic Context (20%)**: TF-IDF + Latent Semantic Analysis (LSA) to understand the "soul" of the CV.
-- **Education Boost (15%)**: Smart detection of university degrees with **Recency Scaling** (newer degrees weigh more).
-
-#### 2. Archetype Fallback System
-
-If a Job Description is sparse, the system "injects" missing implied skills from our **230+ Job Archetypes** database to provide a fairer analysis.
-
-### Text Mining Pipeline
-
-```text
-Input Text --> Tokenization --> N-gram Generation --> TF-IDF --> ML Model --> Output
-                   |                 |
-                Unigrams          Bigrams/Trigrams
-```
+| **1. Data Cleaning** | Text normalization, noise filtering, and PyPDF2 extraction. |
+| **2. Data Integration** | Merging CV, Job Description, and internal Knowledge Base. |
+| **3. Data Selection** | Targeted extraction of professional competencies and education. |
+| **4. Data Transformation** | TF-IDF vectorization and N-Gram expansion (Unigrams to Trigrams). |
+| **5. Data Mining** | Random Forest (Classification), K-Means (Clustering), and LDA (Topic Modeling). |
+| **6. Pattern Evaluation** | Multi-factor match scoring and Keyword Gap Analysis. |
+| **7. Knowledge Presentation** | Professional Dashboard with interactive Plotly analytics. |
 
 ---
 
-## Privacy
+## Architecture
 
-- **100% Local Processing** - No data leaves your computer (in local mode).
-- **Stateless Session** - Data is wiped upon reload.
-- **Open Source** - Transparent and verifiable code.
+Our **Unified Multi-Factor Scoring (v3.0)** calculates compatibility based on a weighted composite formula:
+
+1. **Skill Match (65%)**: Evaluates direct, inferred, and transferable skills.
+2. **Semantic Context (20%)**: Uses LSA to understand the underlying professional context.
+3. **Education Optimization (15%)**: Assesses degree relevance with recency scaling.
 
 ---
 
-## Contributing
+## Authors & Contributors
 
-Contributions welcome! Open an Issue or Pull Request.
+This project is the result of a collaborative effort at **IULM University (A.Y. 2025-2026)**:
+
+- **Giacomo Dell'Acqua** - Lead UI/UX Designer & System Architect
+- **Luca Tallarico** - Data Scientist (ML & NLP Implementation)
+- **Ruben Scoletta** - QA Engineer & Technical Documentation
 
 ---
 
 ## License
 
-This project is licensed under the **PolyForm Noncommercial License 1.0.0**.
-
-You are free to use, modify, and distribute this software for **non-commercial purposes only**.
-Commercial use requires explicit written permission from the authors.
-
-See [LICENSE](LICENSE) for full terms.
-
-## Acknowledgments
-
-The authors would like to acknowledge the assistance of AI tools during the development phase:
-
-- **Claude Opus 4.5** - Primary AI assistant for development, implementation, and code optimization
-- **Gemini 3 Pro High** - Additional AI support for debugging
-- **Antigravity** - Agentic development support
-
-All final implementations, testing, and documentation were carried out independently by the project team.
-
----
-
-## Authors
-
-This project was developed as a collaborative effort with the following primary responsibilities:
-
-- **Giacomo Dell'Acqua** - Project Design (UI/UX & Application Architecture)
-- **Luca Tallarico** - Machine Learning & NLP/Text Mining
-- **Ruben Scoletta** - Testing, Quality Assurance & Documentation
-
----
-
-### Project Summary
-
-Data Mining & Text Analytics Project
-
-IULM University - A.Y. 2025-2026
+Subject to the **PolyForm Noncommercial License 1.0.0**. Professional and commercial usage requires explicit authorization.
 
 [Live Demo](https://dataminingiulm.streamlit.app/) | [GitHub](https://github.com/Giacomod2001/datamining)
