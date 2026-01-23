@@ -747,9 +747,7 @@ hr {
     .sidebar-chat-header {
         font-size: 0.9rem;
         font-weight: 800;
-        background: linear-gradient(90deg, var(--primary-light), var(--accent-green));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #00C9A7 !important;
         display: flex;
         align-items: center;
         gap: 8px;
