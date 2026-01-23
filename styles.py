@@ -774,26 +774,15 @@ hr {
     }
     
     .sidebar-chat-message.assistant {
-        background: rgba(0, 119, 181, 0.1);
+        background: var(--bg-elevated);
         color: var(--text-primary);
-        border: 1px solid var(--primary-blue);
+        border: 1px solid var(--border-color);
         padding: 12px;
         border-radius: 8px;
         font-size: 0.85rem;
         line-height: 1.5;
         position: relative;
-        box-shadow: var(--shadow-sm);
-    }
-    
-    .sidebar-chat-message.assistant::before {
-        content: "";
-        position: absolute;
-        left: -1px;
-        top: 15px;
-        width: 3px;
-        height: 20px;
-        background: var(--primary-light);
-        border-radius: 2px;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
     }
 
     .landing-chat-popup {

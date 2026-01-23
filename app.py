@@ -1685,20 +1685,6 @@ def render_landing_page():
     </div>
     """, unsafe_allow_html=True)
     
-    # Career Assistant Pop-up (Call to Action)
-    st.markdown("""
-    <div class="landing-chat-popup">
-        <div style="font-size: 2.5rem;">🤖</div>
-        <div class="landing-chat-popup-text">
-            <h4 class="landing-chat-popup-title">Hai dubbi o problemi?</h4>
-            <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">
-                Chiedi al nostro Career Consultant <b>Ruben</b> nella barra laterale. È esperto del processo KDD e può aiutarti a navigare tra le funzionalità dell'app.
-            </p>
-        </div>
-        <div style="color: var(--primary-blue); font-weight: 800; font-size: 1.2rem;">&rarr;</div>
-    </div>
-    """, unsafe_allow_html=True)
-    
     # FUNNEL DESCRIPTION - centered
     st.markdown("""
     <div style='text-align: center; padding: 1.5rem 0; margin-top: 1rem; width: 100%;'>
@@ -1745,6 +1731,22 @@ def render_landing_page():
             if st.button("Start Evaluation", use_container_width=True):
                 st.session_state["page"] = "CV Evaluation"
                 st.rerun()
+
+    # Footer Divider
+    st.markdown("<hr>", unsafe_allow_html=True)
+
+    # Career Assistant Pop-up (Call to Action) - Unified English & Formal
+    st.markdown("""
+    <div class="landing-chat-popup">
+        <div class="landing-chat-popup-text">
+            <h4 class="landing-chat-popup-title">Questions or Issues?</h4>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">
+                Ask our Career Consultant <b>Ruben</b> in the sidebar. He is an expert in the KDD process and can help you navigate through the app features.
+            </p>
+        </div>
+        <div style="color: var(--primary-blue); font-weight: 800; font-size: 1.2rem;">&rarr;</div>
+    </div>
+    """, unsafe_allow_html=True)
 
     # Footer with beta note and contact
     st.markdown("---")
@@ -2546,7 +2548,6 @@ def render_chatbot():
     # Header
     st.markdown("""
     <div class="sidebar-chat-header">
-        <span style="font-size: 1.2rem;">🤖</span>
         <span>Ruben AI Consultant</span>
     </div>
     """, unsafe_allow_html=True)
