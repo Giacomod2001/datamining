@@ -3846,26 +3846,25 @@ def get_chatbot_response(message: str, current_page: str = "Landing") -> str:
 
     # 3. CV EVALUATION / ANALYSIS HELP
     if current_page == "CV Evaluation" or any(kw in msg_lower for kw in ["evaluation", "analysis", "score", "match"]):
-        return ("On the Analysis page, we use a weighted scoring engine: 65 percent for technical skills, 20 percent for semantic context, and 15 percent for education. "
-                "Upload your CV in PDF format and paste a Job Description to see your compatibility. "
-                "The 'Keyword Gap Analysis' will show you exactly which terms to add to your profile to improve your score.")
+        return ("Upload your CV and paste a Job Description to see how well they match. "
+                "I'll highlight what skills you have, which ones are transferable, and what you might want to add to your profile.")
 
     # 4. CAREER DISCOVERY HELP
     if current_page == "Career Discovery" or any(kw in msg_lower for kw in ["discovery", "compass", "lifestyle", "preferences"]):
-        return ("The Career Discovery module is designed for exploratory search. It matches your lifestyle preferences (like remote work or international focus) "
-                "with over 230 job archetypes. This avoids the limitations of traditional keyword-only search by focusing on sector-wide compatibility.")
+        return ("This section helps you explore career paths based on what matters to you - like remote work, salary range, or industry. "
+                "Set your preferences and I'll show you roles that might be a good fit.")
 
     # 5. CV BUILDER HELP
     if current_page == "CV Builder" or any(kw in msg_lower for kw in ["builder", "create", "write", "ats"]):
-        return ("The CV Builder helps you generate ATS-friendly documents. Use the sections provided to input your experience and education. "
-                "The system provides real-time suggestions based on common industry standards to ensure high parsing rates by recruitment software.")
+        return ("The CV Builder helps you create a clean, professional resume step by step. "
+                "Fill in your details and I'll help you format everything properly.")
 
-    # 6. DEVELOPER CONSOLE / ML LOGIC
+    # 6. DEVELOPER CONSOLE
     if current_page == "Debugger" or any(kw in msg_lower for kw in ["debug", "ml", "logic", "algorithm", "cluster"]):
-        return ("The Developer Console provides a 'Glass Box' view of our algorithms. You can inspect TF-IDF vectors, K-Means clustering of skills, "
-                "and LDA topic modeling. It is designed to demonstrate the transparency and reliability of the Knowledge Discovery process used in this study.")
+        return ("This is the Developer Console where you can see how the matching system works behind the scenes. "
+                "It's mainly for testing and development purposes.")
 
-    # 7. UNIVERSAL FALLBACK (Marcus/Ruben Style)
-    return ("I am here to guide you through the CareerMatch AI tools. Whether you need help with your CV, "
-            "exploring new career paths, or understanding the matching logic, please let me know which area you would like to discuss.")
+    # 7. UNIVERSAL FALLBACK
+    return ("I'm here to help you navigate the platform. Whether you're exploring career options, analyzing your CV, "
+            "or building a new resume, just let me know what you need.")
 
