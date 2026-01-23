@@ -745,21 +745,15 @@ hr {
     }
     
     .sidebar-chat-header {
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: var(--primary-light);
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-secondary);
         display: flex;
         align-items: center;
         gap: 8px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .sidebar-chat-cta {
-        font-size: 0.8rem;
-        color: var(--text-secondary);
-        font-style: italic;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.5rem;
+        text-transform: none;
+        letter-spacing: 0.3px;
     }
     
     .sidebar-chat-messages {
@@ -792,14 +786,14 @@ hr {
         background: linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-card) 100%);
         border: 1px solid var(--primary-blue);
         border-radius: 16px;
-        padding: 1.5rem 2.5rem;
+        padding: 2rem 3rem;
         margin: 3rem auto !important;
         width: 100% !important;
         max-width: 900px !important;
         display: flex !important;
         flex-direction: column !important;
-        align-items: center !important;
-        text-align: center !important;
+        align-items: flex-start !important;
+        text-align: left !important;
         gap: 0.75rem;
         animation: fadeInUp 0.8s ease-out;
         box-shadow: var(--shadow-lg), 0 0 30px rgba(0, 119, 181, 0.1);

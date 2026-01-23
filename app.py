@@ -1739,7 +1739,7 @@ def render_landing_page():
     st.markdown("""
     <div class="landing-chat-popup">
         <div class="landing-chat-popup-text">
-            <h4 class="landing-chat-popup-title">Questions or Issues?</h4>
+            <h4 class="landing-chat-popup-title">Questions or Issues? 🔗</h4>
             <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">
                 Ask our Career Consultant <b>Ruben</b> in the sidebar. He is an expert in the KDD process and can help you navigate through the app features.
             </p>
@@ -2541,9 +2541,6 @@ def render_chatbot():
 
     st.markdown('<div class="sidebar-chat-container">', unsafe_allow_html=True)
     
-    # Signaling
-    st.markdown('<div class="sidebar-chat-cta">Professional Assistant</div>', unsafe_allow_html=True)
-
     # Header
     st.markdown("""
     <div class="sidebar-chat-header">
