@@ -1744,7 +1744,6 @@ def render_landing_page():
                 Ask our Career Consultant <b>Ruben</b> in the sidebar. He is an expert in the KDD process and can help you navigate through the app features.
             </p>
         </div>
-        <div style="color: var(--primary-blue); font-weight: 800; font-size: 1.2rem;">&rarr;</div>
     </div>
     """, unsafe_allow_html=True)
 
