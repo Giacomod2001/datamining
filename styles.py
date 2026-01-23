@@ -745,15 +745,17 @@ hr {
     }
     
     .sidebar-chat-header {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: var(--text-secondary);
+        font-size: 0.9rem;
+        font-weight: 800;
+        background: linear-gradient(90deg, var(--primary-light), var(--accent-green));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.6rem;
         text-transform: none;
-        letter-spacing: 0.3px;
+        letter-spacing: 0.4px;
     }
     
     .sidebar-chat-messages {
