@@ -2538,16 +2538,23 @@ def render_chatbot():
     
     st.markdown('</div>', unsafe_allow_html=True)
     
-    # Input Area - Using a simple text input without a form for better sidebar UX
+    # Input Area - Using a simple text input
+    # Logic: If text is entered, we process it and clear the session state key to avoid loops
     user_input = st.text_input("Ask Ruben...", key="chat_input", label_visibility="collapsed", placeholder="Type a message...")
     
     if user_input:
-        # Prevent duplicate append on rerun
-        if not st.session_state["chat_history"] or st.session_state["chat_history"][-1]["content"] != user_input:
-            st.session_state["chat_history"].append({"role": "user", "content": user_input})
+        # Process the input
+        st.session_state["chat_history"].append({"role": "user", "content": user_input})
+        
+        # Get response
+        with st.spinner("Ruben is thinking..."):
             response = ml_utils.get_chatbot_response(user_input, current_page)
             st.session_state["chat_history"].append({"role": "assistant", "content": response})
-            st.rerun()
+        
+        # CLEAR INPUT: This is crucial to prevent infinite loops and allow new messages
+        # We empty the key associated with the text_input
+        st.session_state["chat_input"] = ""
+        st.rerun()
 
     st.markdown('</div>', unsafe_allow_html=True)
 
