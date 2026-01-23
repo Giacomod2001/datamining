@@ -2526,6 +2526,13 @@ def render_chatbot():
         st.session_state["chat_history"] = []
     
     current_page = st.session_state.get("page", "Landing")
+    
+    # Auto-reset chat when page changes
+    if "last_chat_page" not in st.session_state:
+        st.session_state["last_chat_page"] = current_page
+    elif st.session_state["last_chat_page"] != current_page:
+        st.session_state["chat_history"] = []
+        st.session_state["last_chat_page"] = current_page
 
     # Define Callback to process chat
     def process_chat():
