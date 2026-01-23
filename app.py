@@ -2542,7 +2542,7 @@ def render_chatbot():
     # === RUBEN AI CONSULTANT - INLINE STYLED ===
     st.markdown("""
     <div style="margin-top: 1.5rem; padding: 1.25rem; background: rgba(0, 119, 181, 0.08); border: 1px solid rgba(0, 119, 181, 0.3); border-radius: 12px;">
-        <div style="font-size: 0.95rem; font-weight: 800; color: #00C9A7; margin-bottom: 1rem; letter-spacing: 0.5px;">
+        <div style="font-size: 0.95rem; font-weight: 800; color: #00C9A7; margin-bottom: 0.5rem; letter-spacing: 0.5px;">
             Ruben AI Consultant
         </div>
     """, unsafe_allow_html=True)
