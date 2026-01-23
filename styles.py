@@ -774,40 +774,45 @@ hr {
     }
     
     .sidebar-chat-message.assistant {
-        background: #21262d !important;
+        background: #0d1117 !important;
         color: #f0f6fc !important;
-        border: 1px solid #30363d !important;
-        padding: 14px !important;
-        border-radius: 10px !important;
-        font-size: 0.88rem !important;
-        line-height: 1.6 !important;
-        box-shadow: inset 0 1px 4px rgba(0,0,0,0.3) !important;
+        border: 1px solid #444c56 !important;
+        padding: 14px 20px !important;
+        border-radius: 20px !important;
+        font-size: 0.9rem !important;
+        line-height: 1.5 !important;
+        box-shadow: inset 0 1px 4px rgba(0,0,0,0.5) !important;
         display: block !important;
         width: 100% !important;
-        margin-bottom: 0.5rem !important;
+        margin-bottom: 0.75rem !important;
+        font-family: inherit !important;
     }
 
     .landing-chat-popup {
         background: linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-card) 100%);
         border: 1px solid var(--primary-blue);
         border-radius: 16px;
-        padding: 1.5rem;
-        margin: 2rem 0;
+        padding: 1.5rem 2rem;
+        margin: 2rem auto;
+        max-width: 900px;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 1.5rem;
+        text-align: center;
+        gap: 0.75rem;
         animation: fadeInUp 0.8s ease-out;
         box-shadow: var(--shadow-lg), 0 0 30px rgba(0, 119, 181, 0.1);
     }
 
     .landing-chat-popup-text {
-        flex: 1;
+        width: 100%;
     }
 
     .landing-chat-popup-title {
         color: var(--primary-light);
         font-weight: 700;
         margin-bottom: 0.25rem !important;
+        font-size: 1.25rem;
     }
 }
 </style>
