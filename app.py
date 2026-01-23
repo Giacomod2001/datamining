@@ -1741,7 +1741,7 @@ def render_landing_page():
         <div class="landing-chat-popup-text">
             <h4 class="landing-chat-popup-title">Questions or Issues?</h4>
             <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">
-                Ask our Career Consultant <b>Ruben</b> in the sidebar. He is an expert in the KDD process and can help you navigate through the app features.
+                Need help? Ask <b>Ruben</b> in the sidebar. He can guide you through all features and answer your questions.
             </p>
         </div>
     </div>

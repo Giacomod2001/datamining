@@ -3840,10 +3840,9 @@ def get_chatbot_response(message: str, current_page: str = "Landing") -> str:
         return "Hello. I am Ruben, a professional career consultant. I am here to help you navigate this AI-powered toolkit and optimize your career strategy."
 
     # 2. LANDING PAGE / GENERAL SERVICE INFO
-    if current_page == "Landing" or any(kw in msg_lower for kw in ["service", "how works", "kdd", "project", "app"]):
-        return ("This platform implements the Knowledge Discovery in Databases (KDD) process to bridge the gap between candidates and recruiters. "
-                "On this landing page, you can see real-time metrics of our Knowledge Base. "
-                "I suggest starting with 'Career Discovery' if you are exploring options, or 'CV Analysis' if you already have a target job description.")
+    if current_page == "Landing" or any(kw in msg_lower for kw in ["service", "how works", "project", "app"]):
+        return ("Hello, I'm here to help. Start with Career Discovery to explore job paths based on your preferences, "
+                "or CV Evaluation to analyze your resume against specific roles. Let me know if you have any questions.")
 
     # 3. CV EVALUATION / ANALYSIS HELP
     if current_page == "CV Evaluation" or any(kw in msg_lower for kw in ["evaluation", "analysis", "score", "match"]):
