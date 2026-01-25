@@ -2623,7 +2623,7 @@ def render_interview_prep():
     # Hero Section
     st.markdown("""
     <div class="hero-gradient" style="text-align: center; padding: 2.5rem;">
-        <h1 style="margin-bottom: 0.5rem;">🎤 Interview Prep</h1>
+        <h1 style="margin-bottom: 0.5rem;">Interview Prep</h1>
         <p style="color: var(--text-secondary); font-size: 1.1rem;">
             Practice with role-specific questions and receive instant AI feedback
         </p>
@@ -2650,7 +2650,7 @@ def render_interview_prep():
         with col1:
             st.markdown("""
             <div class="glass-card" style="height: 100%;">
-                <h4>🎯 Target Role</h4>
+                <h4>Target Role</h4>
             </div>
             """, unsafe_allow_html=True)
             role = st.selectbox(
@@ -2662,7 +2662,7 @@ def render_interview_prep():
         with col2:
             st.markdown("""
             <div class="glass-card" style="height: 100%;">
-                <h4>📋 Question Type</h4>
+                <h4>Question Type</h4>
             </div>
             """, unsafe_allow_html=True)
             q_type = st.radio(
@@ -2686,7 +2686,7 @@ def render_interview_prep():
         st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
         
         # Start Button
-        if st.button("🚀 Start Practice Session", type="primary", use_container_width=True):
+        if st.button("Start Practice Session", type="primary", use_container_width=True):
             questions = ml_utils.get_interview_questions(
                 role=role if role != "General" else None,
                 question_type=q_type_map.get(q_type, "mixed"),
