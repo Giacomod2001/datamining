@@ -3856,35 +3856,22 @@ def _detect_chat_language(message: str) -> str:
                           " pode ", " gostaria ", " ajuda ", " obrigado ", " olá ", " bom dia ",
                           " trabalho ", " competências ", " carreira ", " quais ", " mostra "]
     
-    # Count matches
-    scores = {
-        'it': sum(1 for m in italian_markers if m in f" {msg_lower} "),
-        'es': sum(1 for m in spanish_markers if m in f" {msg_lower} "),
-        'fr': sum(1 for m in french_markers if m in f" {msg_lower} "),
-        'de': sum(1 for m in german_markers if m in f" {msg_lower} "),
-        'pt': sum(1 for m in portuguese_markers if m in f" {msg_lower} "),
-    }
+    # Simple word counting for language detection
+    m = " " + message.lower() + " "
+    it_w = ["come", "cosa", "dove", "quando", "chi", "puoi", "vorrei", "aiuto", "grazie", "ciao", "lavoro", "colloquio", "stipendio"]
+    es_w = ["como", "que", "donde", "cuando", "quien", "puedes", "quiero", "ayuda", "gracias", "hola", "trabajo"]
     
-    # Check for strong language indicators
-    it_strong = ["ciao", "buongiorno", "grazie", "aiutami", "vorrei", "dimmi", "come posso", "stipendio", "colloquio"]
-    if any(w in msg_lower for w in it_strong):
+    it_s = sum(1 for w in it_w if f" {w} " in m)
+    es_s = sum(1 for w in es_w if f" {w} " in m)
+    
+    # Strong IT indicator
+    if any(w in m for w in ["ciao", "grazie", "vorrei", "aiutami", "stipendio", "colloquio"]):
         return 'it'
-    if any(w in msg_lower for w in ["hola", "gracias", "ayúdame", "quisiera", "dime"]):
-        return 'es'
-    if any(w in msg_lower for w in ["bonjour", "merci", "aidez", "voudrais", "dis-moi"]):
-        return 'fr'
-    if any(w in msg_lower for w in ["guten", "danke", "hilf", "möchte", "sag mir", "hallo", "wie kann", "benutzen", "brauche", "bitte"]):
-        return 'de'
-    if any(w in msg_lower for w in ["olá", "obrigado", "ajude", "gostaria", "diga-me"]):
-        return 'pt'
+        
+    if it_s > es_s: return 'it'
+    if es_s > it_s: return 'es'
     
-    # Check score-based detection
-    best_lang = max(scores, key=scores.get)
-    if scores[best_lang] >= 2:
-        return best_lang
-    
-    # Default to English
-    return 'en'
+    return 'en' # Fallback to English
 
 
 # Multilingual responses dictionary
@@ -3964,21 +3951,27 @@ _RUBEN_RESPONSES = {
 }
 
 
-def get_chatbot_response(message: str, current_page: str = "Landing") -> str:
+def get_chatbot_response(message: str, current_page: str = "Landing", lang: str = None) -> str:
     """
     RUBEN AI CAREER CONSULTANT - MULTILINGUAL & COMPREHENSIVE
     ==========================================================
-    - Language: Auto-detected (EN, IT, ES, FR, DE, PT)
+    - Language: Explicitly passed or Auto-detected
     - Default: English
-    - Style: Professional, Human-like, No Emojis
-    - Topics: Career advice, interview prep, skills, resume tips, salary, and more
     """
-    # Detect language (default English)
-    lang = _detect_chat_language(message) if message else 'en'
+    # Use passed language or detect it
+    if not lang:
+        # Detect language only if message is present
+        if message:
+            lang = _detect_chat_language(message)
+        else:
+            lang = 'en' # Default to English for initial welcome if no lang passed
+    
     responses = _RUBEN_RESPONSES.get(lang, _RUBEN_RESPONSES['en'])
     
     if not message:
-        return responses['default']
+        # Map current_page to response key
+        page_key = current_page.lower().replace(" ", "_")
+        return responses.get(page_key, responses['default'])
 
     msg_lower = message.lower()
     

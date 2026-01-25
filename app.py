@@ -2561,6 +2561,7 @@ def render_chatbot():
     # Auto-reset chat when page changes
     if "last_chat_page" not in st.session_state:
         st.session_state["last_chat_page"] = current_page
+        st.session_state["chat_lang"] = "en" # Default to English for first session
     elif st.session_state["last_chat_page"] != current_page:
         st.session_state["chat_history"] = []
         st.session_state["last_chat_page"] = current_page
@@ -2571,8 +2572,10 @@ def render_chatbot():
         if user_msg:
             # Append User Message
             st.session_state["chat_history"].append({"role": "user", "content": user_msg})
-            # Get response
-            response = ml_utils.get_chatbot_response(user_msg, current_page)
+            # Get response and update persisted language
+            detected_lang = ml_utils._detect_chat_language(user_msg)
+            st.session_state["chat_lang"] = detected_lang
+            response = ml_utils.get_chatbot_response(user_msg, current_page, lang=detected_lang)
             st.session_state["chat_history"].append({"role": "assistant", "content": response})
             # Clear Input safely
             st.session_state["chat_input_widget"] = ""
@@ -2588,8 +2591,9 @@ def render_chatbot():
     # Get last assistant message or welcome
     assistant_messages = [m for m in st.session_state["chat_history"] if m["role"] == "assistant"]
     if not assistant_messages:
-        # Initial welcome message based on page
-        display_msg = ml_utils.get_chatbot_response("", current_page)
+        # Initial welcome message in English (as requested) or persisted lang
+        lang = st.session_state.get("chat_lang", "en")
+        display_msg = ml_utils.get_chatbot_response("", current_page, lang=lang)
     else:
         display_msg = assistant_messages[-1]["content"]
     
