@@ -2558,10 +2558,12 @@ def render_chatbot():
     
     current_page = st.session_state.get("page", "Landing")
     
-    # Auto-reset chat when page changes
+    # Bot state management
+    if "chat_lang" not in st.session_state:
+        st.session_state["chat_lang"] = "en"  # Always default to English
+        
     if "last_chat_page" not in st.session_state:
         st.session_state["last_chat_page"] = current_page
-        st.session_state["chat_lang"] = "en" # Default to English for first session
     elif st.session_state["last_chat_page"] != current_page:
         st.session_state["chat_history"] = []
         st.session_state["last_chat_page"] = current_page
@@ -2591,9 +2593,8 @@ def render_chatbot():
     # Get last assistant message or welcome
     assistant_messages = [m for m in st.session_state["chat_history"] if m["role"] == "assistant"]
     if not assistant_messages:
-        # Initial welcome message in English (as requested) or persisted lang
-        lang = st.session_state.get("chat_lang", "en")
-        display_msg = ml_utils.get_chatbot_response("", current_page, lang=lang)
+        # Initial welcome message - always English unless specifically switched
+        display_msg = ml_utils.get_chatbot_response("", current_page, lang="en")
     else:
         display_msg = assistant_messages[-1]["content"]
     
