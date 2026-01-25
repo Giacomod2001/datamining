@@ -98,12 +98,12 @@ def test_ruben_ai():
     if print_test("Responses have no emojis (professional)", passed):
         tests_passed += 1
     
-    # Test 10: English language
+    # Test 10: Multilingual - responds in user's language
     total_tests += 1
     response = ml_utils.get_chatbot_response("ciao", "Landing")
-    # Even with Italian input, should respond in English
-    passed = any(word in response.lower() for word in ["hello", "i am", "career", "help"])
-    if print_test("Responds in English", passed, f"Response: {response[:80]}..."):
+    # With Italian input, should respond in Italian (multilingual feature)
+    passed = any(word in response.lower() for word in ["ciao", "sono", "ruben", "aiutarti", "carriera"])
+    if print_test("Responds in user's language (Italian)", passed, f"Response: {response[:80]}..."):
         tests_passed += 1
     
     print(f"\n  Summary: {tests_passed}/{total_tests} tests passed")
@@ -115,7 +115,7 @@ def test_ruben_ai():
         resp = ml_utils.get_chatbot_response("help", page)
         print(f"    [{page}]: {resp[:60]}...")
     
-    return tests_passed == total_tests
+    assert tests_passed == total_tests, f"Failed {total_tests - tests_passed} tests"
 
 if __name__ == "__main__":
     success = test_ruben_ai()

@@ -102,7 +102,7 @@ except ImportError:
     TruncatedSVD = None
 
 try:
-    from PyPDF2 import PdfReader
+    from pypdf import PdfReader
 except ImportError:
     PdfReader = None
 
@@ -1969,7 +1969,7 @@ def extract_skills_from_text(text: str, is_jd: bool = False) -> Tuple[Set[str], 
 # =============================================================================
 def extract_text_from_pdf(pdf_file) -> str:
     if PdfReader is None: 
-        raise ImportError("PyPDF2 missing")
+        raise ImportError("pypdf missing")
     try:
         reader = PdfReader(pdf_file)
         return " ".join(page.extract_text() or "" for page in reader.pages)
@@ -3828,58 +3828,65 @@ def _detect_chat_language(message: str) -> str:
     Returns language code: 'en', 'it', 'es', 'fr', 'de', 'pt'
     Default: 'en' (English)
     """
-    msg_lower = message.lower()
-    
-    # Italian markers
-    italian_markers = [" come ", " cosa ", " perché ", " dove ", " quando ", " chi ", 
-                       " puoi ", " vorrei ", " aiuto ", " grazie ", " ciao ", " buongiorno ",
-                       " lavoro ", " competenze ", " curriculum ", " carriera ", " quali ",
-                       " fammi ", " dimmi ", " spiegami ", " mostrami ", " colloquio ", " stipendio "]
-    
-    # Spanish markers                   
-    spanish_markers = [" como ", " qué ", " por qué ", " donde ", " cuando ", " quien ",
-                       " puedes ", " quiero ", " ayuda ", " gracias ", " hola ", " buenos ",
-                       " trabajo ", " competencias ", " carrera ", " cuales ", " mostrar "]
-    
-    # French markers
-    french_markers = [" comment ", " quoi ", " pourquoi ", " où ", " quand ", " qui ",
-                      " peux ", " voudrais ", " aide ", " merci ", " bonjour ", " salut ",
-                      " travail ", " compétences ", " carrière ", " quelles ", " montre "]
-    
-    # German markers
-    german_markers = [" wie ", " was ", " warum ", " wo ", " wann ", " wer ",
-                      " kannst ", " möchte ", " hilfe ", " danke ", " hallo ", " guten ",
-                      " arbeit ", " fähigkeiten ", " karriere ", " welche ", " zeig "]
-    
-    # Portuguese markers
-    portuguese_markers = [" como ", " o que ", " por que ", " onde ", " quando ", " quem ",
-                          " pode ", " gostaria ", " ajuda ", " obrigado ", " olá ", " bom dia ",
-                          " trabalho ", " competências ", " carreira ", " quais ", " mostra "]
-    
-    # Simple word counting for language detection
-    m = " " + message.lower() + " "
-    it_w = ["come", "cosa", "dove", "quando", "chi", "puoi", "vorrei", "aiuto", "grazie", "ciao", "lavoro", "colloquio", "stipendio"]
-    es_w = ["como", "que", "donde", "cuando", "quien", "puedes", "quiero", "ayuda", "gracias", "hola", "trabajo"]
-    
-    it_s = sum(1 for w in it_w if f" {w} " in m)
-    es_s = sum(1 for w in es_w if f" {w} " in m)
-    
-    # Strong IT indicator
-    if any(w in m for w in ["ciao", "grazie", "vorrei", "aiutami", "stipendio", "colloquio"]):
-        return 'it'
+    if not message:
+        return 'en'
         
-    if it_s > es_s: return 'it'
-    if es_s > it_s: return 'es'
+    m = " " + message.lower() + " "
     
-    return 'en' # Fallback to English
+    # Language-specific words with scores
+    lang_words = {
+        'it': ["ciao", "come", "cosa", "dove", "quando", "chi", "puoi", "vorrei", "aiuto", "grazie", 
+               "lavoro", "colloquio", "stipendio", "curriculum", "sono", "posso", "usare", "questo", 
+               "strumento", "buongiorno", "buonasera", "prego", "perfetto", "italiano"],
+        'es': ["hola", "como", "que", "donde", "cuando", "quien", "puedes", "quiero", "ayuda", "gracias",
+               "trabajo", "necesito", "curriculum", "soy", "puedo", "usar", "esto", "buenos", "buenas",
+               "perfecto", "español", "entrevista"],
+        'fr': ["bonjour", "comment", "quoi", "où", "quand", "qui", "pouvez", "voudrais", "aide", "merci",
+               "travail", "je", "puis", "utiliser", "ceci", "suis", "peux", "analyser", "français",
+               "bonsoir", "salut", "entretien", "mon", "mes", "vous"],
+        'de': ["hallo", "wie", "was", "wo", "wann", "wer", "können", "möchte", "hilfe", "danke",
+               "arbeit", "ich", "kann", "benutzen", "dies", "bin", "meinen", "lebenslauf", "verbessern",
+               "guten", "tag", "morgen", "bitte", "deutsch"],
+        'pt': ["olá", "como", "que", "onde", "quando", "quem", "pode", "quero", "ajuda", "obrigado",
+               "trabalho", "preciso", "curriculo", "sou", "posso", "usar", "isso", "meu", "português",
+               "bom", "dia", "boa", "noite", "obrigada"]
+    }
+    
+    # Quick checks for strong language indicators
+    # Italian strong keywords
+    if any(f" {w} " in m or m.startswith(f"{w} ") or m.endswith(f" {w}") for w in ["ciao", "grazie", "stipendio", "colloquio", "buongiorno"]):
+        return 'it'
+    # Spanish strong keywords
+    if any(f" {w} " in m or m.startswith(f"{w} ") or m.endswith(f" {w}") for w in ["hola", "gracias", "necesito", "buenos"]):
+        return 'es'
+    # French strong keywords
+    if any(f" {w} " in m or m.startswith(f"{w} ") or m.endswith(f" {w}") for w in ["bonjour", "merci", "salut", "bonsoir", "puis-je"]):
+        return 'fr'
+    # German strong keywords
+    if any(f" {w} " in m or m.startswith(f"{w} ") or m.endswith(f" {w}") for w in ["hallo", "danke", "guten", "bitte", "lebenslauf"]):
+        return 'de'
+    # Portuguese strong keywords (note: "olá" with accent)
+    if any(f" {w} " in m or m.startswith(f"{w} ") or m.endswith(f" {w}") for w in ["olá", "ola", "obrigado", "obrigada", "preciso"]):
+        return 'pt'
+    
+    # Score-based detection
+    scores = {}
+    for lang, words in lang_words.items():
+        scores[lang] = sum(1 for w in words if f" {w} " in m or m.startswith(f"{w} ") or m.endswith(f" {w}"))
+    
+    # Find best match
+    max_score = max(scores.values()) if scores else 0
+    if max_score > 0:
+        best_lang = max(scores, key=scores.get)
+        return best_lang
+    
+    return 'en'
 
-
-# Multilingual responses dictionary
 _RUBEN_RESPONSES = {
     'en': {
         'default': "I am Ruben, your career consultant. How can I assist you today?",
         'greeting': "Hello. I am Ruben, a professional career consultant. I am here to help you optimize your career strategy.",
-        'landing': "Welcome! I'm here to help. Start with Career Discovery to explore job paths, CV Builder to create your resume, or CV Evaluation to analyze it against specific roles.",
+        'landing': "I'm Ruben, here to help you navigate the platform. Start with Career Discovery to explore job paths, CV Builder to create your resume, or CV Evaluation to analyze it against specific roles.",
         'cv_eval': "Upload your CV and paste a Job Description to see how well they match. I'll highlight matched skills, transferable ones, and gaps.",
         'discovery': "This section helps you explore roles based on preferences like remote work, salary, or industry. Tell me what matters most to you in a job!",
         'builder': "The CV Builder helps you create an ATS-optimized resume. Let me know if you need help with professional summaries or skill descriptions.",
@@ -3891,7 +3898,7 @@ _RUBEN_RESPONSES = {
     'it': {
         'default': "Sono Ruben, il tuo consulente di carriera. Come posso aiutarti oggi?",
         'greeting': "Ciao. Sono Ruben, un consulente di carriera professionale. Sono qui per aiutarti a ottimizzare la tua strategia lavorativa.",
-        'landing': "Benvenuto! Sono qui per aiutarti. Inizia con Career Discovery per esplorare percorsi, CV Builder per creare il tuo curriculum, o CV Evaluation per analizzarlo.",
+        'landing': "Sono Ruben, benvenuto! Sono qui per aiutarti. Inizia con Career Discovery per esplorare percorsi, CV Builder per creare il tuo curriculum, o CV Evaluation per analizzarlo.",
         'cv_eval': "Carica il tuo CV e incolla una Job Description per vedere quanto corrispondono. Ti mostrerò le skill trovate, quelle trasferibili e le lacune.",
         'discovery': "Questa sezione ti aiuta a esplorare ruoli basati su preferenze come lavoro remoto, stipendio o settore. Dimmi cosa cerchi in un lavoro!",
         'builder': "Il CV Builder ti aiuta a creare un curriculum ottimizzato per ATS. Chiedimi aiuto per il sommario professionale o la descrizione delle skill.",
@@ -3903,7 +3910,7 @@ _RUBEN_RESPONSES = {
     'es': {
         'default': "Soy Ruben, tu consultor de carrera. ¿Cómo puedo ayudarte hoy?",
         'greeting': "Hola. Soy Ruben, un consultor profesional. Estoy aquí para ayudarte a optimizar tu estrategia de carrera.",
-        'landing': "¡Bienvenido! Empieza con Career Discovery para explorar trayectorias, CV Builder para crear tu CV, o CV Evaluation para analizarlo.",
+        'landing': "Soy Ruben, ¡Bienvenido! Empieza con Career Discovery para explorar trayectorias, CV Builder para crear tu CV, o CV Evaluation para analizarlo.",
         'cv_eval': "Sube tu CV y pega una descripción del puesto para ver la coincidencia. Te mostraré tus habilidades y las brechas existentes.",
         'discovery': "Esta sección te ayuda a explorar roles según tus preferencias. ¡Dime qué es lo más importante para ti en un trabajo!",
         'builder': "El CV Builder te ayuda a crear un currículum optimizado. Avísame si necesitas ayuda con los resúmenes profesionales.",

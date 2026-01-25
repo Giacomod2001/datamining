@@ -74,7 +74,7 @@ def test_calculate_match_score():
         tests_passed += 1
     
     print(f"\n  Summary: {tests_passed}/{total_tests} tests passed")
-    return tests_passed == total_tests
+    assert tests_passed == total_tests, f"Failed {total_tests - tests_passed} tests"
 
 # =============================================================================
 # TEST 2: Skill Extraction
@@ -123,7 +123,7 @@ def test_skill_extraction():
         tests_passed += 1
     
     print(f"\n  Summary: {tests_passed}/{total_tests} tests passed")
-    return tests_passed == total_tests
+    assert tests_passed == total_tests, f"Failed {total_tests - tests_passed} tests"
 
 # =============================================================================
 # TEST 3: Gap Analysis
@@ -187,7 +187,7 @@ def test_gap_analysis():
     print(f"  Match percentage: {result.get('match_percentage', 0)}%")
     
     print(f"\n  Summary: {tests_passed}/{total_tests} tests passed")
-    return tests_passed == total_tests
+    assert tests_passed == total_tests, f"Failed {total_tests - tests_passed} tests"
 
 # =============================================================================
 # TEST 4: Role-Based Analysis (Archetype Fallback)
@@ -230,7 +230,7 @@ def test_role_archetype():
         tests_passed += 1
     
     print(f"\n  Summary: {tests_passed}/{total_tests} tests passed")
-    return tests_passed == total_tests
+    assert tests_passed == total_tests, f"Failed {total_tests - tests_passed} tests"
 
 # =============================================================================
 # TEST 5: Composite Scoring
@@ -265,7 +265,7 @@ def test_composite_scoring():
         tests_passed += 1
     
     print(f"\n  Summary: {tests_passed}/{total_tests} tests passed")
-    return tests_passed == total_tests
+    assert tests_passed == total_tests, f"Failed {total_tests - tests_passed} tests"
 
 # =============================================================================
 # TEST 6: Seniority Detection
@@ -295,7 +295,7 @@ def test_seniority_detection():
         tests_passed += 1
     
     print(f"\n  Summary: {tests_passed}/{total_tests} tests passed")
-    return tests_passed == total_tests
+    assert tests_passed == total_tests, f"Failed {total_tests - tests_passed} tests"
 
 # =============================================================================
 # TEST 7: Knowledge Base Integrity
@@ -340,7 +340,7 @@ def test_knowledge_base():
         tests_passed += 1
     
     print(f"\n  Summary: {tests_passed}/{total_tests} tests passed")
-    return tests_passed == total_tests
+    assert tests_passed == total_tests, f"Failed {total_tests - tests_passed} tests"
 
 # =============================================================================
 # TEST 8: Portfolio Analysis (if project text provided)
@@ -385,7 +385,7 @@ def test_portfolio_analysis():
         tests_passed += 1
     
     print(f"\n  Summary: {tests_passed}/{total_tests} tests passed")
-    return tests_passed == total_tests
+    assert tests_passed == total_tests, f"Failed {total_tests - tests_passed} tests"
 
 # =============================================================================
 # MAIN TEST RUNNER

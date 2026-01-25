@@ -28,7 +28,7 @@
 # - wordcloud: Generazione word cloud per Topic Modeling
 #
 # PDF:
-# - PyPDF2: Estrazione testo da PDF (CV upload)
+# - pypdf: Estrazione testo da PDF (CV upload)
 # - fpdf: Generazione report PDF
 #
 # UTILITIES:
@@ -41,7 +41,7 @@
 streamlit>=1.41.0
 pandas
 numpy
-PyPDF2
+pypdf
 scikit-learn
 plotly
 thefuzz
