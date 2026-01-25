@@ -4169,3 +4169,311 @@ def get_chatbot_response(message: str, current_page: str = "Landing") -> str:
     }
     return fallback_resp.get(lang, fallback_resp['en'])
 
+
+# =============================================================================
+# LEARNING PATH GENERATOR
+# =============================================================================
+
+def generate_learning_path(missing_skills: List[str], max_courses: int = 5, prefer_free: bool = True) -> Dict:
+    """
+    Generates a personalized learning path based on missing skills.
+    
+    Args:
+        missing_skills: List of skills the user needs to learn
+        max_courses: Maximum number of courses to recommend
+        prefer_free: Prioritize free courses
+        
+    Returns:
+        Dict with learning path, total hours, and recommended order
+    """
+    try:
+        from knowledge_base import LEARNING_RESOURCES
+    except ImportError:
+        return {"courses": [], "total_hours": 0, "skills_covered": []}
+    
+    recommended_courses = []
+    skills_covered = set()
+    
+    for skill in missing_skills:
+        if skill in LEARNING_RESOURCES:
+            courses = LEARNING_RESOURCES[skill]
+            
+            # Sort: free first if preferred, then by duration (shorter first)
+            sorted_courses = sorted(
+                courses,
+                key=lambda c: (not c.get('free', False) if prefer_free else False, c.get('duration_hours', 100))
+            )
+            
+            # Add the best course for this skill
+            if sorted_courses:
+                best_course = sorted_courses[0].copy()
+                best_course['skill'] = skill
+                recommended_courses.append(best_course)
+                skills_covered.add(skill)
+    
+    # Limit to max_courses
+    recommended_courses = recommended_courses[:max_courses]
+    
+    # Calculate total hours
+    total_hours = sum(c.get('duration_hours', 0) for c in recommended_courses)
+    
+    # Estimate completion time (assuming 5 hours/week)
+    weeks_to_complete = total_hours / 5 if total_hours > 0 else 0
+    
+    return {
+        "courses": recommended_courses,
+        "total_hours": total_hours,
+        "weeks_to_complete": round(weeks_to_complete, 1),
+        "skills_covered": list(skills_covered),
+        "skills_not_covered": [s for s in missing_skills if s not in skills_covered]
+    }
+
+
+# =============================================================================
+# INTERVIEW SIMULATOR
+# =============================================================================
+
+def get_interview_questions(role: str = None, question_type: str = "mixed", count: int = 5) -> List[Dict]:
+    """
+    Gets interview questions for practice.
+    
+    Args:
+        role: Specific role (e.g. "Software Engineer", "Data Scientist")
+        question_type: "behavioral", "technical", "hr", or "mixed"
+        count: Number of questions to return
+        
+    Returns:
+        List of question dictionaries
+    """
+    import random
+    
+    try:
+        from knowledge_base import INTERVIEW_QUESTIONS
+    except ImportError:
+        return []
+    
+    questions = []
+    
+    # Add behavioral questions
+    if question_type in ["behavioral", "mixed"]:
+        behavioral = INTERVIEW_QUESTIONS.get("behavioral", [])
+        questions.extend(behavioral)
+    
+    # Add HR questions
+    if question_type in ["hr", "mixed"]:
+        hr = INTERVIEW_QUESTIONS.get("hr", [])
+        questions.extend(hr)
+    
+    # Add role-specific questions
+    if role and question_type in ["technical", "mixed"]:
+        role_questions = INTERVIEW_QUESTIONS.get(role, [])
+        questions.extend(role_questions)
+    
+    # Shuffle and limit
+    random.shuffle(questions)
+    return questions[:count]
+
+
+def evaluate_interview_answer(question: Dict, answer: str) -> Dict:
+    """
+    Evaluates an interview answer and provides feedback.
+    
+    Args:
+        question: Question dictionary with expected_keywords or star_focus
+        answer: User's answer text
+        
+    Returns:
+        Dict with score, feedback, and tips
+    """
+    if not answer or len(answer.strip()) < 20:
+        return {
+            "score": 0,
+            "rating": "Too Short",
+            "feedback": "Your answer is too short. Aim for at least 2-3 sentences.",
+            "tips": ["Provide more detail", "Use the STAR method for behavioral questions"]
+        }
+    
+    answer_lower = answer.lower()
+    score = 0
+    feedback_items = []
+    tips = []
+    
+    # Check length (ideal: 100-300 words)
+    word_count = len(answer.split())
+    if word_count >= 50:
+        score += 20
+        feedback_items.append("Good length")
+    elif word_count >= 30:
+        score += 10
+        feedback_items.append("Reasonable length, could be more detailed")
+    else:
+        tips.append("Expand your answer with more details and examples")
+    
+    # Check for STAR method components (for behavioral questions)
+    star_focus = question.get("star_focus", "")
+    if "situation" in star_focus.lower():
+        if any(w in answer_lower for w in ["when", "while", "during", "at my previous", "in my role", "last year"]):
+            score += 15
+            feedback_items.append("Good situation context")
+        else:
+            tips.append("Start with the specific situation or context")
+    
+    if "action" in star_focus.lower():
+        if any(w in answer_lower for w in ["i decided", "i implemented", "i created", "i led", "i worked", "i spoke"]):
+            score += 20
+            feedback_items.append("Clear actions described")
+        else:
+            tips.append("Describe the specific actions YOU took (use 'I' not 'we')")
+    
+    if "result" in star_focus.lower():
+        if any(w in answer_lower for w in ["result", "outcome", "achieved", "improved", "increased", "decreased", "saved"]):
+            score += 20
+            feedback_items.append("Results mentioned")
+            # Bonus for quantified results
+            if any(c.isdigit() for c in answer):
+                score += 10
+                feedback_items.append("Quantified results - excellent!")
+        else:
+            tips.append("End with the concrete results or impact")
+    
+    # Check for expected keywords (for technical questions)
+    expected_keywords = question.get("expected_keywords", [])
+    if expected_keywords:
+        keywords_found = [kw for kw in expected_keywords if kw.lower() in answer_lower]
+        keyword_ratio = len(keywords_found) / len(expected_keywords)
+        score += int(keyword_ratio * 40)
+        
+        if keyword_ratio >= 0.6:
+            feedback_items.append(f"Good coverage of key concepts ({len(keywords_found)}/{len(expected_keywords)})")
+        else:
+            missing = [kw for kw in expected_keywords if kw.lower() not in answer_lower][:3]
+            tips.append(f"Consider mentioning: {', '.join(missing)}")
+    
+    # Determine rating
+    if score >= 80:
+        rating = "Excellent"
+    elif score >= 60:
+        rating = "Good"
+    elif score >= 40:
+        rating = "Fair"
+    elif score >= 20:
+        rating = "Needs Improvement"
+    else:
+        rating = "Insufficient"
+    
+    return {
+        "score": min(score, 100),
+        "rating": rating,
+        "feedback": "; ".join(feedback_items) if feedback_items else "Answer needs more structure",
+        "tips": tips[:3]  # Max 3 tips
+    }
+
+
+# =============================================================================
+# COMPANY RESEARCH
+# =============================================================================
+
+def get_company_profile(company_name: str) -> Dict:
+    """
+    Gets company profile for interview preparation.
+    
+    Args:
+        company_name: Name of the company
+        
+    Returns:
+        Dict with company culture, values, interview tips
+    """
+    try:
+        from knowledge_base import COMPANY_PROFILES
+    except ImportError:
+        return {}
+    
+    # Try exact match
+    if company_name in COMPANY_PROFILES:
+        return COMPANY_PROFILES[company_name]
+    
+    # Try case-insensitive match
+    for name, profile in COMPANY_PROFILES.items():
+        if name.lower() == company_name.lower():
+            return profile
+    
+    # Try partial match
+    for name, profile in COMPANY_PROFILES.items():
+        if company_name.lower() in name.lower() or name.lower() in company_name.lower():
+            return profile
+    
+    return {}
+
+
+def search_companies(query: str = None, sector: str = None) -> List[Dict]:
+    """
+    Search companies by name or sector.
+    
+    Args:
+        query: Search query for company name
+        sector: Filter by sector
+        
+    Returns:
+        List of matching company profiles
+    """
+    try:
+        from knowledge_base import COMPANY_PROFILES
+    except ImportError:
+        return []
+    
+    results = []
+    
+    for name, profile in COMPANY_PROFILES.items():
+        match = True
+        
+        if query and query.lower() not in name.lower():
+            match = False
+        
+        if sector and sector.lower() not in profile.get('sector', '').lower():
+            match = False
+        
+        if match:
+            results.append({
+                "name": name,
+                **profile
+            })
+    
+    return results
+
+
+# =============================================================================
+# JOB MARKET TRENDS
+# =============================================================================
+
+def get_skill_trends(sector: str = None, top_n: int = 10) -> List[Dict]:
+    """
+    Gets trending skills with demand and growth data.
+    
+    Args:
+        sector: Filter by sector (optional)
+        top_n: Number of skills to return
+        
+    Returns:
+        List of skill trend dictionaries
+    """
+    try:
+        from knowledge_base import SKILL_DEMAND_TRENDS
+    except ImportError:
+        return []
+    
+    trends = []
+    for skill, data in SKILL_DEMAND_TRENDS.items():
+        if sector and sector.lower() not in data.get('sector', '').lower():
+            continue
+        
+        trends.append({
+            "skill": skill,
+            "demand": data.get('demand', 0),
+            "growth": data.get('growth', 'N/A'),
+            "sector": data.get('sector', 'General')
+        })
+    
+    # Sort by demand
+    trends.sort(key=lambda x: x['demand'], reverse=True)
+    return trends[:top_n]
+

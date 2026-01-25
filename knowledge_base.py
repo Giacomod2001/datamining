@@ -1511,3 +1511,282 @@ for role, metadata in JOB_ARCHETYPES_EXTENDED.items():
         # Fallback for any non-dict entries
         JOB_ARCHETYPES[role] = set(metadata) if not isinstance(metadata, set) else metadata
 
+
+# =============================================================================
+# SECTION 6: LEARNING RESOURCES DATABASE
+# =============================================================================
+# Maps skills to learning resources with metadata for Learning Path Generator
+
+LEARNING_RESOURCES = {
+    # === PROGRAMMING ===
+    "Python": [
+        {"title": "Python for Everybody", "platform": "Coursera", "difficulty": "beginner", "duration_hours": 25, "url": "https://www.coursera.org/specializations/python", "free": True},
+        {"title": "Complete Python Bootcamp", "platform": "Udemy", "difficulty": "beginner", "duration_hours": 22, "url": "https://www.udemy.com/course/complete-python-bootcamp/", "free": False},
+        {"title": "Python Tutorial", "platform": "freeCodeCamp", "difficulty": "beginner", "duration_hours": 4, "url": "https://www.youtube.com/watch?v=rfscVS0vtbw", "free": True},
+    ],
+    "JavaScript": [
+        {"title": "JavaScript Algorithms and Data Structures", "platform": "freeCodeCamp", "difficulty": "beginner", "duration_hours": 30, "url": "https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/", "free": True},
+        {"title": "The Complete JavaScript Course", "platform": "Udemy", "difficulty": "intermediate", "duration_hours": 69, "url": "https://www.udemy.com/course/the-complete-javascript-course/", "free": False},
+    ],
+    "Java": [
+        {"title": "Java Programming and Software Engineering", "platform": "Coursera", "difficulty": "beginner", "duration_hours": 40, "url": "https://www.coursera.org/specializations/java-programming", "free": True},
+    ],
+    "SQL": [
+        {"title": "SQL for Data Science", "platform": "Coursera", "difficulty": "beginner", "duration_hours": 15, "url": "https://www.coursera.org/learn/sql-for-data-science", "free": True},
+        {"title": "The Complete SQL Bootcamp", "platform": "Udemy", "difficulty": "beginner", "duration_hours": 9, "url": "https://www.udemy.com/course/the-complete-sql-bootcamp/", "free": False},
+        {"title": "SQLBolt Interactive Tutorial", "platform": "SQLBolt", "difficulty": "beginner", "duration_hours": 3, "url": "https://sqlbolt.com/", "free": True},
+    ],
+    
+    # === WEB DEVELOPMENT ===
+    "React": [
+        {"title": "React - The Complete Guide", "platform": "Udemy", "difficulty": "intermediate", "duration_hours": 48, "url": "https://www.udemy.com/course/react-the-complete-guide-incl-redux/", "free": False},
+        {"title": "React Tutorial", "platform": "React Docs", "difficulty": "beginner", "duration_hours": 5, "url": "https://react.dev/learn", "free": True},
+    ],
+    "Node.js": [
+        {"title": "Node.js, Express, MongoDB & More", "platform": "Udemy", "difficulty": "intermediate", "duration_hours": 42, "url": "https://www.udemy.com/course/nodejs-express-mongodb-bootcamp/", "free": False},
+    ],
+    "HTML": [
+        {"title": "Responsive Web Design", "platform": "freeCodeCamp", "difficulty": "beginner", "duration_hours": 15, "url": "https://www.freecodecamp.org/learn/2022/responsive-web-design/", "free": True},
+    ],
+    "CSS": [
+        {"title": "CSS - The Complete Guide", "platform": "Udemy", "difficulty": "intermediate", "duration_hours": 22, "url": "https://www.udemy.com/course/css-the-complete-guide-incl-flexbox-grid-sass/", "free": False},
+    ],
+    
+    # === DATA SCIENCE & ML ===
+    "Machine Learning": [
+        {"title": "Machine Learning Specialization", "platform": "Coursera", "difficulty": "intermediate", "duration_hours": 60, "url": "https://www.coursera.org/specializations/machine-learning-introduction", "free": True},
+        {"title": "Intro to Machine Learning", "platform": "Kaggle", "difficulty": "beginner", "duration_hours": 10, "url": "https://www.kaggle.com/learn/intro-to-machine-learning", "free": True},
+    ],
+    "Deep Learning": [
+        {"title": "Deep Learning Specialization", "platform": "Coursera", "difficulty": "advanced", "duration_hours": 80, "url": "https://www.coursera.org/specializations/deep-learning", "free": True},
+        {"title": "Practical Deep Learning for Coders", "platform": "fast.ai", "difficulty": "intermediate", "duration_hours": 30, "url": "https://course.fast.ai/", "free": True},
+    ],
+    "Statistics": [
+        {"title": "Statistics with Python", "platform": "Coursera", "difficulty": "intermediate", "duration_hours": 30, "url": "https://www.coursera.org/specializations/statistics-with-python", "free": True},
+        {"title": "Khan Academy Statistics", "platform": "Khan Academy", "difficulty": "beginner", "duration_hours": 20, "url": "https://www.khanacademy.org/math/statistics-probability", "free": True},
+    ],
+    "Data Visualization": [
+        {"title": "Data Visualization with Tableau", "platform": "Coursera", "difficulty": "beginner", "duration_hours": 20, "url": "https://www.coursera.org/specializations/data-visualization", "free": True},
+    ],
+    "TensorFlow": [
+        {"title": "TensorFlow Developer Certificate", "platform": "Coursera", "difficulty": "intermediate", "duration_hours": 50, "url": "https://www.coursera.org/professional-certificates/tensorflow-in-practice", "free": True},
+    ],
+    
+    # === CLOUD & DEVOPS ===
+    "AWS": [
+        {"title": "AWS Certified Cloud Practitioner", "platform": "AWS", "difficulty": "beginner", "duration_hours": 20, "url": "https://aws.amazon.com/training/learn-about/cloud-practitioner/", "free": True},
+        {"title": "AWS Solutions Architect", "platform": "Udemy", "difficulty": "intermediate", "duration_hours": 27, "url": "https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/", "free": False},
+    ],
+    "Docker": [
+        {"title": "Docker for Beginners", "platform": "YouTube", "difficulty": "beginner", "duration_hours": 4, "url": "https://www.youtube.com/watch?v=fqMOX6JJhGo", "free": True},
+        {"title": "Docker Mastery", "platform": "Udemy", "difficulty": "intermediate", "duration_hours": 20, "url": "https://www.udemy.com/course/docker-mastery/", "free": False},
+    ],
+    "Kubernetes": [
+        {"title": "Kubernetes for the Absolute Beginners", "platform": "Udemy", "difficulty": "beginner", "duration_hours": 5, "url": "https://www.udemy.com/course/learn-kubernetes/", "free": False},
+    ],
+    "Git": [
+        {"title": "Git and GitHub for Beginners", "platform": "freeCodeCamp", "difficulty": "beginner", "duration_hours": 1, "url": "https://www.youtube.com/watch?v=RGOj5yH7evk", "free": True},
+    ],
+    "CI/CD": [
+        {"title": "CI/CD with GitHub Actions", "platform": "LinkedIn Learning", "difficulty": "intermediate", "duration_hours": 4, "url": "https://www.linkedin.com/learning/learning-github-actions-2", "free": False},
+    ],
+    
+    # === DESIGN ===
+    "Figma": [
+        {"title": "Figma Tutorial for Beginners", "platform": "YouTube", "difficulty": "beginner", "duration_hours": 3, "url": "https://www.youtube.com/watch?v=FTFaQWZBqQ8", "free": True},
+        {"title": "Figma UI UX Design Essentials", "platform": "Udemy", "difficulty": "beginner", "duration_hours": 12, "url": "https://www.udemy.com/course/figma-ux-ui-design-user-experience-tutorial-course/", "free": False},
+    ],
+    "UX Design": [
+        {"title": "Google UX Design Certificate", "platform": "Coursera", "difficulty": "beginner", "duration_hours": 150, "url": "https://www.coursera.org/professional-certificates/google-ux-design", "free": True},
+    ],
+    
+    # === BUSINESS & MARKETING ===
+    "Excel": [
+        {"title": "Excel Skills for Business", "platform": "Coursera", "difficulty": "beginner", "duration_hours": 24, "url": "https://www.coursera.org/specializations/excel", "free": True},
+    ],
+    "Power BI": [
+        {"title": "Microsoft Power BI Data Analyst", "platform": "Microsoft Learn", "difficulty": "intermediate", "duration_hours": 30, "url": "https://learn.microsoft.com/en-us/training/courses/pl-300t00", "free": True},
+    ],
+    "Google Analytics": [
+        {"title": "Google Analytics Certification", "platform": "Google Skillshop", "difficulty": "beginner", "duration_hours": 5, "url": "https://skillshop.withgoogle.com/", "free": True},
+    ],
+    "SEO": [
+        {"title": "SEO Training Course", "platform": "HubSpot Academy", "difficulty": "beginner", "duration_hours": 4, "url": "https://academy.hubspot.com/courses/seo-training", "free": True},
+    ],
+    "Digital Marketing": [
+        {"title": "Google Digital Marketing Certificate", "platform": "Coursera", "difficulty": "beginner", "duration_hours": 80, "url": "https://www.coursera.org/professional-certificates/google-digital-marketing-ecommerce", "free": True},
+    ],
+    
+    # === PROJECT MANAGEMENT ===
+    "Agile": [
+        {"title": "Agile with Atlassian Jira", "platform": "Coursera", "difficulty": "beginner", "duration_hours": 12, "url": "https://www.coursera.org/learn/agile-atlassian-jira", "free": True},
+    ],
+    "Product Management": [
+        {"title": "Digital Product Management", "platform": "Coursera", "difficulty": "intermediate", "duration_hours": 25, "url": "https://www.coursera.org/specializations/uva-darden-digital-product-management", "free": True},
+    ],
+    "Scrum": [
+        {"title": "Scrum Master Certification", "platform": "LinkedIn Learning", "difficulty": "intermediate", "duration_hours": 5, "url": "https://www.linkedin.com/learning/cert-prep-scrum-master", "free": False},
+    ],
+}
+
+
+# =============================================================================
+# SECTION 7: INTERVIEW QUESTIONS DATABASE
+# =============================================================================
+# Organized by role and question type for Interview Simulator
+
+INTERVIEW_QUESTIONS = {
+    # === BEHAVIORAL QUESTIONS (All Roles) ===
+    "behavioral": [
+        {"question": "Tell me about a time when you had to deal with a difficult colleague.", "category": "teamwork", "star_focus": "situation, task, action, result"},
+        {"question": "Describe a project where you had to meet a tight deadline.", "category": "time_management", "star_focus": "situation, action, result"},
+        {"question": "Give an example of when you showed leadership.", "category": "leadership", "star_focus": "situation, task, action, result"},
+        {"question": "Tell me about a time you failed and what you learned.", "category": "growth", "star_focus": "situation, action, result, learning"},
+        {"question": "Describe a situation where you had to adapt to change.", "category": "adaptability", "star_focus": "situation, action, result"},
+        {"question": "How do you prioritize when you have multiple deadlines?", "category": "organization", "star_focus": "situation, method, result"},
+        {"question": "Tell me about a time you solved a complex problem.", "category": "problem_solving", "star_focus": "situation, task, action, result"},
+        {"question": "Describe a situation where you had to persuade someone.", "category": "communication", "star_focus": "situation, approach, result"},
+    ],
+    
+    # === TECH ROLES ===
+    "Software Engineer": [
+        {"question": "Explain the difference between REST and GraphQL APIs.", "category": "technical", "expected_keywords": ["rest", "graphql", "endpoint", "query", "schema"]},
+        {"question": "How would you design a URL shortening service?", "category": "system_design", "expected_keywords": ["hash", "database", "redirect", "scalability"]},
+        {"question": "What is your approach to debugging a production issue?", "category": "problem_solving", "expected_keywords": ["logs", "reproduce", "isolate", "fix", "monitor"]},
+        {"question": "Explain SOLID principles.", "category": "technical", "expected_keywords": ["single responsibility", "open closed", "liskov", "interface", "dependency"]},
+    ],
+    
+    "Data Scientist": [
+        {"question": "Explain the bias-variance tradeoff.", "category": "technical", "expected_keywords": ["bias", "variance", "overfitting", "underfitting", "complexity"]},
+        {"question": "How do you handle missing data?", "category": "technical", "expected_keywords": ["imputation", "mean", "median", "mode", "drop", "model"]},
+        {"question": "Walk me through a machine learning project you've worked on.", "category": "experience", "expected_keywords": ["data", "model", "training", "evaluation", "deployment"]},
+        {"question": "What metrics would you use for a classification problem?", "category": "technical", "expected_keywords": ["accuracy", "precision", "recall", "f1", "auc", "roc"]},
+    ],
+    
+    "Data Analyst": [
+        {"question": "How would you explain a complex analysis to a non-technical stakeholder?", "category": "communication", "expected_keywords": ["visualize", "simple", "business impact", "story"]},
+        {"question": "What's your process for investigating a data anomaly?", "category": "analytical", "expected_keywords": ["source", "validate", "compare", "hypothesis", "root cause"]},
+        {"question": "Describe a time when your analysis influenced a business decision.", "category": "impact", "expected_keywords": ["insight", "recommendation", "decision", "result"]},
+    ],
+    
+    "Product Manager": [
+        {"question": "How do you prioritize features?", "category": "strategy", "expected_keywords": ["impact", "effort", "user", "business", "data", "stakeholder"]},
+        {"question": "Describe your ideal product development process.", "category": "process", "expected_keywords": ["discovery", "design", "development", "testing", "launch", "iteration"]},
+        {"question": "How do you measure product success?", "category": "metrics", "expected_keywords": ["kpi", "metrics", "user", "retention", "engagement", "revenue"]},
+    ],
+    
+    "UX Designer": [
+        {"question": "Walk me through your design process.", "category": "process", "expected_keywords": ["research", "user", "wireframe", "prototype", "test", "iterate"]},
+        {"question": "How do you handle feedback that conflicts with your design?", "category": "collaboration", "expected_keywords": ["listen", "data", "user", "compromise", "advocate"]},
+        {"question": "Describe a challenging usability problem you solved.", "category": "problem_solving", "expected_keywords": ["research", "user", "test", "solution", "improvement"]},
+    ],
+    
+    # === HR QUESTIONS (All Roles) ===
+    "hr": [
+        {"question": "Why are you interested in this role?", "category": "motivation", "good_answer_includes": ["company mission", "role fit", "growth", "impact"]},
+        {"question": "Where do you see yourself in 5 years?", "category": "career", "good_answer_includes": ["growth", "skills", "contribution", "leadership"]},
+        {"question": "Why are you leaving your current job?", "category": "motivation", "good_answer_includes": ["growth", "challenge", "opportunity", "positive framing"]},
+        {"question": "What are your salary expectations?", "category": "negotiation", "good_answer_includes": ["research", "range", "value", "flexibility"]},
+        {"question": "What's your greatest strength?", "category": "self_awareness", "good_answer_includes": ["specific", "example", "relevance"]},
+        {"question": "What's your greatest weakness?", "category": "self_awareness", "good_answer_includes": ["genuine", "improvement", "mitigation"]},
+    ],
+}
+
+
+# =============================================================================
+# SECTION 8: JOB MARKET TRENDS
+# =============================================================================
+
+SKILL_DEMAND_TRENDS = {
+    "Python": {"demand": 95, "growth": "+15%", "sector": "Technology"},
+    "JavaScript": {"demand": 92, "growth": "+10%", "sector": "Technology"},
+    "SQL": {"demand": 90, "growth": "+8%", "sector": "Data"},
+    "AWS": {"demand": 88, "growth": "+20%", "sector": "Cloud"},
+    "Machine Learning": {"demand": 85, "growth": "+25%", "sector": "AI/ML"},
+    "React": {"demand": 85, "growth": "+12%", "sector": "Web"},
+    "Docker": {"demand": 82, "growth": "+18%", "sector": "DevOps"},
+    "Kubernetes": {"demand": 78, "growth": "+22%", "sector": "DevOps"},
+    "TypeScript": {"demand": 78, "growth": "+30%", "sector": "Web"},
+    "Data Analysis": {"demand": 88, "growth": "+15%", "sector": "Data"},
+    "Power BI": {"demand": 75, "growth": "+20%", "sector": "BI"},
+    "Tableau": {"demand": 72, "growth": "+12%", "sector": "BI"},
+    "Figma": {"demand": 70, "growth": "+25%", "sector": "Design"},
+    "Agile": {"demand": 80, "growth": "+10%", "sector": "Management"},
+    "Git": {"demand": 92, "growth": "+5%", "sector": "Development"},
+    "Node.js": {"demand": 78, "growth": "+10%", "sector": "Web"},
+    "Deep Learning": {"demand": 72, "growth": "+30%", "sector": "AI/ML"},
+    "Cybersecurity": {"demand": 85, "growth": "+28%", "sector": "Security"},
+    "CI/CD": {"demand": 80, "growth": "+15%", "sector": "DevOps"},
+    "Product Management": {"demand": 82, "growth": "+12%", "sector": "Product"},
+}
+
+
+# =============================================================================
+# SECTION 9: COMPANY PROFILES (For Company Research)
+# =============================================================================
+
+COMPANY_PROFILES = {
+    "Google": {
+        "sector": "Technology",
+        "culture": ["Innovation", "Data-Driven", "Open Culture", "20% Time"],
+        "values": ["Focus on the user", "Fast is better than slow", "Democracy on the web works", "Great just isn't good enough"],
+        "interview_tips": ["Practice coding on whiteboard", "Show problem-solving process", "Ask clarifying questions", "Use STAR method for behavioral"],
+        "common_questions": ["Design a parking lot system", "Tell me about a challenging project", "How would you improve Google Maps?"],
+        "remote_policy": "Hybrid",
+        "glassdoor_rating": 4.4,
+    },
+    "Microsoft": {
+        "sector": "Technology",
+        "culture": ["Growth Mindset", "Inclusion", "One Microsoft", "Customer Obsessed"],
+        "values": ["Respect", "Integrity", "Accountability"],
+        "interview_tips": ["Prepare for behavioral and technical", "Know Azure products", "Show growth mindset examples"],
+        "common_questions": ["Why Microsoft?", "Describe a time you failed", "Design an elevator system"],
+        "remote_policy": "Hybrid",
+        "glassdoor_rating": 4.3,
+    },
+    "Amazon": {
+        "sector": "Technology/E-commerce",
+        "culture": ["Customer Obsession", "Ownership", "Bias for Action", "Leadership Principles"],
+        "values": ["Customer Obsession", "Invent and Simplify", "Dive Deep", "Have Backbone; Disagree and Commit"],
+        "interview_tips": ["Study Leadership Principles deeply", "Use STAR method", "Prepare data-driven examples", "Show ownership"],
+        "common_questions": ["Tell me about a time you disagreed with your manager", "Describe a time you failed", "How do you prioritize?"],
+        "remote_policy": "Office-first",
+        "glassdoor_rating": 3.9,
+    },
+    "Meta": {
+        "sector": "Technology/Social Media",
+        "culture": ["Move Fast", "Be Bold", "Focus on Impact", "Be Open"],
+        "values": ["Move fast", "Build awesome things", "Live in the future", "Be direct and respect your colleagues"],
+        "interview_tips": ["Prepare for system design", "Practice coding problems", "Show passion for the mission"],
+        "common_questions": ["Why Meta?", "Design Instagram stories", "Tell me about a complex bug you fixed"],
+        "remote_policy": "Hybrid",
+        "glassdoor_rating": 4.0,
+    },
+    "Apple": {
+        "sector": "Technology/Hardware",
+        "culture": ["Secrecy", "Design Excellence", "Innovation", "Attention to Detail"],
+        "values": ["Accessibility", "Environment", "Privacy", "Supplier Responsibility"],
+        "interview_tips": ["Show passion for Apple products", "Attention to detail is key", "Be ready for multiple rounds"],
+        "common_questions": ["Why Apple?", "Describe your favorite Apple product", "How would you improve Siri?"],
+        "remote_policy": "Office-first",
+        "glassdoor_rating": 4.2,
+    },
+    "Netflix": {
+        "sector": "Entertainment/Technology",
+        "culture": ["Freedom & Responsibility", "No Rules Rules", "Radical Candor", "Keeper Test"],
+        "values": ["Judgment", "Communication", "Curiosity", "Courage", "Passion", "Selflessness", "Innovation", "Inclusion", "Integrity", "Impact"],
+        "interview_tips": ["Read the Culture Deck", "Show independent judgment", "Prepare for tough behavioral questions"],
+        "common_questions": ["Give an example of taking an unpopular stance", "How do you handle ambiguity?", "Describe a time you gave difficult feedback"],
+        "remote_policy": "Hybrid",
+        "glassdoor_rating": 4.0,
+    },
+    "Spotify": {
+        "sector": "Entertainment/Technology",
+        "culture": ["Squad Model", "Autonomous Teams", "Data-Driven", "Be Real"],
+        "values": ["Innovative", "Sincere", "Passionate", "Collaborative", "Playful"],
+        "interview_tips": ["Know the squad/tribe model", "Show data-driven thinking", "Demonstrate collaboration skills"],
+        "common_questions": ["How would you improve Spotify playlists?", "Tell me about working in autonomous teams"],
+        "remote_policy": "Work from Anywhere",
+        "glassdoor_rating": 4.1,
+    },
+}
