@@ -2588,7 +2588,8 @@ def render_chatbot():
     # Get last assistant message or welcome
     assistant_messages = [m for m in st.session_state["chat_history"] if m["role"] == "assistant"]
     if not assistant_messages:
-        display_msg = f"Hello. I am Ruben. How can I assist you with the <b>{current_page}</b> section today?"
+        # Initial welcome message based on page
+        display_msg = ml_utils.get_chatbot_response("", current_page)
     else:
         display_msg = assistant_messages[-1]["content"]
     
@@ -2865,14 +2866,14 @@ def render_market_trends():
         
         # Summary insights
         st.markdown("---")
-        st.markdown("### 📊 Key Insights")
+        st.markdown("### Key Insights")
         
         col1, col2, col3 = st.columns(3)
         with col1:
             top_growth = max(trends, key=lambda x: int(x['growth'].replace('%', '').replace('+', '')))
             st.markdown(f"""
             <div class="metric-card" style="text-align: center;">
-                <div style="font-size: 0.9rem; color: var(--text-secondary);">🚀 Fastest Growing</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">Fastest Growing</div>
                 <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-light);">{top_growth['skill']}</div>
                 <div style="color: #00C853; font-weight: 600;">{top_growth['growth']}</div>
             </div>
@@ -2881,7 +2882,7 @@ def render_market_trends():
             top_demand = max(trends, key=lambda x: x['demand'])
             st.markdown(f"""
             <div class="metric-card" style="text-align: center;">
-                <div style="font-size: 0.9rem; color: var(--text-secondary);">🏆 Highest Demand</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">Highest Demand</div>
                 <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-light);">{top_demand['skill']}</div>
                 <div style="color: var(--primary-blue); font-weight: 600;">{top_demand['demand']}%</div>
             </div>
@@ -2890,7 +2891,7 @@ def render_market_trends():
             avg_demand = sum(t['demand'] for t in trends) / len(trends)
             st.markdown(f"""
             <div class="metric-card" style="text-align: center;">
-                <div style="font-size: 0.9rem; color: var(--text-secondary);">📈 Average Demand</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">Average Demand</div>
                 <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-light);">{avg_demand:.0f}%</div>
                 <div style="color: var(--text-secondary);">{len(trends)} skills shown</div>
             </div>

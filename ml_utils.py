@@ -3834,7 +3834,7 @@ def _detect_chat_language(message: str) -> str:
     italian_markers = [" come ", " cosa ", " perché ", " dove ", " quando ", " chi ", 
                        " puoi ", " vorrei ", " aiuto ", " grazie ", " ciao ", " buongiorno ",
                        " lavoro ", " competenze ", " curriculum ", " carriera ", " quali ",
-                       " fammi ", " dimmi ", " spiegami ", " mostrami "]
+                       " fammi ", " dimmi ", " spiegami ", " mostrami ", " colloquio ", " stipendio "]
     
     # Spanish markers                   
     spanish_markers = [" como ", " qué ", " por qué ", " donde ", " cuando ", " quien ",
@@ -3866,7 +3866,8 @@ def _detect_chat_language(message: str) -> str:
     }
     
     # Check for strong language indicators
-    if any(w in msg_lower for w in ["ciao", "buongiorno", "grazie", "aiutami", "vorrei", "dimmi"]):
+    it_strong = ["ciao", "buongiorno", "grazie", "aiutami", "vorrei", "dimmi", "come posso", "stipendio", "colloquio"]
+    if any(w in msg_lower for w in it_strong):
         return 'it'
     if any(w in msg_lower for w in ["hola", "gracias", "ayúdame", "quisiera", "dime"]):
         return 'es'
@@ -3889,64 +3890,76 @@ def _detect_chat_language(message: str) -> str:
 # Multilingual responses dictionary
 _RUBEN_RESPONSES = {
     'en': {
-        'default': "I am Ruben, your career consultant. How can I assist you with the platform today?",
-        'greeting': "Hello. I am Ruben, a professional career consultant. I am here to help you navigate this AI-powered toolkit and optimize your career strategy.",
-        'landing': "Hello, I'm here to help. Start with Career Discovery to explore job paths based on your preferences, or CV Evaluation to analyze your resume against specific roles. Let me know if you have any questions.",
-        'cv_eval': "Upload your CV and paste a Job Description to see how well they match. I'll highlight what skills you have, which ones are transferable, and what you might want to add to your profile.",
-        'discovery': "This section helps you explore career paths based on what matters to you - like remote work, salary range, or industry. Set your preferences and I'll show you roles that might be a good fit.",
-        'builder': "The CV Builder helps you create a clean, professional resume step by step. Fill in your details and I'll help you format everything properly.",
-        'debugger': "This is the Developer Console where you can see how the matching system works behind the scenes. It's mainly for testing and development purposes.",
-        'fallback': "I'm here to help you navigate the platform. Whether you're exploring career options, analyzing your CV, or building a new resume, just let me know what you need."
+        'default': "I am Ruben, your career consultant. How can I assist you today?",
+        'greeting': "Hello. I am Ruben, a professional career consultant. I am here to help you optimize your career strategy.",
+        'landing': "Welcome! I'm here to help. Start with Career Discovery to explore job paths, CV Builder to create your resume, or CV Evaluation to analyze it against specific roles.",
+        'cv_eval': "Upload your CV and paste a Job Description to see how well they match. I'll highlight matched skills, transferable ones, and gaps.",
+        'discovery': "This section helps you explore roles based on preferences like remote work, salary, or industry. Tell me what matters most to you in a job!",
+        'builder': "The CV Builder helps you create an ATS-optimized resume. Let me know if you need help with professional summaries or skill descriptions.",
+        'interview': "Practical preparation is key! Practice with our role-specific questions and I'll help you refine your answers using the STAR method.",
+        'market_trends': "Explore what's in demand! This section shows skill growth and demand trends across sectors to help you stay ahead.",
+        'debugger': "This is the Developer Console. Use it to see the system's logic and underlying KDD process stats.",
+        'fallback': "I'm here to help you navigate the platform. Whether you're exploring careers, analyzing your CV, or practicing interviews, just let me know."
     },
     'it': {
         'default': "Sono Ruben, il tuo consulente di carriera. Come posso aiutarti oggi?",
-        'greeting': "Ciao. Sono Ruben, un consulente di carriera professionale. Sono qui per aiutarti a navigare questo toolkit basato su AI e ottimizzare la tua strategia di carriera.",
-        'landing': "Ciao, sono qui per aiutarti. Inizia con Career Discovery per esplorare percorsi lavorativi basati sulle tue preferenze, o CV Evaluation per analizzare il tuo curriculum rispetto a ruoli specifici.",
-        'cv_eval': "Carica il tuo CV e incolla una Job Description per vedere quanto corrispondono. Ti mostrerò quali competenze hai, quali sono trasferibili e cosa potresti aggiungere al tuo profilo.",
-        'discovery': "Questa sezione ti aiuta a esplorare percorsi di carriera basati su ciò che conta per te - come lavoro remoto, fascia salariale o settore. Imposta le tue preferenze e ti mostrerò ruoli adatti.",
-        'builder': "Il CV Builder ti aiuta a creare un curriculum professionale passo dopo passo. Inserisci i tuoi dati e ti aiuterò a formattare tutto correttamente.",
-        'debugger': "Questa è la Console Sviluppatore dove puoi vedere come funziona il sistema di matching. È principalmente per test e sviluppo.",
-        'fallback': "Sono qui per aiutarti a navigare la piattaforma. Che tu stia esplorando opzioni di carriera, analizzando il tuo CV o creando un nuovo curriculum, fammi sapere di cosa hai bisogno."
+        'greeting': "Ciao. Sono Ruben, un consulente di carriera professionale. Sono qui per aiutarti a ottimizzare la tua strategia lavorativa.",
+        'landing': "Benvenuto! Sono qui per aiutarti. Inizia con Career Discovery per esplorare percorsi, CV Builder per creare il tuo curriculum, o CV Evaluation per analizzarlo.",
+        'cv_eval': "Carica il tuo CV e incolla una Job Description per vedere quanto corrispondono. Ti mostrerò le skill trovate, quelle trasferibili e le lacune.",
+        'discovery': "Questa sezione ti aiuta a esplorare ruoli basati su preferenze come lavoro remoto, stipendio o settore. Dimmi cosa cerchi in un lavoro!",
+        'builder': "Il CV Builder ti aiuta a creare un curriculum ottimizzato per ATS. Chiedimi aiuto per il sommario professionale o la descrizione delle skill.",
+        'interview': "La preparazione pratica è fondamentale! Esercitati con le nostre domande specifiche e ti aiuterò a perfezionare le risposte con il metodo STAR.",
+        'market_trends': "Scopri quali sono le skill più richieste! Questa sezione mostra la crescita e la domanda nei vari settori per aiutarti a restare aggiornato.",
+        'debugger': "Questa è la Console Sviluppatore. Usala per vedere la logica del sistema e le statistiche del processo KDD.",
+        'fallback': "Sono qui per aiutarti a navigare la piattaforma. Che tu stia esplorando carriere, analizzando il CV o preparando un colloquio, chiedi pure."
     },
     'es': {
         'default': "Soy Ruben, tu consultor de carrera. ¿Cómo puedo ayudarte hoy?",
-        'greeting': "Hola. Soy Ruben, un consultor de carrera profesional. Estoy aquí para ayudarte a navegar este toolkit de IA y optimizar tu estrategia de carrera.",
-        'landing': "Hola, estoy aquí para ayudar. Empieza con Career Discovery para explorar trayectorias laborales según tus preferencias, o CV Evaluation para analizar tu currículum.",
-        'cv_eval': "Sube tu CV y pega una descripción del puesto para ver qué tan bien coinciden. Te mostraré qué habilidades tienes y cuáles podrías añadir.",
-        'discovery': "Esta sección te ayuda a explorar caminos de carrera según lo que te importa - como trabajo remoto, rango salarial o industria.",
-        'builder': "El CV Builder te ayuda a crear un currículum profesional paso a paso. Ingresa tus datos y te ayudaré a formatear todo correctamente.",
-        'debugger': "Esta es la Consola de Desarrollador donde puedes ver cómo funciona el sistema de coincidencias. Es principalmente para pruebas.",
-        'fallback': "Estoy aquí para ayudarte a navegar la plataforma. Solo dime qué necesitas."
+        'greeting': "Hola. Soy Ruben, un consultor profesional. Estoy aquí para ayudarte a optimizar tu estrategia de carrera.",
+        'landing': "¡Bienvenido! Empieza con Career Discovery para explorar trayectorias, CV Builder para crear tu CV, o CV Evaluation para analizarlo.",
+        'cv_eval': "Sube tu CV y pega una descripción del puesto para ver la coincidencia. Te mostraré tus habilidades y las brechas existentes.",
+        'discovery': "Esta sección te ayuda a explorar roles según tus preferencias. ¡Dime qué es lo más importante para ti en un trabajo!",
+        'builder': "El CV Builder te ayuda a crear un currículum optimizado. Avísame si necesitas ayuda con los resúmenes profesionales.",
+        'interview': "¡La práctica es clave! Practica con nuestras preguntas y te ayudaré a mejorar tus respuestas.",
+        'market_trends': "¡Explora la demanda! Esta sección muestra tendencias de habilidades y crecimiento para mantenerte actualizado.",
+        'debugger': "Esta es la Consola de Desarrollador para ver la lógica del sistema.",
+        'fallback': "Estoy aquí para ayudarte. Solo dime qué necesitas."
     },
     'fr': {
         'default': "Je suis Ruben, votre consultant carrière. Comment puis-je vous aider aujourd'hui?",
-        'greeting': "Bonjour. Je suis Ruben, un consultant carrière professionnel. Je suis ici pour vous aider à naviguer cet outil IA et optimiser votre stratégie de carrière.",
-        'landing': "Bonjour, je suis là pour vous aider. Commencez par Career Discovery pour explorer les parcours professionnels, ou CV Evaluation pour analyser votre CV.",
-        'cv_eval': "Téléchargez votre CV et collez une description de poste pour voir la correspondance. Je vous montrerai vos compétences et celles à ajouter.",
-        'discovery': "Cette section vous aide à explorer les parcours de carrière selon vos préférences - télétravail, salaire ou secteur.",
-        'builder': "Le CV Builder vous aide à créer un CV professionnel étape par étape. Entrez vos détails et je vous aiderai à tout formater.",
-        'debugger': "C'est la Console Développeur où vous pouvez voir le fonctionnement du système. C'est principalement pour les tests.",
+        'greeting': "Bonjour. Je suis Ruben, un consultant professionnel. Je suis ici pour optimiser votre stratégie de carrière.",
+        'landing': "Bienvenue! Commencez par Career Discovery pour explorer les parcours, CV Builder pour créer votre CV, ou CV Evaluation pour l'analyser.",
+        'cv_eval': "Téléchargez votre CV et collez une description de poste. Je vous montrerai vos compétences et les points à améliorer.",
+        'discovery': "Cette section vous aide à explorer les métiers selon vos préférences. Dites-moi ce qui compte pour vous!",
+        'builder': "Le CV Builder vous aide à créer un CV optimisé. Je peux vous aider à rédiger votre profil professionnel.",
+        'interview': "La pratique est essentielle! Entraînez-vous avec nos questions et je vous aiderai à peaufiner vos réponses.",
+        'market_trends': "Explorez les tendances! Voyez quelles compétences sont demandées pour rester compétitif.",
+        'debugger': "C'est la Console Développeur pour voir la logique système.",
         'fallback': "Je suis là pour vous aider à naviguer la plateforme. Dites-moi ce dont vous avez besoin."
     },
     'de': {
         'default': "Ich bin Ruben, Ihr Karriereberater. Wie kann ich Ihnen heute helfen?",
-        'greeting': "Hallo. Ich bin Ruben, ein professioneller Karriereberater. Ich bin hier, um Ihnen bei der Navigation dieses KI-Tools zu helfen.",
-        'landing': "Hallo, ich bin hier um zu helfen. Beginnen Sie mit Career Discovery, um Karrierewege zu erkunden, oder CV Evaluation, um Ihren Lebenslauf zu analysieren.",
-        'cv_eval': "Laden Sie Ihren Lebenslauf hoch und fügen Sie eine Stellenbeschreibung ein, um die Übereinstimmung zu sehen.",
-        'discovery': "Dieser Bereich hilft Ihnen, Karrierewege basierend auf Ihren Präferenzen zu erkunden - Remote-Arbeit, Gehalt oder Branche.",
-        'builder': "Der CV Builder hilft Ihnen, einen professionellen Lebenslauf Schritt für Schritt zu erstellen.",
-        'debugger': "Dies ist die Entwicklerkonsole, wo Sie sehen können, wie das Matching-System funktioniert.",
-        'fallback': "Ich bin hier, um Ihnen bei der Navigation der Plattform zu helfen. Sagen Sie mir, was Sie brauchen."
+        'greeting': "Hallo. Ich bin Ruben, ein professioneller Karriereberater. Ich bin hier, um Ihre Karrierestrategie zu optimieren.",
+        'landing': "Willkommen! Beginnen Sie mit Career Discovery, CV Builder oder CV Evaluation, um Ihren Lebenslauf zu analysieren.",
+        'cv_eval': "Laden Sie Ihren Lebenslauf hoch und fügen Sie eine Stellenbeschreibung ein, um die Übereinstimmung zu prüfen.",
+        'discovery': "Erkunden Sie Rollen basierend auf Ihren Präferenzen wie Gehalt oder Remote-Optionen.",
+        'builder': "Der CV Builder hilft Ihnen, einen optimierten Lebenslauf zu erstellen. Ich helfe Ihnen gerne bei Formulierungen.",
+        'interview': "Übung macht den Meister! Nutzen Sie unsere Fragen, um sich auf Ihr nächstes Gespräch vorzubereiten.",
+        'market_trends': "Sehen Sie, welche Fähigkeiten gefragt sind. Bleiben Sie mit aktuellen Markttrends auf dem Laufenden.",
+        'debugger': "Dies ist die Entwicklerkonsole für Systemlogik.",
+        'fallback': "Ich bin hier, um Ihnen zu helfen. Sagen Sie mir einfach, was Sie brauchen."
     },
     'pt': {
         'default': "Sou Ruben, seu consultor de carreira. Como posso ajudá-lo hoje?",
-        'greeting': "Olá. Sou Ruben, um consultor de carreira profissional. Estou aqui para ajudá-lo a navegar nesta ferramenta de IA.",
-        'landing': "Olá, estou aqui para ajudar. Comece com Career Discovery para explorar caminhos de carreira, ou CV Evaluation para analisar seu currículo.",
-        'cv_eval': "Carregue seu CV e cole uma descrição de vaga para ver a correspondência. Mostrarei suas competências e o que adicionar.",
-        'discovery': "Esta seção ajuda você a explorar caminhos de carreira com base em suas preferências - trabalho remoto, faixa salarial ou setor.",
-        'builder': "O CV Builder ajuda você a criar um currículo profissional passo a passo. Insira seus dados e ajudarei a formatar tudo.",
-        'debugger': "Este é o Console de Desenvolvedor onde você pode ver como o sistema de correspondência funciona.",
-        'fallback': "Estou aqui para ajudá-lo a navegar na plataforma. Diga-me o que você precisa."
+        'greeting': "Olá. Sou Ruben, um consultor profissional. Estou aqui para otimizar sua estratégia de carreira.",
+        'landing': "Bem-vindo! Comece com Career Discovery, CV Builder ou CV Evaluation para analisar seu currículo.",
+        'cv_eval': "Carregue o seu CV e cole uma descrição de vaga para ver a correspondência e identificar lacunas.",
+        'discovery': "Explore funções com base nas suas preferências. Diga-me o que é mais importante para você!",
+        'builder': "O CV Builder ajuda a criar um currículo otimizzato. Posso ajudar com o seu resumo profissional.",
+        'interview': "A prática é a chave! Use nossas perguntas para se preparar para as entrevistas.",
+        'market_trends': "Explore as tendências! Veja quais habilidades estão em alta no mercado.",
+        'debugger': "Este é o Console de Desenvolvedor para ver a lógica do sistema.",
+        'fallback': "Estou aqui para ajudá-lo. Diga-me o que você precisa."
     }
 }
 
@@ -4129,6 +4142,12 @@ def get_chatbot_response(message: str, current_page: str = "Landing") -> str:
 
     if current_page == "CV Builder" or any(kw in msg_lower for kw in ["builder", "costruisci", "crea", "scrivi"]):
         return responses['builder']
+
+    if current_page == "Interview Prep" or any(kw in msg_lower for kw in ["interview", "prep", "practice", "colloquio", "preparazione"]):
+        return responses['interview']
+
+    if current_page == "Market Trends" or any(kw in msg_lower for kw in ["trends", "market", "demand", "growth", "tendenze", "mercato", "domanda"]):
+        return responses['market_trends']
 
     if current_page == "Debugger" or any(kw in msg_lower for kw in ["debug", "ml", "logic", "algorithm", "cluster", "algoritmo", "logica"]):
         return responses['debugger']
