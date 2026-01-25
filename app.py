@@ -189,8 +189,7 @@ def render_navigation():
                 ("CV Builder", "CV Builder"),
                 ("CV Analysis", "CV Evaluation"),
                 ("Interview Prep", "Interview Prep"),
-                ("Market Trends", "Market Trends"),
-                ("Company Research", "Company Research")
+                ("Market Trends", "Market Trends")
             ]
             
             for label, page_key in nav_items:
@@ -2588,16 +2587,17 @@ def render_chatbot():
 
 def render_interview_prep():
     """
-    INTERVIEW PREP PAGE
-    ===================
-    Interactive interview simulator with role-based questions and feedback.
+    INTERVIEW PREP PAGE - Premium Design
     """
     render_navigation()
     
+    # Hero Section
     st.markdown("""
-    <div class="hero-gradient">
-        <h1>Interview Prep</h1>
-        <p style="color: var(--text-secondary);">Practice with role-specific questions and get AI feedback</p>
+    <div class="hero-gradient" style="text-align: center; padding: 2.5rem;">
+        <h1 style="margin-bottom: 0.5rem;">🎤 Interview Prep</h1>
+        <p style="color: var(--text-secondary); font-size: 1.1rem;">
+            Practice with role-specific questions and receive instant AI feedback
+        </p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -2609,27 +2609,58 @@ def render_interview_prep():
     if "interview_answers" not in st.session_state:
         st.session_state["interview_answers"] = {}
     
-    col1, col2 = st.columns([1, 2])
+    # Check if we have questions to show
+    questions = st.session_state.get("interview_questions", [])
     
-    with col1:
-        st.markdown("### Settings")
+    if not questions:
+        # Setup View - Two column layout with cards
+        st.markdown("### Configure Your Practice Session")
         
-        role = st.selectbox(
-            "Target Role",
-            ["Software Engineer", "Data Scientist", "Data Analyst", "Product Manager", "UX Designer", "General"]
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("""
+            <div class="glass-card" style="height: 100%;">
+                <h4>🎯 Target Role</h4>
+            </div>
+            """, unsafe_allow_html=True)
+            role = st.selectbox(
+                "Select your target role",
+                ["Software Engineer", "Data Scientist", "Data Analyst", "Product Manager", "UX Designer", "General"],
+                label_visibility="collapsed"
+            )
+        
+        with col2:
+            st.markdown("""
+            <div class="glass-card" style="height: 100%;">
+                <h4>📋 Question Type</h4>
+            </div>
+            """, unsafe_allow_html=True)
+            q_type = st.radio(
+                "Select question type",
+                ["Mixed (All Types)", "Behavioral", "Technical", "HR"],
+                horizontal=True,
+                label_visibility="collapsed"
+            )
+            q_type_map = {"Mixed (All Types)": "mixed", "Behavioral": "behavioral", "Technical": "technical", "HR": "hr"}
+        
+        # Number of questions - Radio instead of slider
+        st.markdown("### Number of Questions")
+        num_questions = st.radio(
+            "How many questions?",
+            [3, 5, 7, 10],
+            horizontal=True,
+            index=1,
+            label_visibility="collapsed"
         )
         
-        q_type = st.selectbox(
-            "Question Type",
-            ["mixed", "behavioral", "technical", "hr"]
-        )
+        st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
         
-        num_questions = st.slider("Number of Questions", 3, 10, 5)
-        
-        if st.button("Generate Questions", type="primary", use_container_width=True):
+        # Start Button
+        if st.button("🚀 Start Practice Session", type="primary", use_container_width=True):
             questions = ml_utils.get_interview_questions(
                 role=role if role != "General" else None,
-                question_type=q_type,
+                question_type=q_type_map.get(q_type, "mixed"),
                 count=num_questions
             )
             st.session_state["interview_questions"] = questions
@@ -2637,81 +2668,108 @@ def render_interview_prep():
             st.session_state["interview_answers"] = {}
             st.rerun()
     
-    with col2:
-        questions = st.session_state.get("interview_questions", [])
+    else:
+        # Practice Mode - Full width question display
+        q_idx = st.session_state.get("current_q_index", 0)
+        current_q = questions[q_idx]
         
-        if not questions:
-            st.info("Select your settings and click 'Generate Questions' to start practicing.")
-        else:
-            q_idx = st.session_state.get("current_q_index", 0)
-            
-            # Progress
-            st.progress((q_idx + 1) / len(questions))
-            st.markdown(f"**Question {q_idx + 1} of {len(questions)}**")
-            
-            # Current question
-            current_q = questions[q_idx]
-            st.markdown(f"""
-            <div class="glass-card">
-                <h3>{current_q.get('question', 'No question')}</h3>
-                <p style="color: var(--text-secondary); font-size: 0.9rem;">
-                    Category: {current_q.get('category', 'general').replace('_', ' ').title()}
-                </p>
+        # Progress Bar with step indicators
+        progress = (q_idx + 1) / len(questions)
+        st.markdown(f"""
+        <div style="margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="font-weight: 600;">Question {q_idx + 1} of {len(questions)}</span>
+                <span style="color: var(--text-secondary);">{int(progress * 100)}% Complete</span>
             </div>
-            """, unsafe_allow_html=True)
-            
-            # Answer textarea
-            answer_key = f"answer_{q_idx}"
-            saved_answer = st.session_state.get("interview_answers", {}).get(q_idx, "")
-            
-            answer = st.text_area(
-                "Your Answer",
-                value=saved_answer,
-                height=150,
-                placeholder="Type your answer here... Use the STAR method for behavioral questions."
-            )
-            
-            col_prev, col_eval, col_next = st.columns([1, 2, 1])
-            
-            with col_prev:
-                if q_idx > 0:
-                    if st.button("← Previous"):
-                        st.session_state["current_q_index"] = q_idx - 1
-                        st.rerun()
-            
-            with col_eval:
-                if st.button("Evaluate Answer", type="primary", use_container_width=True):
-                    if answer.strip():
-                        # Save answer
-                        if "interview_answers" not in st.session_state:
-                            st.session_state["interview_answers"] = {}
-                        st.session_state["interview_answers"][q_idx] = answer
-                        
-                        # Evaluate
-                        result = ml_utils.evaluate_interview_answer(current_q, answer)
-                        
-                        # Show results
-                        score_color = "accent-green" if result['score'] >= 60 else "accent-amber" if result['score'] >= 40 else "accent-red"
-                        st.markdown(f"""
-                        <div class="glass-card" style="margin-top: 1rem;">
-                            <h4>Feedback: {result['rating']}</h4>
-                            <div style="font-size: 2rem; color: var(--{score_color});">{result['score']}%</div>
-                            <p>{result['feedback']}</p>
-                        </div>
-                        """, unsafe_allow_html=True)
-                        
-                        if result['tips']:
-                            st.markdown("**Tips to improve:**")
-                            for tip in result['tips']:
-                                st.markdown(f"- {tip}")
+            <div style="background: var(--bg-elevated); border-radius: 10px; height: 6px; width: 100%;">
+                <div style="background: linear-gradient(90deg, var(--primary-blue), var(--accent-green)); 
+                            width: {progress * 100}%; height: 6px; border-radius: 10px; transition: width 0.3s ease;"></div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Question Card
+        category = current_q.get('category', 'general').replace('_', ' ').title()
+        st.markdown(f"""
+        <div class="glass-card" style="border-left: 4px solid var(--primary-blue); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <h3 style="margin: 0; line-height: 1.4;">{current_q.get('question', 'No question')}</h3>
+            </div>
+            <div style="margin-top: 1rem;">
+                <span class="skill-tag-project" style="font-size: 0.8rem;">{category}</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Answer Area
+        saved_answer = st.session_state.get("interview_answers", {}).get(q_idx, "")
+        answer = st.text_area(
+            "Your Answer",
+            value=saved_answer,
+            height=180,
+            placeholder="💡 Tip: Use the STAR method for behavioral questions (Situation, Task, Action, Result)"
+        )
+        
+        # Action Buttons
+        col1, col2, col3, col4 = st.columns([1, 1, 2, 1])
+        
+        with col1:
+            if q_idx > 0:
+                if st.button("← Back", use_container_width=True):
+                    st.session_state["current_q_index"] = q_idx - 1
+                    st.rerun()
+        
+        with col2:
+            if st.button("🔄 New Session", use_container_width=True):
+                st.session_state["interview_questions"] = []
+                st.session_state["current_q_index"] = 0
+                st.session_state["interview_answers"] = {}
+                st.rerun()
+        
+        with col3:
+            if st.button("✨ Evaluate My Answer", type="primary", use_container_width=True):
+                if answer.strip():
+                    st.session_state["interview_answers"][q_idx] = answer
+                    result = ml_utils.evaluate_interview_answer(current_q, answer)
+                    
+                    # Score Colors
+                    if result['score'] >= 60:
+                        color, bg = "#00C853", "rgba(0, 200, 83, 0.1)"
+                        emoji = "🎉"
+                    elif result['score'] >= 40:
+                        color, bg = "#FFB300", "rgba(255, 179, 0, 0.1)"
+                        emoji = "👍"
                     else:
-                        st.warning("Please enter an answer first.")
-            
-            with col_next:
-                if q_idx < len(questions) - 1:
-                    if st.button("Next →"):
-                        st.session_state["current_q_index"] = q_idx + 1
-                        st.rerun()
+                        color, bg = "#E53935", "rgba(229, 57, 53, 0.1)"
+                        emoji = "📝"
+                    
+                    st.markdown(f"""
+                    <div style="background: {bg}; border: 1px solid {color}; border-radius: 16px; 
+                                padding: 2rem; text-align: center; margin-top: 1rem;">
+                        <div style="font-size: 4rem; margin-bottom: 0.5rem;">{emoji}</div>
+                        <div style="font-size: 2.5rem; font-weight: 700; color: {color};">{result['score']}%</div>
+                        <div style="font-size: 1.2rem; font-weight: 600; color: {color}; margin: 0.5rem 0;">{result['rating']}</div>
+                        <p style="color: var(--text-secondary); margin-top: 1rem;">{result['feedback']}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    if result['tips']:
+                        st.markdown("#### 💡 Tips to Improve")
+                        for tip in result['tips']:
+                            st.info(f"→ {tip}")
+                else:
+                    st.warning("Please write your answer before evaluating.")
+        
+        with col4:
+            if q_idx < len(questions) - 1:
+                if st.button("Next →", use_container_width=True):
+                    st.session_state["current_q_index"] = q_idx + 1
+                    st.rerun()
+            else:
+                if st.button("✅ Finish", use_container_width=True):
+                    st.session_state["interview_questions"] = []
+                    st.balloons()
+                    st.rerun()
 
 
 # =============================================================================
@@ -2720,31 +2778,39 @@ def render_interview_prep():
 
 def render_market_trends():
     """
-    MARKET TRENDS PAGE
-    ==================
-    Dashboard showing skill demand trends and salary insights.
+    MARKET TRENDS PAGE - Premium Design
     """
     render_navigation()
     
+    # Hero Section
     st.markdown("""
-    <div class="hero-gradient">
-        <h1>Job Market Trends</h1>
-        <p style="color: var(--text-secondary);">Discover the most in-demand skills and industry insights</p>
+    <div class="hero-gradient" style="text-align: center; padding: 2.5rem;">
+        <h1 style="margin-bottom: 0.5rem;">📈 Job Market Trends</h1>
+        <p style="color: var(--text-secondary); font-size: 1.1rem;">
+            Discover the most in-demand skills and industry growth patterns
+        </p>
     </div>
     """, unsafe_allow_html=True)
     
-    # Filters
+    # Filters using radio buttons (no slider)
+    st.markdown("### 🎯 Filter Results")
+    
     col1, col2 = st.columns(2)
     with col1:
         sector_filter = st.selectbox(
-            "Filter by Sector",
-            ["All", "Technology", "Data", "DevOps", "Web", "AI/ML", "BI", "Design", "Management"]
+            "Sector",
+            ["All Sectors", "Technology", "Data", "DevOps", "Web", "AI/ML", "BI", "Design", "Management"]
         )
     with col2:
-        top_n = st.slider("Show Top N Skills", 5, 20, 10)
+        top_n = st.radio(
+            "Show Top",
+            [5, 10, 15, 20],
+            horizontal=True,
+            index=1
+        )
     
     # Get trends
-    sector = None if sector_filter == "All" else sector_filter
+    sector = None if sector_filter == "All Sectors" else sector_filter
     trends = ml_utils.get_skill_trends(sector=sector, top_n=top_n)
     
     if trends:
@@ -2775,86 +2841,38 @@ def render_market_trends():
         
         # Summary insights
         st.markdown("---")
-        st.markdown("### Insights")
+        st.markdown("### 📊 Key Insights")
         
         col1, col2, col3 = st.columns(3)
         with col1:
             top_growth = max(trends, key=lambda x: int(x['growth'].replace('%', '').replace('+', '')))
-            st.metric("Fastest Growing", top_growth['skill'], top_growth['growth'])
+            st.markdown(f"""
+            <div class="metric-card" style="text-align: center;">
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">🚀 Fastest Growing</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-light);">{top_growth['skill']}</div>
+                <div style="color: #00C853; font-weight: 600;">{top_growth['growth']}</div>
+            </div>
+            """, unsafe_allow_html=True)
         with col2:
             top_demand = max(trends, key=lambda x: x['demand'])
-            st.metric("Highest Demand", top_demand['skill'], f"{top_demand['demand']}%")
+            st.markdown(f"""
+            <div class="metric-card" style="text-align: center;">
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">🏆 Highest Demand</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-light);">{top_demand['skill']}</div>
+                <div style="color: var(--primary-blue); font-weight: 600;">{top_demand['demand']}%</div>
+            </div>
+            """, unsafe_allow_html=True)
         with col3:
-            st.metric("Trends Shown", len(trends), f"of {sector_filter if sector != 'All' else 'All Sectors'}")
+            avg_demand = sum(t['demand'] for t in trends) / len(trends)
+            st.markdown(f"""
+            <div class="metric-card" style="text-align: center;">
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">📈 Average Demand</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-light);">{avg_demand:.0f}%</div>
+                <div style="color: var(--text-secondary);">{len(trends)} skills shown</div>
+            </div>
+            """, unsafe_allow_html=True)
     else:
         st.info("No trends available for the selected sector.")
-
-
-# =============================================================================
-# COMPANY RESEARCH PAGE
-# =============================================================================
-
-def render_company_research():
-    """
-    COMPANY RESEARCH PAGE
-    =====================
-    Research companies for interview preparation.
-    """
-    render_navigation()
-    
-    st.markdown("""
-    <div class="hero-gradient">
-        <h1>Company Research</h1>
-        <p style="color: var(--text-secondary);">Learn about company culture, values, and interview tips</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Search
-    search_query = st.text_input("Search Company", placeholder="e.g. Google, Amazon, Microsoft...")
-    
-    # Get companies
-    if search_query:
-        companies = ml_utils.search_companies(query=search_query)
-    else:
-        companies = ml_utils.search_companies()
-    
-    if companies:
-        for company in companies:
-            with st.expander(f"**{company['name']}** - {company.get('sector', 'Technology')}", expanded=bool(search_query)):
-                col1, col2 = st.columns([1, 1])
-                
-                with col1:
-                    st.markdown("#### Culture")
-                    for item in company.get('culture', []):
-                        st.markdown(f"- {item}")
-                    
-                    st.markdown("#### Values")
-                    for value in company.get('values', [])[:4]:
-                        st.markdown(f"- {value}")
-                
-                with col2:
-                    st.markdown("#### Interview Tips")
-                    for tip in company.get('interview_tips', []):
-                        st.markdown(f"- {tip}")
-                    
-                    st.markdown("#### Common Questions")
-                    for q in company.get('common_questions', []):
-                        st.markdown(f"- *{q}*")
-                
-                # Footer info
-                st.markdown("---")
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    st.markdown(f"**Remote Policy:** {company.get('remote_policy', 'N/A')}")
-                with col2:
-                    rating = company.get('glassdoor_rating', 'N/A')
-                    st.markdown(f"**Glassdoor Rating:** {rating}/5")
-                with col3:
-                    if st.button(f"Practice for {company['name']}", key=f"practice_{company['name']}"):
-                        st.session_state["page"] = "Interview Prep"
-                        st.rerun()
-    else:
-        st.info("Enter a company name to search, or browse all available companies.")
 
 
 if __name__ == "__main__":
@@ -2870,7 +2888,5 @@ if __name__ == "__main__":
         render_interview_prep()
     elif st.session_state["page"] == "Market Trends":
         render_market_trends()
-    elif st.session_state["page"] == "Company Research":
-        render_company_research()
     else:
         render_landing_page()
