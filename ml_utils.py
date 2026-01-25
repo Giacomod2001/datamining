@@ -3822,49 +3822,350 @@ def generate_simple_cv_pdf(text_content: str) -> bytes:
 # RUBEN AI - Sidebar Assistant Logic
 # =============================================================================
 
+def _detect_chat_language(message: str) -> str:
+    """
+    Detects the language of a chat message.
+    Returns language code: 'en', 'it', 'es', 'fr', 'de', 'pt'
+    Default: 'en' (English)
+    """
+    msg_lower = message.lower()
+    
+    # Italian markers
+    italian_markers = [" come ", " cosa ", " perché ", " dove ", " quando ", " chi ", 
+                       " puoi ", " vorrei ", " aiuto ", " grazie ", " ciao ", " buongiorno ",
+                       " lavoro ", " competenze ", " curriculum ", " carriera ", " quali ",
+                       " fammi ", " dimmi ", " spiegami ", " mostrami "]
+    
+    # Spanish markers                   
+    spanish_markers = [" como ", " qué ", " por qué ", " donde ", " cuando ", " quien ",
+                       " puedes ", " quiero ", " ayuda ", " gracias ", " hola ", " buenos ",
+                       " trabajo ", " competencias ", " carrera ", " cuales ", " mostrar "]
+    
+    # French markers
+    french_markers = [" comment ", " quoi ", " pourquoi ", " où ", " quand ", " qui ",
+                      " peux ", " voudrais ", " aide ", " merci ", " bonjour ", " salut ",
+                      " travail ", " compétences ", " carrière ", " quelles ", " montre "]
+    
+    # German markers
+    german_markers = [" wie ", " was ", " warum ", " wo ", " wann ", " wer ",
+                      " kannst ", " möchte ", " hilfe ", " danke ", " hallo ", " guten ",
+                      " arbeit ", " fähigkeiten ", " karriere ", " welche ", " zeig "]
+    
+    # Portuguese markers
+    portuguese_markers = [" como ", " o que ", " por que ", " onde ", " quando ", " quem ",
+                          " pode ", " gostaria ", " ajuda ", " obrigado ", " olá ", " bom dia ",
+                          " trabalho ", " competências ", " carreira ", " quais ", " mostra "]
+    
+    # Count matches
+    scores = {
+        'it': sum(1 for m in italian_markers if m in f" {msg_lower} "),
+        'es': sum(1 for m in spanish_markers if m in f" {msg_lower} "),
+        'fr': sum(1 for m in french_markers if m in f" {msg_lower} "),
+        'de': sum(1 for m in german_markers if m in f" {msg_lower} "),
+        'pt': sum(1 for m in portuguese_markers if m in f" {msg_lower} "),
+    }
+    
+    # Check for strong language indicators
+    if any(w in msg_lower for w in ["ciao", "buongiorno", "grazie", "aiutami", "vorrei", "dimmi"]):
+        return 'it'
+    if any(w in msg_lower for w in ["hola", "gracias", "ayúdame", "quisiera", "dime"]):
+        return 'es'
+    if any(w in msg_lower for w in ["bonjour", "merci", "aidez", "voudrais", "dis-moi"]):
+        return 'fr'
+    if any(w in msg_lower for w in ["guten", "danke", "hilf", "möchte", "sag mir", "hallo", "wie kann", "benutzen", "brauche", "bitte"]):
+        return 'de'
+    if any(w in msg_lower for w in ["olá", "obrigado", "ajude", "gostaria", "diga-me"]):
+        return 'pt'
+    
+    # Check score-based detection
+    best_lang = max(scores, key=scores.get)
+    if scores[best_lang] >= 2:
+        return best_lang
+    
+    # Default to English
+    return 'en'
+
+
+# Multilingual responses dictionary
+_RUBEN_RESPONSES = {
+    'en': {
+        'default': "I am Ruben, your career consultant. How can I assist you with the platform today?",
+        'greeting': "Hello. I am Ruben, a professional career consultant. I am here to help you navigate this AI-powered toolkit and optimize your career strategy.",
+        'landing': "Hello, I'm here to help. Start with Career Discovery to explore job paths based on your preferences, or CV Evaluation to analyze your resume against specific roles. Let me know if you have any questions.",
+        'cv_eval': "Upload your CV and paste a Job Description to see how well they match. I'll highlight what skills you have, which ones are transferable, and what you might want to add to your profile.",
+        'discovery': "This section helps you explore career paths based on what matters to you - like remote work, salary range, or industry. Set your preferences and I'll show you roles that might be a good fit.",
+        'builder': "The CV Builder helps you create a clean, professional resume step by step. Fill in your details and I'll help you format everything properly.",
+        'debugger': "This is the Developer Console where you can see how the matching system works behind the scenes. It's mainly for testing and development purposes.",
+        'fallback': "I'm here to help you navigate the platform. Whether you're exploring career options, analyzing your CV, or building a new resume, just let me know what you need."
+    },
+    'it': {
+        'default': "Sono Ruben, il tuo consulente di carriera. Come posso aiutarti oggi?",
+        'greeting': "Ciao. Sono Ruben, un consulente di carriera professionale. Sono qui per aiutarti a navigare questo toolkit basato su AI e ottimizzare la tua strategia di carriera.",
+        'landing': "Ciao, sono qui per aiutarti. Inizia con Career Discovery per esplorare percorsi lavorativi basati sulle tue preferenze, o CV Evaluation per analizzare il tuo curriculum rispetto a ruoli specifici.",
+        'cv_eval': "Carica il tuo CV e incolla una Job Description per vedere quanto corrispondono. Ti mostrerò quali competenze hai, quali sono trasferibili e cosa potresti aggiungere al tuo profilo.",
+        'discovery': "Questa sezione ti aiuta a esplorare percorsi di carriera basati su ciò che conta per te - come lavoro remoto, fascia salariale o settore. Imposta le tue preferenze e ti mostrerò ruoli adatti.",
+        'builder': "Il CV Builder ti aiuta a creare un curriculum professionale passo dopo passo. Inserisci i tuoi dati e ti aiuterò a formattare tutto correttamente.",
+        'debugger': "Questa è la Console Sviluppatore dove puoi vedere come funziona il sistema di matching. È principalmente per test e sviluppo.",
+        'fallback': "Sono qui per aiutarti a navigare la piattaforma. Che tu stia esplorando opzioni di carriera, analizzando il tuo CV o creando un nuovo curriculum, fammi sapere di cosa hai bisogno."
+    },
+    'es': {
+        'default': "Soy Ruben, tu consultor de carrera. ¿Cómo puedo ayudarte hoy?",
+        'greeting': "Hola. Soy Ruben, un consultor de carrera profesional. Estoy aquí para ayudarte a navegar este toolkit de IA y optimizar tu estrategia de carrera.",
+        'landing': "Hola, estoy aquí para ayudar. Empieza con Career Discovery para explorar trayectorias laborales según tus preferencias, o CV Evaluation para analizar tu currículum.",
+        'cv_eval': "Sube tu CV y pega una descripción del puesto para ver qué tan bien coinciden. Te mostraré qué habilidades tienes y cuáles podrías añadir.",
+        'discovery': "Esta sección te ayuda a explorar caminos de carrera según lo que te importa - como trabajo remoto, rango salarial o industria.",
+        'builder': "El CV Builder te ayuda a crear un currículum profesional paso a paso. Ingresa tus datos y te ayudaré a formatear todo correctamente.",
+        'debugger': "Esta es la Consola de Desarrollador donde puedes ver cómo funciona el sistema de coincidencias. Es principalmente para pruebas.",
+        'fallback': "Estoy aquí para ayudarte a navegar la plataforma. Solo dime qué necesitas."
+    },
+    'fr': {
+        'default': "Je suis Ruben, votre consultant carrière. Comment puis-je vous aider aujourd'hui?",
+        'greeting': "Bonjour. Je suis Ruben, un consultant carrière professionnel. Je suis ici pour vous aider à naviguer cet outil IA et optimiser votre stratégie de carrière.",
+        'landing': "Bonjour, je suis là pour vous aider. Commencez par Career Discovery pour explorer les parcours professionnels, ou CV Evaluation pour analyser votre CV.",
+        'cv_eval': "Téléchargez votre CV et collez une description de poste pour voir la correspondance. Je vous montrerai vos compétences et celles à ajouter.",
+        'discovery': "Cette section vous aide à explorer les parcours de carrière selon vos préférences - télétravail, salaire ou secteur.",
+        'builder': "Le CV Builder vous aide à créer un CV professionnel étape par étape. Entrez vos détails et je vous aiderai à tout formater.",
+        'debugger': "C'est la Console Développeur où vous pouvez voir le fonctionnement du système. C'est principalement pour les tests.",
+        'fallback': "Je suis là pour vous aider à naviguer la plateforme. Dites-moi ce dont vous avez besoin."
+    },
+    'de': {
+        'default': "Ich bin Ruben, Ihr Karriereberater. Wie kann ich Ihnen heute helfen?",
+        'greeting': "Hallo. Ich bin Ruben, ein professioneller Karriereberater. Ich bin hier, um Ihnen bei der Navigation dieses KI-Tools zu helfen.",
+        'landing': "Hallo, ich bin hier um zu helfen. Beginnen Sie mit Career Discovery, um Karrierewege zu erkunden, oder CV Evaluation, um Ihren Lebenslauf zu analysieren.",
+        'cv_eval': "Laden Sie Ihren Lebenslauf hoch und fügen Sie eine Stellenbeschreibung ein, um die Übereinstimmung zu sehen.",
+        'discovery': "Dieser Bereich hilft Ihnen, Karrierewege basierend auf Ihren Präferenzen zu erkunden - Remote-Arbeit, Gehalt oder Branche.",
+        'builder': "Der CV Builder hilft Ihnen, einen professionellen Lebenslauf Schritt für Schritt zu erstellen.",
+        'debugger': "Dies ist die Entwicklerkonsole, wo Sie sehen können, wie das Matching-System funktioniert.",
+        'fallback': "Ich bin hier, um Ihnen bei der Navigation der Plattform zu helfen. Sagen Sie mir, was Sie brauchen."
+    },
+    'pt': {
+        'default': "Sou Ruben, seu consultor de carreira. Como posso ajudá-lo hoje?",
+        'greeting': "Olá. Sou Ruben, um consultor de carreira profissional. Estou aqui para ajudá-lo a navegar nesta ferramenta de IA.",
+        'landing': "Olá, estou aqui para ajudar. Comece com Career Discovery para explorar caminhos de carreira, ou CV Evaluation para analisar seu currículo.",
+        'cv_eval': "Carregue seu CV e cole uma descrição de vaga para ver a correspondência. Mostrarei suas competências e o que adicionar.",
+        'discovery': "Esta seção ajuda você a explorar caminhos de carreira com base em suas preferências - trabalho remoto, faixa salarial ou setor.",
+        'builder': "O CV Builder ajuda você a criar um currículo profissional passo a passo. Insira seus dados e ajudarei a formatar tudo.",
+        'debugger': "Este é o Console de Desenvolvedor onde você pode ver como o sistema de correspondência funciona.",
+        'fallback': "Estou aqui para ajudá-lo a navegar na plataforma. Diga-me o que você precisa."
+    }
+}
+
+
 def get_chatbot_response(message: str, current_page: str = "Landing") -> str:
     """
-    RUBEN AI CAREER CONSULTANT
-    ==========================
-    - Language: English Only
+    RUBEN AI CAREER CONSULTANT - MULTILINGUAL & COMPREHENSIVE
+    ==========================================================
+    - Language: Auto-detected (EN, IT, ES, FR, DE, PT)
+    - Default: English
     - Style: Professional, Human-like, No Emojis
-    - Focus: Service guidance and KDD process explanation
+    - Topics: Career advice, interview prep, skills, resume tips, salary, and more
     """
+    # Detect language (default English)
+    lang = _detect_chat_language(message) if message else 'en'
+    responses = _RUBEN_RESPONSES.get(lang, _RUBEN_RESPONSES['en'])
+    
     if not message:
-        return "I am Ruben, your career consultant. How can I assist you with the platform today?"
+        return responses['default']
 
     msg_lower = message.lower()
     
+    # ==========================================================================
+    # EXTENDED TOPIC HANDLERS - Comprehensive Career Knowledge
+    # ==========================================================================
+    
     # 1. GREETING & IDENTITY
-    if any(kw in msg_lower for kw in ["hi", "hello", "hey", "who are you", "ciao"]):
-        return "Hello. I am Ruben, a professional career consultant. I am here to help you navigate this AI-powered toolkit and optimize your career strategy."
+    greeting_keywords = ["hi", "hello", "hey", "who are you", "ciao", "salve", "buongiorno", 
+                         "chi sei", "hola", "buenos", "bonjour", "salut", "hallo", "guten", 
+                         "olá", "oi", "good morning", "good afternoon"]
+    if any(kw in msg_lower for kw in greeting_keywords):
+        return responses['greeting']
 
-    # 2. LANDING PAGE / GENERAL SERVICE INFO
-    if current_page == "Landing" or any(kw in msg_lower for kw in ["service", "how works", "project", "app"]):
-        return ("Hello, I'm here to help. Start with Career Discovery to explore job paths based on your preferences, "
-                "or CV Evaluation to analyze your resume against specific roles. Let me know if you have any questions.")
+    # 2. THANK YOU RESPONSES
+    thanks_keywords = ["thank", "thanks", "grazie", "merci", "danke", "gracias", "obrigado", "appreciated"]
+    if any(kw in msg_lower for kw in thanks_keywords):
+        thanks_resp = {
+            'en': "You're welcome! Let me know if you need anything else. I'm here to help with your career journey.",
+            'it': "Prego! Fammi sapere se hai bisogno di altro. Sono qui per aiutarti nel tuo percorso di carriera.",
+            'es': "¡De nada! Avísame si necesitas algo más. Estoy aquí para ayudarte en tu carrera.",
+            'fr': "Je vous en prie! N'hésitez pas si vous avez d'autres questions. Je suis là pour vous aider.",
+            'de': "Gern geschehen! Lassen Sie mich wissen, wenn Sie weitere Hilfe benötigen.",
+            'pt': "De nada! Me avise se precisar de mais alguma coisa."
+        }
+        return thanks_resp.get(lang, thanks_resp['en'])
 
-    # 3. CV EVALUATION / ANALYSIS HELP
-    if current_page == "CV Evaluation" or any(kw in msg_lower for kw in ["evaluation", "analysis", "score", "match"]):
-        return ("Upload your CV and paste a Job Description to see how well they match. "
-                "I'll highlight what skills you have, which ones are transferable, and what you might want to add to your profile.")
+    # 3. INTERVIEW PREPARATION
+    interview_keywords = ["interview", "colloquio", "entrevista", "entretien", "vorstellungsgespräch",
+                          "prepare", "preparare", "question", "domande", "nervous", "tips"]
+    if any(kw in msg_lower for kw in interview_keywords):
+        interview_resp = {
+            'en': "Great question about interviews! Here are my tips: 1) Research the company thoroughly. 2) Use the STAR method (Situation, Task, Action, Result) for behavioral questions. 3) Prepare 3-5 questions to ask the interviewer. 4) Practice common questions like 'Tell me about yourself' and 'Why this role?'. 5) Arrive early and dress appropriately. Would you like specific advice on technical interviews or behavioral questions?",
+            'it': "Ottima domanda sui colloqui! Ecco i miei consigli: 1) Fai ricerche approfondite sull'azienda. 2) Usa il metodo STAR per le domande comportamentali. 3) Prepara 3-5 domande da fare al recruiter. 4) Esercitati con domande comuni come 'Mi parli di lei' e 'Perché questa posizione?'. 5) Arriva in anticipo e vestiti in modo appropriato.",
+            'es': "¡Buena pregunta sobre entrevistas! Mis consejos: 1) Investiga la empresa. 2) Usa el método STAR para preguntas de comportamiento. 3) Prepara preguntas para el entrevistador. 4) Practica preguntas comunes. 5) Llega temprano y vístete apropiadamente.",
+            'fr': "Bonne question sur les entretiens! Mes conseils: 1) Recherchez l'entreprise. 2) Utilisez la méthode STAR. 3) Préparez des questions. 4) Entraînez-vous aux questions courantes. 5) Arrivez tôt.",
+            'de': "Gute Frage zu Vorstellungsgesprächen! Meine Tipps: 1) Recherchieren Sie das Unternehmen. 2) Verwenden Sie die STAR-Methode. 3) Bereiten Sie Fragen vor. 4) Üben Sie häufige Fragen. 5) Kommen Sie früh an.",
+            'pt': "Ótima pergunta sobre entrevistas! Minhas dicas: 1) Pesquise a empresa. 2) Use o método STAR. 3) Prepare perguntas. 4) Pratique perguntas comuns. 5) Chegue cedo."
+        }
+        return interview_resp.get(lang, interview_resp['en'])
 
-    # 4. CAREER DISCOVERY HELP
-    if current_page == "Career Discovery" or any(kw in msg_lower for kw in ["discovery", "compass", "lifestyle", "preferences"]):
-        return ("This section helps you explore career paths based on what matters to you - like remote work, salary range, or industry. "
-                "Set your preferences and I'll show you roles that might be a good fit.")
+    # 4. SALARY & NEGOTIATION
+    salary_keywords = ["salary", "stipendio", "salario", "salaire", "gehalt", "pay", "money", 
+                       "negotiate", "compensation", "offer", "quanto guadagna", "how much earn"]
+    if any(kw in msg_lower for kw in salary_keywords):
+        salary_resp = {
+            'en': "Salary negotiation is crucial! My advice: 1) Research market rates on Glassdoor, LinkedIn Salary, or levels.fyi. 2) Never give a number first - ask for their range. 3) Consider total compensation: base + bonus + equity + benefits. 4) Practice saying 'I'm looking for a salary in the range of X-Y based on my experience and market research.' 5) Remember: it's a negotiation, not a confrontation. The Career Discovery section shows salary ranges for different roles.",
+            'it': "La negoziazione dello stipendio è fondamentale! I miei consigli: 1) Cerca le tariffe di mercato su Glassdoor e LinkedIn. 2) Non dare mai un numero per primo - chiedi il loro range. 3) Considera la compensazione totale: base + bonus + benefit. 4) Ricorda: è una negoziazione, non uno scontro. La sezione Career Discovery mostra le fasce salariali per diversi ruoli.",
+            'es': "¡La negociación salarial es crucial! Mis consejos: 1) Investiga tarifas en Glassdoor y LinkedIn. 2) No des un número primero. 3) Considera compensación total. 4) Practica tu respuesta. La sección Career Discovery muestra rangos salariales.",
+            'fr': "La négociation salariale est cruciale! Mes conseils: 1) Recherchez les taux du marché. 2) Ne donnez jamais un chiffre en premier. 3) Considérez la rémunération totale. 4) C'est une négociation, pas une confrontation.",
+            'de': "Gehaltsverhandlung ist wichtig! Meine Tipps: 1) Recherchieren Sie Marktpreise. 2) Nennen Sie nie zuerst eine Zahl. 3) Berücksichtigen Sie Gesamtvergütung. 4) Es ist eine Verhandlung, keine Konfrontation.",
+            'pt': "Negociação salarial é crucial! Minhas dicas: 1) Pesquise taxas de mercado. 2) Nunca diga um número primeiro. 3) Considere compensação total. 4) É uma negociação, não confronto."
+        }
+        return salary_resp.get(lang, salary_resp['en'])
 
-    # 5. CV BUILDER HELP
-    if current_page == "CV Builder" or any(kw in msg_lower for kw in ["builder", "create", "write", "ats"]):
-        return ("The CV Builder helps you create a clean, professional resume step by step. "
-                "Fill in your details and I'll help you format everything properly.")
+    # 5. SKILLS & LEARNING
+    skills_keywords = ["skill", "competenz", "learn", "impara", "study", "course", "certification", 
+                       "certificazione", "cosa studiare", "what to learn", "improve", "migliorare"]
+    if any(kw in msg_lower for kw in skills_keywords):
+        skills_resp = {
+            'en': "For skill development, I recommend: 1) Identify gaps using our CV Evaluation tool. 2) Focus on in-demand skills for your target role. 3) Mix theory (courses) with practice (projects). 4) Top platforms: Coursera, Udemy, LinkedIn Learning, freeCodeCamp. 5) Build a portfolio to showcase your work. 6) Get certifications relevant to your field (AWS, Google, Microsoft). Would you like recommendations for your specific career path?",
+            'it': "Per lo sviluppo delle competenze, consiglio: 1) Identifica le lacune usando il nostro strumento CV Evaluation. 2) Concentrati sulle skill richieste per il tuo ruolo target. 3) Combina teoria (corsi) con pratica (progetti). 4) Piattaforme top: Coursera, Udemy, LinkedIn Learning. 5) Costruisci un portfolio. 6) Ottieni certificazioni rilevanti. Vuoi raccomandazioni per il tuo percorso specifico?",
+            'es': "Para desarrollo de habilidades: 1) Identifica brechas con CV Evaluation. 2) Enfócate en habilidades demandadas. 3) Combina teoría con práctica. 4) Plataformas: Coursera, Udemy. 5) Construye un portafolio. 6) Obtén certificaciones.",
+            'fr': "Pour le développement des compétences: 1) Identifiez les lacunes. 2) Concentrez-vous sur les compétences demandées. 3) Mélangez théorie et pratique. 4) Plateformes: Coursera, Udemy. 5) Créez un portfolio.",
+            'de': "Für Kompetenzentwicklung: 1) Identifizieren Sie Lücken. 2) Fokussieren Sie auf gefragte Fähigkeiten. 3) Mischen Sie Theorie und Praxis. 4) Plattformen: Coursera, Udemy. 5) Erstellen Sie ein Portfolio.",
+            'pt': "Para desenvolvimento de habilidades: 1) Identifique lacunas. 2) Foque em habilidades demandadas. 3) Misture teoria e prática. 4) Plataformas: Coursera, Udemy. 5) Crie um portfólio."
+        }
+        return skills_resp.get(lang, skills_resp['en'])
 
-    # 6. DEVELOPER CONSOLE
-    if current_page == "Debugger" or any(kw in msg_lower for kw in ["debug", "ml", "logic", "algorithm", "cluster"]):
-        return ("This is the Developer Console where you can see how the matching system works behind the scenes. "
-                "It's mainly for testing and development purposes.")
+    # 6. RESUME / CV TIPS
+    resume_keywords = ["resume", "cv", "curriculum", "lebenslauf", "format", "template", 
+                       "ats", "layout", "come scrivere", "how to write"]
+    if any(kw in msg_lower for kw in resume_keywords):
+        resume_resp = {
+            'en': "CV best practices: 1) Keep it 1-2 pages max. 2) Use a clean, ATS-friendly format (no tables, graphics). 3) Lead with a strong summary/headline. 4) Use bullet points with action verbs (Developed, Led, Improved). 5) Quantify achievements (Increased sales by 30%). 6) Tailor it for each job - use keywords from the JD. 7) Proofread carefully! Try our CV Builder for a guided experience.",
+            'it': "Best practice per il CV: 1) Massimo 1-2 pagine. 2) Usa un formato pulito, compatibile ATS. 3) Inizia con un sommario forte. 4) Usa punti elenco con verbi d'azione. 5) Quantifica i risultati. 6) Adattalo per ogni lavoro - usa le keyword dalla JD. 7) Rileggi attentamente! Prova il nostro CV Builder.",
+            'es': "Mejores prácticas de CV: 1) Máximo 1-2 páginas. 2) Formato limpio compatible con ATS. 3) Comienza con un resumen fuerte. 4) Usa viñetas con verbos de acción. 5) Cuantifica logros. 6) Personaliza para cada trabajo. Prueba nuestro CV Builder.",
+            'fr': "Bonnes pratiques CV: 1) Maximum 1-2 pages. 2) Format propre compatible ATS. 3) Commencez par un résumé fort. 4) Utilisez des puces avec verbes d'action. 5) Quantifiez les réalisations. Essayez notre CV Builder.",
+            'de': "CV Best Practices: 1) Maximal 1-2 Seiten. 2) Sauberes ATS-kompatibles Format. 3) Beginnen Sie mit einer starken Zusammenfassung. 4) Verwenden Sie Aufzählungspunkte mit Aktionsverben. 5) Quantifizieren Sie Erfolge.",
+            'pt': "Melhores práticas de CV: 1) Máximo 1-2 páginas. 2) Formato limpo compatível ATS. 3) Comece com um resumo forte. 4) Use marcadores com verbos de ação. 5) Quantifique conquistas."
+        }
+        return resume_resp.get(lang, resume_resp['en'])
 
-    # 7. UNIVERSAL FALLBACK
-    return ("I'm here to help you navigate the platform. Whether you're exploring career options, analyzing your CV, "
-            "or building a new resume, just let me know what you need.")
+    # 7. CAREER CHANGE / TRANSITION
+    career_change_keywords = ["career change", "cambio carriera", "cambiar carrera", "changer carrière",
+                              "switch", "transition", "new field", "different job", "reinvent"]
+    if any(kw in msg_lower for kw in career_change_keywords):
+        change_resp = {
+            'en': "Career transitions are possible! Here's my advice: 1) Identify transferable skills from your current role. 2) Bridge skill gaps with courses or certifications. 3) Network in your target industry (LinkedIn, events). 4) Consider lateral moves or hybrid roles as stepping stones. 5) Update your narrative - why this change makes sense. 6) Be patient - it may take 6-12 months. Use our Career Discovery to find roles that match your existing skills!",
+            'it': "Le transizioni di carriera sono possibili! Ecco i miei consigli: 1) Identifica le skill trasferibili. 2) Colma le lacune con corsi o certificazioni. 3) Fai networking nel tuo settore target. 4) Considera ruoli ibridi come trampolino. 5) Aggiorna la tua narrazione. 6) Sii paziente - potrebbero volerci 6-12 mesi. Usa Career Discovery per trovare ruoli che corrispondono alle tue skill!",
+            'es': "¡Las transiciones de carrera son posibles! 1) Identifica habilidades transferibles. 2) Llena brechas con cursos. 3) Haz networking en tu industria objetivo. 4) Considera roles híbridos. 5) Actualiza tu narrativa. 6) Ten paciencia.",
+            'fr': "Les transitions de carrière sont possibles! 1) Identifiez les compétences transférables. 2) Comblez les lacunes avec des cours. 3) Réseautez dans votre industrie cible. 4) Considérez des rôles hybrides. 5) Soyez patient.",
+            'de': "Karrierewechsel sind möglich! 1) Identifizieren Sie übertragbare Fähigkeiten. 2) Schließen Sie Lücken mit Kursen. 3) Netzwerken Sie in Ihrer Zielbranche. 4) Erwägen Sie Hybridrollen. 5) Seien Sie geduldig.",
+            'pt': "Transições de carreira são possíveis! 1) Identifique habilidades transferíveis. 2) Preencha lacunas com cursos. 3) Faça networking na sua indústria alvo. 4) Considere funções híbridas. 5) Seja paciente."
+        }
+        return change_resp.get(lang, change_resp['en'])
+
+    # 8. REMOTE WORK
+    remote_keywords = ["remote", "remoto", "télétravail", "work from home", "smart working", 
+                       "lavoro da casa", "hybrid", "ibrido"]
+    if any(kw in msg_lower for kw in remote_keywords):
+        remote_resp = {
+            'en': "Remote work tips: 1) Highlight remote-specific skills: self-discipline, async communication, time management. 2) Mention your home office setup. 3) Show experience with remote tools (Slack, Zoom, Notion, Jira). 4) In Career Discovery, filter for 'Remote' roles. 5) For interviews, demonstrate you can work independently while staying connected. Many tech, marketing, and data roles are fully remote today!",
+            'it': "Consigli per il lavoro remoto: 1) Evidenzia competenze specifiche: autodisciplina, comunicazione asincrona, gestione del tempo. 2) Menziona il tuo setup home office. 3) Mostra esperienza con strumenti remoti (Slack, Zoom, Notion). 4) In Career Discovery, filtra per ruoli 'Remote'. Molti ruoli tech, marketing e data sono completamente remoti!",
+            'es': "Consejos para trabajo remoto: 1) Destaca habilidades específicas: autodisciplina, comunicación asíncrona. 2) Menciona tu configuración de oficina en casa. 3) Muestra experiencia con herramientas remotas. 4) En Career Discovery, filtra por 'Remote'.",
+            'fr': "Conseils télétravail: 1) Mettez en avant des compétences spécifiques: autodiscipline, communication asynchrone. 2) Mentionnez votre bureau à domicile. 3) Montrez votre expérience avec les outils à distance.",
+            'de': "Remote-Arbeit Tipps: 1) Heben Sie spezifische Fähigkeiten hervor: Selbstdisziplin, asynchrone Kommunikation. 2) Erwähnen Sie Ihr Homeoffice-Setup. 3) Zeigen Sie Erfahrung mit Remote-Tools.",
+            'pt': "Dicas para trabalho remoto: 1) Destaque habilidades específicas: autodisciplina, comunicação assíncrona. 2) Mencione seu setup de home office. 3) Mostre experiência com ferramentas remotas."
+        }
+        return remote_resp.get(lang, remote_resp['en'])
+
+    # 9. NETWORKING
+    networking_keywords = ["network", "linkedin", "connect", "contatti", "connections", "referral"]
+    if any(kw in msg_lower for kw in networking_keywords):
+        network_resp = {
+            'en': "Networking is key! My tips: 1) Optimize your LinkedIn profile - professional photo, compelling headline, detailed experience. 2) Connect with intention - personalize connection requests. 3) Engage with content - comment, share, post. 4) Attend industry events (virtual or in-person). 5) Informational interviews are powerful - ask for 15 minutes to learn about their role. 6) Follow up and maintain relationships. 80% of jobs are found through networking!",
+            'it': "Il networking è fondamentale! I miei consigli: 1) Ottimizza il tuo profilo LinkedIn - foto professionale, headline accattivante. 2) Connettiti con intenzione - personalizza le richieste. 3) Interagisci con i contenuti. 4) Partecipa a eventi del settore. 5) Le interviste informative sono potenti. 6) Mantieni le relazioni. L'80% dei lavori si trova tramite networking!",
+            'es': "¡El networking es clave! 1) Optimiza tu perfil de LinkedIn. 2) Conéctate con intención. 3) Interactúa con contenido. 4) Asiste a eventos de la industria. 5) Las entrevistas informativas son poderosas. ¡El 80% de los trabajos se encuentran a través del networking!",
+            'fr': "Le réseautage est la clé! 1) Optimisez votre profil LinkedIn. 2) Connectez-vous avec intention. 3) Engagez-vous avec le contenu. 4) Participez à des événements. 80% des emplois sont trouvés par le réseautage!",
+            'de': "Networking ist der Schlüssel! 1) Optimieren Sie Ihr LinkedIn-Profil. 2) Vernetzen Sie sich gezielt. 3) Engagieren Sie sich mit Inhalten. 4) Besuchen Sie Branchenveranstaltungen. 80% der Jobs werden durch Networking gefunden!",
+            'pt': "Networking é fundamental! 1) Otimize seu perfil LinkedIn. 2) Conecte-se com intenção. 3) Interaja com conteúdo. 4) Participe de eventos. 80% dos empregos são encontrados através de networking!"
+        }
+        return network_resp.get(lang, network_resp['en'])
+
+    # 10. COVER LETTER
+    cover_letter_keywords = ["cover letter", "lettera", "carta", "lettre", "anschreiben", "motivazionale"]
+    if any(kw in msg_lower for kw in cover_letter_keywords):
+        cl_resp = {
+            'en': "Cover letter tips: 1) Address it to a specific person if possible. 2) Open with a hook - why THIS company? 3) Match your skills to their needs - use keywords from the JD. 4) Show enthusiasm and fit. 5) Keep it to 3-4 paragraphs, one page max. 6) End with a clear call to action. Our CV Evaluation can analyze your cover letter!",
+            'it': "Consigli per la lettera motivazionale: 1) Indirizzala a una persona specifica se possibile. 2) Apri con un gancio - perché QUESTA azienda? 3) Abbina le tue skill alle loro esigenze. 4) Mostra entusiasmo. 5) Max 3-4 paragrafi, una pagina. Il nostro CV Evaluation può analizzare la tua lettera!",
+            'es': "Consejos para carta de presentación: 1) Dirígela a una persona específica. 2) Abre con un gancho. 3) Relaciona tus habilidades con sus necesidades. 4) Muestra entusiasmo. 5) Máximo 3-4 párrafos.",
+            'fr': "Conseils lettre de motivation: 1) Adressez-la à une personne spécifique. 2) Commencez par une accroche. 3) Reliez vos compétences à leurs besoins. 4) Montrez votre enthousiasme. 5) Maximum 3-4 paragraphes.",
+            'de': "Anschreiben-Tipps: 1) Adressieren Sie es an eine bestimmte Person. 2) Beginnen Sie mit einem Hook. 3) Verbinden Sie Ihre Fähigkeiten mit deren Bedürfnissen. 4) Zeigen Sie Begeisterung. 5) Maximal 3-4 Absätze.",
+            'pt': "Dicas para carta de apresentação: 1) Enderece a uma pessoa específica. 2) Comece com um gancho. 3) Relacione suas habilidades às necessidades deles. 4) Mostre entusiasmo. 5) Máximo 3-4 parágrafos."
+        }
+        return cl_resp.get(lang, cl_resp['en'])
+
+    # 11. JOB SEARCH STRATEGY
+    job_search_keywords = ["find job", "cerca lavoro", "buscar trabajo", "job search", "looking for", 
+                           "cerco", "apply", "application", "candidatura"]
+    if any(kw in msg_lower for kw in job_search_keywords):
+        job_search_resp = {
+            'en': "Job search strategy: 1) Set clear goals - target role, industry, location. 2) Tailor your CV for each application. 3) Apply strategically - quality over quantity. 4) Use multiple channels: LinkedIn, Indeed, company websites, referrals. 5) Track your applications in a spreadsheet. 6) Follow up after 1-2 weeks. 7) Stay positive - job searching is a numbers game! Use our tools: CV Evaluation to optimize, Career Discovery to find matches.",
+            'it': "Strategia di ricerca lavoro: 1) Definisci obiettivi chiari - ruolo target, settore, location. 2) Adatta il CV per ogni candidatura. 3) Candidati strategicamente - qualità su quantità. 4) Usa più canali: LinkedIn, Indeed, siti aziendali, referral. 5) Traccia le candidature. 6) Fai follow up dopo 1-2 settimane. 7) Resta positivo! Usa i nostri strumenti: CV Evaluation e Career Discovery.",
+            'es': "Estrategia de búsqueda de empleo: 1) Define objetivos claros. 2) Personaliza tu CV. 3) Postúlate estratégicamente. 4) Usa múltiples canales. 5) Rastrea tus solicitudes. 6) Haz seguimiento. 7) ¡Mantente positivo!",
+            'fr': "Stratégie de recherche d'emploi: 1) Définissez des objectifs clairs. 2) Personnalisez votre CV. 3) Postulez stratégiquement. 4) Utilisez plusieurs canaux. 5) Suivez vos candidatures. 6) Faites un suivi. 7) Restez positif!",
+            'de': "Job-Suchstrategie: 1) Setzen Sie klare Ziele. 2) Passen Sie Ihren Lebenslauf an. 3) Bewerben Sie sich strategisch. 4) Nutzen Sie mehrere Kanäle. 5) Verfolgen Sie Ihre Bewerbungen. 6) Machen Sie Follow-ups. 7) Bleiben Sie positiv!",
+            'pt': "Estratégia de busca de emprego: 1) Defina objetivos claros. 2) Personalize seu CV. 3) Candidate-se estrategicamente. 4) Use múltiplos canais. 5) Rastreie suas candidaturas. 6) Faça follow-up. 7) Mantenha-se positivo!"
+        }
+        return job_search_resp.get(lang, job_search_resp['en'])
+
+    # 12. PLATFORM-SPECIFIC PAGES (Original handlers)
+    if current_page == "Landing" or any(kw in msg_lower for kw in ["service", "how works", "project", "app", "servizio", "come funziona", "progetto"]):
+        return responses['landing']
+
+    if current_page == "CV Evaluation" or any(kw in msg_lower for kw in ["evaluation", "analysis", "score", "match", "valutazione", "analisi", "punteggio"]):
+        return responses['cv_eval']
+
+    if current_page == "Career Discovery" or any(kw in msg_lower for kw in ["discovery", "compass", "lifestyle", "preferences", "scoperta", "preferenze"]):
+        return responses['discovery']
+
+    if current_page == "CV Builder" or any(kw in msg_lower for kw in ["builder", "costruisci", "crea", "scrivi"]):
+        return responses['builder']
+
+    if current_page == "Debugger" or any(kw in msg_lower for kw in ["debug", "ml", "logic", "algorithm", "cluster", "algoritmo", "logica"]):
+        return responses['debugger']
+
+    # 13. GENERAL QUESTIONS ABOUT PLATFORM
+    help_keywords = ["help", "aiuto", "ayuda", "aide", "hilfe", "what can", "cosa puoi", "cosa fai"]
+    if any(kw in msg_lower for kw in help_keywords):
+        help_resp = {
+            'en': "I can help you with: 1) CV/Resume optimization and analysis. 2) Career path exploration and job matching. 3) Interview preparation tips. 4) Salary negotiation advice. 5) Skill development recommendations. 6) Cover letter guidance. 7) Networking strategies. 8) Job search tactics. Just ask me anything career-related!",
+            'it': "Posso aiutarti con: 1) Ottimizzazione e analisi del CV. 2) Esplorazione percorsi di carriera. 3) Consigli per i colloqui. 4) Negoziazione stipendio. 5) Sviluppo competenze. 6) Lettera motivazionale. 7) Strategie di networking. 8) Tattiche di ricerca lavoro. Chiedimi qualsiasi cosa sulla carriera!",
+            'es': "Puedo ayudarte con: 1) Optimización de CV. 2) Exploración de carreras. 3) Preparación para entrevistas. 4) Negociación salarial. 5) Desarrollo de habilidades. 6) Carta de presentación. 7) Networking. 8) Búsqueda de empleo.",
+            'fr': "Je peux vous aider avec: 1) Optimisation du CV. 2) Exploration de carrière. 3) Préparation d'entretien. 4) Négociation salariale. 5) Développement des compétences. 6) Lettre de motivation. 7) Réseautage. 8) Recherche d'emploi.",
+            'de': "Ich kann Ihnen helfen mit: 1) Lebenslauf-Optimierung. 2) Karriereerkundung. 3) Interview-Vorbereitung. 4) Gehaltsverhandlung. 5) Kompetenzentwicklung. 6) Anschreiben. 7) Networking. 8) Jobsuche.",
+            'pt': "Posso ajudá-lo com: 1) Otimização de CV. 2) Exploração de carreira. 3) Preparação para entrevistas. 4) Negociação salarial. 5) Desenvolvimento de habilidades. 6) Carta de apresentação. 7) Networking. 8) Busca de emprego."
+        }
+        return help_resp.get(lang, help_resp['en'])
+
+    # 14. WHY / EXPLANATION QUESTIONS
+    if any(kw in msg_lower for kw in ["why", "perché", "por qué", "pourquoi", "warum", "explain", "spiega"]):
+        why_resp = {
+            'en': "Good question! Could you be more specific about what you'd like me to explain? I can help with: why certain skills are important, why match percentages work the way they do, why you should tailor your CV, or any other career-related topic.",
+            'it': "Bella domanda! Potresti essere più specifico su cosa vorresti che ti spiegassi? Posso aiutarti a capire: perché certe competenze sono importanti, come funzionano le percentuali di match, perché dovresti personalizzare il CV, o qualsiasi altro argomento sulla carriera.",
+            'es': "¡Buena pregunta! ¿Podrías ser más específico? Puedo ayudarte a entender: por qué ciertas habilidades son importantes, cómo funcionan los porcentajes de coincidencia, o cualquier tema de carrera.",
+            'fr': "Bonne question! Pourriez-vous être plus précis? Je peux vous aider à comprendre: pourquoi certaines compétences sont importantes, comment fonctionnent les pourcentages de correspondance.",
+            'de': "Gute Frage! Könnten Sie genauer sein? Ich kann Ihnen erklären: warum bestimmte Fähigkeiten wichtig sind, wie die Match-Prozentsätze funktionieren.",
+            'pt': "Boa pergunta! Poderia ser mais específico? Posso ajudá-lo a entender: por que certas habilidades são importantes, como funcionam as porcentagens de correspondência."
+        }
+        return why_resp.get(lang, why_resp['en'])
+
+    # 15. INTELLIGENT FALLBACK - Acknowledge the question
+    fallback_resp = {
+        'en': f"I understand you're asking about '{message[:50]}...'. While I may not have a specific answer for that, I'm an expert in career development. I can help with CV optimization, interview preparation, career exploration, salary negotiation, skill development, and job search strategies. What career topic can I assist you with?",
+        'it': f"Capisco che stai chiedendo di '{message[:50]}...'. Anche se potrei non avere una risposta specifica, sono un esperto di sviluppo di carriera. Posso aiutarti con ottimizzazione CV, preparazione colloqui, esplorazione carriera, negoziazione stipendio, sviluppo competenze e strategie di ricerca lavoro. Con quale argomento posso assisterti?",
+        'es': f"Entiendo que preguntas sobre '{message[:50]}...'. Aunque no tenga una respuesta específica, soy experto en desarrollo de carrera. Puedo ayudarte con CV, entrevistas, exploración de carrera, negociación salarial. ¿En qué tema puedo asistirte?",
+        'fr': f"Je comprends que vous posez une question sur '{message[:50]}...'. Je suis un expert en développement de carrière. Je peux vous aider avec CV, entretiens, exploration de carrière, négociation salariale. Comment puis-je vous aider?",
+        'de': f"Ich verstehe, dass Sie nach '{message[:50]}...' fragen. Ich bin Experte für Karriereentwicklung. Ich kann Ihnen bei Lebenslauf, Vorstellungsgesprächen, Karriereerkundung, Gehaltsverhandlung helfen. Wie kann ich Ihnen helfen?",
+        'pt': f"Entendo que você está perguntando sobre '{message[:50]}...'. Sou especialista em desenvolvimento de carreira. Posso ajudá-lo com CV, entrevistas, exploração de carreira, negociação salarial. Como posso ajudá-lo?"
+    }
+    return fallback_resp.get(lang, fallback_resp['en'])
 

@@ -813,8 +813,329 @@ hr {
         font-size: 1.25rem;
     }
 }
+
+/* =============================================================================
+   CROSS-BROWSER COMPATIBILITY FIXES
+   ============================================================================= 
+   Ensures consistent rendering across:
+   - Chrome, Firefox, Safari, Edge
+   - iOS Safari, Android Chrome
+   - macOS Safari
+   ============================================================================= */
+
+/* 1. FLEXBOX CROSS-BROWSER PREFIXES */
+.glass-card,
+.metric-card,
+.hero-gradient,
+.sidebar-chat-container,
+.landing-chat-popup {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+/* 2. BACKDROP-FILTER (Safari/iOS Fix) */
+.glass-card {
+    /* Standard */
+    backdrop-filter: blur(10px);
+    /* Safari/WebKit */
+    -webkit-backdrop-filter: blur(10px);
+    /* Fallback for unsupported browsers */
+}
+
+@supports not (backdrop-filter: blur(10px)) {
+    .glass-card {
+        background: rgba(22, 27, 34, 0.95) !important;
+    }
+}
+
+/* 3. SMOOTH SCROLLING - Cross Browser */
+html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
+}
+
+/* 4. BORDER-RADIUS CONSISTENCY (Old Safari) */
+.stButton > button,
+.glass-card,
+.metric-card,
+.skill-tag-matched,
+.skill-tag-missing,
+.skill-tag-transferable,
+.skill-tag-project,
+.skill-tag-bonus {
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+}
+
+/* 5. BOX-SIZING FIX (Universal) */
+*, *::before, *::after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/* 6. TRANSFORM/TRANSITION PREFIXES */
+.stButton > button:hover,
+.glass-card:hover,
+.metric-card:hover {
+    -webkit-transform: translateY(-2px);
+    -moz-transform: translateY(-2px);
+    -ms-transform: translateY(-2px);
+    transform: translateY(-2px);
+    
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+/* 7. GRADIENT TEXT (Cross-Browser Including Firefox) */
+h1 {
+    background: linear-gradient(90deg, var(--primary-light), var(--primary-blue), var(--primary-dark));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    /* Firefox fallback */
+    color: var(--primary-blue);
+}
+
+@supports (-moz-appearance:none) {
+    h1 {
+        background: none !important;
+        color: var(--primary-blue) !important;
+        -webkit-text-fill-color: var(--primary-blue) !important;
+    }
+}
+
+/* 8. iOS SAFARI SPECIFIC FIXES */
+@supports (-webkit-touch-callout: none) {
+    /* iOS only */
+    .stApp {
+        /* Prevent unwanted zoom on input focus */
+        touch-action: manipulation;
+    }
+    
+    .stTextArea textarea,
+    .stTextInput input {
+        /* Prevent iOS zoom on focus */
+        font-size: 16px !important;
+    }
+    
+    /* Fix iOS button styling */
+    .stButton > button {
+        -webkit-appearance: none;
+        appearance: none;
+    }
+    
+    /* Fix position:fixed on iOS */
+    section[data-testid="stSidebar"] {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* 9. MOBILE TOUCH OPTIMIZATION */
+@media (pointer: coarse) {
+    /* Increase touch targets */
+    .stButton > button {
+        min-height: 48px !important;
+        padding: 12px 24px !important;
+    }
+    
+    .skill-tag-matched,
+    .skill-tag-missing,
+    .skill-tag-transferable,
+    .skill-tag-project,
+    .skill-tag-bonus {
+        padding: 10px 18px !important;
+        margin: 6px !important;
+    }
+    
+    /* Disable hover effects on touch */
+    .stButton > button:hover,
+    .glass-card:hover,
+    .metric-card:hover {
+        transform: none !important;
+        -webkit-transform: none !important;
+    }
+    
+    /* Larger tap targets for links */
+    a {
+        padding: 8px 0;
+    }
+}
+
+/* 10. SMALL SCREEN MOBILE FIX (iPhone SE, etc.) */
+@media (max-width: 375px) {
+    .stButton > button {
+        padding: 10px 16px !important;
+        font-size: 14px !important;
+    }
+    
+    .glass-card,
+    .metric-card {
+        padding: 12px !important;
+        margin: 8px 0 !important;
+    }
+    
+    h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    h2 {
+        font-size: 1.25rem !important;
+    }
+    
+    .hero-gradient {
+        padding: 1rem !important;
+    }
+}
+
+/* 11. TABLET LANDSCAPE FIX */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    section[data-testid="stSidebar"] {
+        width: 280px !important;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        padding: 6px 10px !important;
+        font-size: 0.8rem !important;
+    }
+}
+
+/* 12. PRINT STYLES (For CV Export) */
+@media print {
+    .stApp {
+        background: white !important;
+    }
+    
+    .stButton,
+    section[data-testid="stSidebar"],
+    .stProgress,
+    [data-testid="collapsedControl"] {
+        display: none !important;
+    }
+    
+    .glass-card,
+    .metric-card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        page-break-inside: avoid;
+    }
+}
+
+/* 13. HIGH CONTRAST MODE SUPPORT */
+@media (prefers-contrast: high) {
+    :root {
+        --primary-blue: #0066cc;
+        --text-primary: #ffffff;
+        --text-secondary: #cccccc;
+        --bg-dark: #000000;
+        --bg-card: #1a1a1a;
+        --border-color: #ffffff;
+    }
+    
+    .skill-tag-matched,
+    .skill-tag-missing,
+    .skill-tag-transferable {
+        border-width: 2px !important;
+    }
+}
+
+/* 14. FORCED COLORS MODE (Windows High Contrast) */
+@media (forced-colors: active) {
+    .stButton > button {
+        border: 2px solid ButtonText !important;
+    }
+    
+    .glass-card,
+    .metric-card {
+        border: 1px solid CanvasText !important;
+    }
+}
+
+/* 15. SAFARI ANIMATION BUG FIX */
+@-webkit-keyframes fadeInUp {
+    from {
+        opacity: 0;
+        -webkit-transform: translateY(20px);
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+}
+
+/* 16. CHROME SCROLLBAR STYLING */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-blue);
+}
+
+/* Firefox scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) var(--bg-dark);
+}
+
+/* 17. SAFE AREA INSETS (iPhone X and later notch) */
+@supports (padding-top: env(safe-area-inset-top)) {
+    .stApp {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+}
+
+/* 18. DARK MODE FORCED BY STREAMLIT FIX */
+[data-theme="dark"] .stApp,
+.stApp[data-theme="dark"] {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%) !important;
+}
+
+/* 19. PREVENT LAYOUT SHIFT */
+.stButton > button,
+.stTextArea textarea,
+.stTextInput input {
+    contain: layout;
+}
+
+/* 20. FOCUS VISIBLE (Accessibility) */
+.stButton > button:focus-visible,
+.stTextArea textarea:focus-visible,
+.stTextInput input:focus-visible {
+    outline: 2px solid var(--primary-blue) !important;
+    outline-offset: 2px !important;
+}
+
+/* Hide focus ring for mouse users */
+.stButton > button:focus:not(:focus-visible),
+.stTextArea textarea:focus:not(:focus-visible),
+.stTextInput input:focus:not(:focus-visible) {
+    outline: none !important;
+}
+
 </style>
 """
 
 
 # DEMO DATA REMOVED FOR PRODUCTION
+
