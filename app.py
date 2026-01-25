@@ -2749,14 +2749,14 @@ def render_interview_prep():
                     st.rerun()
         
         with col2:
-            if st.button("🔄 New Session", use_container_width=True):
+            if st.button("New Session", use_container_width=True):
                 st.session_state["interview_questions"] = []
                 st.session_state["current_q_index"] = 0
                 st.session_state["interview_answers"] = {}
                 st.rerun()
         
         with col3:
-            if st.button("✨ Evaluate My Answer", type="primary", use_container_width=True):
+            if st.button("Evaluate My Answer", type="primary", use_container_width=True):
                 if answer.strip():
                     st.session_state["interview_answers"][q_idx] = answer
                     result = ml_utils.evaluate_interview_answer(current_q, answer)
@@ -2764,18 +2764,14 @@ def render_interview_prep():
                     # Score Colors
                     if result['score'] >= 60:
                         color, bg = "#00C853", "rgba(0, 200, 83, 0.1)"
-                        emoji = "🎉"
                     elif result['score'] >= 40:
                         color, bg = "#FFB300", "rgba(255, 179, 0, 0.1)"
-                        emoji = "👍"
                     else:
                         color, bg = "#E53935", "rgba(229, 57, 53, 0.1)"
-                        emoji = "📝"
                     
                     st.markdown(f"""
                     <div style="background: {bg}; border: 1px solid {color}; border-radius: 16px; 
                                 padding: 2rem; text-align: center; margin-top: 1rem;">
-                        <div style="font-size: 4rem; margin-bottom: 0.5rem;">{emoji}</div>
                         <div style="font-size: 2.5rem; font-weight: 700; color: {color};">{result['score']}%</div>
                         <div style="font-size: 1.2rem; font-weight: 600; color: {color}; margin: 0.5rem 0;">{result['rating']}</div>
                         <p style="color: var(--text-secondary); margin-top: 1rem;">{result['feedback']}</p>
@@ -2783,9 +2779,9 @@ def render_interview_prep():
                     """, unsafe_allow_html=True)
                     
                     if result['tips']:
-                        st.markdown("#### 💡 Tips to Improve")
+                        st.markdown("#### Tips to Improve")
                         for tip in result['tips']:
-                            st.info(f"→ {tip}")
+                            st.info(f"- {tip}")
                 else:
                     st.warning("Please write your answer before evaluating.")
         
@@ -2795,9 +2791,8 @@ def render_interview_prep():
                     st.session_state["current_q_index"] = q_idx + 1
                     st.rerun()
             else:
-                if st.button("✅ Finish", use_container_width=True):
+                if st.button("Finish", use_container_width=True):
                     st.session_state["interview_questions"] = []
-                    st.balloons()
                     st.rerun()
 
 
@@ -2814,7 +2809,7 @@ def render_market_trends():
     # Hero Section
     st.markdown("""
     <div class="hero-gradient" style="text-align: center; padding: 2.5rem;">
-        <h1 style="margin-bottom: 0.5rem;">📈 Job Market Trends</h1>
+        <h1 style="margin-bottom: 0.5rem;">Job Market Trends</h1>
         <p style="color: var(--text-secondary); font-size: 1.1rem;">
             Discover the most in-demand skills and industry growth patterns
         </p>
@@ -2822,7 +2817,7 @@ def render_market_trends():
     """, unsafe_allow_html=True)
     
     # Filters using radio buttons (no slider)
-    st.markdown("### 🎯 Filter Results")
+    st.markdown("### Filter Results")
     
     col1, col2 = st.columns(2)
     with col1:

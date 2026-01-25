@@ -786,18 +786,18 @@ hr {
         background: linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-card) 100%);
         border: 1px solid var(--primary-blue);
         border-radius: 16px;
-        padding: 2rem 3rem;
+        padding: 2rem;
         margin-left: auto !important;
         margin-right: auto !important;
-        margin-top: 3rem !important;
-        margin-bottom: 3rem !important;
-        width: calc(100% - 4rem) !important;
-        max-width: 900px !important;
+        margin-top: 2rem !important;
+        margin-bottom: 2rem !important;
+        max-width: 800px !important;
         display: flex !important;
         flex-direction: column !important;
-        align-items: flex-start !important;
-        text-align: left !important;
+        align-items: center !important;
+        text-align: center !important;
         gap: 0.75rem;
+    }
         animation: fadeInUp 0.8s ease-out;
         box-shadow: var(--shadow-lg), 0 0 30px rgba(0, 119, 181, 0.1);
     }
