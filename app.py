@@ -2647,44 +2647,41 @@ def render_interview_prep():
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown('<div class="config-card">', unsafe_allow_html=True)
-            st.markdown("#### Target Role")
-            role = st.selectbox(
-                "Select your target role",
-                ["Software Engineer", "Data Scientist", "Data Analyst", "Product Manager", "UX Designer", "General"],
-                label_visibility="collapsed",
-                key="role_selector"
-            )
-            st.markdown('</div>', unsafe_allow_html=True)
+            with st.container(border=True):
+                st.markdown("#### Target Role")
+                role = st.selectbox(
+                    "Select your target role",
+                    ["Software Engineer", "Data Scientist", "Data Analyst", "Product Manager", "UX Designer", "General"],
+                    label_visibility="collapsed",
+                    key="role_selector"
+                )
         
         with col2:
-            st.markdown('<div class="config-card">', unsafe_allow_html=True)
-            st.markdown("#### Question Type")
-            q_type = st.radio(
-                "Select question type",
-                ["Mixed (All Types)", "Behavioral", "Technical", "HR"],
-                horizontal=True,
-                label_visibility="collapsed",
-                key="q_type_selector"
-            )
-            st.markdown('</div>', unsafe_allow_html=True)
+            with st.container(border=True):
+                st.markdown("#### Question Type")
+                q_type = st.radio(
+                    "Select question type",
+                    ["Mixed (All Types)", "Behavioral", "Technical", "HR"],
+                    horizontal=True,
+                    label_visibility="collapsed",
+                    key="q_type_selector"
+                )
             q_type_map = {"Mixed (All Types)": "mixed", "Behavioral": "behavioral", "Technical": "technical", "HR": "hr"}
         
         # Spacer
         st.markdown('<div class="section-spacer"></div>', unsafe_allow_html=True)
 
         # Number of questions
-        st.markdown('<div class="config-card" style="min-height: auto;">', unsafe_allow_html=True)
-        st.markdown("#### Number of Questions")
-        num_questions = st.radio(
-            "How many questions?",
-            [3, 5, 7, 10],
-            horizontal=True,
-            index=1,
-            label_visibility="collapsed",
-            key="num_q_selector"
-        )
-        st.markdown('</div>', unsafe_allow_html=True)
+        with st.container(border=True):
+            st.markdown("#### Number of Questions")
+            num_questions = st.radio(
+                "How many questions?",
+                [3, 5, 7, 10],
+                horizontal=True,
+                index=1,
+                label_visibility="collapsed",
+                key="num_q_selector"
+            )
         
         st.markdown('<div class="section-spacer"></div>', unsafe_allow_html=True)
         
