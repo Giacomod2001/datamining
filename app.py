@@ -2641,13 +2641,13 @@ def render_interview_prep():
     questions = st.session_state.get("interview_questions", [])
     
     if not questions:
-        # Setup View - Two column layout with cards
+        # Setup View - Unified container for perfect alignment
         st.subheader("Configure Your Practice Session")
         
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            with st.container(border=True):
+        with st.container(border=True):
+            col1, col2 = st.columns(2)
+            
+            with col1:
                 st.markdown("#### Target Role")
                 role = st.selectbox(
                     "Select your target role",
@@ -2655,9 +2655,8 @@ def render_interview_prep():
                     label_visibility="collapsed",
                     key="role_selector"
                 )
-        
-        with col2:
-            with st.container(border=True):
+            
+            with col2:
                 st.markdown("#### Question Type")
                 q_type = st.radio(
                     "Select question type",
@@ -2666,14 +2665,15 @@ def render_interview_prep():
                     label_visibility="collapsed",
                     key="q_type_selector"
                 )
-            q_type_map = {"Mixed (All Types)": "mixed", "Behavioral": "behavioral", "Technical": "technical", "HR": "hr"}
+        
+        q_type_map = {"Mixed (All Types)": "mixed", "Behavioral": "behavioral", "Technical": "technical", "HR": "hr"}
         
         # Spacer
         st.markdown('<div class="section-spacer"></div>', unsafe_allow_html=True)
 
         # Number of questions
+        st.markdown("#### Number of Questions")
         with st.container(border=True):
-            st.markdown("#### Number of Questions")
             num_questions = st.radio(
                 "How many questions?",
                 [3, 5, 7, 10],

@@ -191,29 +191,23 @@ h1 {
     transition: all var(--transition-normal);
 }
 
-/* Bordered Container Styling (st.container(border=True)) */
-/* Force columns to stretch their children */
-[data-testid="column"] {
-    display: flex !important;
-}
-
-[data-testid="column"] > div {
-    display: flex !important;
-    flex-direction: column !important;
-    flex: 1 1 auto !important;
-}
-
+/* Ensure the widget container inside the column also stretches */
 [data-testid="stVerticalBlockBordered"] {
     background: rgba(31, 38, 52, 0.4) !important;
     border: 1px solid var(--border-color) !important;
     border-radius: 12px !important;
     padding: 2rem !important;
     margin-bottom: 1.5rem !important;
-    flex: 1 1 auto !important; /* Stretch to fill column height */
+    min-height: 100px !important; 
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-start !important;
     transition: all var(--transition-normal) !important;
+}
+
+[data-testid="stVerticalBlockBordered"] h4 {
+    margin-top: 0 !important;
+    margin-bottom: 1rem !important;
 }
 
 [data-testid="stVerticalBlockBordered"]:hover {
