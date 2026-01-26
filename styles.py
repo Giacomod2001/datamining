@@ -198,6 +198,10 @@ h1 {
     border-radius: 12px !important;
     padding: 2rem !important;
     margin-bottom: 1.5rem !important;
+    min-height: 250px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
     transition: all var(--transition-normal) !important;
 }
 
