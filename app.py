@@ -1818,6 +1818,7 @@ def render_career_discovery():
     <div style='text-align: center; margin-bottom: 2rem;'>
         <h1 style='margin: 0; padding: 0;'>Career Discovery</h1>
         <p style='color: #8b949e; margin: 0.25rem 0 0 0;'>Find career paths that match your profile and preferences</p>
+        <p style='font-size: 0.9rem; color: #8b949e; margin-top: 0.5rem;'>Curious about a path? Ask <b>Ruben</b> in the sidebar.</p>
     </div>
     """, unsafe_allow_html=True)
     
