@@ -1661,7 +1661,8 @@ def render_landing_page():
     # HERO SECTION
     st.markdown("""
     <div style='text-align: center; padding: 2rem 0 1rem 0; width: 100%;'>
-        <h1 style='font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; background: -webkit-linear-gradient(45deg, #0077B5, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>CareerMatch AI</h1>
+        <h1 style='font-size: 3.5rem; font-weight: 800; margin-bottom: 0.5rem; background: -webkit-linear-gradient(45deg, #0077B5, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>CareerMatch AI</h1>
+        <p style='font-size: 1.1rem; color: #8b949e;'>Need career advice? Ask <b>Ruben</b> in the sidebar.</p>
     </div>
     """, unsafe_allow_html=True)
 
