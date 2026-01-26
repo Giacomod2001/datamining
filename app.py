@@ -2585,6 +2585,14 @@ def render_chatbot():
             # Clear Input safely
             st.session_state["chat_input_widget"] = ""
 
+    # Get last assistant message or welcome
+    assistant_messages = [m for m in st.session_state["chat_history"] if m["role"] == "assistant"]
+    if not assistant_messages:
+        # Initial welcome message - always English unless specifically switched
+        display_msg = ml_utils.get_chatbot_response("", current_page, lang="en")
+    else:
+        display_msg = assistant_messages[-1]["content"]
+
     # === RUBEN AI CONSULTANT - PREMIUM UI ===
     st.markdown(f"""
     <div class="sidebar-chat-container">
