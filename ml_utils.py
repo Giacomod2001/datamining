@@ -4006,31 +4006,57 @@ def get_chatbot_response(message: str, current_page: str = "Landing", lang: str 
         }
         return thanks_resp.get(lang, thanks_resp['en'])
 
-    # 3. INTERVIEW PREPARATION
+    # 3. INTERVIEW PREPARATION (Detailed technical vs behavioral)
     interview_keywords = ["interview", "colloquio", "entrevista", "entretien", "vorstellungsgespräch",
                           "prepare", "preparare", "question", "domande", "nervous", "tips"]
     if any(kw in msg_lower for kw in interview_keywords):
         interview_resp = {
-            'en': "Great question about interviews! Here are my tips: 1) Research the company thoroughly. 2) Use the STAR method (Situation, Task, Action, Result) for behavioral questions. 3) Prepare 3-5 questions to ask the interviewer. 4) Practice common questions like 'Tell me about yourself' and 'Why this role?'. 5) Arrive early and dress appropriately. Would you like specific advice on technical interviews or behavioral questions?",
-            'it': "Ottima domanda sui colloqui! Ecco i miei consigli: 1) Fai ricerche approfondite sull'azienda. 2) Usa il metodo STAR per le domande comportamentali. 3) Prepara 3-5 domande da fare al recruiter. 4) Esercitati con domande comuni come 'Mi parli di lei' e 'Perché questa posizione?'. 5) Arriva in anticipo e vestiti in modo appropriato.",
-            'es': "¡Buena pregunta sobre entrevistas! Mis consejos: 1) Investiga la empresa. 2) Usa el método STAR para preguntas de comportamiento. 3) Prepara preguntas para el entrevistador. 4) Practica preguntas comunes. 5) Llega temprano y vístete apropiadamente.",
-            'fr': "Bonne question sur les entretiens! Mes conseils: 1) Recherchez l'entreprise. 2) Utilisez la méthode STAR. 3) Préparez des questions. 4) Entraînez-vous aux questions courantes. 5) Arrivez tôt.",
-            'de': "Gute Frage zu Vorstellungsgesprächen! Meine Tipps: 1) Recherchieren Sie das Unternehmen. 2) Verwenden Sie die STAR-Methode. 3) Bereiten Sie Fragen vor. 4) Üben Sie häufige Fragen. 5) Kommen Sie früh an.",
-            'pt': "Ótima pergunta sobre entrevistas! Minhas dicas: 1) Pesquise a empresa. 2) Use o método STAR. 3) Prepare perguntas. 4) Pratique perguntas comuns. 5) Chegue cedo."
+            'en': "For technical interviews (Data/ML), prepare for: 1) Live Coding (SQL/Python). 2) ML Case Studies (explain bias-variance trade-off). 3) System Design (scaling data pipelines). Use the STAR method for behavioral questions. Would you like specific tips for a particular role (e.g., Data Architect)?",
+            'it': "Per i colloqui tecnici (Data/ML), preparati su: 1) Live Coding (SQL/Python). 2) ML Case Studies (spiega il bias-variance trade-off). 3) System Design (scalabilità delle pipeline dati). Usa il metodo STAR per le domande comportamentali. Vuoi consigli specifici per un ruolo (es. Data Architect)?",
+            'es': "Para entrevistas técnicas (Data/ML): 1) Live Coding (SQL/Python). 2) Casos de ML (sesgo-varianza). 3) Diseño de sistemas. Usa el método STAR. ¿Quieres consejos para un rol específico?",
+            'fr': "Pour les entretiens techniques: 1) Live Coding (SQL/Python). 2) Cas d'études ML. 3) System Design. Utilisez la méthode STAR. Voulez-vous des conseils pour un rôle spécifique?",
+            'de': "Für technische Interviews: 1) Live Coding. 2) ML-Fallstudien. 3) Systemdesign. Verwenden Sie die STAR-Methode.",
+            'pt': "Para entrevistas técnicas: 1) Live Coding. 2) Casos de ML. 3) Design de sistemas. Use o método STAR."
         }
         return interview_resp.get(lang, interview_resp['en'])
 
-    # 4. SALARY & NEGOTIATION
+    # 3b. DATA SCIENCE / ML SPECIFIC (Intelligence)
+    ds_keywords = ["data science", "machine learning", "ai", "model", "deep learning", "neural", "nlp", "computer vision"]
+    if any(kw in msg_lower for kw in ds_keywords):
+        ds_resp = {
+            'en': "In Data Science/ML, mastery of the lifecycle is key: EDA -> Feature Eng -> Model Selection -> Evaluation (Precision/Recall/F1) -> Deployment. Mention experience with MLflow, DVC, or Airflow. Are you focusing on MLOps or Research?",
+            'it': "In Data Science/ML, la padronanza del lifecycle è fondamentale: EDA -> Feature Eng -> Model Selection -> Evaluation (Precision/Recall/F1) -> Deployment. Menziona l'esperienza con MLflow, DVC o Airflow. Ti stai concentrando su MLOps o Research?",
+            'es': "En Data Science/ML, domina el ciclo de vida: EDA, Ingeniería de Features, Selección de Modelo, Evaluación y Deployment. Menciona MLflow o Airflow.",
+            'fr': "En Data Science/ML: EDA, Feature Engineering, Sélection de modèle, Évaluation et Deployment. Mentionnez MLflow ou Airflow.",
+            'de': "In Data Science/ML: EDA, Feature Engineering, Modellauswahl, Evaluierung und Deployment.",
+            'pt': "Em Data Science/ML: EDA, Feature Engineering, Seleção de Modelo, Avaliação e Deployment."
+        }
+        return ds_resp.get(lang, ds_resp['en'])
+
+    # 3c. BIG DATA / CLOUD SPECIFIC (Intelligence)
+    cloud_keywords = ["cloud", "aws", "azure", "gcp", "redshift", "spark", "snowflake", "etl", "pipeline"]
+    if any(kw in msg_lower for kw in cloud_keywords):
+        cloud_resp = {
+            'en': "For Cloud Data roles: 1) Focus on partitioning and clustering (Snowflake/Databricks). 2) Understand CI/CD for data (Terraform). 3) Know the difference between ETL and ELT. Mention cloud certifications if you have them. Need advice on a specific cloud provider?",
+            'it': "Per ruoli Cloud Data: 1) Concentrati su partitioning e clustering (Snowflake/Databricks). 2) Comprendi la CI/CD per i dati (Terraform). 3) Conosci la differenza tra ETL ed ELT. Menziona le certificazioni cloud se le hai. Vuoi consigli su un provider specifico?",
+            'es': "Para roles Cloud Data: 1) Enfócate en partitioning y clustering. 2) Entiende CI/CD (Terraform). 3) ETL vs ELT. Menciona certificaciones cloud.",
+            'fr': "Pour les rôles Cloud Data: 1) Partitioning et clustering. 2) CI/CD (Terraform). 3) ETL vs ELT.",
+            'de': "Für Cloud Data Rollen: 1) Partitionierung und Clustering. 2) CI/CD (Terraform). 3) ETL vs ELT.",
+            'pt': "Para funções Cloud Data: 1) Partitioning e clustering. 2) CI/CD (Terraform). 3) ETL vs ELT."
+        }
+        return cloud_resp.get(lang, cloud_resp['en'])
+
+    # 4. SALARY & NEGOTIATION (Enhanced)
     salary_keywords = ["salary", "stipendio", "salario", "salaire", "gehalt", "pay", "money", 
                        "negotiate", "compensation", "offer", "quanto guadagna", "how much earn"]
     if any(kw in msg_lower for kw in salary_keywords):
         salary_resp = {
-            'en': "Salary negotiation is crucial! My advice: 1) Research market rates on Glassdoor, LinkedIn Salary, or levels.fyi. 2) Never give a number first - ask for their range. 3) Consider total compensation: base + bonus + equity + benefits. 4) Practice saying 'I'm looking for a salary in the range of X-Y based on my experience and market research.' 5) Remember: it's a negotiation, not a confrontation. The Career Discovery section shows salary ranges for different roles.",
-            'it': "La negoziazione dello stipendio è fondamentale! I miei consigli: 1) Cerca le tariffe di mercato su Glassdoor e LinkedIn. 2) Non dare mai un numero per primo - chiedi il loro range. 3) Considera la compensazione totale: base + bonus + benefit. 4) Ricorda: è una negoziazione, non uno scontro. La sezione Career Discovery mostra le fasce salariali per diversi ruoli.",
-            'es': "¡La negociación salarial es crucial! Mis consejos: 1) Investiga tarifas en Glassdoor y LinkedIn. 2) No des un número primero. 3) Considera compensación total. 4) Practica tu respuesta. La sección Career Discovery muestra rangos salariales.",
-            'fr': "La négociation salariale est cruciale! Mes conseils: 1) Recherchez les taux du marché. 2) Ne donnez jamais un chiffre en premier. 3) Considérez la rémunération totale. 4) C'est une négociation, pas une confrontation.",
-            'de': "Gehaltsverhandlung ist wichtig! Meine Tipps: 1) Recherchieren Sie Marktpreise. 2) Nennen Sie nie zuerst eine Zahl. 3) Berücksichtigen Sie Gesamtvergütung. 4) Es ist eine Verhandlung, keine Konfrontation.",
-            'pt': "Negociação salarial é crucial! Minhas dicas: 1) Pesquise taxas de mercado. 2) Nunca diga um número primeiro. 3) Considere compensação total. 4) É uma negociação, não confronto."
+            'en': "Salary for Data roles varies significantly by location and seniority. For a Senior Data Scientist in EU, ranges often fall between €65k-€95k. In the US, it's $130k-$190k+. Always check 'levels.fyi' for the latest tech benchmarks. Ready to negotiate that offer?",
+            'it': "Lo stipendio per i ruoli Data varia per location e seniority. Un Senior Data Scientist in Italia/EU varia spesso tra 50k-75k€, mentre all'estero (ES/DE/UK) è sensibilmente più alto. Controlla 'levels.fyi' per benchmarks tech reali. Vuoi aiuto per negoziare?",
+            'es': "El salario para roles Data varía según ubicación. Un Senior Data Scientist en la UE suele estar entre 60k€-90k€. En EE.UU. es de $130k-$190k+. Consulta 'levels.fyi'.",
+            'fr': "Le salaire pour les rôles Data varie par lieu. Un Senior Data Scientist en UE se situe entre 60k€-95k€. Consultez 'levels.fyi'.",
+            'de': "Gehälter für Data Rollen variieren. Ein Senior Data Scientist in der EU liegt oft zwischen 70k€-100k€.",
+            'pt': "Salário para funções Data varia por local. Um Senior Data Scientist na UE está entre 60k€-90k€."
         }
         return salary_resp.get(lang, salary_resp['en'])
 
@@ -4039,40 +4065,40 @@ def get_chatbot_response(message: str, current_page: str = "Landing", lang: str 
                        "certificazione", "cosa studiare", "what to learn", "improve", "migliorare"]
     if any(kw in msg_lower for kw in skills_keywords):
         skills_resp = {
-            'en': "For skill development, I recommend: 1) Identify gaps using our CV Evaluation tool. 2) Focus on in-demand skills for your target role. 3) Mix theory (courses) with practice (projects). 4) Top platforms: Coursera, Udemy, LinkedIn Learning, freeCodeCamp. 5) Build a portfolio to showcase your work. 6) Get certifications relevant to your field (AWS, Google, Microsoft). Would you like recommendations for your specific career path?",
-            'it': "Per lo sviluppo delle competenze, consiglio: 1) Identifica le lacune usando il nostro strumento CV Evaluation. 2) Concentrati sulle skill richieste per il tuo ruolo target. 3) Combina teoria (corsi) con pratica (progetti). 4) Piattaforme top: Coursera, Udemy, LinkedIn Learning. 5) Costruisci un portfolio. 6) Ottieni certificazioni rilevanti. Vuoi raccomandazioni per il tuo percorso specifico?",
-            'es': "Para desarrollo de habilidades: 1) Identifica brechas con CV Evaluation. 2) Enfócate en habilidades demandadas. 3) Combina teoría con práctica. 4) Plataformas: Coursera, Udemy. 5) Construye un portafolio. 6) Obtén certificaciones.",
-            'fr': "Pour le développement des compétences: 1) Identifiez les lacunes. 2) Concentrez-vous sur les compétences demandées. 3) Mélangez théorie et pratique. 4) Plateformes: Coursera, Udemy. 5) Créez un portfolio.",
-            'de': "Für Kompetenzentwicklung: 1) Identifizieren Sie Lücken. 2) Fokussieren Sie auf gefragte Fähigkeiten. 3) Mischen Sie Theorie und Praxis. 4) Plattformen: Coursera, Udemy. 5) Erstellen Sie ein Portfolio.",
-            'pt': "Para desenvolvimento de habilidades: 1) Identifique lacunas. 2) Foque em habilidades demandadas. 3) Misture teoria e prática. 4) Plataformas: Coursera, Udemy. 5) Crie um portfólio."
+            'en': "To boost your career profile, I recommend: 1) Master Python/SQL (mandatory). 2) Learn a BI tool (Tableau/PowerBI). 3) Build 3 distinct projects (one Kaggle, one End-to-End, one Dashboard). 4) Get the AWS Cloud Practitioner or GCP Data Engineer cert. Which domain interests you most?",
+            'it': "Per potenziare il profilo, consiglio: 1) Padroneggia Python/SQL (obbligatorio). 2) Impara uno strumento di BI (Tableau/PowerBI). 3) Costruisci 3 progetti distinti (uno Kaggle, uno End-to-End, una Dashboard). 4) Prendi una certificazione AWS o GCP. Quale dominio ti interessa di più?",
+            'es': "Para mejorar el perfil: 1) Domina Python/SQL. 2) Aprende una herramienta BI. 3) Crea 3 proyectos distintos. 4) Obtén certificación AWS o GCP.",
+            'fr': "Pour booster votre profil: 1) Maîtrisez Python/SQL. 2) Apprenez un outil BI. 3) Créez 3 projets. 4) Obtenez une certif AWS ou GCP.",
+            'de': "Profil verbessern: 1) Python/SQL beherrschen. 2) BI-Tool lernen. 3) 3 Projekte erstellen. 4) AWS/GCP Zertifizierung.",
+            'pt': "Para melhorar o perfil: 1) Domine Python/SQL. 2) Aprenda uma ferramenta BI. 3) Crie 3 projetos. 4) Certificação AWS ou GCP."
         }
         return skills_resp.get(lang, skills_resp['en'])
 
-    # 6. RESUME / CV TIPS
+    # 6. RESUME / CV TIPS (SPECIFIC TO TECH)
     resume_keywords = ["resume", "cv", "curriculum", "lebenslauf", "format", "template", 
                        "ats", "layout", "come scrivere", "how to write"]
     if any(kw in msg_lower for kw in resume_keywords):
         resume_resp = {
-            'en': "CV best practices: 1) Keep it 1-2 pages max. 2) Use a clean, ATS-friendly format (no tables, graphics). 3) Lead with a strong summary/headline. 4) Use bullet points with action verbs (Developed, Led, Improved). 5) Quantify achievements (Increased sales by 30%). 6) Tailor it for each job - use keywords from the JD. 7) Proofread carefully! Try our CV Builder for a guided experience.",
-            'it': "Best practice per il CV: 1) Massimo 1-2 pagine. 2) Usa un formato pulito, compatibile ATS. 3) Inizia con un sommario forte. 4) Usa punti elenco con verbi d'azione. 5) Quantifica i risultati. 6) Adattalo per ogni lavoro - usa le keyword dalla JD. 7) Rileggi attentamente! Prova il nostro CV Builder.",
-            'es': "Mejores prácticas de CV: 1) Máximo 1-2 páginas. 2) Formato limpio compatible con ATS. 3) Comienza con un resumen fuerte. 4) Usa viñetas con verbos de acción. 5) Cuantifica logros. 6) Personaliza para cada trabajo. Prueba nuestro CV Builder.",
-            'fr': "Bonnes pratiques CV: 1) Maximum 1-2 pages. 2) Format propre compatible ATS. 3) Commencez par un résumé fort. 4) Utilisez des puces avec verbes d'action. 5) Quantifiez les réalisations. Essayez notre CV Builder.",
-            'de': "CV Best Practices: 1) Maximal 1-2 Seiten. 2) Sauberes ATS-kompatibles Format. 3) Beginnen Sie mit einer starken Zusammenfassung. 4) Verwenden Sie Aufzählungspunkte mit Aktionsverben. 5) Quantifizieren Sie Erfolge.",
-            'pt': "Melhores práticas de CV: 1) Máximo 1-2 páginas. 2) Formato limpo compatível ATS. 3) Comece com um resumo forte. 4) Use marcadores com verbos de ação. 5) Quantifique conquistas."
+            'en': "For Data CVs: 1) Use the 'Reverse Chronological' format. 2) The 'Skill' section must be near the top. 3) Quantify! Use: 'Optimized SQL queries, reducing latency by 40%'. 4) Include a GitHub/Portfolio link. 5) Mention specific tech stacks (e.g., PyTorch, Spark, K8s). Would you like to check your CV for ATS compliance?",
+            'it': "Per i CV Data: 1) Usa il formato 'Reverse Chronological'. 2) La sezione 'Skill' deve essere in alto. 3) Quantifica! Es: 'Ottimizzato query SQL riducendo la latenza del 40%'. 4) Includi GitHub/Portfolio. 5) Menziona stack specifici (es. PyTorch, Spark). Vuoi controllare la conformità ATS?",
+            'es': "Para CV de Data: 1) Formato cronológico inverso. 2) Habilidades arriba. 3) Cuantifica logros (ej: reduje latencia 40%). 4) Enlace a GitHub. 5) Menciona stacks técnicos.",
+            'fr': "Pour un CV Data: 1) Format chronologique inverse. 2) Compétences en haut. 3) Quantifiez (ex: réduction latence 40%). 4) Lien GitHub. 5) Stack technique.",
+            'de': "Für Data CVs: 1) Umgekehrt chronologisches Format. 2) Fähigkeiten oben. 3) Erfolge quantifizieren. 4) GitHub-Link.",
+            'pt': "Para CVs de Data: 1) Formato cronológico inverso. 2) Habilidades no topo. 3) Quantifique conquistas. 4) Link do GitHub."
         }
         return resume_resp.get(lang, resume_resp['en'])
 
     # 7. CAREER CHANGE / TRANSITION
     career_change_keywords = ["career change", "cambio carriera", "cambiar carrera", "changer carrière",
-                              "switch", "transition", "new field", "different job", "reinvent"]
+                               "switch", "transition", "new field", "different job", "reinvent"]
     if any(kw in msg_lower for kw in career_change_keywords):
         change_resp = {
-            'en': "Career transitions are possible! Here's my advice: 1) Identify transferable skills from your current role. 2) Bridge skill gaps with courses or certifications. 3) Network in your target industry (LinkedIn, events). 4) Consider lateral moves or hybrid roles as stepping stones. 5) Update your narrative - why this change makes sense. 6) Be patient - it may take 6-12 months. Use our Career Discovery to find roles that match your existing skills!",
-            'it': "Le transizioni di carriera sono possibili! Ecco i miei consigli: 1) Identifica le skill trasferibili. 2) Colma le lacune con corsi o certificazioni. 3) Fai networking nel tuo settore target. 4) Considera ruoli ibridi come trampolino. 5) Aggiorna la tua narrazione. 6) Sii paziente - potrebbero volerci 6-12 mesi. Usa Career Discovery per trovare ruoli che corrispondono alle tue skill!",
-            'es': "¡Las transiciones de carrera son posibles! 1) Identifica habilidades transferibles. 2) Llena brechas con cursos. 3) Haz networking en tu industria objetivo. 4) Considera roles híbridos. 5) Actualiza tu narrativa. 6) Ten paciencia.",
-            'fr': "Les transitions de carrière sont possibles! 1) Identifiez les compétences transférables. 2) Comblez les lacunes avec des cours. 3) Réseautez dans votre industrie cible. 4) Considérez des rôles hybrides. 5) Soyez patient.",
-            'de': "Karrierewechsel sind möglich! 1) Identifizieren Sie übertragbare Fähigkeiten. 2) Schließen Sie Lücken mit Kursen. 3) Netzwerken Sie in Ihrer Zielbranche. 4) Erwägen Sie Hybridrollen. 5) Seien Sie geduldig.",
-            'pt': "Transições de carreira são possíveis! 1) Identifique habilidades transferíveis. 2) Preencha lacunas com cursos. 3) Faça networking na sua indústria alvo. 4) Considere funções híbridas. 5) Seja paciente."
+            'en': "Breaking into Data from another field? 1) Pivot to 'Data Analyst' first (it's the softest entry point). 2) Learn SQL—it's the universal language. 3) Leverage your domain knowledge (e.g., Finance domain knowledge + SQL is a powerhouse). Are you switching from a non-tech background?",
+            'it': "Entrare nel mondo Data da un altro settore? 1) Punta al ruolo di 'Data Analyst' come primo passo (è il punto d'ingresso più accessibile). 2) Impara SQL: è il linguaggio universale dei dati. 3) Sfrutta la tua conoscenza di dominio (es. Finance + SQL = combinazione letale). Vieni da un background non-tech?",
+            'es': "¿Entrar en Data desde otro campo? 1) Empieza como 'Data Analyst'. 2) Aprende SQL. 3) Usa tu conocimiento de dominio. ¿Vienes de un campo no técnico?",
+            'fr': "Passer à la Data? 1) Visez 'Data Analyst' en premier. 2) Apprenez SQL. 3) Utilisez votre expertise métier.",
+            'de': "In Data Bereich wechseln? 1) Zuerst 'Data Analyst' anstreben. 2) SQL lernen. 3) Fachwissen nutzen.",
+            'pt': "Mudar para Data? 1) Foque em 'Data Analyst' primeiro. 2) Aprenda SQL. 3) Use seu conhecimento de domínio."
         }
         return change_resp.get(lang, change_resp['en'])
 
@@ -4081,12 +4107,12 @@ def get_chatbot_response(message: str, current_page: str = "Landing", lang: str 
                        "lavoro da casa", "hybrid", "ibrido"]
     if any(kw in msg_lower for kw in remote_keywords):
         remote_resp = {
-            'en': "Remote work tips: 1) Highlight remote-specific skills: self-discipline, async communication, time management. 2) Mention your home office setup. 3) Show experience with remote tools (Slack, Zoom, Notion, Jira). 4) In Career Discovery, filter for 'Remote' roles. 5) For interviews, demonstrate you can work independently while staying connected. Many tech, marketing, and data roles are fully remote today!",
-            'it': "Consigli per il lavoro remoto: 1) Evidenzia competenze specifiche: autodisciplina, comunicazione asincrona, gestione del tempo. 2) Menziona il tuo setup home office. 3) Mostra esperienza con strumenti remoti (Slack, Zoom, Notion). 4) In Career Discovery, filtra per ruoli 'Remote'. Molti ruoli tech, marketing e data sono completamente remoti!",
-            'es': "Consejos para trabajo remoto: 1) Destaca habilidades específicas: autodisciplina, comunicación asíncrona. 2) Menciona tu configuración de oficina en casa. 3) Muestra experiencia con herramientas remotas. 4) En Career Discovery, filtra por 'Remote'.",
-            'fr': "Conseils télétravail: 1) Mettez en avant des compétences spécifiques: autodiscipline, communication asynchrone. 2) Mentionnez votre bureau à domicile. 3) Montrez votre expérience avec les outils à distance.",
-            'de': "Remote-Arbeit Tipps: 1) Heben Sie spezifische Fähigkeiten hervor: Selbstdisziplin, asynchrone Kommunikation. 2) Erwähnen Sie Ihr Homeoffice-Setup. 3) Zeigen Sie Erfahrung mit Remote-Tools.",
-            'pt': "Dicas para trabalho remoto: 1) Destaque habilidades específicas: autodisciplina, comunicação assíncrona. 2) Mencione seu setup de home office. 3) Mostre experiência com ferramentas remotas."
+            'en': "Remote work is the standard for Data roles. Tips: 1) Prove you can work with cloud-native tools (Databricks, Snowflake). 2) Highlight 'Async Communication' in your CV. 3) Look for 'Remote-First' companies (GitLab, Zapier, Shopify). Want to filter jobs by remote status in Career Discovery?",
+            'it': "Il lavoro remoto è lo standard per i ruoli Data. Consigli: 1) Dimostra di saper usare tool cloud-native (Databricks, Snowflake). 2) Evidenzia la 'Comunicazione Asincrona' nel CV. 3) Cerca aziende 'Remote-First' (GitLab, Shopify). Vuoi filtrare per ruoli remoti in Career Discovery?",
+            'es': "El trabajo remoto es estándar en Data. 1) Usa herramientas cloud. 2) Destaca comunicación asíncrona. 3) Busca empresas 'Remote-First'.",
+            'fr': "Le télétravail est la norme en Data. 1) Outils cloud-native. 2) Communication asynchrone. 3) Entreprises 'Remote-First'.",
+            'de': "Remote-Arbeit ist Standard in Data Rollen. Cloud-native Tools nutzen, asynchrone Kommunikation hervorheben.",
+            'pt': "Trabalho remoto é o padrão em funções Data. 1) Ferramentas cloud-native. 2) Comunicação assíncrona. 3) Empresas 'Remote-First'."
         }
         return remote_resp.get(lang, remote_resp['en'])
 
@@ -4094,12 +4120,12 @@ def get_chatbot_response(message: str, current_page: str = "Landing", lang: str 
     networking_keywords = ["network", "linkedin", "connect", "contatti", "connections", "referral"]
     if any(kw in msg_lower for kw in networking_keywords):
         network_resp = {
-            'en': "Networking is key! My tips: 1) Optimize your LinkedIn profile - professional photo, compelling headline, detailed experience. 2) Connect with intention - personalize connection requests. 3) Engage with content - comment, share, post. 4) Attend industry events (virtual or in-person). 5) Informational interviews are powerful - ask for 15 minutes to learn about their role. 6) Follow up and maintain relationships. 80% of jobs are found through networking!",
-            'it': "Il networking è fondamentale! I miei consigli: 1) Ottimizza il tuo profilo LinkedIn - foto professionale, headline accattivante. 2) Connettiti con intenzione - personalizza le richieste. 3) Interagisci con i contenuti. 4) Partecipa a eventi del settore. 5) Le interviste informative sono potenti. 6) Mantieni le relazioni. L'80% dei lavori si trova tramite networking!",
-            'es': "¡El networking es clave! 1) Optimiza tu perfil de LinkedIn. 2) Conéctate con intención. 3) Interactúa con contenido. 4) Asiste a eventos de la industria. 5) Las entrevistas informativas son poderosas. ¡El 80% de los trabajos se encuentran a través del networking!",
-            'fr': "Le réseautage est la clé! 1) Optimisez votre profil LinkedIn. 2) Connectez-vous avec intention. 3) Engagez-vous avec le contenu. 4) Participez à des événements. 80% des emplois sont trouvés par le réseautage!",
-            'de': "Networking ist der Schlüssel! 1) Optimieren Sie Ihr LinkedIn-Profil. 2) Vernetzen Sie sich gezielt. 3) Engagieren Sie sich mit Inhalten. 4) Besuchen Sie Branchenveranstaltungen. 80% der Jobs werden durch Networking gefunden!",
-            'pt': "Networking é fundamental! 1) Otimize seu perfil LinkedIn. 2) Conecte-se com intenção. 3) Interaja com conteúdo. 4) Participe de eventos. 80% dos empregos são encontrados através de networking!"
+            'en': "For Data Scientists, LinkedIn networking is vital. Follow industry leaders (Cassie Kozyrkov, Andrew Ng). Engage with the #DataScience community. 40% of tech hires come from referrals—don't just apply, talk to the hiring team first. Need a networking message template?",
+            'it': "Per i Data Scientist, il networking su LinkedIn è vitale. Segui i leader del settore (Andrew Ng, ecc.). Partecipa alla community #DataScience. Il 40% delle assunzioni tech arriva da referral: non solo candidarti, parla prima con il team. Ti serve un template per il messaggio?",
+            'es': "Networking en LinkedIn es vital. Sigue a líderes industriales. El 40% de contrataciones son por referidos. ¿Quieres un mensaje tipo?",
+            'fr': "Le réseautage LinkedIn est vital. Suivez les leaders. 40% des embauches tech via parrainage.",
+            'de': "LinkedIn Networking ist wichtig. Folgen Sie Branchenführern. 40% der Tech-Einstellungen durch Empfehlungen.",
+            'pt': "Networking no LinkedIn é vital. Siga líderes da indústria. 40% das contratações tech via indicação."
         }
         return network_resp.get(lang, network_resp['en'])
 
@@ -4107,12 +4133,12 @@ def get_chatbot_response(message: str, current_page: str = "Landing", lang: str 
     cover_letter_keywords = ["cover letter", "lettera", "carta", "lettre", "anschreiben", "motivazionale"]
     if any(kw in msg_lower for kw in cover_letter_keywords):
         cl_resp = {
-            'en': "Cover letter tips: 1) Address it to a specific person if possible. 2) Open with a hook - why THIS company? 3) Match your skills to their needs - use keywords from the JD. 4) Show enthusiasm and fit. 5) Keep it to 3-4 paragraphs, one page max. 6) End with a clear call to action. Our CV Evaluation can analyze your cover letter!",
-            'it': "Consigli per la lettera motivazionale: 1) Indirizzala a una persona specifica se possibile. 2) Apri con un gancio - perché QUESTA azienda? 3) Abbina le tue skill alle loro esigenze. 4) Mostra entusiasmo. 5) Max 3-4 paragrafi, una pagina. Il nostro CV Evaluation può analizzare la tua lettera!",
-            'es': "Consejos para carta de presentación: 1) Dirígela a una persona específica. 2) Abre con un gancho. 3) Relaciona tus habilidades con sus necesidades. 4) Muestra entusiasmo. 5) Máximo 3-4 párrafos.",
-            'fr': "Conseils lettre de motivation: 1) Adressez-la à une personne spécifique. 2) Commencez par une accroche. 3) Reliez vos compétences à leurs besoins. 4) Montrez votre enthousiasme. 5) Maximum 3-4 paragraphes.",
-            'de': "Anschreiben-Tipps: 1) Adressieren Sie es an eine bestimmte Person. 2) Beginnen Sie mit einem Hook. 3) Verbinden Sie Ihre Fähigkeiten mit deren Bedürfnissen. 4) Zeigen Sie Begeisterung. 5) Maximal 3-4 Absätze.",
-            'pt': "Dicas para carta de apresentação: 1) Enderece a uma pessoa específica. 2) Comece com um gancho. 3) Relacione suas habilidades às necessidades deles. 4) Mostre entusiasmo. 5) Máximo 3-4 parágrafos."
+            'en': "Data Cover Letters should be concise: 1) Paragraph 1: Why this specific dataset/problem interests you. 2) Paragraph 2: A concrete example of a project where you delivered value. 3) Paragraph 3: Cultural fit. Keep it under 250 words. Shall we analyze your draft in CV Evaluation?",
+            'it': "Le lettere motivazionali per ruoli Data devono essere concise: 1) Paragrafo 1: Perché quel dataset/problema specifico ti interessa. 2) Paragrafo 2: Esempio concreto di un progetto di valore. 3) Paragrafo 3: Fit culturale. Resta sotto le 250 parole. Analizziamo la bozza in CV Evaluation?",
+            'es': "Cartas de presentación breves: 1) Por qué te interesa este problema. 2) Ejemplo concreto de valor. 3) Fit cultural. Menos de 250 palabras.",
+            'fr': "Lettres de motivation concises: 1) Pourquoi ce problème vous intéresse. 2) Exemple concret de valeur. Sous 250 mots.",
+            'de': "Data Anschreiben kurz halten: 1) Warum dieses Problem? 2) Konkretes Beispiel. 3) Fit. Unter 250 Wörter.",
+            'pt': "Cartas de apresentação concisas: 1) Por que este problema lhe interessa. 2) Exemplo concreto de valor. Menos de 250 palavras."
         }
         return cl_resp.get(lang, cl_resp['en'])
 
@@ -4121,12 +4147,12 @@ def get_chatbot_response(message: str, current_page: str = "Landing", lang: str 
                            "cerco", "apply", "application", "candidatura"]
     if any(kw in msg_lower for kw in job_search_keywords):
         job_search_resp = {
-            'en': "Job search strategy: 1) Set clear goals - target role, industry, location. 2) Tailor your CV for each application. 3) Apply strategically - quality over quantity. 4) Use multiple channels: LinkedIn, Indeed, company websites, referrals. 5) Track your applications in a spreadsheet. 6) Follow up after 1-2 weeks. 7) Stay positive - job searching is a numbers game! Use our tools: CV Evaluation to optimize, Career Discovery to find matches.",
-            'it': "Strategia di ricerca lavoro: 1) Definisci obiettivi chiari - ruolo target, settore, location. 2) Adatta il CV per ogni candidatura. 3) Candidati strategicamente - qualità su quantità. 4) Usa più canali: LinkedIn, Indeed, siti aziendali, referral. 5) Traccia le candidature. 6) Fai follow up dopo 1-2 settimane. 7) Resta positivo! Usa i nostri strumenti: CV Evaluation e Career Discovery.",
-            'es': "Estrategia de búsqueda de empleo: 1) Define objetivos claros. 2) Personaliza tu CV. 3) Postúlate estratégicamente. 4) Usa múltiples canales. 5) Rastrea tus solicitudes. 6) Haz seguimiento. 7) ¡Mantente positivo!",
-            'fr': "Stratégie de recherche d'emploi: 1) Définissez des objectifs clairs. 2) Personnalisez votre CV. 3) Postulez stratégiquement. 4) Utilisez plusieurs canaux. 5) Suivez vos candidatures. 6) Faites un suivi. 7) Restez positif!",
-            'de': "Job-Suchstrategie: 1) Setzen Sie klare Ziele. 2) Passen Sie Ihren Lebenslauf an. 3) Bewerben Sie sich strategisch. 4) Nutzen Sie mehrere Kanäle. 5) Verfolgen Sie Ihre Bewerbungen. 6) Machen Sie Follow-ups. 7) Bleiben Sie positiv!",
-            'pt': "Estratégia de busca de emprego: 1) Defina objetivos claros. 2) Personalize seu CV. 3) Candidate-se estrategicamente. 4) Use múltiplos canais. 5) Rastreie suas candidaturas. 6) Faça follow-up. 7) Mantenha-se positivo!"
+            'en': "The best Data jobs aren't just on LinkedIn. Check: 1) Otta (for high-growth startups). 2) Wellfound/AngelList. 3) Specific tech job boards (Hacker News Who's Hiring). 4) Use 'LinkedIn Boomerang' strategy: reach out to peers at the company first. Ready to scale your job hunt?",
+            'it': "I migliori lavori Data non sono solo su LinkedIn. Controlla: 1) Otta (per startup high-growth). 2) Wellfound/AngelList. 3) Bacheche tech specifiche (Hacker News). 4) Strategia 'LinkedIn Boomerang': contatta prima i peer in azienda. Pronto ad accelerare?",
+            'es': "Mejores trabajos de Data: 1) Otta. 2) Wellfound. 3) Hacker News. 4) Contacta primero con pares en la empresa.",
+            'fr': "Meilleurs jobs Data: 1) Otta. 2) Wellfound. 3) Hacker News.",
+            'de': "Beste Data Jobs: 1) Otta. 2) Wellfound. 3) Hacker News.",
+            'pt': "Melhores empregos Data: 1) Otta. 2) Wellfound. 3) Hacker News."
         }
         return job_search_resp.get(lang, job_search_resp['en'])
 
@@ -4156,35 +4182,35 @@ def get_chatbot_response(message: str, current_page: str = "Landing", lang: str 
     help_keywords = ["help", "aiuto", "ayuda", "aide", "hilfe", "what can", "cosa puoi", "cosa fai"]
     if any(kw in msg_lower for kw in help_keywords):
         help_resp = {
-            'en': "I can help you with: 1) CV/Resume optimization and analysis. 2) Career path exploration and job matching. 3) Interview preparation tips. 4) Salary negotiation advice. 5) Skill development recommendations. 6) Cover letter guidance. 7) Networking strategies. 8) Job search tactics. Just ask me anything career-related!",
-            'it': "Posso aiutarti con: 1) Ottimizzazione e analisi del CV. 2) Esplorazione percorsi di carriera. 3) Consigli per i colloqui. 4) Negoziazione stipendio. 5) Sviluppo competenze. 6) Lettera motivazionale. 7) Strategie di networking. 8) Tattiche di ricerca lavoro. Chiedimi qualsiasi cosa sulla carriera!",
-            'es': "Puedo ayudarte con: 1) Optimización de CV. 2) Exploración de carreras. 3) Preparación para entrevistas. 4) Negociación salarial. 5) Desarrollo de habilidades. 6) Carta de presentación. 7) Networking. 8) Búsqueda de empleo.",
-            'fr': "Je peux vous aider avec: 1) Optimisation du CV. 2) Exploration de carrière. 3) Préparation d'entretien. 4) Négociation salariale. 5) Développement des compétences. 6) Lettre de motivation. 7) Réseautage. 8) Recherche d'emploi.",
-            'de': "Ich kann Ihnen helfen mit: 1) Lebenslauf-Optimierung. 2) Karriereerkundung. 3) Interview-Vorbereitung. 4) Gehaltsverhandlung. 5) Kompetenzentwicklung. 6) Anschreiben. 7) Networking. 8) Jobsuche.",
-            'pt': "Posso ajudá-lo com: 1) Otimização de CV. 2) Exploração de carreira. 3) Preparação para entrevistas. 4) Negociação salarial. 5) Desenvolvimento de habilidades. 6) Carta de apresentação. 7) Networking. 8) Busca de emprego."
+            'en': "I am Ruben, your Technical Career Strategist. I specialize in Data Science, Cloud, and Engineering careers. Ask me about: 1) Niche tech stacks. 2) MLOps workflows. 3) Tech industry benchmarks. 4) Salary and negotiation in the Data space. 5) Portfolio building. How can I steer your technical career today?",
+            'it': "Sono Ruben, il tuo Technical Career Strategist. Sono specializzato in carriere Data Science, Cloud ed Engineering. Chiedimi di: 1) Niche tech stacks. 2) Workflows MLOps. 3) Benchmark del settore tech. 4) Stipendio e negoziazione spazio Data. 5) Portfolio building. Come posso guidare la tua carriera tecnica oggi?",
+            'es': "Soy Ruben, Technical Career Strategist. Especialista en Data Science y Cloud. Pregúntame sobre tech stacks, MLOps, salarios y portfolio.",
+            'fr': "Je suis Ruben, Technical Career Strategist. Spécialiste Data Science et Cloud.",
+            'de': "Ich bin Ruben, Technical Career Strategist. Spezialist für Data Science und Cloud.",
+            'pt': "Sou Ruben, Technical Career Strategist. Especialista em Data Science e Cloud."
         }
         return help_resp.get(lang, help_resp['en'])
 
     # 14. WHY / EXPLANATION QUESTIONS
     if any(kw in msg_lower for kw in ["why", "perché", "por qué", "pourquoi", "warum", "explain", "spiega"]):
         why_resp = {
-            'en': "Good question! Could you be more specific about what you'd like me to explain? I can help with: why certain skills are important, why match percentages work the way they do, why you should tailor your CV, or any other career-related topic.",
-            'it': "Bella domanda! Potresti essere più specifico su cosa vorresti che ti spiegassi? Posso aiutarti a capire: perché certe competenze sono importanti, come funzionano le percentuali di match, perché dovresti personalizzare il CV, o qualsiasi altro argomento sulla carriera.",
-            'es': "¡Buena pregunta! ¿Podrías ser más específico? Puedo ayudarte a entender: por qué ciertas habilidades son importantes, cómo funcionan los porcentajes de coincidencia, o cualquier tema de carrera.",
-            'fr': "Bonne question! Pourriez-vous être plus précis? Je peux vous aider à comprendre: pourquoi certaines compétences sont importantes, comment fonctionnent les pourcentages de correspondance.",
-            'de': "Gute Frage! Könnten Sie genauer sein? Ich kann Ihnen erklären: warum bestimmte Fähigkeiten wichtig sind, wie die Match-Prozentsätze funktionieren.",
-            'pt': "Boa pergunta! Poderia ser mais específico? Posso ajudá-lo a entender: por que certas habilidades são importantes, como funcionam as porcentagens de correspondência."
+            'en': "Technical career choices require deep context. Why focus on SQL? Because it's the 90% of data work. Why MLOps? Because models that don't deploy deliver zero value. Give me a specific topic and I'll explain the 'Data Logic' behind it.",
+            'it': "Le scelte di carriera tecnica richiedono contesto. Perché focus su SQL? Perché è il 90% del lavoro sui dati. Perché MLOps? Perché i modelli che non scalano non valgono nulla. Dimmi un argomento e ti spiegherò la 'Logica dei Dati' dietro di esso.",
+            'es': "Elegir una carrera técnica requiere contexto. ¿Por qué SQL? Es el 90% del trabajo. ¿MLOps? Los modelos sin despliegue no valen nada.",
+            'fr': "Les choix de carrière technique nécessitent du contexte. Pourquoi SQL? C'est 90% du travail.",
+            'de': "Technische Karrierewahl erfordert Kontext. Warum SQL? Es sind 90% der Arbeit.",
+            'pt': "Escolhas de carreira técnica exigem contexto. Por que SQL? É 90% do trabalho."
         }
         return why_resp.get(lang, why_resp['en'])
 
-    # 15. INTELLIGENT FALLBACK - Acknowledge the question
+    # 15. INTELLIGENT FALLBACK - Tech Contextual
     fallback_resp = {
-        'en': f"I understand you're asking about '{message[:50]}...'. While I may not have a specific answer for that, I'm an expert in career development. I can help with CV optimization, interview preparation, career exploration, salary negotiation, skill development, and job search strategies. What career topic can I assist you with?",
-        'it': f"Capisco che stai chiedendo di '{message[:50]}...'. Anche se potrei non avere una risposta specifica, sono un esperto di sviluppo di carriera. Posso aiutarti con ottimizzazione CV, preparazione colloqui, esplorazione carriera, negoziazione stipendio, sviluppo competenze e strategie di ricerca lavoro. Con quale argomento posso assisterti?",
-        'es': f"Entiendo que preguntas sobre '{message[:50]}...'. Aunque no tenga una respuesta específica, soy experto en desarrollo de carrera. Puedo ayudarte con CV, entrevistas, exploración de carrera, negociación salarial. ¿En qué tema puedo asistirte?",
-        'fr': f"Je comprends que vous posez une question sur '{message[:50]}...'. Je suis un expert en développement de carrière. Je peux vous aider avec CV, entretiens, exploration de carrière, négociation salariale. Comment puis-je vous aider?",
-        'de': f"Ich verstehe, dass Sie nach '{message[:50]}...' fragen. Ich bin Experte für Karriereentwicklung. Ich kann Ihnen bei Lebenslauf, Vorstellungsgesprächen, Karriereerkundung, Gehaltsverhandlung helfen. Wie kann ich Ihnen helfen?",
-        'pt': f"Entendo que você está perguntando sobre '{message[:50]}...'. Sou especialista em desenvolvimento de carreira. Posso ajudá-lo com CV, entrevistas, exploração de carreira, negociação salarial. Como posso ajudá-lo?"
+        'en': f"Interesting query about '{message[:40]}...'. As a Technical Strategist, I see this through the lens of data-driven careers. While I don't have a canned response for this, I can pivot to: technical interview hacks, cloud certification paths, or high-growth data roles. What's your priority?",
+        'it': f"Domanda interessante su '{message[:40]}...'. Come Technical Strategist, la inquadro nella prospettiva delle carriere data-driven. Anche se non ho una risposta predefinita, possiamo parlare di: interview hacks tecnici, percorsi cert cloud, o ruoli data ad alta crescita. Qual è la tua priorità?",
+        'es': f"Consulta interesante sobre '{message[:40]}...'. Hablemos de hacks para entrevistas técnicas, certificaciones cloud o roles de alta demanda.",
+        'fr': f"Question intéressante sur '{message[:40]}...'. Parlons de hacks d'entretien, certifs cloud ou rôles à forte croissance.",
+        'de': f"Interessante Frage zu '{message[:40]}...'. Reden wir über technische Interviews, Cloud-Zertifizierungen oder gefragte Rollen.",
+        'pt': f"Consulta interessante sobre '{message[:40]}...'. Falemos sobre entrevistas técnicas, certificações cloud ou funções de alta demanda."
     }
     return fallback_resp.get(lang, fallback_resp['en'])
 
@@ -4345,15 +4371,20 @@ def evaluate_interview_answer(question: Dict, answer: str) -> Dict:
             tips.append("Describe the specific actions YOU took (use 'I' not 'we')")
     
     if "result" in star_focus.lower():
-        if any(w in answer_lower for w in ["result", "outcome", "achieved", "improved", "increased", "decreased", "saved"]):
+        if any(w in answer_lower for w in ["result", "outcome", "achieved", "improved", "increased", "decreased", "saved", "risultato", "ottenuto", "migliorato", "aumentato"]):
             score += 20
             feedback_items.append("Results mentioned")
             # Bonus for quantified results
             if any(c.isdigit() for c in answer):
-                score += 10
+                score += 15  # Increased bonus
                 feedback_items.append("Quantified results - excellent!")
         else:
-            tips.append("End with the concrete results or impact")
+            tips.append("End with the concrete results or impact (outcome)")
+    
+    # 2b. Broad STAR matching (Italian + context)
+    if any(w in answer_lower for w in ["situazione", "compito", "azione", "quindi", "grazie a"]):
+        score += 10
+        feedback_items.append("Structural variety")
     
     # Check for expected keywords (for technical questions)
     expected_keywords = question.get("expected_keywords", [])
@@ -4368,14 +4399,14 @@ def evaluate_interview_answer(question: Dict, answer: str) -> Dict:
             missing = [kw for kw in expected_keywords if kw.lower() not in answer_lower][:3]
             tips.append(f"Consider mentioning: {', '.join(missing)}")
     
-    # Determine rating
-    if score >= 80:
+    # Determine rating (Softer thresholds)
+    if score >= 75: # Lowered from 80
         rating = "Excellent"
-    elif score >= 60:
+    elif score >= 50: # Lowered from 60
         rating = "Good"
-    elif score >= 40:
+    elif score >= 35: # Lowered from 40
         rating = "Fair"
-    elif score >= 20:
+    elif score >= 15: # Lowered from 20
         rating = "Needs Improvement"
     else:
         rating = "Insufficient"
@@ -4460,38 +4491,6 @@ def search_companies(query: str = None, sector: str = None) -> List[Dict]:
     return results
 
 
-# =============================================================================
-# JOB MARKET TRENDS
-# =============================================================================
-
-def get_skill_trends(sector: str = None, top_n: int = 10) -> List[Dict]:
-    """
-    Gets trending skills with demand and growth data.
-    
-    Args:
-        sector: Filter by sector (optional)
-        top_n: Number of skills to return
-        
-    Returns:
-        List of skill trend dictionaries
-    """
-    try:
-        from knowledge_base import SKILL_DEMAND_TRENDS
-    except ImportError:
-        return []
-    
-    trends = []
-    for skill, data in SKILL_DEMAND_TRENDS.items():
-        if sector and sector.lower() not in data.get('sector', '').lower():
-            continue
-        
-        trends.append({
-            "skill": skill,
-            "demand": data.get('demand', 0),
-            "growth": data.get('growth', 'N/A'),
-            "sector": data.get('sector', 'General')
-        })
-    
     # Sort by demand
     trends.sort(key=lambda x: x['demand'], reverse=True)
     return trends[:top_n]

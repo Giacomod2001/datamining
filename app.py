@@ -188,8 +188,7 @@ def render_navigation():
                 ("Career Discovery", "Career Discovery"),
                 ("CV Builder", "CV Builder"),
                 ("CV Analysis", "CV Evaluation"),
-                ("Interview Prep", "Interview Prep"),
-                ("Market Trends", "Market Trends")
+                ("Interview Prep", "Interview Prep")
             ]
             
             for label, page_key in nav_items:
@@ -1758,14 +1757,7 @@ def render_landing_page():
                 st.rerun()
 
     with col5:
-        with st.container(border=True):
-            st.markdown(card_style.format(
-                "Market Trends",
-                "Explore skill demand trends, growth rates, and industry insights to guide your learning path."
-            ), unsafe_allow_html=True)
-            if st.button("View Trends", use_container_width=True, key="land_trends"):
-                st.session_state["page"] = "Market Trends"
-                st.rerun()
+        st.empty()
 
     # Footer Divider
     st.markdown("<hr>", unsafe_allow_html=True)
@@ -2590,6 +2582,7 @@ def render_chatbot():
             st.session_state["chat_history"].append({"role": "assistant", "content": response})
             # Clear Input safely
             st.session_state["chat_input_widget"] = ""
+            st.rerun()
 
     # Get response or welcome
     display_msg = ""
@@ -2812,71 +2805,6 @@ def render_interview_prep():
 # MARKET TRENDS PAGE
 # =============================================================================
 
-def render_market_trends():
-    """
-    MARKET TRENDS PAGE - Premium Design
-    """
-    render_navigation()
-    
-    # Hero Section
-    st.markdown("""
-    <div class="hero-gradient" style="text-align: center; padding: 2.5rem;">
-        <h1 style="margin-bottom: 0.5rem;">Job Market Trends</h1>
-        <p style="color: var(--text-secondary); font-size: 1.1rem;">
-            Discover the most in-demand skills and industry growth patterns
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Filters using radio buttons (no slider)
-    st.markdown("### Filter Results")
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        sector_filter = st.selectbox(
-            "Sector",
-            ["All Sectors", "Technology", "Data", "DevOps", "Web", "AI/ML", "BI", "Design", "Management"]
-        )
-    with col2:
-        top_n = st.radio(
-            "Show Top",
-            [5, 10, 15, 20],
-            horizontal=True,
-            index=1
-        )
-    
-    # Get trends
-    sector = None if sector_filter == "All Sectors" else sector_filter
-    trends = ml_utils.get_skill_trends(sector=sector, top_n=top_n)
-    
-    if trends:
-        # Display as cards
-        st.markdown("### Top Skills by Demand")
-        
-        cols = st.columns(2)
-        for i, trend in enumerate(trends):
-            with cols[i % 2]:
-                growth_color = "color: #00C853;" if "+" in trend['growth'] else "color: #E53935;"
-                st.markdown(f"""
-                <div class="glass-card" style="margin-bottom: 1rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h4 style="margin: 0;">{trend['skill']}</h4>
-                        <span style="{growth_color} font-weight: 600;">{trend['growth']}</span>
-                    </div>
-                    <div style="margin-top: 0.5rem;">
-                        <div style="background: var(--bg-elevated); border-radius: 10px; height: 8px; width: 100%;">
-                            <div style="background: linear-gradient(90deg, var(--primary-blue), var(--primary-light)); 
-                                        width: {trend['demand']}%; height: 8px; border-radius: 10px;"></div>
-                        </div>
-                        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">
-                            Demand: {trend['demand']}% | Sector: {trend['sector']}
-                        </p>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-        
-        # Summary insights
-        st.markdown("---")
         st.markdown("### Key Insights")
         
         col1, col2, col3 = st.columns(3)
