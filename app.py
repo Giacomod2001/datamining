@@ -2801,42 +2801,6 @@ def render_interview_prep():
                     st.rerun()
 
 
-# =============================================================================
-# MARKET TRENDS PAGE
-# =============================================================================
-
-        st.markdown("### Key Insights")
-        
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            top_growth = max(trends, key=lambda x: int(x['growth'].replace('%', '').replace('+', '')))
-            st.markdown(f"""
-            <div class="metric-card" style="text-align: center;">
-                <div style="font-size: 0.9rem; color: var(--text-secondary);">Fastest Growing</div>
-                <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-light);">{top_growth['skill']}</div>
-                <div style="color: #00C853; font-weight: 600;">{top_growth['growth']}</div>
-            </div>
-            """, unsafe_allow_html=True)
-        with col2:
-            top_demand = max(trends, key=lambda x: x['demand'])
-            st.markdown(f"""
-            <div class="metric-card" style="text-align: center;">
-                <div style="font-size: 0.9rem; color: var(--text-secondary);">Highest Demand</div>
-                <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-light);">{top_demand['skill']}</div>
-                <div style="color: var(--primary-blue); font-weight: 600;">{top_demand['demand']}%</div>
-            </div>
-            """, unsafe_allow_html=True)
-        with col3:
-            avg_demand = sum(t['demand'] for t in trends) / len(trends)
-            st.markdown(f"""
-            <div class="metric-card" style="text-align: center;">
-                <div style="font-size: 0.9rem; color: var(--text-secondary);">Average Demand</div>
-                <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-light);">{avg_demand:.0f}%</div>
-                <div style="color: var(--text-secondary);">{len(trends)} skills shown</div>
-            </div>
-            """, unsafe_allow_html=True)
-    else:
-        st.info("No trends available for the selected sector.")
 
 
 if __name__ == "__main__":
@@ -2850,7 +2814,5 @@ if __name__ == "__main__":
         render_career_discovery()
     elif st.session_state["page"] == "Interview Prep":
         render_interview_prep()
-    elif st.session_state["page"] == "Market Trends":
-        render_market_trends()
     else:
         render_landing_page()
