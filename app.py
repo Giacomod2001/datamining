@@ -2582,26 +2582,16 @@ def render_chatbot():
             # Clear Input safely
             st.session_state["chat_input_widget"] = ""
 
-    # === RUBEN AI CONSULTANT - INLINE STYLED ===
-    st.markdown("""
-    <div style="margin-top: 1.5rem;">
-        <div style="font-size: 0.95rem; font-weight: 800; color: #00C9A7; margin-bottom: 0.5rem; letter-spacing: 0.5px; text-align: center;">
+    # === RUBEN AI CONSULTANT - PREMIUM UI ===
+    st.markdown(f"""
+    <div class="sidebar-chat-container">
+        <div class="sidebar-chat-header">
             Ruben AI Consultant
         </div>
-    """, unsafe_allow_html=True)
-    
-    # Get last assistant message or welcome
-    assistant_messages = [m for m in st.session_state["chat_history"] if m["role"] == "assistant"]
-    if not assistant_messages:
-        # Initial welcome message - always English unless specifically switched
-        display_msg = ml_utils.get_chatbot_response("", current_page, lang="en")
-    else:
-        display_msg = assistant_messages[-1]["content"]
-    
-    st.markdown(f"""
-        <div style="background: #0d1117; color: #f0f6fc; border: 1px solid #30363d; padding: 14px 18px; border-radius: 16px; font-size: 0.9rem; line-height: 1.55; box-shadow: inset 0 1px 3px rgba(0,0,0,0.4); margin-bottom: 1rem;">
+        <div class="sidebar-chat-message">
             {display_msg}
         </div>
+    </div>
     """, unsafe_allow_html=True)
     
     # Input Area
@@ -2613,7 +2603,6 @@ def render_chatbot():
         on_change=process_chat
     )
 
-    st.markdown('</div>', unsafe_allow_html=True)
 
 
 # =============================================================================
