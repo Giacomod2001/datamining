@@ -1699,10 +1699,10 @@ def render_landing_page():
 
     # Card Template
     card_style = """
-    <div style='text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: space-between;'>
-        <div>
-            <h3 style='margin-bottom: 0.75rem; font-size: 1.1rem;'>{}</h3>
-            <p style='color: #8b949e; margin-bottom: 1.5rem; font-size: 0.85rem;'>{}</p>
+    <div style='text-align: center;'>
+        <h3 style='margin-bottom: 0.75rem; font-size: 1.1rem;'>{}</h3>
+        <div style='min-height: 4.5rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;'>
+            <p style='color: #8b949e; font-size: 0.85rem; margin: 0; line-height: 1.4;'>{}</p>
         </div>
     </div>
     """
