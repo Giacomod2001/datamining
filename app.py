@@ -286,6 +286,7 @@ def render_debug_page():
         <div>
             <h1 style='margin: 0; padding: 0;'>Developer Console</h1>
             <p style='color: #8b949e; margin: 0.25rem 0 0 0;'>Advanced Analytics & Diagnostics Interface</p>
+            <p style='font-size: 0.8rem; color: #8b949e;'>Need help with ML models? Ask <b>Ruben</b> in the sidebar.</p>
         </div>
         <div style='text-align: right;'>
              <span style='background: #0d1117; border: 1px solid #30363d; padding: 4px 12px; border-radius: 20px; color: #00C853; font-size: 0.8rem; font-weight: bold;'>SYSTEM ONLINE</span>
@@ -2079,8 +2080,13 @@ def render_evaluation_page():
     show_cover_letter = st.session_state.get("show_cover_letter", False)
     
     # Hero Header with Gradient - Centered and Enhanced
-
-
+    st.markdown("""
+    <div class="hero-gradient" style="text-align: center; padding: 2.5rem;">
+        <h1 style="margin-bottom: 0.5rem;">CV Analysis</h1>
+        <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 0.5rem;">Get instant AI-powered feedback on your CV vs. specific job descriptions</p>
+        <p style="font-size: 0.9rem; color: #8b949e;">Need help understanding your match score? Ask <b>Ruben</b> in the sidebar.</p>
+    </div>
+    """, unsafe_allow_html=True)
     # =============================================================================
     # INPUT COLUMNS: JD | CV | Project (optional) | Cover Letter (optional)
     # CSS handles responsive wrap to 2x2 when sidebar is open
