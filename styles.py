@@ -191,20 +191,31 @@ h1 {
     transition: all var(--transition-normal);
 }
 
-.config-card {
-    background: rgba(22, 27, 34, 0.5);
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid var(--border-color);
-    margin-bottom: 1rem;
-    min-height: 120px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+/* Bordered Container Styling (st.container(border=True)) */
+[data-testid="stVerticalBlockBordered"] {
+    background: rgba(31, 38, 52, 0.4) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    padding: 2rem !important;
+    margin-bottom: 1.5rem !important;
+    transition: all var(--transition-normal) !important;
+}
+
+[data-testid="stVerticalBlockBordered"]:hover {
+    border-color: var(--primary-blue) !important;
+    box-shadow: 0 0 15px rgba(0, 119, 181, 0.1) !important;
+}
+
+[data-testid="stVerticalBlockBordered"] h1,
+[data-testid="stVerticalBlockBordered"] h2,
+[data-testid="stVerticalBlockBordered"] h3,
+[data-testid="stVerticalBlockBordered"] h4 {
+    margin-top: 0 !important;
+    color: var(--text-primary) !important;
 }
 
 .section-spacer {
-    height: 2rem;
+    height: 1.5rem;
     width: 100%;
 }
 
