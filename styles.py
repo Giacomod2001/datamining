@@ -113,8 +113,8 @@ footer {visibility: hidden;}
    ============================================================================= */
 h1, h2, h3, h4, h5, h6 {
     font-weight: 600 !important;
-    margin-top: 0.5rem !important;
-    margin-bottom: 0.5rem !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 1rem !important;
 }
 
 h1 {
@@ -185,9 +185,27 @@ h1 {
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(48, 54, 61, 0.6);
     border-radius: 12px;
-    padding: 1.5rem;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
     box-shadow: var(--shadow-md);
     transition: all var(--transition-normal);
+}
+
+.config-card {
+    background: rgba(22, 27, 34, 0.5);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.section-spacer {
+    height: 2rem;
+    width: 100%;
 }
 
 .glass-card:hover {

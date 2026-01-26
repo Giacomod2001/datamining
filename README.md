@@ -7,7 +7,7 @@
 [![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![License](https://img.shields.io/badge/License-PolyForm--NC-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-3.1-0077B5?style=flat)](README.md)
+[![Version](https://img.shields.io/badge/Version-3.2-0077B5?style=flat)](README.md)
 
 ---
 
@@ -15,13 +15,13 @@
 
 **[Access CareerMatch AI Dashboard](https://dataminingiulm.streamlit.app/)**
 
-**Version 3.1 Highlights**:
+**Version 3.2 Highlights**:
 
 - **Ruben AI Consultant**: Integrated sidebar assistant with **6-language support** (EN, IT, ES, FR, DE, PT)
 - **Harmonized Scoring**: Unified **65/20/15** matching engine (Skills/Semantics/Education) across all modules
 - **Enhanced Intelligence**: Expanded database featuring **950+ keywords** and **230+ job archetypes**
 - **Improved PDF Handling**: Migrated to `pypdf` for better stability and performance
-- **Comprehensive Test Suite**: 18 automated tests covering scoring, multilingual support, and AI assistant
+- **Comprehensive Test Suite**: Automated tests covering scoring, multilingual support, and AI assistant
 
 ---
 
@@ -77,7 +77,7 @@ The application will be accessible at `http://localhost:8501`.
 
 ## Architecture
 
-Our **Unified Multi-Factor Scoring (v3.1)** calculates compatibility based on a weighted composite formula:
+Our **Unified Multi-Factor Scoring (v3.2)** calculates compatibility based on a weighted composite formula:
 
 1. **Skill Match (65%)**: Evaluates direct, inferred, and transferable skills
 2. **Semantic Context (20%)**: Uses LSA to understand the underlying professional context
@@ -87,7 +87,7 @@ Our **Unified Multi-Factor Scoring (v3.1)** calculates compatibility based on a 
 
 ## Project Structure
 
-```
+```text
 datamining/
 ├── app.py              # Main Streamlit application
 ├── ml_utils.py         # Core ML functions (scoring, gap analysis, Ruben AI)

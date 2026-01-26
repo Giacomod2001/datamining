@@ -2642,47 +2642,51 @@ def render_interview_prep():
     
     if not questions:
         # Setup View - Two column layout with cards
-        st.markdown("### Configure Your Practice Session")
+        st.subheader("Configure Your Practice Session")
         
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("""
-            <div class="glass-card" style="height: 100%;">
-                <h4>Target Role</h4>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown('<div class="config-card">', unsafe_allow_html=True)
+            st.markdown("#### Target Role")
             role = st.selectbox(
                 "Select your target role",
                 ["Software Engineer", "Data Scientist", "Data Analyst", "Product Manager", "UX Designer", "General"],
-                label_visibility="collapsed"
+                label_visibility="collapsed",
+                key="role_selector"
             )
+            st.markdown('</div>', unsafe_allow_html=True)
         
         with col2:
-            st.markdown("""
-            <div class="glass-card" style="height: 100%;">
-                <h4>Question Type</h4>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown('<div class="config-card">', unsafe_allow_html=True)
+            st.markdown("#### Question Type")
             q_type = st.radio(
                 "Select question type",
                 ["Mixed (All Types)", "Behavioral", "Technical", "HR"],
                 horizontal=True,
-                label_visibility="collapsed"
+                label_visibility="collapsed",
+                key="q_type_selector"
             )
+            st.markdown('</div>', unsafe_allow_html=True)
             q_type_map = {"Mixed (All Types)": "mixed", "Behavioral": "behavioral", "Technical": "technical", "HR": "hr"}
         
-        # Number of questions - Radio instead of slider
-        st.markdown("### Number of Questions")
+        # Spacer
+        st.markdown('<div class="section-spacer"></div>', unsafe_allow_html=True)
+
+        # Number of questions
+        st.markdown('<div class="config-card" style="min-height: auto;">', unsafe_allow_html=True)
+        st.markdown("#### Number of Questions")
         num_questions = st.radio(
             "How many questions?",
             [3, 5, 7, 10],
             horizontal=True,
             index=1,
-            label_visibility="collapsed"
+            label_visibility="collapsed",
+            key="num_q_selector"
         )
+        st.markdown('</div>', unsafe_allow_html=True)
         
-        st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
+        st.markdown('<div class="section-spacer"></div>', unsafe_allow_html=True)
         
         # Start Button
         if st.button("Start Practice Session", type="primary", use_container_width=True):
