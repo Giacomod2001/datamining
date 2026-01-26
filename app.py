@@ -1166,6 +1166,7 @@ def render_cv_builder():
     <div style='text-align: center; margin-bottom: 2rem;'>
         <h1 style='margin: 0; padding: 0;'>CV Builder</h1>
         <p style='color: #8b949e; margin: 0.25rem 0 0 0;'>Professional CV Builder</p>
+        <p style='font-size: 0.9rem; color: #8b949e; margin-top: 0.5rem;'>Need help building your CV? Ask <b>Ruben</b> in the sidebar.</p>
     </div>
     """, unsafe_allow_html=True)
     
