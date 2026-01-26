@@ -156,12 +156,17 @@ h1 {
     background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-dark) 100%) !important;
     color: white !important;
     border: none !important;
+    padding: 0.75rem 1.5rem !important;
     border-radius: 8px !important;
-    padding: 0.75rem 2rem !important;
     font-weight: 600 !important;
-    letter-spacing: 0.5px !important;
-    box-shadow: var(--shadow-md) !important;
     transition: all var(--transition-normal) !important;
+    box-shadow: var(--shadow-sm) !important;
+    width: 100% !important;
+    min-height: 3.5rem !important; /* Standardized height */
+    white-space: nowrap !important; /* Prevent text wrapping */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 .stButton > button:hover {

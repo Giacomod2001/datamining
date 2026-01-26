@@ -2740,7 +2740,7 @@ def render_interview_prep():
         )
         
         # Action Buttons
-        col1, col2, col3, col4 = st.columns([1, 1, 2, 1])
+        col1, col2, col3, col4 = st.columns([1, 1.5, 2.5, 1.2])
         
         with col1:
             if q_idx > 0:
