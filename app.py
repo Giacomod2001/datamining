@@ -1707,8 +1707,8 @@ def render_landing_page():
     </div>
     """
     
-    # ROW 1: Main Features (3 cards)
-    col1, col2, col3 = st.columns(3)
+    # ROW 1: Main Features (2 cards)
+    col1, col2 = st.columns(2)
     
     with col1:
         with st.container(border=True):
@@ -1730,6 +1730,9 @@ def render_landing_page():
                 st.session_state["page"] = "CV Builder"
                 st.rerun()
 
+    # ROW 2: Additional Features (2 cards)
+    col3, col4 = st.columns(2)
+
     with col3:
         with st.container(border=True):
             st.markdown(card_style.format(
@@ -1740,12 +1743,6 @@ def render_landing_page():
                 st.session_state["page"] = "CV Evaluation"
                 st.rerun()
 
-    # Spacer
-    st.markdown("<div style='height: 0.5rem;'></div>", unsafe_allow_html=True)
-
-    # ROW 2: Additional Features (2 cards, centered)
-    spacer1, col4, col5, spacer2 = st.columns([0.5, 1, 1, 0.5])
-    
     with col4:
         with st.container(border=True):
             st.markdown(card_style.format(
@@ -1755,9 +1752,6 @@ def render_landing_page():
             if st.button("Practice Interviews", use_container_width=True, key="land_interview"):
                 st.session_state["page"] = "Interview Prep"
                 st.rerun()
-
-    with col5:
-        st.empty()
 
     # Footer Divider
     st.markdown("<hr>", unsafe_allow_html=True)
