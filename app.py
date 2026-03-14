@@ -52,6 +52,7 @@ import knowledge_base
 import ml_utils
 import styles
 import constants
+import gdpr_compliance
 
 # Puliamo la cache all'avvio solo se necessario
 # st.cache_data.clear()
@@ -72,6 +73,13 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# =============================================================================
+# GDPR CONSENT GATE
+# =============================================================================
+# Block the entire app until GDPR consent is given
+if not gdpr_compliance.render_consent_banner():
+    st.stop()
 
 # =============================================================================
 # APPLICAZIONE TEMA CSS PREMIUM
@@ -188,7 +196,8 @@ def render_navigation():
                 ("Career Discovery", "Career Discovery"),
                 ("CV Builder", "CV Builder"),
                 ("CV Analysis", "CV Evaluation"),
-                ("Interview Prep", "Interview Prep")
+                ("Interview Prep", "Interview Prep"),
+                ("Privacy & AI", "Privacy")
             ]
             
             for label, page_key in nav_items:
@@ -224,6 +233,15 @@ def render_navigation():
 
 
         st.markdown("<div style='margin-top: 1rem; color: #666; font-size: 0.8em;'>v2.2 | Local Mode</div>", unsafe_allow_html=True)
+        
+        # GDPR Compliance Badge & Delete Button
+        gdpr_compliance.render_sidebar_compliance_badge()
+        if st.button("Cancella i Miei Dati", key="sidebar_delete_data", use_container_width=True):
+            keys_to_clear = list(st.session_state.keys())
+            for key in keys_to_clear:
+                if key != "page":
+                    del st.session_state[key]
+            st.rerun()
         
         # Integrate Ruben Assistant
         render_chatbot()
