@@ -3,10 +3,10 @@
 GDPR & AI Act Compliance Module - CareerMatch AI
 ================================================================================
 
-Modulo per la conformità al GDPR (Reg. UE 2016/679), EU AI Act (Reg. UE 2024/1689)
+Modulo per la conformita' al GDPR (Reg. UE 2016/679), EU AI Act (Reg. UE 2024/1689)
 e Direttiva ePrivacy.
 
-Funzionalità:
+Funzionalita':
 - Banner di consenso (consent gate)
 - Informativa Privacy completa
 - Trasparenza AI Act
@@ -108,10 +108,10 @@ def render_consent_banner():
     with col2:
         st.markdown("""
         <div class="gdpr-banner">
-            <h3>🔒 Informativa sulla Privacy e Consenso al Trattamento</h3>
+            <h3>Informativa sulla Privacy e Consenso al Trattamento</h3>
             <p>
                 Benvenuto in <strong>CareerMatch AI</strong>. Prima di procedere, ti informiamo che 
-                questa applicazione tratta i tuoi dati personali in conformità al 
+                questa applicazione tratta i tuoi dati personali in conformita' al 
                 <strong>Regolamento Generale sulla Protezione dei Dati (GDPR - Reg. UE 2016/679)</strong>
                 e al <strong>Regolamento sull'Intelligenza Artificiale (AI Act - Reg. UE 2024/1689)</strong>.
             </p>
@@ -120,7 +120,7 @@ def render_consent_banner():
                 (nome, email, telefono, competenze), descrizioni delle posizioni lavorative.
             </p>
             <p>
-                <strong>Finalità:</strong> Analisi di compatibilità professionale tramite algoritmi 
+                <strong>Finalita':</strong> Analisi di compatibilita' professionale tramite algoritmi 
                 di Machine Learning (TF-IDF, Random Forest, K-Means Clustering, LDA Topic Modeling).
             </p>
             <p>
@@ -136,11 +136,11 @@ def render_consent_banner():
         
         # Consent checkboxes
         consent_data = st.checkbox(
-            "✅ Ho letto e acconsento al trattamento dei miei dati personali ai sensi dell'Art. 6(1)(a) GDPR",
+            "Ho letto e acconsento al trattamento dei miei dati personali ai sensi dell'Art. 6(1)(a) GDPR",
             key="gdpr_consent_checkbox"
         )
         consent_ai = st.checkbox(
-            "✅ Sono consapevole che i miei dati saranno elaborati da sistemi di Intelligenza Artificiale (AI Act Art. 52)",
+            "Sono consapevole che i miei dati saranno elaborati da sistemi di Intelligenza Artificiale (AI Act Art. 52)",
             key="ai_act_consent_checkbox"
         )
         
@@ -155,7 +155,7 @@ def render_consent_banner():
                 st.rerun()
         
         if not (consent_data and consent_ai):
-            st.caption("⚠️ È necessario fornire entrambi i consensi per utilizzare l'applicazione.")
+            st.caption("Attenzione: e' necessario fornire entrambi i consensi per utilizzare l'applicazione.")
     
     return False
 
@@ -172,7 +172,7 @@ def render_privacy_policy_page():
     st.markdown("""
     <div style='display: flex; align-items: center; justify-content: space-between;'>
         <div>
-            <h1 style='margin: 0;'>Privacy & Conformità AI</h1>
+            <h1 style='margin: 0;'>Privacy & Conformita' AI</h1>
             <p style='color: #8b949e; margin: 0.25rem 0 0 0;'>Informativa completa sul trattamento dei dati personali</p>
         </div>
         <div>
@@ -186,17 +186,17 @@ def render_privacy_policy_page():
     
     # --- INFORMATIVA PRIVACY ---
     
-    st.markdown("## 📋 Informativa Privacy (Art. 13-14 GDPR)")
+    st.markdown("## Informativa Privacy (Art. 13-14 GDPR)")
     
     st.markdown("""
     <div class="privacy-section">
         <h4>1. Titolare del Trattamento</h4>
         <p>
-            Il presente progetto è sviluppato nel contesto accademico dell'<strong>Università IULM</strong> 
+            Il presente progetto e' sviluppato nel contesto accademico dell'<strong>Universita' IULM</strong> 
             (Milano) – A.A. 2025-2026, corso di Data Mining & Text Analytics.<br><br>
             <strong>Team di sviluppo:</strong> Giacomo Dell'Acqua, Luca Tallarico, Ruben Scoletta<br>
             <strong>Contatto:</strong> Per esercitare i propri diritti, inviare comunicazione tramite 
-            i canali istituzionali dell'Università IULM.
+            i canali istituzionali dell'Universita' IULM.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -204,10 +204,10 @@ def render_privacy_policy_page():
     st.markdown("""
     <div class="privacy-section">
         <h4>2. Dati Personali Trattati</h4>
-        <p>L'applicazione può trattare le seguenti categorie di dati:</p>
+        <p>L'applicazione puo' trattare le seguenti categorie di dati:</p>
         <ul>
             <li><strong>Dati identificativi:</strong> nome, cognome, indirizzo email, numero di telefono, 
-                località (inseriti volontariamente nel CV Builder)</li>
+                localita' (inseriti volontariamente nel CV Builder)</li>
             <li><strong>Dati professionali:</strong> competenze tecniche, esperienze lavorative, 
                 percorso formativo, progetti</li>
             <li><strong>Documenti:</strong> testo del Curriculum Vitae (caricato o incollato dall'utente)</li>
@@ -218,14 +218,14 @@ def render_privacy_policy_page():
     
     st.markdown("""
     <div class="privacy-section">
-        <h4>3. Finalità e Base Giuridica del Trattamento</h4>
+        <h4>3. Finalita' e Base Giuridica del Trattamento</h4>
         <table style="width: 100%; border-collapse: collapse; margin-top: 0.5rem;">
             <tr style="border-bottom: 1px solid #30363d;">
-                <th style="text-align: left; padding: 8px; color: #00A0DC;">Finalità</th>
+                <th style="text-align: left; padding: 8px; color: #00A0DC;">Finalita'</th>
                 <th style="text-align: left; padding: 8px; color: #00A0DC;">Base Giuridica</th>
             </tr>
             <tr style="border-bottom: 1px solid #21262d;">
-                <td style="padding: 8px;">Analisi di compatibilità CV vs Job Description</td>
+                <td style="padding: 8px;">Analisi di compatibilita' CV vs Job Description</td>
                 <td style="padding: 8px;">Consenso (Art. 6(1)(a) GDPR)</td>
             </tr>
             <tr style="border-bottom: 1px solid #21262d;">
@@ -250,8 +250,8 @@ def render_privacy_policy_page():
         <p>
             I dati personali sono trattati <strong>esclusivamente nella sessione corrente</strong> 
             del browser. <strong>Non esiste alcun database persistente</strong> che memorizzi i dati inseriti.<br><br>
-            ⏱️ <strong>Periodo di conservazione:</strong> Durata della sessione browser.<br>
-            🗑️ <strong>Cancellazione:</strong> Automatica alla chiusura del browser/tab, 
+            <strong>Periodo di conservazione:</strong> Durata della sessione browser.<br>
+            <strong>Cancellazione:</strong> Automatica alla chiusura del browser/tab, 
             oppure immediata tramite il pulsante "Cancella i Miei Dati".
         </p>
     </div>
@@ -266,12 +266,12 @@ def render_privacy_policy_page():
             <li><strong>Rettifica</strong> (Art. 16) — Correggere i dati inesatti</li>
             <li><strong>Cancellazione</strong> (Art. 17) — Ottenere la cancellazione dei dati ("diritto all'oblio")</li>
             <li><strong>Limitazione</strong> (Art. 18) — Limitare il trattamento dei dati</li>
-            <li><strong>Portabilità</strong> (Art. 20) — Ricevere i dati in formato strutturato</li>
+            <li><strong>Portabilita'</strong> (Art. 20) — Ricevere i dati in formato strutturato</li>
             <li><strong>Opposizione</strong> (Art. 21) — Opporsi al trattamento</li>
             <li><strong>Revoca del consenso</strong> (Art. 7(3)) — Revocare il consenso in qualsiasi momento</li>
         </ul>
         <p style="margin-top: 0.5rem; color: #8b949e; font-size: 0.85rem;">
-            Poiché i dati esistono solo nella sessione browser, il diritto di cancellazione è esercitabile 
+            Poiche' i dati esistono solo nella sessione browser, il diritto di cancellazione e' esercitabile 
             immediatamente tramite il pulsante "Cancella i Miei Dati" nella barra laterale.
         </p>
     </div>
@@ -281,8 +281,8 @@ def render_privacy_policy_page():
     <div class="privacy-section">
         <h4>6. Trasferimento Dati</h4>
         <p>
-            I dati <strong>non vengono trasferiti a terze parti</strong> né verso paesi extra-UE.<br>
-            L'applicazione è ospitata su <strong>Streamlit Community Cloud</strong> (server in AWS, regione UE).
+            I dati <strong>non vengono trasferiti a terze parti</strong> ne' verso paesi extra-UE.<br>
+            L'applicazione e' ospitata su <strong>Streamlit Community Cloud</strong> (server in AWS, regione UE).
             Nessun dato viene persistito al di fuori della sessione del browser dell'utente.
         </p>
     </div>
@@ -296,7 +296,7 @@ def render_privacy_policy_page():
     st.divider()
     
     # --- DATA DELETION ---
-    st.markdown("## 🗑️ Esercita i Tuoi Diritti")
+    st.markdown("## Esercita i Tuoi Diritti")
     render_delete_my_data_button()
     
     st.divider()
@@ -410,39 +410,39 @@ def render_ai_transparency(project_type="careermatch"):
         ai_models_html = "<p>Informazioni sui modelli non disponibili.</p>"
     
     st.markdown(f"""
-    ## 🤖 Trasparenza sull'Intelligenza Artificiale (AI Act)
+    ## Trasparenza sull'Intelligenza Artificiale (AI Act)
     
     <div class="ai-transparency-box">
         <h4>Dichiarazione ai sensi del Regolamento UE 2024/1689 (AI Act)</h4>
         <p>
             Questa applicazione utilizza sistemi di <strong>Intelligenza Artificiale</strong> 
-            per l'elaborazione dei dati. In conformità all'<strong>Art. 52 dell'AI Act</strong>, 
+            per l'elaborazione dei dati. In conformita' all'<strong>Art. 52 dell'AI Act</strong>, 
             dichiariamo quanto segue:
         </p>
         
-        <p style="margin-top: 1rem;"><strong>📊 Classificazione del rischio:</strong> 
+        <p style="margin-top: 1rem;"><strong>Classificazione del rischio:</strong> 
             <span style="background: rgba(0, 200, 83, 0.2); padding: 2px 8px; border-radius: 4px; color: #00C853;">
             RISCHIO LIMITATO / MINIMO</span>
         </p>
         
-        <p><strong>🎯 Sistemi AI utilizzati:</strong></p>
+        <p><strong>Sistemi AI utilizzati:</strong></p>
         {ai_models_html}
         
         <p style="margin-top: 1rem;">
-            <strong>⚖️ Decisioni automatizzate:</strong> I risultati forniti dall'AI sono 
+            <strong>Decisioni automatizzate:</strong> I risultati forniti dall'AI sono 
             <strong>puramente indicativi e a scopo informativo</strong>. Non vengono prese 
             decisioni automatizzate che producano effetti giuridici o che incidano significativamente 
-            sull'utente (Art. 22 GDPR). L'utente è sempre libero di ignorare i suggerimenti forniti.
+            sull'utente (Art. 22 GDPR). L'utente e' sempre libero di ignorare i suggerimenti forniti.
         </p>
         
         <p>
-            <strong>👤 Supervisione umana:</strong> Tutti i sistemi AI sono progettati come 
+            <strong>Supervisione umana:</strong> Tutti i sistemi AI sono progettati come 
             strumenti di supporto. Le decisioni finali spettano sempre all'utente umano.
         </p>
         
         <p>
-            <strong>📈 Limitazioni:</strong> I modelli ML possono produrre risultati imprecisi 
-            o incompleti. Lo score di compatibilità è un'approssimazione statistica e non 
+            <strong>Limitazioni:</strong> I modelli ML possono produrre risultati imprecisi 
+            o incompleti. Lo score di compatibilita' e' un'approssimazione statistica e non 
             rappresenta un giudizio definitivo sulle competenze dell'utente.
         </p>
     </div>
@@ -458,10 +458,10 @@ def render_delete_my_data_button():
     
     st.markdown("""
     <div class="delete-warning">
-        <strong>🗑️ Cancella i Miei Dati</strong><br>
+        <strong>Cancella i Miei Dati</strong><br>
         <span style="font-size: 0.9rem; color: #c9d1d9;">
-            Questa azione cancellerà immediatamente tutti i dati presenti nella sessione corrente, 
-            inclusi CV, analisi, dati del CV Builder e preferenze. L'azione è irreversibile.
+            Questa azione cancellera' immediatamente tutti i dati presenti nella sessione corrente, 
+            inclusi CV, analisi, dati del CV Builder e preferenze. L'azione e' irreversibile.
         </span>
     </div>
     """, unsafe_allow_html=True)
@@ -470,7 +470,7 @@ def render_delete_my_data_button():
     with col2:
         confirm = st.checkbox("Confermo di voler cancellare tutti i miei dati", key="delete_confirm_checkbox")
         
-        if st.button("🗑️ Cancella Tutti i Miei Dati", type="primary", use_container_width=True,
+        if st.button("Cancella Tutti i Miei Dati", type="primary", use_container_width=True,
                      disabled=not confirm):
             # Preserve only the page state to avoid crashes
             keys_to_clear = list(st.session_state.keys())
@@ -478,9 +478,8 @@ def render_delete_my_data_button():
                 if key != "page":
                     del st.session_state[key]
             
-            st.success("✅ Tutti i tuoi dati sono stati cancellati con successo. La sessione è stata ripristinata.")
-            st.info("ℹ️ Il tuo consenso è stato revocato. Ti verrà richiesto nuovamente all'accesso.")
-            st.balloons()
+            st.success("Tutti i tuoi dati sono stati cancellati con successo. La sessione e' stata ripristinata.")
+            st.info("Il tuo consenso e' stato revocato. Ti verra' richiesto nuovamente all'accesso.")
 
 
 # =============================================================================
@@ -493,7 +492,7 @@ def render_sidebar_compliance_badge():
     <div style='margin-top: 1rem; padding: 8px; background: rgba(0, 200, 83, 0.08); 
          border: 1px solid rgba(0, 200, 83, 0.2); border-radius: 8px; text-align: center;'>
         <span style='color: #00C853; font-size: 0.7rem; font-weight: 600;'>
-            🔒 GDPR · AI Act Compliant
+            GDPR + AI Act Compliant
         </span>
     </div>
     """, unsafe_allow_html=True)
