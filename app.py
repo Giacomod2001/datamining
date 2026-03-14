@@ -234,17 +234,19 @@ def render_navigation():
 
         st.markdown("<div style='margin-top: 1rem; color: #666; font-size: 0.8em;'>v2.2 | Local Mode</div>", unsafe_allow_html=True)
         
-        # GDPR Compliance Badge & Delete Button
-        gdpr_compliance.render_sidebar_compliance_badge()
-        if st.button("Cancella i Miei Dati", key="sidebar_delete_data", use_container_width=True):
-            keys_to_clear = list(st.session_state.keys())
-            for key in keys_to_clear:
-                if key != "page":
-                    del st.session_state[key]
-            st.rerun()
-        
         # Integrate Ruben Assistant
         render_chatbot()
+        
+        # GDPR Compliance Badge & Delete (subtle, at bottom)
+        gdpr_compliance.render_sidebar_compliance_badge()
+        with st.expander("Gestione dati personali", expanded=False):
+            st.caption("Ai sensi del GDPR (Art. 17), puoi cancellare tutti i dati inseriti nella sessione corrente.")
+            if st.button("Cancella i Miei Dati", key="sidebar_delete_data", use_container_width=True, type="secondary"):
+                keys_to_clear = list(st.session_state.keys())
+                for key in keys_to_clear:
+                    if key != "page":
+                        del st.session_state[key]
+                st.rerun()
 
 def render_debug_page():
     """
