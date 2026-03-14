@@ -2827,5 +2827,8 @@ if __name__ == "__main__":
         render_career_discovery()
     elif st.session_state["page"] == "Interview Prep":
         render_interview_prep()
+    elif st.session_state["page"] == "Privacy":
+        render_navigation()
+        gdpr_compliance.render_privacy_policy_page()
     else:
         render_landing_page()
