@@ -159,32 +159,13 @@ def render_navigation():
             </div>
             """, unsafe_allow_html=True)
 
-            # CSS Styles
-            st.markdown("""
-            <style>
-                /* TARGETING: Use the marker span to find the immediately following button container */
-                div:has(span#home-btn-marker) + div button {
-                    background-color: #00f2c3 !important;
-                    color: #FFFFFF !important;
-                    border: none !important;
-                }
-                div:has(span#dev-btn-marker) + div button {
-                    background-color: #00f2c3 !important;
-                    color: #FFFFFF !important;
-                    border: none !important;
-                }
-                /* Hover effects */
-                div:has(span#home-btn-marker) + div button:hover,
-                div:has(span#dev-btn-marker) + div button:hover {
-                    background-color: #00c8a0 !important;
-                    color: #FFFFFF !important;
-                }
-            </style>
-            """, unsafe_allow_html=True)
+            # Ruben Assistant -- placed at the top so it is the first thing
+            # the visitor sees in the sidebar, just below the brand.
+            render_chatbot()
+
             st.divider()
-            
-            # Home Button (Separated) with Marler
-            st.markdown('<span id="home-btn-marker"></span>', unsafe_allow_html=True)
+
+            # Home Button
             btn_type = "primary" if current_page == "Landing" else "secondary"
             if st.button("Home", key="nav_Landing", type=btn_type, use_container_width=True):
                 st.session_state["page"] = "Landing"
@@ -217,15 +198,14 @@ def render_navigation():
             # Spacer (Large)
             st.markdown("<div style='height: 1.5rem;'></div>", unsafe_allow_html=True)
 
-            # Dev Console (Separated) with Marker
-            st.markdown('<span id="dev-btn-marker"></span>', unsafe_allow_html=True)
+            # Dev Console
             btn_type = "primary" if current_page == "Debugger" else "secondary"
             if st.button("Dev Console", key="nav_Debugger", type=btn_type, use_container_width=True):
                 st.session_state["page"] = "Debugger"
                 st.rerun()
-                
+
             st.divider()
-        
+
         if current_page != "Landing":
             # If we're in the Debugger, the primary button should be "Home" and lead to Landing
             if current_page == "Debugger":
@@ -238,9 +218,6 @@ def render_navigation():
             "<div class='cm-sidebar-version'>v3.3 | Local Mode</div>",
             unsafe_allow_html=True,
         )
-
-        # Integrate Ruben Assistant
-        render_chatbot()
 
         # GDPR Compliance Badge & Delete (subtle, at bottom)
         gdpr_compliance.render_sidebar_compliance_badge()
