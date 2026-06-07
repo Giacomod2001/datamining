@@ -63,6 +63,16 @@ def theme_toggle(label_dark: str = "Light mode", label_light: str = "Dark mode")
 # LAYOUT PRIMITIVES
 # =============================================================================
 
+def _md(html: str) -> None:
+    """
+    Emit raw HTML via st.markdown. We strip leading whitespace from every line
+    because Streamlit's markdown engine treats 4+ leading spaces as a code
+    block -- which silently breaks nested <div>s.
+    """
+    cleaned = "\n".join(line.lstrip() for line in html.strip().splitlines())
+    st.markdown(cleaned, unsafe_allow_html=True)
+
+
 def hero(title: str, subtitle: Optional[str] = None, accent_gradient: bool = True) -> None:
     """
     Page hero with gradient title. Used by the landing page and major sub-pages.
@@ -72,15 +82,12 @@ def hero(title: str, subtitle: Optional[str] = None, accent_gradient: bool = Tru
     subtitle_html = (
         f"<p class='cm-hero-subtitle'>{subtitle}</p>" if subtitle else ""
     )
-    st.markdown(
-        f"""
-        <header class="cm-hero" role="banner">
-            <h1 class="{title_style}">{title}</h1>
-            {subtitle_html}
-        </header>
-        """,
-        unsafe_allow_html=True,
-    )
+    _md(f"""
+    <header class="cm-hero" role="banner">
+    <h1 class="{title_style}">{title}</h1>
+    {subtitle_html}
+    </header>
+    """)
 
 
 def section_header(title: str, subtitle: Optional[str] = None) -> None:
@@ -88,15 +95,12 @@ def section_header(title: str, subtitle: Optional[str] = None) -> None:
     subtitle_html = (
         f"<p class='cm-section-subtitle'>{subtitle}</p>" if subtitle else ""
     )
-    st.markdown(
-        f"""
-        <section class="cm-section-header">
-            <h1 class="cm-section-title">{title}</h1>
-            {subtitle_html}
-        </section>
-        """,
-        unsafe_allow_html=True,
-    )
+    _md(f"""
+    <section class="cm-section-header">
+    <h1 class="cm-section-title">{title}</h1>
+    {subtitle_html}
+    </section>
+    """)
 
 
 def metric_row(items: Iterable[tuple[str, str]]) -> None:
@@ -106,19 +110,16 @@ def metric_row(items: Iterable[tuple[str, str]]) -> None:
     Args:
         items: iterable of (value, label) tuples.
     """
-    rendered = "".join(
-        f"""
-        <div class="cm-metric">
-            <span class="cm-metric-value cm-gradient-text">{value}</span>
-            <span class="cm-metric-label">{label}</span>
-        </div>
-        """
+    parts = [
+        (
+            f"<div class='cm-metric'>"
+            f"<span class='cm-metric-value cm-gradient-text'>{value}</span>"
+            f"<span class='cm-metric-label'>{label}</span>"
+            f"</div>"
+        )
         for value, label in items
-    )
-    st.markdown(
-        f"<div class='cm-metric-row' role='list'>{rendered}</div>",
-        unsafe_allow_html=True,
-    )
+    ]
+    _md(f"<div class='cm-metric-row' role='list'>{''.join(parts)}</div>")
 
 
 def link_card(title: str, body: str, button_label: str, page_key: str,
@@ -129,15 +130,12 @@ def link_card(title: str, body: str, button_label: str, page_key: str,
     """
     btn_type = "primary" if primary else "secondary"
     with st.container(border=True):
-        st.markdown(
-            f"""
-            <div class="cm-card-content">
-                <h3 class="cm-card-title">{title}</h3>
-                <p class="cm-card-body">{body}</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        _md(f"""
+        <div class="cm-card-content">
+        <h3 class="cm-card-title">{title}</h3>
+        <p class="cm-card-body">{body}</p>
+        </div>
+        """)
         if st.button(button_label, key=btn_key, use_container_width=True, type=btn_type):
             st.session_state["page"] = page_key
             st.rerun()
@@ -158,21 +156,18 @@ def skill_tag(text: str, kind: str = "matched") -> str:
 def render_skill_tags(skills: Iterable[str], kind: str = "matched") -> None:
     """Convenience: render an iterable of skills as a wrapping row of tags."""
     html = " ".join(skill_tag(s, kind) for s in skills)
-    st.markdown(f"<div class='cm-tag-row'>{html}</div>", unsafe_allow_html=True)
+    _md(f"<div class='cm-tag-row'>{html}</div>")
 
 
 def footer(left_text: str, right_html: Optional[str] = None) -> None:
     """Unified app footer. `right_html` may contain feedback links etc."""
     right = right_html or ""
-    st.markdown(
-        f"""
-        <footer class="cm-footer">
-            <span class="cm-footer-left">{left_text}</span>
-            <span class="cm-footer-right">{right}</span>
-        </footer>
-        """,
-        unsafe_allow_html=True,
-    )
+    _md(f"""
+    <footer class="cm-footer">
+    <span class="cm-footer-left">{left_text}</span>
+    <span class="cm-footer-right">{right}</span>
+    </footer>
+    """)
 
 
 # =============================================================================
@@ -184,10 +179,7 @@ def skip_to_content_link(target_id: str = "main-content") -> None:
     Adds an a11y "skip to content" anchor visible only on keyboard focus.
     Place this at the very top of the page (after navigation render).
     """
-    st.markdown(
-        f"""
-        <a class="cm-skip-link" href="#{target_id}">Skip to main content</a>
-        <div id="{target_id}" tabindex="-1"></div>
-        """,
-        unsafe_allow_html=True,
+    _md(
+        f'<a class="cm-skip-link" href="#{target_id}">Skip to main content</a>'
+        f'<div id="{target_id}" tabindex="-1"></div>'
     )

@@ -1699,13 +1699,10 @@ def render_landing_page():
 
     # Description
     st.markdown(
-        """
-        <p class='cm-section-subtitle' style='max-width: 700px; margin: 0 auto 1.5rem;'>
-            <strong>Your Complete Career Toolkit:</strong>
-            Discover career paths, build professional CVs, evaluate against job descriptions,
-            practice interviews, and explore market trends.
-        </p>
-        """,
+        "<p class='cm-section-subtitle' style='max-width: 700px; margin: 0 auto 1.5rem;'>"
+        "<strong>Your Complete Career Toolkit:</strong> "
+        "Discover career paths, build professional CVs, evaluate against job descriptions, "
+        "practice interviews, and explore market trends.</p>",
         unsafe_allow_html=True,
     )
 
@@ -1751,14 +1748,11 @@ def render_landing_page():
 
     # Ruben CTA
     st.markdown(
-        """
-        <div class="landing-chat-popup">
-            <h4 class="landing-chat-popup-title">Need Help?</h4>
-            <p style="margin: 0; font-size: 0.95rem; color: var(--cm-text-secondary);">
-                Ask <b>Ruben</b> in the sidebar. He can guide you through all features and answer your questions.
-            </p>
-        </div>
-        """,
+        '<div class="landing-chat-popup">'
+        '<h4 class="landing-chat-popup-title">Need Help?</h4>'
+        '<p style="margin: 0; font-size: 0.95rem; color: var(--cm-text-secondary);">'
+        'Ask <b>Ruben</b> in the sidebar. He can guide you through all features and answer your questions.'
+        '</p></div>',
         unsafe_allow_html=True,
     )
 
