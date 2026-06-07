@@ -1015,6 +1015,16 @@ def _t(key: str):
     return TRANSLATIONS.get(lang, TRANSLATIONS["en"]).get(key, TRANSLATIONS["en"].get(key, key))
 
 
+# Public alias so other modules can reuse the GDPR translation table
+# (e.g. for the sidebar widgets that live in app.py).
+def t(key: str):
+    return _t(key)
+
+
+def current_language() -> str:
+    return st.session_state.get("gdpr_lang", "en")
+
+
 def _now_utc_iso() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 

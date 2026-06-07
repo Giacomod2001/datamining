@@ -313,7 +313,7 @@ hr {{
    4. STREAMLIT WIDGET OVERRIDES
    ============================================================================= */
 
-/* Buttons */
+/* Buttons (primary = gradient, secondary = outlined surface) */
 .stButton > button {{
     background: linear-gradient(135deg, var(--cm-brand) 0%, var(--cm-brand-dark) 100%);
     color: #ffffff;
@@ -337,6 +337,19 @@ hr {{
     color: var(--cm-text-muted);
     cursor: not-allowed;
     box-shadow: none;
+}}
+
+/* Secondary buttons (kind="secondary"): surface bg, brand border + text */
+.stButton > button[kind="secondary"] {{
+    background: var(--cm-bg-surface);
+    color: var(--cm-brand);
+    border: 1.5px solid var(--cm-brand);
+    box-shadow: none;
+}}
+.stButton > button[kind="secondary"]:hover {{
+    background: color-mix(in srgb, var(--cm-brand) 12%, var(--cm-bg-surface));
+    color: var(--cm-brand);
+    box-shadow: var(--cm-shadow-sm);
 }}
 
 /* Bordered container (st.container(border=True)) */
@@ -696,7 +709,61 @@ a:focus-visible,
 * {{ scrollbar-width: thin; scrollbar-color: var(--cm-border) var(--cm-bg-base); }}
 
 /* =============================================================================
-   11. BOX SIZING + BASE FIXES
+   11. SIDEBAR DETAIL POLISH (M2.1)
+   ============================================================================= */
+
+/* Vertical breathing room between sidebar widget groups */
+section[data-testid="stSidebar"] [data-testid="stVerticalBlock"]
+  > [data-testid="stElementContainer"] {{
+    margin-bottom: 0.5rem;
+}}
+section[data-testid="stSidebar"] [data-testid="stExpander"] {{
+    margin-top: 0.75rem;
+}}
+
+/* Version stamp under the theme toggle */
+.cm-sidebar-version {{
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+    color: var(--cm-text-muted);
+    font-size: 0.78rem;
+    text-align: center;
+    letter-spacing: 0.04em;
+}}
+
+/* Expander in the sidebar -- legible on both themes */
+section[data-testid="stSidebar"] [data-testid="stExpander"] details {{
+    background: var(--cm-bg-elevated);
+    border: 1px solid var(--cm-border);
+    border-radius: 10px;
+    padding: 0.25rem 0.5rem;
+}}
+section[data-testid="stSidebar"] [data-testid="stExpander"] details summary {{
+    color: var(--cm-text-primary);
+    font-weight: 600;
+}}
+section[data-testid="stSidebar"] [data-testid="stExpander"] details summary:hover {{
+    color: var(--cm-brand);
+}}
+section[data-testid="stSidebar"] [data-testid="stExpander"] [data-testid="stCaptionContainer"],
+section[data-testid="stSidebar"] [data-testid="stExpander"] p {{
+    color: var(--cm-text-secondary);
+}}
+
+/* Ruben chat input: theme-aware, comfortable size */
+.sidebar-chat-container + div .stTextInput input,
+section[data-testid="stSidebar"] .stTextInput input {{
+    background: var(--cm-bg-elevated);
+    color: var(--cm-text-primary);
+    border: 1px solid var(--cm-border);
+}}
+.sidebar-chat-container + div .stTextInput input::placeholder,
+section[data-testid="stSidebar"] .stTextInput input::placeholder {{
+    color: var(--cm-text-muted);
+}}
+
+/* =============================================================================
+   12. BOX SIZING + BASE FIXES
    ============================================================================= */
 *, *::before, *::after {{ box-sizing: border-box; }}
 html {{ scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }}
