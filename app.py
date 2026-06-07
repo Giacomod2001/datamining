@@ -1712,7 +1712,8 @@ def render_landing_page():
         unsafe_allow_html=True,
     )
 
-    # Feature grid (4 cards in 2 rows)
+    # Feature grid (4 cards in 2 rows) -- buttons share the same primary
+    # style so no card visually outranks the others.
     col1, col2 = st.columns(2)
     with col1:
         ui_components.link_card(
@@ -1730,6 +1731,7 @@ def render_landing_page():
             button_label="Build My CV",
             page_key="CV Builder",
             btn_key="land_cvbuild",
+            primary=True,
         )
 
     col3, col4 = st.columns(2)
@@ -1740,6 +1742,7 @@ def render_landing_page():
             button_label="Evaluate CV",
             page_key="CV Evaluation",
             btn_key="land_cveval",
+            primary=True,
         )
     with col4:
         ui_components.link_card(
@@ -1748,6 +1751,7 @@ def render_landing_page():
             button_label="Practice Interviews",
             page_key="Interview Prep",
             btn_key="land_interview",
+            primary=True,
         )
 
     st.markdown("<hr>", unsafe_allow_html=True)
