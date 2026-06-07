@@ -106,6 +106,9 @@ try:
 except ImportError:
     PdfReader = None
 
+# Smart Ruben intent classifier (M3)
+import ruben_intent
+
 try:
     from fpdf import FPDF
 except ImportError:
@@ -3885,7 +3888,6 @@ def _detect_chat_language(message: str) -> str:
 _RUBEN_RESPONSES = {
     'en': {
         'default': "I am Ruben, your career consultant. How can I assist you today?",
-        'greeting': "Hello. I am Ruben, a professional career consultant. I am here to help you optimize your career strategy.",
         'landing': "I'm Ruben, here to help you navigate the platform. Start with Career Discovery to explore job paths, CV Builder to create your resume, or CV Evaluation to analyze it against specific roles.",
         'cv_eval': "Upload your CV and paste a Job Description to see how well they match. I'll highlight matched skills, transferable ones, and gaps.",
         'discovery': "This section helps you explore roles based on preferences like remote work, salary, or industry. Tell me what matters most to you in a job!",
@@ -3893,11 +3895,9 @@ _RUBEN_RESPONSES = {
         'interview': "Practical preparation is key! Practice with our role-specific questions and I'll help you refine your answers using the STAR method.",
         'market_trends': "Explore what's in demand! This section shows skill growth and demand trends across sectors to help you stay ahead.",
         'debugger': "This is the Developer Console. Use it to see the system's logic and underlying KDD process stats.",
-        'fallback': "I'm here to help you navigate the platform. Whether you're exploring careers, analyzing your CV, or practicing interviews, just let me know."
     },
     'it': {
         'default': "Sono Ruben, il tuo consulente di carriera. Come posso aiutarti oggi?",
-        'greeting': "Ciao. Sono Ruben, un consulente di carriera professionale. Sono qui per aiutarti a ottimizzare la tua strategia lavorativa.",
         'landing': "Sono Ruben, benvenuto! Sono qui per aiutarti. Inizia con Career Discovery per esplorare percorsi, CV Builder per creare il tuo curriculum, o CV Evaluation per analizzarlo.",
         'cv_eval': "Carica il tuo CV e incolla una Job Description per vedere quanto corrispondono. Ti mostrerò le skill trovate, quelle trasferibili e le lacune.",
         'discovery': "Questa sezione ti aiuta a esplorare ruoli basati su preferenze come lavoro remoto, stipendio o settore. Dimmi cosa cerchi in un lavoro!",
@@ -3905,11 +3905,9 @@ _RUBEN_RESPONSES = {
         'interview': "La preparazione pratica è fondamentale! Esercitati con le nostre domande specifiche e ti aiuterò a perfezionare le risposte con il metodo STAR.",
         'market_trends': "Scopri quali sono le skill più richieste! Questa sezione mostra la crescita e la domanda nei vari settori per aiutarti a restare aggiornato.",
         'debugger': "Questa è la Console Sviluppatore. Usala per vedere la logica del sistema e le statistiche del processo KDD.",
-        'fallback': "Sono qui per aiutarti a navigare la piattaforma. Che tu stia esplorando carriere, analizzando il CV o preparando un colloquio, chiedi pure."
     },
     'es': {
         'default': "Soy Ruben, tu consultor de carrera. ¿Cómo puedo ayudarte hoy?",
-        'greeting': "Hola. Soy Ruben, un consultor profesional. Estoy aquí para ayudarte a optimizar tu estrategia de carrera.",
         'landing': "Soy Ruben, ¡Bienvenido! Empieza con Career Discovery para explorar trayectorias, CV Builder para crear tu CV, o CV Evaluation para analizarlo.",
         'cv_eval': "Sube tu CV y pega una descripción del puesto para ver la coincidencia. Te mostraré tus habilidades y las brechas existentes.",
         'discovery': "Esta sección te ayuda a explorar roles según tus preferencias. ¡Dime qué es lo más importante para ti en un trabajo!",
@@ -3917,11 +3915,9 @@ _RUBEN_RESPONSES = {
         'interview': "¡La práctica es clave! Practica con nuestras preguntas y te ayudaré a mejorar tus respuestas.",
         'market_trends': "¡Explora la demanda! Esta sección muestra tendencias de habilidades y crecimiento para mantenerte actualizado.",
         'debugger': "Esta es la Consola de Desarrollador para ver la lógica del sistema.",
-        'fallback': "Estoy aquí para ayudarte. Solo dime qué necesitas."
     },
     'fr': {
         'default': "Je suis Ruben, votre consultant carrière. Comment puis-je vous aider aujourd'hui?",
-        'greeting': "Bonjour. Je suis Ruben, un consultant professionnel. Je suis ici pour optimiser votre stratégie de carrière.",
         'landing': "Bienvenue! Commencez par Career Discovery pour explorer les parcours, CV Builder pour créer votre CV, ou CV Evaluation pour l'analyser.",
         'cv_eval': "Téléchargez votre CV et collez une description de poste. Je vous montrerai vos compétences et les points à améliorer.",
         'discovery': "Cette section vous aide à explorer les métiers selon vos préférences. Dites-moi ce qui compte pour vous!",
@@ -3929,11 +3925,9 @@ _RUBEN_RESPONSES = {
         'interview': "La pratique est essentielle! Entraînez-vous avec nos questions et je vous aiderai à peaufiner vos réponses.",
         'market_trends': "Explorez les tendances! Voyez quelles compétences sont demandées pour rester compétitif.",
         'debugger': "C'est la Console Développeur pour voir la logique système.",
-        'fallback': "Je suis là pour vous aider à naviguer la plateforme. Dites-moi ce dont vous avez besoin."
     },
     'de': {
         'default': "Ich bin Ruben, Ihr Karriereberater. Wie kann ich Ihnen heute helfen?",
-        'greeting': "Hallo. Ich bin Ruben, ein professioneller Karriereberater. Ich bin hier, um Ihre Karrierestrategie zu optimieren.",
         'landing': "Willkommen! Beginnen Sie mit Career Discovery, CV Builder oder CV Evaluation, um Ihren Lebenslauf zu analysieren.",
         'cv_eval': "Laden Sie Ihren Lebenslauf hoch und fügen Sie eine Stellenbeschreibung ein, um die Übereinstimmung zu prüfen.",
         'discovery': "Erkunden Sie Rollen basierend auf Ihren Präferenzen wie Gehalt oder Remote-Optionen.",
@@ -3941,11 +3935,9 @@ _RUBEN_RESPONSES = {
         'interview': "Übung macht den Meister! Nutzen Sie unsere Fragen, um sich auf Ihr nächstes Gespräch vorzubereiten.",
         'market_trends': "Sehen Sie, welche Fähigkeiten gefragt sind. Bleiben Sie mit aktuellen Markttrends auf dem Laufenden.",
         'debugger': "Dies ist die Entwicklerkonsole für Systemlogik.",
-        'fallback': "Ich bin hier, um Ihnen zu helfen. Sagen Sie mir einfach, was Sie brauchen."
     },
     'pt': {
         'default': "Sou Ruben, seu consultor de carreira. Como posso ajudá-lo hoje?",
-        'greeting': "Olá. Sou Ruben, um consultor profissional. Estou aqui para otimizar sua estratégia de carreira.",
         'landing': "Bem-vindo! Comece com Career Discovery, CV Builder ou CV Evaluation para analisar seu currículo.",
         'cv_eval': "Carregue o seu CV e cole uma descrição de vaga para ver a correspondência e identificar lacunas.",
         'discovery': "Explore funções com base nas suas preferências. Diga-me o que é mais importante para você!",
@@ -3953,7 +3945,6 @@ _RUBEN_RESPONSES = {
         'interview': "A prática é a chave! Use nossas perguntas para se preparar para as entrevistas.",
         'market_trends': "Explore as tendências! Veja quais habilidades estão em alta no mercado.",
         'debugger': "Este é o Console de Desenvolvedor para ver a lógica do sistema.",
-        'fallback': "Estou aqui para ajudá-lo. Diga-me o que você precisa."
     }
 }
 
@@ -3995,9 +3986,6 @@ def get_chatbot_response(message: str, current_page: str = "Landing", lang: str 
     The keyword chain that used to live in this function is now in
     ruben_intent.INTENT_PROTOTYPES, learned once via cached TF-IDF.
     """
-    import ruben_intent  # local import: avoids circular load and keeps
-                         # cold-start cheap when the chatbot is unused.
-
     # 1. Language
     if not lang:
         if message:
@@ -4011,8 +3999,6 @@ def get_chatbot_response(message: str, current_page: str = "Landing", lang: str 
     if not message:
         page_key = _PAGE_TO_RESPONSE_KEY.get(current_page, "default")
         return responses.get(page_key, responses["default"])
-
-    msg_lower = message.lower()  # noqa: F841 -- kept for legacy code below
 
     # 3. Smart intent classification (M3)
     intent, confidence = ruben_intent.classify_intent(message)
@@ -4039,257 +4025,6 @@ def get_chatbot_response(message: str, current_page: str = "Landing", lang: str 
     return ruben_intent.fallback_response(message, lang)
 
 
-def _legacy_get_chatbot_response_impl(message: str, current_page: str = "Landing", lang: str = None) -> str:
-    """
-    PRE-M3 KEYWORD CHAIN -- kept for reference, no longer called.
-    Retained inside ml_utils for ~one release in case the classifier needs
-    a quick rollback. Safe to delete after M3 lands in production.
-    """
-    if not lang:
-        if message:
-            lang = _detect_chat_language(message)
-        else:
-            lang = 'en'
-
-    responses = _RUBEN_RESPONSES.get(lang, _RUBEN_RESPONSES['en'])
-
-    if not message:
-        page_key = current_page.lower().replace(" ", "_")
-        return responses.get(page_key, responses['default'])
-
-    msg_lower = message.lower()
-    
-    # ==========================================================================
-    # EXTENDED TOPIC HANDLERS - Comprehensive Career Knowledge
-    # ==========================================================================
-    
-    # 1. GREETING & IDENTITY
-    greeting_keywords = ["hi", "hello", "hey", "who are you", "ciao", "salve", "buongiorno", 
-                         "chi sei", "hola", "buenos", "bonjour", "salut", "hallo", "guten", 
-                         "olá", "oi", "good morning", "good afternoon"]
-    if any(kw in msg_lower for kw in greeting_keywords):
-        return responses['greeting']
-
-    # 2. THANK YOU RESPONSES
-    thanks_keywords = ["thank", "thanks", "grazie", "merci", "danke", "gracias", "obrigado", "appreciated"]
-    if any(kw in msg_lower for kw in thanks_keywords):
-        thanks_resp = {
-            'en': "You're welcome! Let me know if you need anything else. I'm here to help with your career journey.",
-            'it': "Prego! Fammi sapere se hai bisogno di altro. Sono qui per aiutarti nel tuo percorso di carriera.",
-            'es': "¡De nada! Avísame si necesitas algo más. Estoy aquí para ayudarte en tu carrera.",
-            'fr': "Je vous en prie! N'hésitez pas si vous avez d'autres questions. Je suis là pour vous aider.",
-            'de': "Gern geschehen! Lassen Sie mich wissen, wenn Sie weitere Hilfe benötigen.",
-            'pt': "De nada! Me avise se precisar de mais alguma coisa."
-        }
-        return thanks_resp.get(lang, thanks_resp['en'])
-
-    # 3. INTERVIEW PREPARATION (Detailed technical vs behavioral)
-    interview_keywords = ["interview", "colloquio", "entrevista", "entretien", "vorstellungsgespräch",
-                          "prepare", "preparare", "question", "domande", "nervous", "tips"]
-    if any(kw in msg_lower for kw in interview_keywords):
-        interview_resp = {
-            'en': "For technical interviews (Data/ML), prepare for: 1) Live Coding (SQL/Python). 2) ML Case Studies (explain bias-variance trade-off). 3) System Design (scaling data pipelines). Use the STAR method for behavioral questions. Would you like specific tips for a particular role (e.g., Data Architect)?",
-            'it': "Per i colloqui tecnici (Data/ML), preparati su: 1) Live Coding (SQL/Python). 2) ML Case Studies (spiega il bias-variance trade-off). 3) System Design (scalabilità delle pipeline dati). Usa il metodo STAR per le domande comportamentali. Vuoi consigli specifici per un ruolo (es. Data Architect)?",
-            'es': "Para entrevistas técnicas (Data/ML): 1) Live Coding (SQL/Python). 2) Casos de ML (sesgo-varianza). 3) Diseño de sistemas. Usa el método STAR. ¿Quieres consejos para un rol específico?",
-            'fr': "Pour les entretiens techniques: 1) Live Coding (SQL/Python). 2) Cas d'études ML. 3) System Design. Utilisez la méthode STAR. Voulez-vous des conseils pour un rôle spécifique?",
-            'de': "Für technische Interviews: 1) Live Coding. 2) ML-Fallstudien. 3) Systemdesign. Verwenden Sie die STAR-Methode.",
-            'pt': "Para entrevistas técnicas: 1) Live Coding. 2) Casos de ML. 3) Design de sistemas. Use o método STAR."
-        }
-        return interview_resp.get(lang, interview_resp['en'])
-
-    # 3b. DATA SCIENCE / ML SPECIFIC (Intelligence)
-    ds_keywords = ["data science", "machine learning", "ai", "model", "deep learning", "neural", "nlp", "computer vision"]
-    if any(kw in msg_lower for kw in ds_keywords):
-        ds_resp = {
-            'en': "In Data Science/ML, mastery of the lifecycle is key: EDA -> Feature Eng -> Model Selection -> Evaluation (Precision/Recall/F1) -> Deployment. Mention experience with MLflow, DVC, or Airflow. Are you focusing on MLOps or Research?",
-            'it': "In Data Science/ML, la padronanza del lifecycle è fondamentale: EDA -> Feature Eng -> Model Selection -> Evaluation (Precision/Recall/F1) -> Deployment. Menziona l'esperienza con MLflow, DVC o Airflow. Ti stai concentrando su MLOps o Research?",
-            'es': "En Data Science/ML, domina el ciclo de vida: EDA, Ingeniería de Features, Selección de Modelo, Evaluación y Deployment. Menciona MLflow o Airflow.",
-            'fr': "En Data Science/ML: EDA, Feature Engineering, Sélection de modèle, Évaluation et Deployment. Mentionnez MLflow ou Airflow.",
-            'de': "In Data Science/ML: EDA, Feature Engineering, Modellauswahl, Evaluierung und Deployment.",
-            'pt': "Em Data Science/ML: EDA, Feature Engineering, Seleção de Modelo, Avaliação e Deployment."
-        }
-        return ds_resp.get(lang, ds_resp['en'])
-
-    # 3c. BIG DATA / CLOUD SPECIFIC (Intelligence)
-    cloud_keywords = ["cloud", "aws", "azure", "gcp", "redshift", "spark", "snowflake", "etl", "pipeline"]
-    if any(kw in msg_lower for kw in cloud_keywords):
-        cloud_resp = {
-            'en': "For Cloud Data roles: 1) Focus on partitioning and clustering (Snowflake/Databricks). 2) Understand CI/CD for data (Terraform). 3) Know the difference between ETL and ELT. Mention cloud certifications if you have them. Need advice on a specific cloud provider?",
-            'it': "Per ruoli Cloud Data: 1) Concentrati su partitioning e clustering (Snowflake/Databricks). 2) Comprendi la CI/CD per i dati (Terraform). 3) Conosci la differenza tra ETL ed ELT. Menziona le certificazioni cloud se le hai. Vuoi consigli su un provider specifico?",
-            'es': "Para roles Cloud Data: 1) Enfócate en partitioning y clustering. 2) Entiende CI/CD (Terraform). 3) ETL vs ELT. Menciona certificaciones cloud.",
-            'fr': "Pour les rôles Cloud Data: 1) Partitioning et clustering. 2) CI/CD (Terraform). 3) ETL vs ELT.",
-            'de': "Für Cloud Data Rollen: 1) Partitionierung und Clustering. 2) CI/CD (Terraform). 3) ETL vs ELT.",
-            'pt': "Para funções Cloud Data: 1) Partitioning e clustering. 2) CI/CD (Terraform). 3) ETL vs ELT."
-        }
-        return cloud_resp.get(lang, cloud_resp['en'])
-
-    # 4. SALARY & NEGOTIATION (Enhanced)
-    salary_keywords = ["salary", "stipendio", "salario", "salaire", "gehalt", "pay", "money", 
-                       "negotiate", "compensation", "offer", "quanto guadagna", "how much earn"]
-    if any(kw in msg_lower for kw in salary_keywords):
-        salary_resp = {
-            'en': "Salary for Data roles varies significantly by location and seniority. For a Senior Data Scientist in EU, ranges often fall between €65k-€95k. In the US, it's $130k-$190k+. Always check 'levels.fyi' for the latest tech benchmarks. Ready to negotiate that offer?",
-            'it': "Lo stipendio per i ruoli Data varia per location e seniority. Un Senior Data Scientist in Italia/EU varia spesso tra 50k-75k€, mentre all'estero (ES/DE/UK) è sensibilmente più alto. Controlla 'levels.fyi' per benchmarks tech reali. Vuoi aiuto per negoziare?",
-            'es': "El salario para roles Data varía según ubicación. Un Senior Data Scientist en la UE suele estar entre 60k€-90k€. En EE.UU. es de $130k-$190k+. Consulta 'levels.fyi'.",
-            'fr': "Le salaire pour les rôles Data varie par lieu. Un Senior Data Scientist en UE se situe entre 60k€-95k€. Consultez 'levels.fyi'.",
-            'de': "Gehälter für Data Rollen variieren. Ein Senior Data Scientist in der EU liegt oft zwischen 70k€-100k€.",
-            'pt': "Salário para funções Data varia por local. Um Senior Data Scientist na UE está entre 60k€-90k€."
-        }
-        return salary_resp.get(lang, salary_resp['en'])
-
-    # 5. SKILLS & LEARNING
-    skills_keywords = ["skill", "competenz", "learn", "impara", "study", "course", "certification", 
-                       "certificazione", "cosa studiare", "what to learn", "improve", "migliorare"]
-    if any(kw in msg_lower for kw in skills_keywords):
-        skills_resp = {
-            'en': "To boost your career profile, I recommend: 1) Master Python/SQL (mandatory). 2) Learn a BI tool (Tableau/PowerBI). 3) Build 3 distinct projects (one Kaggle, one End-to-End, one Dashboard). 4) Get the AWS Cloud Practitioner or GCP Data Engineer cert. Which domain interests you most?",
-            'it': "Per potenziare il profilo, consiglio: 1) Padroneggia Python/SQL (obbligatorio). 2) Impara uno strumento di BI (Tableau/PowerBI). 3) Costruisci 3 progetti distinti (uno Kaggle, uno End-to-End, una Dashboard). 4) Prendi una certificazione AWS o GCP. Quale dominio ti interessa di più?",
-            'es': "Para mejorar el perfil: 1) Domina Python/SQL. 2) Aprende una herramienta BI. 3) Crea 3 proyectos distintos. 4) Obtén certificación AWS o GCP.",
-            'fr': "Pour booster votre profil: 1) Maîtrisez Python/SQL. 2) Apprenez un outil BI. 3) Créez 3 projets. 4) Obtenez une certif AWS ou GCP.",
-            'de': "Profil verbessern: 1) Python/SQL beherrschen. 2) BI-Tool lernen. 3) 3 Projekte erstellen. 4) AWS/GCP Zertifizierung.",
-            'pt': "Para melhorar o perfil: 1) Domine Python/SQL. 2) Aprenda uma ferramenta BI. 3) Crie 3 projetos. 4) Certificação AWS ou GCP."
-        }
-        return skills_resp.get(lang, skills_resp['en'])
-
-    # 6. RESUME / CV TIPS (SPECIFIC TO TECH)
-    resume_keywords = ["resume", "cv", "curriculum", "lebenslauf", "format", "template", 
-                       "ats", "layout", "come scrivere", "how to write"]
-    if any(kw in msg_lower for kw in resume_keywords):
-        resume_resp = {
-            'en': "For Data CVs: 1) Use the 'Reverse Chronological' format. 2) The 'Skill' section must be near the top. 3) Quantify! Use: 'Optimized SQL queries, reducing latency by 40%'. 4) Include a GitHub/Portfolio link. 5) Mention specific tech stacks (e.g., PyTorch, Spark, K8s). Would you like to check your CV for ATS compliance?",
-            'it': "Per i CV Data: 1) Usa il formato 'Reverse Chronological'. 2) La sezione 'Skill' deve essere in alto. 3) Quantifica! Es: 'Ottimizzato query SQL riducendo la latenza del 40%'. 4) Includi GitHub/Portfolio. 5) Menziona stack specifici (es. PyTorch, Spark). Vuoi controllare la conformità ATS?",
-            'es': "Para CV de Data: 1) Formato cronológico inverso. 2) Habilidades arriba. 3) Cuantifica logros (ej: reduje latencia 40%). 4) Enlace a GitHub. 5) Menciona stacks técnicos.",
-            'fr': "Pour un CV Data: 1) Format chronologique inverse. 2) Compétences en haut. 3) Quantifiez (ex: réduction latence 40%). 4) Lien GitHub. 5) Stack technique.",
-            'de': "Für Data CVs: 1) Umgekehrt chronologisches Format. 2) Fähigkeiten oben. 3) Erfolge quantifizieren. 4) GitHub-Link.",
-            'pt': "Para CVs de Data: 1) Formato cronológico inverso. 2) Habilidades no topo. 3) Quantifique conquistas. 4) Link do GitHub."
-        }
-        return resume_resp.get(lang, resume_resp['en'])
-
-    # 7. CAREER CHANGE / TRANSITION
-    career_change_keywords = ["career change", "cambio carriera", "cambiar carrera", "changer carrière",
-                               "switch", "transition", "new field", "different job", "reinvent"]
-    if any(kw in msg_lower for kw in career_change_keywords):
-        change_resp = {
-            'en': "Breaking into Data from another field? 1) Pivot to 'Data Analyst' first (it's the softest entry point). 2) Learn SQL—it's the universal language. 3) Leverage your domain knowledge (e.g., Finance domain knowledge + SQL is a powerhouse). Are you switching from a non-tech background?",
-            'it': "Entrare nel mondo Data da un altro settore? 1) Punta al ruolo di 'Data Analyst' come primo passo (è il punto d'ingresso più accessibile). 2) Impara SQL: è il linguaggio universale dei dati. 3) Sfrutta la tua conoscenza di dominio (es. Finance + SQL = combinazione letale). Vieni da un background non-tech?",
-            'es': "¿Entrar en Data desde otro campo? 1) Empieza como 'Data Analyst'. 2) Aprende SQL. 3) Usa tu conocimiento de dominio. ¿Vienes de un campo no técnico?",
-            'fr': "Passer à la Data? 1) Visez 'Data Analyst' en premier. 2) Apprenez SQL. 3) Utilisez votre expertise métier.",
-            'de': "In Data Bereich wechseln? 1) Zuerst 'Data Analyst' anstreben. 2) SQL lernen. 3) Fachwissen nutzen.",
-            'pt': "Mudar para Data? 1) Foque em 'Data Analyst' primeiro. 2) Aprenda SQL. 3) Use seu conhecimento de domínio."
-        }
-        return change_resp.get(lang, change_resp['en'])
-
-    # 8. REMOTE WORK
-    remote_keywords = ["remote", "remoto", "télétravail", "work from home", "smart working", 
-                       "lavoro da casa", "hybrid", "ibrido"]
-    if any(kw in msg_lower for kw in remote_keywords):
-        remote_resp = {
-            'en': "Remote work is the standard for Data roles. Tips: 1) Prove you can work with cloud-native tools (Databricks, Snowflake). 2) Highlight 'Async Communication' in your CV. 3) Look for 'Remote-First' companies (GitLab, Zapier, Shopify). Want to filter jobs by remote status in Career Discovery?",
-            'it': "Il lavoro remoto è lo standard per i ruoli Data. Consigli: 1) Dimostra di saper usare tool cloud-native (Databricks, Snowflake). 2) Evidenzia la 'Comunicazione Asincrona' nel CV. 3) Cerca aziende 'Remote-First' (GitLab, Shopify). Vuoi filtrare per ruoli remoti in Career Discovery?",
-            'es': "El trabajo remoto es estándar en Data. 1) Usa herramientas cloud. 2) Destaca comunicación asíncrona. 3) Busca empresas 'Remote-First'.",
-            'fr': "Le télétravail est la norme en Data. 1) Outils cloud-native. 2) Communication asynchrone. 3) Entreprises 'Remote-First'.",
-            'de': "Remote-Arbeit ist Standard in Data Rollen. Cloud-native Tools nutzen, asynchrone Kommunikation hervorheben.",
-            'pt': "Trabalho remoto é o padrão em funções Data. 1) Ferramentas cloud-native. 2) Comunicação assíncrona. 3) Empresas 'Remote-First'."
-        }
-        return remote_resp.get(lang, remote_resp['en'])
-
-    # 9. NETWORKING
-    networking_keywords = ["network", "linkedin", "connect", "contatti", "connections", "referral"]
-    if any(kw in msg_lower for kw in networking_keywords):
-        network_resp = {
-            'en': "For Data Scientists, LinkedIn networking is vital. Follow industry leaders (Cassie Kozyrkov, Andrew Ng). Engage with the #DataScience community. 40% of tech hires come from referrals—don't just apply, talk to the hiring team first. Need a networking message template?",
-            'it': "Per i Data Scientist, il networking su LinkedIn è vitale. Segui i leader del settore (Andrew Ng, ecc.). Partecipa alla community #DataScience. Il 40% delle assunzioni tech arriva da referral: non solo candidarti, parla prima con il team. Ti serve un template per il messaggio?",
-            'es': "Networking en LinkedIn es vital. Sigue a líderes industriales. El 40% de contrataciones son por referidos. ¿Quieres un mensaje tipo?",
-            'fr': "Le réseautage LinkedIn est vital. Suivez les leaders. 40% des embauches tech via parrainage.",
-            'de': "LinkedIn Networking ist wichtig. Folgen Sie Branchenführern. 40% der Tech-Einstellungen durch Empfehlungen.",
-            'pt': "Networking no LinkedIn é vital. Siga líderes da indústria. 40% das contratações tech via indicação."
-        }
-        return network_resp.get(lang, network_resp['en'])
-
-    # 10. COVER LETTER
-    cover_letter_keywords = ["cover letter", "lettera", "carta", "lettre", "anschreiben", "motivazionale"]
-    if any(kw in msg_lower for kw in cover_letter_keywords):
-        cl_resp = {
-            'en': "Data Cover Letters should be concise: 1) Paragraph 1: Why this specific dataset/problem interests you. 2) Paragraph 2: A concrete example of a project where you delivered value. 3) Paragraph 3: Cultural fit. Keep it under 250 words. Shall we analyze your draft in CV Evaluation?",
-            'it': "Le lettere motivazionali per ruoli Data devono essere concise: 1) Paragrafo 1: Perché quel dataset/problema specifico ti interessa. 2) Paragrafo 2: Esempio concreto di un progetto di valore. 3) Paragrafo 3: Fit culturale. Resta sotto le 250 parole. Analizziamo la bozza in CV Evaluation?",
-            'es': "Cartas de presentación breves: 1) Por qué te interesa este problema. 2) Ejemplo concreto de valor. 3) Fit cultural. Menos de 250 palabras.",
-            'fr': "Lettres de motivation concises: 1) Pourquoi ce problème vous intéresse. 2) Exemple concret de valeur. Sous 250 mots.",
-            'de': "Data Anschreiben kurz halten: 1) Warum dieses Problem? 2) Konkretes Beispiel. 3) Fit. Unter 250 Wörter.",
-            'pt': "Cartas de apresentação concisas: 1) Por que este problema lhe interessa. 2) Exemplo concreto de valor. Menos de 250 palavras."
-        }
-        return cl_resp.get(lang, cl_resp['en'])
-
-    # 11. JOB SEARCH STRATEGY
-    job_search_keywords = ["find job", "cerca lavoro", "buscar trabajo", "job search", "looking for", 
-                           "cerco", "apply", "application", "candidatura"]
-    if any(kw in msg_lower for kw in job_search_keywords):
-        job_search_resp = {
-            'en': "The best Data jobs aren't just on LinkedIn. Check: 1) Otta (for high-growth startups). 2) Wellfound/AngelList. 3) Specific tech job boards (Hacker News Who's Hiring). 4) Use 'LinkedIn Boomerang' strategy: reach out to peers at the company first. Ready to scale your job hunt?",
-            'it': "I migliori lavori Data non sono solo su LinkedIn. Controlla: 1) Otta (per startup high-growth). 2) Wellfound/AngelList. 3) Bacheche tech specifiche (Hacker News). 4) Strategia 'LinkedIn Boomerang': contatta prima i peer in azienda. Pronto ad accelerare?",
-            'es': "Mejores trabajos de Data: 1) Otta. 2) Wellfound. 3) Hacker News. 4) Contacta primero con pares en la empresa.",
-            'fr': "Meilleurs jobs Data: 1) Otta. 2) Wellfound. 3) Hacker News.",
-            'de': "Beste Data Jobs: 1) Otta. 2) Wellfound. 3) Hacker News.",
-            'pt': "Melhores empregos Data: 1) Otta. 2) Wellfound. 3) Hacker News."
-        }
-        return job_search_resp.get(lang, job_search_resp['en'])
-
-    # 12. PLATFORM-SPECIFIC PAGES (Original handlers)
-    if current_page == "Landing" or any(kw in msg_lower for kw in ["service", "how works", "project", "app", "servizio", "come funziona", "progetto"]):
-        return responses['landing']
-
-    if current_page == "CV Evaluation" or any(kw in msg_lower for kw in ["evaluation", "analysis", "score", "match", "valutazione", "analisi", "punteggio"]):
-        return responses['cv_eval']
-
-    if current_page == "Career Discovery" or any(kw in msg_lower for kw in ["discovery", "compass", "lifestyle", "preferences", "scoperta", "preferenze"]):
-        return responses['discovery']
-
-    if current_page == "CV Builder" or any(kw in msg_lower for kw in ["builder", "costruisci", "crea", "scrivi"]):
-        return responses['builder']
-
-    if current_page == "Interview Prep" or any(kw in msg_lower for kw in ["interview", "prep", "practice", "colloquio", "preparazione"]):
-        return responses['interview']
-
-    if current_page == "Market Trends" or any(kw in msg_lower for kw in ["trends", "market", "demand", "growth", "tendenze", "mercato", "domanda"]):
-        return responses['market_trends']
-
-    if current_page == "Debugger" or any(kw in msg_lower for kw in ["debug", "ml", "logic", "algorithm", "cluster", "algoritmo", "logica"]):
-        return responses['debugger']
-
-    # 13. GENERAL QUESTIONS ABOUT PLATFORM
-    help_keywords = ["help", "aiuto", "ayuda", "aide", "hilfe", "what can", "cosa puoi", "cosa fai"]
-    if any(kw in msg_lower for kw in help_keywords):
-        help_resp = {
-            'en': "I am Ruben, your Technical Career Strategist. I specialize in Data Science, Cloud, and Engineering careers. Ask me about: 1) Niche tech stacks. 2) MLOps workflows. 3) Tech industry benchmarks. 4) Salary and negotiation in the Data space. 5) Portfolio building. How can I steer your technical career today?",
-            'it': "Sono Ruben, il tuo Technical Career Strategist. Sono specializzato in carriere Data Science, Cloud ed Engineering. Chiedimi di: 1) Niche tech stacks. 2) Workflows MLOps. 3) Benchmark del settore tech. 4) Stipendio e negoziazione spazio Data. 5) Portfolio building. Come posso guidare la tua carriera tecnica oggi?",
-            'es': "Soy Ruben, Technical Career Strategist. Especialista en Data Science y Cloud. Pregúntame sobre tech stacks, MLOps, salarios y portfolio.",
-            'fr': "Je suis Ruben, Technical Career Strategist. Spécialiste Data Science et Cloud.",
-            'de': "Ich bin Ruben, Technical Career Strategist. Spezialist für Data Science und Cloud.",
-            'pt': "Sou Ruben, Technical Career Strategist. Especialista em Data Science e Cloud."
-        }
-        return help_resp.get(lang, help_resp['en'])
-
-    # 14. WHY / EXPLANATION QUESTIONS
-    if any(kw in msg_lower for kw in ["why", "perché", "por qué", "pourquoi", "warum", "explain", "spiega"]):
-        why_resp = {
-            'en': "Technical career choices require deep context. Why focus on SQL? Because it's the 90% of data work. Why MLOps? Because models that don't deploy deliver zero value. Give me a specific topic and I'll explain the 'Data Logic' behind it.",
-            'it': "Le scelte di carriera tecnica richiedono contesto. Perché focus su SQL? Perché è il 90% del lavoro sui dati. Perché MLOps? Perché i modelli che non scalano non valgono nulla. Dimmi un argomento e ti spiegherò la 'Logica dei Dati' dietro di esso.",
-            'es': "Elegir una carrera técnica requiere contexto. ¿Por qué SQL? Es el 90% del trabajo. ¿MLOps? Los modelos sin despliegue no valen nada.",
-            'fr': "Les choix de carrière technique nécessitent du contexte. Pourquoi SQL? C'est 90% du travail.",
-            'de': "Technische Karrierewahl erfordert Kontext. Warum SQL? Es sind 90% der Arbeit.",
-            'pt': "Escolhas de carreira técnica exigem contexto. Por que SQL? É 90% do trabalho."
-        }
-        return why_resp.get(lang, why_resp['en'])
-
-    # 15. INTELLIGENT FALLBACK - Tech Contextual
-    fallback_resp = {
-        'en': f"Interesting query about '{message[:40]}...'. As a Technical Strategist, I see this through the lens of data-driven careers. While I don't have a canned response for this, I can pivot to: technical interview hacks, cloud certification paths, or high-growth data roles. What's your priority?",
-        'it': f"Domanda interessante su '{message[:40]}...'. Come Technical Strategist, la inquadro nella prospettiva delle carriere data-driven. Anche se non ho una risposta predefinita, possiamo parlare di: interview hacks tecnici, percorsi cert cloud, o ruoli data ad alta crescita. Qual è la tua priorità?",
-        'es': f"Consulta interesante sobre '{message[:40]}...'. Hablemos de hacks para entrevistas técnicas, certificaciones cloud o roles de alta demanda.",
-        'fr': f"Question intéressante sur '{message[:40]}...'. Parlons de hacks d'entretien, certifs cloud ou rôles à forte croissance.",
-        'de': f"Interessante Frage zu '{message[:40]}...'. Reden wir über technische Interviews, Cloud-Zertifizierungen oder gefragte Rollen.",
-        'pt': f"Consulta interessante sobre '{message[:40]}...'. Falemos sobre entrevistas técnicas, certificações cloud ou funções de alta demanda."
-    }
-    return fallback_resp.get(lang, fallback_resp['en'])
 
 
 # =============================================================================

@@ -45,9 +45,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import urllib.parse
-import importlib
 
-# Force reload modules (disabled for performance, enable only in dev)
 import knowledge_base
 import ml_utils
 import styles
@@ -55,10 +53,6 @@ import constants
 import gdpr_compliance
 import ui_components
 import sample_data
-
-# Puliamo la cache all'avvio solo se necessario
-# st.cache_data.clear()
-# st.cache_resource.clear()
 
 # =============================================================================
 # CONFIGURAZIONE PAGINA - CareerMatch AI v2.0
