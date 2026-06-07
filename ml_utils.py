@@ -3958,25 +3958,102 @@ _RUBEN_RESPONSES = {
 }
 
 
+_PAGE_TO_RESPONSE_KEY = {
+    "Landing": "landing",
+    "CV Evaluation": "cv_eval",
+    "Career Discovery": "discovery",
+    "CV Builder": "builder",
+    "Interview Prep": "interview",
+    "Market Trends": "market_trends",
+    "Debugger": "debugger",
+}
+
+# Intent groups for routing:
+# HIGH_PRIORITY intents override page context (specific user question).
+# LOW_PRIORITY intents only fire when no page context fits (generic asks).
+_HIGH_PRIORITY_INTENTS = {
+    "greeting", "thanks", "interview", "data_science", "cloud", "salary",
+    "skills", "resume", "career_change", "remote", "networking",
+    "cover_letter", "job_search",
+}
+_LOW_PRIORITY_INTENTS = {"help", "why"}
+
+
 def get_chatbot_response(message: str, current_page: str = "Landing", lang: str = None) -> str:
     """
     RUBEN AI CAREER CONSULTANT - MULTILINGUAL & COMPREHENSIVE
     ==========================================================
-    - Language: Explicitly passed or Auto-detected
-    - Default: English
+    Routing (M3):
+      1. Empty message  -> page-context welcome.
+      2. TF-IDF char-ngram intent classifier (ruben_intent.py).
+         - HIGH-priority intents (greeting, thanks, salary, interview ...)
+           always win when confidence >= threshold.
+         - Page context wins over LOW-priority intents (help, why) so
+           pages keep their identity.
+      3. Generic fallback that quotes the user's message.
+
+    The keyword chain that used to live in this function is now in
+    ruben_intent.INTENT_PROTOTYPES, learned once via cached TF-IDF.
     """
-    # Use passed language or detect it
+    import ruben_intent  # local import: avoids circular load and keeps
+                         # cold-start cheap when the chatbot is unused.
+
+    # 1. Language
     if not lang:
-        # Detect language only if message is present
         if message:
             lang = _detect_chat_language(message)
         else:
-            lang = 'en' # Default to English for initial welcome if no lang passed
-    
-    responses = _RUBEN_RESPONSES.get(lang, _RUBEN_RESPONSES['en'])
-    
+            lang = "en"
+
+    responses = _RUBEN_RESPONSES.get(lang, _RUBEN_RESPONSES["en"])
+
+    # 2. Empty message -> page welcome
     if not message:
-        # Map current_page to response key
+        page_key = _PAGE_TO_RESPONSE_KEY.get(current_page, "default")
+        return responses.get(page_key, responses["default"])
+
+    msg_lower = message.lower()  # noqa: F841 -- kept for legacy code below
+
+    # 3. Smart intent classification (M3)
+    intent, confidence = ruben_intent.classify_intent(message)
+    threshold = ruben_intent.CONFIDENCE_THRESHOLD
+
+    if intent in _HIGH_PRIORITY_INTENTS and confidence >= threshold:
+        intent_resp = ruben_intent.get_intent_response(intent, lang)
+        if intent_resp:
+            return intent_resp
+
+    # 4. Page context (preserves test expectations: e.g. "what can you do"
+    # on Landing returns the Landing welcome, not the help intent).
+    page_key = _PAGE_TO_RESPONSE_KEY.get(current_page)
+    if page_key and page_key in responses:
+        return responses[page_key]
+
+    # 5. Low-priority intents as last resort
+    if intent in _LOW_PRIORITY_INTENTS and confidence >= threshold:
+        intent_resp = ruben_intent.get_intent_response(intent, lang)
+        if intent_resp:
+            return intent_resp
+
+    # 6. Generic fallback
+    return ruben_intent.fallback_response(message, lang)
+
+
+def _legacy_get_chatbot_response_impl(message: str, current_page: str = "Landing", lang: str = None) -> str:
+    """
+    PRE-M3 KEYWORD CHAIN -- kept for reference, no longer called.
+    Retained inside ml_utils for ~one release in case the classifier needs
+    a quick rollback. Safe to delete after M3 lands in production.
+    """
+    if not lang:
+        if message:
+            lang = _detect_chat_language(message)
+        else:
+            lang = 'en'
+
+    responses = _RUBEN_RESPONSES.get(lang, _RUBEN_RESPONSES['en'])
+
+    if not message:
         page_key = current_page.lower().replace(" ", "_")
         return responses.get(page_key, responses['default'])
 

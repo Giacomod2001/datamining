@@ -59,7 +59,7 @@ AI_MODELS = [
     ("Skill Clustering",    "K-Means + Hierarchical",             "Skill grouping",              "scikit-learn / local"),
     ("Topic Discovery",     "LDA (Latent Dirichlet Allocation)",  "JD theme identification",     "scikit-learn / local"),
     ("Fuzzy Matching",      "TheFuzz (Levenshtein, threshold 85)","Typo tolerance",              "TheFuzz / local"),
-    ("Career Assistant",    "Rule-based intent matching",          "Guidance & navigation",       "Local (no LLM, no external API)"),
+    ("Career Assistant",    "TF-IDF char-ngram + cosine intent classifier", "Guidance & navigation", "Local (no LLM, no external API)"),
 ]
 
 
