@@ -53,6 +53,7 @@ import ml_utils
 import styles
 import constants
 import gdpr_compliance
+import ui_components
 
 # Puliamo la cache all'avvio solo se necessario
 # st.cache_data.clear()
@@ -87,7 +88,7 @@ if not gdpr_compliance.render_consent_banner():
 # Carica il CSS personalizzato da styles.py
 # Include: palette LinkedIn, glassmorphism, animazioni
 
-st.markdown(styles.get_premium_css(), unsafe_allow_html=True)
+st.markdown(styles.get_premium_css(ui_components.get_theme()), unsafe_allow_html=True)
 
 # =============================================================================
 # GESTIONE STATO SESSIONE
@@ -232,11 +233,14 @@ def render_navigation():
                     st.rerun()
 
 
-        st.markdown("<div style='margin-top: 1rem; color: #666; font-size: 0.8em;'>v2.2 | Local Mode</div>", unsafe_allow_html=True)
-        
+        # Theme toggle (M2: dark <-> light)
+        ui_components.theme_toggle()
+
+        st.markdown("<div style='margin-top: 0.5rem; color: var(--cm-text-muted); font-size: 0.8em;'>v3.3 | Local Mode</div>", unsafe_allow_html=True)
+
         # Integrate Ruben Assistant
         render_chatbot()
-        
+
         # GDPR Compliance Badge & Delete (subtle, at bottom)
         gdpr_compliance.render_sidebar_compliance_badge()
         with st.expander("Gestione dati personali", expanded=False):
@@ -1675,130 +1679,104 @@ def render_cv_builder():
 
 def render_landing_page():
     """
-    LANDING PAGE - Hub for all app features
+    LANDING PAGE - Hub for all app features. Migrated to ui_components (M2).
     """
     render_navigation()
-    
-    # HERO SECTION
-    st.markdown("""
-    <div style='text-align: center; padding: 2rem 0 1rem 0; width: 100%;'>
-        <h1 style='font-size: 3.5rem; font-weight: 800; margin-bottom: 0.5rem; background: -webkit-linear-gradient(45deg, #0077B5, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>CareerMatch AI</h1>
-        <p style='font-size: 1.1rem; color: #8b949e;'>Need career advice? Ask <b>Ruben</b> in the sidebar.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    ui_components.skip_to_content_link()
 
-    # Metrics Row
-    metric_gradient = "background: -webkit-linear-gradient(45deg, #0077B5, #00C853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"
-    
-    st.markdown(f"""
-    <div style="display: flex; justify-content: center; gap: 6rem; margin-bottom: 2rem; flex-wrap: wrap;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <h2 style="{metric_gradient} margin: 0; padding: 0; font-size: 2rem; font-weight: 600;">950+</h2>
-            <span style="color: #c9d1d9; font-size: 1.2rem;">Keywords</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <h2 style="{metric_gradient} margin: 0; padding: 0; font-size: 2rem; font-weight: 600;">230+</h2>
-            <span style="color: #c9d1d9; font-size: 1.2rem;">Job Archetypes</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <h2 style="{metric_gradient} margin: 0; padding: 0; font-size: 2rem; font-weight: 600;">25+</h2>
-            <span style="color: #c9d1d9; font-size: 1.2rem;">Sectors</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-    
+    # Hero
+    ui_components.hero(
+        "CareerMatch AI",
+        "Need career advice? Ask Ruben in the sidebar.",
+    )
+
+    # Metrics row
+    ui_components.metric_row([
+        ("950+", "Keywords"),
+        ("230+", "Job Archetypes"),
+        ("25+",  "Sectors"),
+    ])
+
     # Description
-    st.markdown("""
-    <div style='text-align: center; padding: 1rem 0; margin-bottom: 1.5rem;'>
-        <p style='color: #8b949e; font-size: 1rem; max-width: 700px; margin: 0 auto;'>
-            <strong style='color: #c9d1d9;'>Your Complete Career Toolkit:</strong> 
-            Discover career paths, build professional CVs, evaluate against job descriptions, practice interviews, and explore market trends.
+    st.markdown(
+        """
+        <p class='cm-section-subtitle' style='max-width: 700px; margin: 0 auto 1.5rem;'>
+            <strong>Your Complete Career Toolkit:</strong>
+            Discover career paths, build professional CVs, evaluate against job descriptions,
+            practice interviews, and explore market trends.
         </p>
-    </div>
-    """, unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True,
+    )
 
-    # Card Template
-    card_style = """
-    <div style='text-align: center;'>
-        <h3 style='margin-bottom: 0.75rem; font-size: 1.1rem;'>{}</h3>
-        <div style='min-height: 4.5rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;'>
-            <p style='color: #8b949e; font-size: 0.85rem; margin: 0; line-height: 1.4;'>{}</p>
-        </div>
-    </div>
-    """
-    
-    # ROW 1: Main Features (2 cards)
+    # Feature grid (4 cards in 2 rows)
     col1, col2 = st.columns(2)
-    
     with col1:
-        with st.container(border=True):
-            st.markdown(card_style.format(
-                "Career Discovery",
-                "Not sure what jobs fit you? Answer questions about your preferences and let AI suggest the best career paths."
-            ), unsafe_allow_html=True)
-            if st.button("Discover My Career", use_container_width=True, type="primary", key="land_career"):
-                st.session_state["page"] = "Career Discovery"
-                st.rerun()
-    
+        ui_components.link_card(
+            title="Career Discovery",
+            body="Not sure what jobs fit you? Answer questions about your preferences and let AI suggest the best career paths.",
+            button_label="Discover My Career",
+            page_key="Career Discovery",
+            btn_key="land_career",
+            primary=True,
+        )
     with col2:
-        with st.container(border=True):
-            st.markdown(card_style.format(
-                "CV Builder",
-                "Build a professional, ATS-optimized CV with our AI-powered tool. Get real-time suggestions."
-            ), unsafe_allow_html=True)
-            if st.button("Build My CV", use_container_width=True, key="land_cvbuild"):
-                st.session_state["page"] = "CV Builder"
-                st.rerun()
+        ui_components.link_card(
+            title="CV Builder",
+            body="Build a professional, ATS-optimized CV with our AI-powered tool. Get real-time suggestions.",
+            button_label="Build My CV",
+            page_key="CV Builder",
+            btn_key="land_cvbuild",
+        )
 
-    # ROW 2: Additional Features (2 cards)
     col3, col4 = st.columns(2)
-
     with col3:
-        with st.container(border=True):
-            st.markdown(card_style.format(
-                "CV Evaluation",
-                "Analyze your CV against job descriptions. Get AI-driven gap analysis and actionable advice."
-            ), unsafe_allow_html=True)
-            if st.button("Evaluate CV", use_container_width=True, key="land_cveval"):
-                st.session_state["page"] = "CV Evaluation"
-                st.rerun()
-
+        ui_components.link_card(
+            title="CV Evaluation",
+            body="Analyze your CV against job descriptions. Get AI-driven gap analysis and actionable advice.",
+            button_label="Evaluate CV",
+            page_key="CV Evaluation",
+            btn_key="land_cveval",
+        )
     with col4:
-        with st.container(border=True):
-            st.markdown(card_style.format(
-                "Interview Prep",
-                "Practice with role-specific interview questions and receive instant AI feedback on your answers."
-            ), unsafe_allow_html=True)
-            if st.button("Practice Interviews", use_container_width=True, key="land_interview"):
-                st.session_state["page"] = "Interview Prep"
-                st.rerun()
+        ui_components.link_card(
+            title="Interview Prep",
+            body="Practice with role-specific interview questions and receive instant AI feedback on your answers.",
+            button_label="Practice Interviews",
+            page_key="Interview Prep",
+            btn_key="land_interview",
+        )
 
-    # Footer Divider
     st.markdown("<hr>", unsafe_allow_html=True)
 
     # Ruben CTA
-    st.markdown("""
-    <div class="landing-chat-popup">
-        <div class="landing-chat-popup-text">
-            <h4 class="landing-chat-popup-title" style="text-align: center;">Need Help?</h4>
-            <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary); text-align: center;">
+    st.markdown(
+        """
+        <div class="landing-chat-popup">
+            <h4 class="landing-chat-popup-title">Need Help?</h4>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--cm-text-secondary);">
                 Ask <b>Ruben</b> in the sidebar. He can guide you through all features and answer your questions.
             </p>
         </div>
-    </div>
-    """, unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True,
+    )
 
     # Footer
-    st.markdown("---")
-    email_body = "Hi%2C%0A%0AI%20would%20like%20to%20report%3A%0A%0AType%3A%20%5BBug%20%2F%20Missing%20Sector%20%2F%20Feedback%20%2F%20Question%5D%0A%0ADescription%3A%0A%0A%0A%0AThank%20you!"
-    st.markdown(f"""
-    <div style='text-align: center; color: #666; font-size: 0.85rem;'>
-        App in Continuous Development | 
-        Feedback? Contact via 
-        <a href='https://mail.google.com/mail/?view=cm&to=dellacquagiacomo@gmail.com&su=CareerMatch%20AI%20Feedback&body={email_body}' target='_blank' style='color: #00A0DC;'>Gmail</a> or 
-        <a href='https://outlook.live.com/mail/0/deeplink/compose?to=dellacquagiacomo@gmail.com&subject=CareerMatch%20AI%20Feedback&body={email_body}' target='_blank' style='color: #00A0DC;'>Outlook</a>
-    </div>
-    """, unsafe_allow_html=True)
+    email_body = (
+        "Hi%2C%0A%0AI%20would%20like%20to%20report%3A%0A%0AType%3A%20%5BBug%20%2F%20Missing%20Sector%20"
+        "%2F%20Feedback%20%2F%20Question%5D%0A%0ADescription%3A%0A%0A%0A%0AThank%20you!"
+    )
+    feedback_html = (
+        f"Feedback? "
+        f"<a href='https://mail.google.com/mail/?view=cm&to=dellacquagiacomo@gmail.com"
+        f"&su=CareerMatch%20AI%20Feedback&body={email_body}' target='_blank' rel='noopener'>Gmail</a>"
+        f" &middot; "
+        f"<a href='https://outlook.live.com/mail/0/deeplink/compose?to=dellacquagiacomo@gmail.com"
+        f"&subject=CareerMatch%20AI%20Feedback&body={email_body}' target='_blank' rel='noopener'>Outlook</a>"
+    )
+    st.markdown("<hr>", unsafe_allow_html=True)
+    ui_components.footer("App in continuous development", feedback_html)
 
 
 
