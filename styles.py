@@ -80,52 +80,6 @@ _DARK_TOKENS = {
     "tag-bonus-border":       "#484f58",
 }
 
-_LIGHT_TOKENS = {
-    # surfaces
-    "bg-base":      "#ffffff",
-    "bg-surface":   "#f6f8fa",
-    "bg-elevated":  "#eaeef2",
-    "bg-gradient":  "linear-gradient(135deg, #f6f8fa 0%, #ffffff 50%, #f6f8fa 100%)",
-    # text
-    "text-primary":   "#0a1929",
-    "text-secondary": "#475467",
-    "text-muted":     "#667085",
-    # borders
-    "border":         "#d0d7de",
-    "border-strong":  "#afb8c1",
-    # brand (kept identical for brand consistency)
-    "brand":         "#0077B5",
-    "brand-dark":    "#004471",
-    "brand-light":   "#00A0DC",
-    "accent-green":  "#1B8443",
-    "accent-amber":  "#A36400",
-    "accent-red":    "#B32D2D",
-    "accent-teal":   "#0E8C73",
-    # focus ring (WCAG AA, ~3:1 against light surface)
-    "focus-ring":    "rgba(0, 71, 116, 0.75)",
-    # shadows
-    "shadow-sm":  "0 1px 2px rgba(15,23,42,0.08)",
-    "shadow-md":  "0 4px 12px rgba(15,23,42,0.10)",
-    "shadow-lg":  "0 10px 24px rgba(15,23,42,0.14)",
-    # tags (use light pastels with strong text contrast)
-    "tag-matched-bg":         "linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%)",
-    "tag-matched-color":      "#155724",
-    "tag-matched-border":     "#28a745",
-    "tag-missing-bg":         "linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%)",
-    "tag-missing-color":      "#721c24",
-    "tag-missing-border":     "#dc3545",
-    "tag-transferable-bg":    "linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%)",
-    "tag-transferable-color": "#856404",
-    "tag-transferable-border":"#ffc107",
-    "tag-project-bg":         "linear-gradient(135deg, #cce5ff 0%, #b8daff 100%)",
-    "tag-project-color":      "#004085",
-    "tag-project-border":     "#007bff",
-    "tag-bonus-bg":           "linear-gradient(135deg, #e2e3e5 0%, #d6d8db 100%)",
-    "tag-bonus-color":        "#383d41",
-    "tag-bonus-border":       "#6c757d",
-}
-
-
 def _render_tokens(tokens: dict[str, str]) -> str:
     """Emit a CSS :root block from a token dict."""
     body = "\n    ".join(f"--cm-{k}: {v};" for k, v in tokens.items())
@@ -138,16 +92,17 @@ def _render_tokens(tokens: dict[str, str]) -> str:
 
 def get_premium_css(theme: str = "dark") -> str:
     """
-    Return the complete CSS bundle for the chosen theme.
+    Return the complete CSS bundle.
 
-    Compatible with the previous signature: callers that omit the argument
-    keep getting the dark theme (current production behaviour).
+    The `theme` parameter is accepted for backward compatibility but ignored:
+    the project ships dark only. Reintroducing light mode would require
+    restoring _LIGHT_TOKENS and the sidebar toggle.
     """
-    tokens = _LIGHT_TOKENS if theme == "light" else _DARK_TOKENS
+    tokens = _DARK_TOKENS
     return f"""
 <style>
 /* =============================================================================
-   1. THEME TOKENS (selected: {theme})
+   1. THEME TOKENS (dark)
    ============================================================================= */
 {_render_tokens(tokens)}
 

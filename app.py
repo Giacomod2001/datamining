@@ -88,7 +88,7 @@ if not gdpr_compliance.render_consent_banner():
 # Carica il CSS personalizzato da styles.py
 # Include: palette LinkedIn, glassmorphism, animazioni
 
-st.markdown(styles.get_premium_css(ui_components.get_theme()), unsafe_allow_html=True)
+st.markdown(styles.get_premium_css(), unsafe_allow_html=True)
 
 # =============================================================================
 # GESTIONE STATO SESSIONE
@@ -232,9 +232,6 @@ def render_navigation():
                     st.session_state["page"] = "Landing"
                     st.rerun()
 
-
-        # Theme toggle (M2: dark <-> light)
-        ui_components.theme_toggle()
 
         st.markdown(
             "<div class='cm-sidebar-version'>v3.3 | Local Mode</div>",

@@ -28,38 +28,6 @@ import streamlit as st
 
 
 # =============================================================================
-# THEME (light / dark)
-# =============================================================================
-
-_THEME_KEY = "ui_theme"  # session_state key
-_VALID_THEMES = {"dark", "light"}
-
-
-def get_theme() -> str:
-    """Returns the current theme, defaulting to dark."""
-    theme = st.session_state.get(_THEME_KEY, "dark")
-    return theme if theme in _VALID_THEMES else "dark"
-
-
-def set_theme(theme: str) -> None:
-    if theme in _VALID_THEMES:
-        st.session_state[_THEME_KEY] = theme
-
-
-def theme_toggle(label_dark: str = "Light mode", label_light: str = "Dark mode") -> None:
-    """
-    Renders a compact theme switch button. Place this anywhere -- typically
-    in the sidebar near the language selector.
-    """
-    current = get_theme()
-    next_theme = "light" if current == "dark" else "dark"
-    btn_label = label_dark if current == "dark" else label_light
-    if st.button(btn_label, key="ui_theme_toggle_btn", use_container_width=True):
-        set_theme(next_theme)
-        st.rerun()
-
-
-# =============================================================================
 # LAYOUT PRIMITIVES
 # =============================================================================
 
