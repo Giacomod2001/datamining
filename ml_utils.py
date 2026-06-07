@@ -3969,6 +3969,33 @@ _HIGH_PRIORITY_INTENTS = {
 }
 _LOW_PRIORITY_INTENTS = {"help", "why"}
 
+# Feature-name lookup: if the user mentions a feature explicitly we route to
+# that page's response, bypassing the TF-IDF classifier. This prevents bugs
+# like "how does career discovery work" matching the "cloud" intent because
+# "career" also lives in cloud-career prototypes.
+_FEATURE_KEYWORDS = {
+    "discovery":     ("career discovery", "career-discovery", "career compass"),
+    "builder":       ("cv builder", "cv-builder", "resume builder", "costruisci cv", "crea cv"),
+    "cv_eval":       ("cv evaluation", "cv analysis", "cv eval", "analizza cv", "valutazione cv", "analisi cv"),
+    "interview":     ("interview prep", "interview practice", "prep interview", "preparazione colloquio"),
+    "debugger":      ("dev console", "developer console", "debugger"),
+    "market_trends": ("market trends", "trend di mercato"),
+}
+
+
+def _detect_feature_mention(msg_lower: str) -> str | None:
+    """Return the page-response key whose feature name appears in the message,
+    or None. Longest match wins so "cv evaluation" beats "cv"."""
+    matches = []
+    for page_key, keywords in _FEATURE_KEYWORDS.items():
+        for kw in keywords:
+            if kw in msg_lower:
+                matches.append((len(kw), page_key))
+    if not matches:
+        return None
+    matches.sort(reverse=True)  # longest keyword first
+    return matches[0][1]
+
 
 def get_chatbot_response(message: str, current_page: str = "Landing", lang: str = None) -> str:
     """
@@ -4000,7 +4027,13 @@ def get_chatbot_response(message: str, current_page: str = "Landing", lang: str 
         page_key = _PAGE_TO_RESPONSE_KEY.get(current_page, "default")
         return responses.get(page_key, responses["default"])
 
-    # 3. Smart intent classification (M3)
+    # 3. Explicit feature mention ("how does career discovery work")
+    #    overrides everything else: route directly to that page's blurb.
+    feature_key = _detect_feature_mention(message.lower())
+    if feature_key and feature_key in responses:
+        return responses[feature_key]
+
+    # 4. Smart intent classification (M3)
     intent, confidence = ruben_intent.classify_intent(message)
     threshold = ruben_intent.CONFIDENCE_THRESHOLD
 
