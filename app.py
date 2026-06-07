@@ -2544,20 +2544,20 @@ def render_chatbot():
         st.session_state["chat_history"] = []
         st.session_state["last_chat_page"] = current_page
 
-    # Define Callback to process chat
+    # Define Callback to process chat. Streamlit automatically reruns the
+    # script after on_change callbacks, so calling st.rerun() here is a no-op
+    # and emits a warning -- intentionally omitted.
     def process_chat():
         user_msg = st.session_state.get("chat_input_widget", "")
         if user_msg:
-            # Append User Message
             st.session_state["chat_history"].append({"role": "user", "content": user_msg})
-            # Get response and update persisted language
             detected_lang = ml_utils._detect_chat_language(user_msg)
             st.session_state["chat_lang"] = detected_lang
             response = ml_utils.get_chatbot_response(user_msg, current_page, lang=detected_lang)
             st.session_state["chat_history"].append({"role": "assistant", "content": response})
-            # Clear Input safely
+            # Clear the input safely (allowed inside a callback even when
+            # the widget already exists, because the rerun happens after).
             st.session_state["chat_input_widget"] = ""
-            st.rerun()
 
     # Get response or welcome
     display_msg = ""
