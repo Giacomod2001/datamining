@@ -54,6 +54,7 @@ import styles
 import constants
 import gdpr_compliance
 import ui_components
+import sample_data
 
 # Puliamo la cache all'avvio solo se necessario
 # st.cache_data.clear()
@@ -1794,6 +1795,10 @@ def render_career_discovery():
     Styled consistently with CV Builder and Evaluation pages.
     """
     render_navigation() # GLOBAL NAVBAR
+
+    # Pre-fill the main textarea on first visit so the user can click
+    # "Find Careers" immediately. Editing or clearing the field persists.
+    sample_data.prefill_once("discovery_free_text", sample_data.SAMPLE_DISCOVERY_QUERY)
     
     
     # --- HEADER (Same pattern as CV Builder) ---
@@ -2040,9 +2045,13 @@ def render_evaluation_page():
     """
     
     render_navigation() # GLOBAL NAVBAR
-    
-    # Rest of Layout (Main Area)
-    # Removed Local Sidebar logic to avoid duplication
+
+    # Pre-fill JD + CV (and Cover Letter) on first visit. The visitor can
+    # press "Analyze" immediately to see the platform in action; edits
+    # persist across sessions until cleared.
+    sample_data.prefill_once("jd_text", sample_data.SAMPLE_JD)
+    sample_data.prefill_once("cv_text", sample_data.SAMPLE_CV)
+    sample_data.prefill_once("cl_text", sample_data.SAMPLE_COVER_LETTER)
 
     # Local Page Options (Extra Analysis)
     with st.sidebar:
